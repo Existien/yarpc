@@ -3,7 +3,7 @@ name = "yarpc"
 version = "0.1.0"
 description = "Default template for PDM package"
 authors = [
-    {name = "", email = ""},
+    {name = "", email = "dummy@mail.com"},
 ]
 dependencies = [
     "dbus-next>=0.2.3",
@@ -21,3 +21,8 @@ yarpc = "yarpc.main:main"
 
 [tool.pdm]
 package-type = "application"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "-e file:///${PROJECT_ROOT}/#egg=yarpc",
+]
