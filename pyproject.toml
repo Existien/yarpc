@@ -16,6 +16,8 @@ requires-python = "==3.11.*"
 readme = "README.md"
 license = {text = "MIT"}
 
+[project.scripts]
+yarpc = "yarpc.main:main"
 
 [tool.pdm]
 package-type = "application"
