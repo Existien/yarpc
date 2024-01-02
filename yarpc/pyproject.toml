@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "jsonschema>=4.20.0",
     "Jinja2>=3.1.2",
+    "pyyaml>=6.0.1",
 ]
 requires-python = "==3.11.*"
 readme = "README.md"
@@ -23,3 +24,10 @@ package-type = "application"
 dev = [
     "-e file:///${PROJECT_ROOT}/#egg=yarpc",
 ]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.build.wheel-data]
+data = ["src/yarpc/schema/*"]

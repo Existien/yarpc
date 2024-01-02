@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Schema for enum types",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "name",
+        "kind",
+        "docs",
+        "members"
+    ],
+    "properties": {
+        "name": {"$ref": "common.schema.json#/pascalName"},
+        "kind": {
+            "type": "string",
+            "const": "enum"
+        },
+        "docs": {"$ref": "common.schema.json#/docs"},
+        "members": {
+            "type": "array",
+            "items": {"$ref": "common.schema.json#/camelName"}
+        }
+    }
+}

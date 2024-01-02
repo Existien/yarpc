@@ -1,0 +1,48 @@
+objects:
+- name: Minimal
+  kind: interface
+  docs: A interface using signals and methods without args
+  members:
+  - name: Bumped
+    kind: signal
+    docs: a simple signal without arguments
+  - name: Ping
+    kind: method
+    docs: a simple method without args
+- name: Primitives
+  kind: interface
+  docs: A interface using only primitive types
+  members:
+  - name: NotificationEmitted
+    docs: a simple signal with one argument
+    kind: signal
+    args:
+    - name: message
+      type: string
+      docs: The message
+  - name: OrderReceived
+    docs: a simple signal with multiple argument
+    kind: signal
+    args:
+    - name: item
+      type: string
+      docs: The item
+    - name: amount
+      type: uint32
+      docs: a amount ordered
+    - name: pricePerItem
+      type: double
+      docs: the price per item
+  - name: AddNumbers
+    kind: method
+    docs: a simple method with args and return value
+    args:
+    - name: a
+      type: int32
+      docs: a number
+    - name: b
+      type: int32
+      docs: a number
+    returns:
+      type: int32
+      docs: the sum of a and b

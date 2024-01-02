@@ -8,4 +8,4 @@ yarpc generates D-Bus services and clients from specifications written in YAML.
 
 ## Development
 - install the package via `pdm install -p yarpc`
-- run app via `pdm run -p yarpc yarpc`
+- run app via `pdm run -p yarpc yarpc tests/specs`

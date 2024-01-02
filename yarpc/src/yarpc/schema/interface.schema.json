@@ -1,0 +1,57 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Schema for interfaces",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "name",
+        "kind",
+        "docs",
+        "members"
+    ],
+    "properties": {
+        "name": {"$ref": "common.schema.json#/pascalName"},
+        "kind": {
+            "type": "string",
+            "const": "interface"
+        },
+        "docs": {"$ref": "common.schema.json#/docs"},
+        "members": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "kind",
+                    "docs"
+                ],
+                "properties": {
+                    "name": {"$ref": "common.schema.json#/pascalName"},
+                    "docs": {"$ref": "common.schema.json#/docs"},
+                    "kind": {
+                        "type": "string",
+                        "enum": ["signal", "method"]
+                    }
+                },
+                "allOf": [
+                    {
+                        "if": {
+                            "properties": {"kind": {"const": "signal"}}
+                        },
+                        "then": {
+                            "$ref": "signal.schema.json"
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {"kind": {"const": "method"}}
+                        },
+                        "then": {
+                            "$ref": "method.schema.json"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

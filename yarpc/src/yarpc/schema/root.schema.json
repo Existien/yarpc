@@ -1,0 +1,61 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Schema for YAML specifications",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["objects"],
+    "properties": {
+        "objects": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["name", "kind"],
+                "properties": {
+                    "kind": {
+                        "type": "string",
+                        "enum": [
+                            "builtin",
+                            "interface",
+                            "struct",
+                            "enum"
+                        ]
+                    }
+                },
+                "allOf": [
+                    {
+                        "if": {
+                            "properties": {"kind": {"const": "builtin"}}
+                        },
+                        "then": {
+                            "$ref": "builtin.schema.json"
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {"kind": {"const": "interface"}}
+                        },
+                        "then": {
+                            "$ref": "interface.schema.json"
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {"kind": {"const": "struct"}}
+                        },
+                        "then": {
+                            "$ref": "struct.schema.json"
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {"kind": {"const": "enum"}}
+                        },
+                        "then": {
+                            "$ref": "enum.schema.json"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
