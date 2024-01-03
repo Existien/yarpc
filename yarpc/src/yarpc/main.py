@@ -1,7 +1,9 @@
 from argparse import ArgumentParser
 import os
 import sys
+import json
 from yarpc.specification_loader import load_specifications
+from yarpc.spec_resolver import SpecResolver
 
 def __parse_args():
     parser = ArgumentParser(
@@ -32,7 +34,9 @@ def main():
         exit(1)
 
     specs = load_specifications(args.spec_dir)
-    print(specs)
+    resolver = SpecResolver(specs)
+    outputs = resolver.get_outputs()
+    print(json.dumps(outputs,indent=2))
 
 if __name__ == "__main__":
     main()

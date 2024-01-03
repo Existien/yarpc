@@ -15,5 +15,18 @@
     "type": {
         "type": "string",
         "pattern": "^[a-zA-Z][a-zA-Z0-9<,>]*$"
+    },
+    "interface": {
+        "additionalProperties": false,
+        "required": [
+            "name",
+            "spec",
+            "path"
+        ],
+        "properties": {
+            "name": {"type": "string"},
+            "path": {"type": "string"},
+            "spec": {"$ref": "common.schema.json#/pascalName"}
+        }
     }
 }

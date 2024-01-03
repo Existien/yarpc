@@ -3,13 +3,12 @@
     "description": "Schema for YAML specifications",
     "type": "object",
     "additionalProperties": false,
-    "required": ["objects"],
     "properties": {
         "objects": {
             "type": "array",
             "items": {
                 "type": "object",
-                "required": ["name", "kind"],
+                "required": ["kind"],
                 "properties": {
                     "kind": {
                         "type": "string",
@@ -52,6 +51,22 @@
                         },
                         "then": {
                             "$ref": "enum.schema.json"
+                        }
+                    }
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "properties": {
+                    "language": {"type": "string", "enum": ["py"]}
+                },
+                "allOf": [
+                    {
+                        "if": {"properties": {"language": {"const": "py"}}},
+                        "then": {
+                            "$ref": "python.schema.json"
                         }
                     }
                 ]

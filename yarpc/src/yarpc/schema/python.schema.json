@@ -1,0 +1,29 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Schema for python output",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "name",
+        "language",
+        "location"
+    ],
+    "properties": {
+        "name": {"type": "string"},
+        "language": {"const": "py"},
+        "location": {"type": "string"},
+        "dbusName": {"type": "string"},
+        "services": {
+            "type": "array",
+            "items": {"$ref": "common.schema.json#/interface"}
+        },
+        "clients": {
+            "type": "array",
+            "items": {"$ref": "common.schema.json#/interface"}
+        },
+        "mocks": {
+            "type": "array",
+            "items": {"$ref": "common.schema.json#/interface"}
+        }
+    }
+}
