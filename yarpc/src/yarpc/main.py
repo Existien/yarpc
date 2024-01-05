@@ -4,6 +4,7 @@ import sys
 import json
 from yarpc.specification_loader import load_specifications
 from yarpc.spec_resolver import SpecResolver
+from yarpc.generator import Generator
 
 def __parse_args():
     parser = ArgumentParser(
@@ -13,7 +14,8 @@ def __parse_args():
     parser.add_argument(
         "--check", action="store_true",
         help="Don't generate files, but return a non-zero exit code when the "
-            "existing files are not consistent with the yaml specifications."
+            "existing files are not consistent with the yaml specifications.",
+        default=False
     )
     parser.add_argument(
         "spec_dir", metavar="YAML_SPEC_DIRECTORY",
@@ -29,14 +31,13 @@ def __parse_args():
 def main():
     args = __parse_args()
 
-    if args.check:
-        print("--check is not implemented yet")
-        exit(1)
-
     specs = load_specifications(args.spec_dir)
     resolver = SpecResolver(specs)
     outputs = resolver.get_outputs()
-    print(json.dumps(outputs,indent=2))
+    is_up_to_date = Generator().generate(outputs, args.check)
+    if not is_up_to_date:
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

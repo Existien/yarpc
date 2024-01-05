@@ -1,31 +1,26 @@
 from pathlib import Path
-import jinja2
+from yarpc.templating_engine import TemplatingEngine
 from difflib import unified_diff
-from yarpc.filters import JinjaFilters
+from yarpc.utils import to_snake_case
 import pkg_resources
 
 
 class Generator:
 
-    def __init__(self, specs, template_dir):
-        self._specs = specs
-        self._template_dir = template_dir
-        self._filters = JinjaFilters(self._specs)
-        self._initialize_jinja_environment()
+    def __init__(self):
+        self._engine = TemplatingEngine(f"{Path(__file__).parent}/templates")
 
-    def generate(self, check_only):
+    def generate(self, outputs, check_only) -> bool:
         is_up_to_date = True
-        # for spec in self._specs:
-            # if 'outputs' in spec:
+        for output in outputs:
+            for object in output['objects']:
+                is_up_to_date = (
+                    is_up_to_date and
+                    self._generate_object(object, output, check_only)
+                )
+        return is_up_to_date
 
-    def _initialize_jinja_environment(self):
-        self._env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(self._template_dir),
-            trim_blocks=True,
-            lstrip_blocks=True,
-        )
-        self._filters.register_filters(self._env)
-    
+            
     def _is_up_to_date(self, filename, content):
         try:
             with open(filename, "r") as f:
@@ -45,22 +40,43 @@ class Generator:
             return False
         return True
     
-    def _generate_file(self, filename: Path, spec: dict, template: Path, check_only: bool) -> bool:
+    def _generate_object(self, object, output, check_only) -> bool:
+        context = {
+            "object": object,
+            "output": output,
+            "version": pkg_resources.get_distribution('yarpc').version
+        }
+        language = output['language']
+        is_up_to_date = True
+        for target in object['targets']:
+            target_context = {**context, 'target': target}
+            filename = Path(f"{output['location']}/{self._generate_filename(object['name'], target['template'], language)}")
+            is_up_to_date = (
+                is_up_to_date and
+                self._generate_file(filename, language, target['template'], target_context, check_only)
+            )
+        return is_up_to_date
+
+    def _generate_filename(self, name, template, language) -> str:
+        match language:
+            case 'py':
+                return f"{to_snake_case(name)}_{template}.py"
+        raise Exception(f"Filename for language {language} and template {template} could not be generated")
+    
+    def _generate_file(self, filename: Path, language: str, template: Path, context: dict, check_only: bool) -> bool:
         """ Generates a source file from specs and a template
 
         Args:
             filename (Path): the file to generate
-            spec (dict): the spec to use
+            language (str): the language to generate for
             template (Path): the template file to use
+            context (dict): data used by the template, such as the spec
             check_only (bool): whether to check for differences instead of generating code
         Returns:
             bool: whether the generated file is up to date
         """
-        kwargs = {
-            "spec": spec,
-            "version": pkg_resources.get_distribution('yarpc').version
-        }
-        rendered = self._env.get_template(template).render(**kwargs)
+        print(f"Generate {filename}")
+        rendered = self._engine.render(language, template, context)
 
         if check_only:
             return self._is_up_to_date(filename, rendered)

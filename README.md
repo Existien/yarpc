@@ -8,4 +8,5 @@ yarpc generates D-Bus services and clients from specifications written in YAML.
 
 ## Development
 - install the package via `pdm install -p yarpc`
-- run app via `pdm run -p yarpc yarpc tests/specs`
+- run unit tests via `yarpc/run_tests.sh`
+- generate interfaces via `tests/generate.sh`
