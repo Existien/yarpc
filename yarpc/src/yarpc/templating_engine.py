@@ -1,4 +1,5 @@
 import jinja2
+from yarpc.utils import to_snake_case
 
 class TemplatingEngine:
     def __init__(self, template_dir):
@@ -11,7 +12,7 @@ class TemplatingEngine:
         self._register_filters()
 
     def _register_filters(self):
-        pass
+        self._env.filters['snake_case'] = to_snake_case
 
     def render(self, language, template, context):
         template_file = f"{language}/{template}.j2"

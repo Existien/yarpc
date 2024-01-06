@@ -26,6 +26,9 @@ class {{ object.name }}ServiceInterface(ServiceInterface):
         {% endfor %}
 
     async def run(self):
+        """
+        Initializes the D-Bus connection and waits until it is closed
+        """
         bus = await MessageBus().connect()
         bus.export("{{ target.objectPath }}", self)
         await bus.request_name("{{ target.busName }}")
@@ -45,7 +48,7 @@ class {{ object.name }}ServiceInterface(ServiceInterface):
 
     def on_{{ member.name }}(self, handler) -> None:
         """
-        Set method handler
+        Set handler for {{ member.name }} method
 
         Args:
             handler (Callable[[], Awaitable[None]]): the method handler

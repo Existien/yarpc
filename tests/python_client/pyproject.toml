@@ -1,0 +1,24 @@
+[project]
+name = "python_client"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "", email = "dummy@mail.com"},
+]
+dependencies = [
+    "dbus-next>=0.2.3",
+]
+requires-python = "==3.11.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+[project.scripts]
+client = "python_client.main:main"
+
+[tool.pdm]
+package-type = "application"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "-e file:///${PROJECT_ROOT}/#egg=python-client",
+]

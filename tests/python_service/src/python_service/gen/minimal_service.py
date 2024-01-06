@@ -22,6 +22,9 @@ class MinimalServiceInterface(ServiceInterface):
         self._Bump_handler = None
 
     async def run(self):
+        """
+        Initializes the D-Bus connection and waits until it is closed
+        """
         bus = await MessageBus().connect()
         bus.export("/com/yarpc/testservice", self)
         await bus.request_name("com.yarpc.testservice")
@@ -37,7 +40,7 @@ class MinimalServiceInterface(ServiceInterface):
 
     def on_Bump(self, handler) -> None:
         """
-        Set method handler
+        Set handler for Bump method
 
         Args:
             handler (Callable[[], Awaitable[None]]): the method handler
