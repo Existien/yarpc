@@ -6,14 +6,15 @@ objects:
   - name: Bumped
     kind: signal
     docs: a simple signal without arguments
-  - name: Ping
+  - name: Bump
     kind: method
     docs: a simple method without args
+
 - name: Primitives
   kind: interface
   docs: A interface using only primitive types
   members:
-  - name: NotificationEmitted
+  - name: Notified
     docs: a simple signal with one argument
     kind: signal
     args:
@@ -33,16 +34,26 @@ objects:
     - name: pricePerItem
       type: double
       docs: the price per item
-  - name: AddNumbers
+  - name: Notify
+    kind: method
+    docs: a simple method with one argument
+    args:
+    - name: message
+      type: string
+      docs: The message
+  - name: Order
     kind: method
     docs: a simple method with args and return value
     args:
-    - name: a
-      type: int32
-      docs: a number
-    - name: b
-      type: int32
-      docs: a number
+    - name: item
+      type: string
+      docs: The item
+    - name: amount
+      type: uint32
+      docs: a amount ordered
+    - name: pricePerItem
+      type: double
+      docs: the price per item
     returns:
-      type: int32
-      docs: the sum of a and b
+      type: double
+      docs: the total price

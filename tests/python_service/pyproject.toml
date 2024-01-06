@@ -5,11 +5,20 @@ description = "Default template for PDM package"
 authors = [
     {name = "", email = "dummy@gmx.com"},
 ]
-dependencies = []
+dependencies = [
+    "dbus-next>=0.2.3",
+]
 requires-python = "==3.11.*"
 readme = "README.md"
 license = {text = "MIT"}
 
+[project.scripts]
+service = "python_service.main:main"
 
 [tool.pdm]
 package-type = "application"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "-e file:///${PROJECT_ROOT}/#egg=python-service",
+]

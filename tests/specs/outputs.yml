@@ -5,7 +5,7 @@ outputs:
   dbusName: com.yarpc.testservice
   services:
   - spec: Minimal
-    name: minimal
+    name: com.yarpc.testservice.minimal
     path: /com/yarpc/testservice
 # - name: MinimalServiceMock
 #   language: py
