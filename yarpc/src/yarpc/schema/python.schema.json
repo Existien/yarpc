@@ -12,7 +12,6 @@
         "name": {"type": "string"},
         "language": {"const": "py"},
         "location": {"type": "string"},
-        "dbusName": {"type": "string"},
         "services": {
             "type": "array",
             "items": {"$ref": "common.schema.json#/interface"}

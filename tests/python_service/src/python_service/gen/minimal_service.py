@@ -12,7 +12,6 @@ from dbus_next import Variant, DBusError
 
 import asyncio
 
-
 class MinimalServiceInterface(ServiceInterface):
     """
     A interface using signals and methods without args

@@ -34,7 +34,7 @@ def main():
     specs = load_specifications(args.spec_dir)
     resolver = SpecResolver(specs)
     outputs = resolver.get_outputs()
-    is_up_to_date = Generator().generate(outputs, args.check)
+    is_up_to_date = Generator(args.output_base).generate(outputs, args.check)
     if not is_up_to_date:
         sys.exit(1)
 

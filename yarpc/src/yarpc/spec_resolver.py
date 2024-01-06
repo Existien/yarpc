@@ -1,4 +1,5 @@
 import re
+from copy import deepcopy
 
 class SpecResolver:
 
@@ -20,8 +21,6 @@ class SpecResolver:
         self._check_for_duplicate_names(objects)
 
         for output in outputs:
-            if (output.get('dbusName')):
-                self._validate_dbus_name(output.get('dbusName'))
             output['objects'] = self._get_dependencies(output, objects)
 
         return outputs
@@ -40,27 +39,25 @@ class SpecResolver:
         return required_objects
 
     def _get_interfaces(self, output, objects) -> list:
-        services = { x['spec']: {
-            'template': 'service',
-            'interface_name': x['name'],
-            'object_path': x['path']
-        } for x in output.get('services', [])}
-        clients = { x['spec']: {
-            'template': 'client',
-            'interface_name': x['name'],
-            'object_path': x['path']
-        } for x in output.get('clients', [])}
-        mocks = { x['spec']: {
-            'template': 'mock',
-            'interface_name': x['name'],
-            'object_path': x['path']
-        } for x in output.get('mocks', [])}
+        def interface_list_to_dict(list_key, template):
+            return { x['spec']: {
+            'template': template,
+            'busName': x['busName'],
+            'objectPath': x['objectPath'],
+            'interfaceName': x['interfaceName'],
+        } for x in output.get(list_key, [])}
+
+        services = interface_list_to_dict('services', 'service')
+        clients = interface_list_to_dict('clients', 'client')
+        mocks = interface_list_to_dict('mocks', 'mock')
         all_names = set([*services.keys(), *clients.keys(), *mocks.keys()])
 
-        interfaces = list(filter(
-            lambda x: x['name'] in all_names,
-            objects
-        ))
+        interfaces = list(map(
+            lambda x: deepcopy(x),
+            filter(
+                lambda x: x['name'] in all_names,
+                objects
+        )))
         if len(interfaces) != len(all_names):
             added_names = list(map(lambda x: x['name'], interfaces))
             missing = []
@@ -84,11 +81,9 @@ class SpecResolver:
 
     def _validate_targets(self, targets):
         for target in targets:
-            if not self._interface_name_pattern.match(target['interface_name']):
-                raise RuntimeError(f"Invalid interface name: {target['interface_name']}")
-            if not self._object_path_pattern.match(target['object_path']):
-                raise RuntimeError(f"Invalid object path: {target['object_path']}")
-
-    def _validate_dbus_name(self, dbus_name):
-        if not self._bus_name_pattern.match(dbus_name):
-            raise RuntimeError(f"Invalid D-Bus name: {dbus_name}")
+            if not self._interface_name_pattern.match(target['interfaceName']):
+                raise RuntimeError(f"Invalid interface name: {target['interfaceName']}")
+            if not self._object_path_pattern.match(target['objectPath']):
+                raise RuntimeError(f"Invalid object path: {target['objectPath']}")
+            if not self._bus_name_pattern.match(target['busName']):
+                raise RuntimeError(f"Invalid D-Bus name: {target['busName']}")
