@@ -1,7 +1,12 @@
+import re
+
 class SpecResolver:
 
     def __init__(self, specs):
         self._specs = specs
+        self._interface_name_pattern = re.compile("^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_])+")
+        self._bus_name_pattern = re.compile("^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_])+")
+        self._object_path_pattern = re.compile("^\/([a-zA-Z0-9_]+(\/[a-zA-Z0-9_]+)*)?")
 
     def get_outputs(self):
         outputs = []
@@ -15,6 +20,8 @@ class SpecResolver:
         self._check_for_duplicate_names(objects)
 
         for output in outputs:
+            if (output.get('dbusName')):
+                self._validate_dbus_name(output.get('dbusName'))
             output['objects'] = self._get_dependencies(output, objects)
 
         return outputs
@@ -71,4 +78,17 @@ class SpecResolver:
                 interface['targets'].append(clients[name])
             if name in mocks.keys():
                 interface['targets'].append(mocks[name])
+
+        self._validate_targets(interface['targets'])
         return interfaces
+
+    def _validate_targets(self, targets):
+        for target in targets:
+            if not self._interface_name_pattern.match(target['interface_name']):
+                raise RuntimeError(f"Invalid interface name: {target['interface_name']}")
+            if not self._object_path_pattern.match(target['object_path']):
+                raise RuntimeError(f"Invalid object path: {target['object_path']}")
+
+    def _validate_dbus_name(self, dbus_name):
+        if not self._bus_name_pattern.match(dbus_name):
+            raise RuntimeError(f"Invalid D-Bus name: {dbus_name}")

@@ -23,7 +23,7 @@ def __load_yaml(filename: Path, validator: Draft7Validator):
 
     if not is_valid:
         raise RuntimeError("Spec invalid!")
-    
+
     for obj in parsed.get('objects', []):
         obj['specName'] = filename.stem
         obj['specPath'] = str(filename.absolute().resolve())
@@ -69,7 +69,7 @@ def __get_builtins():
                 "kind": "builtin",
                 "dbus": "q",
                 "py": "int"
-            },            
+            },
             {
                 "name": "int32",
                 "kind": "builtin",
