@@ -3,8 +3,10 @@ FROM ubuntu:23.04
 RUN apt-get -y update && \
     apt-get install --no-install-recommends -y \
         build-essential \
+        bustle \
         cmake \
         dbus \
+        d-feet \
         git \
         ninja-build \
         python3 \
@@ -17,11 +19,5 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip install --break-system-packages -U pip pdm
-    # pip \
-    # behave \
-    # dbus-next \
-    # pytest \
-    # jsonschema \
-    # Jinja2
 
 ENTRYPOINT ["/bin/bash", "-lc", "exec dbus-run-session -- \"$0\" \"$@\""]

@@ -35,6 +35,20 @@ cleanup_cmds+=("rm -f $passwd")
 echo "$user_name:x:$user_id:$group_id::$user_home:/bin/bash" > "$passwd"
 docker_args+=("--volume" "$passwd:/etc/passwd")
 
+# forward x11
+if [ -n "${DISPLAY:-}" ]; then
+    xauth="$(mktemp --suffix=.docker.xauth)"
+    cleanup_cmds+=("rm -f $xauth")
+    xauth nlist "$DISPLAY" | sed -e 's/^..../ffff/' | xauth -f "$xauth" nmerge -
+    docker_args+=(-v "/tmp/.X11-unix:/tmp/.X11-unix:ro")
+    docker_args+=(-v "$xauth:$xauth:ro")
+    docker_env+=("DISPLAY=$DISPLAY")
+    docker_env+=("XAUTHORITY=$xauth")
+    docker_args+=(--ipc "host")
+else
+    echo "DISPLAY variable not set"
+fi
+
 # mount repo
 docker_args+=(-v "$thisdir/..:/workspace")
 docker_args+=(--workdir "/workspace")
