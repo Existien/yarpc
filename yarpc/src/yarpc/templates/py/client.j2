@@ -16,6 +16,7 @@ class {{ object.name }}Client():
     """
 
     def __init__(self):
+        self._bus = None
         self._interface = None
         {% for member in object.members %}
         {% if member['kind'] == 'signal' %}
@@ -27,12 +28,12 @@ class {{ object.name }}Client():
         """
         Initializes the D-Bus connection and waits until it is closed
         """
-        bus = await MessageBus().connect()
-        introspection = await bus.introspect(
+        self._bus = await MessageBus().connect()
+        introspection = await self._bus.introspect(
             "{{ target.busName }}",
             "{{ target.objectPath }}",
         )
-        proxy_object = bus.get_proxy_object(
+        proxy_object = self._bus.get_proxy_object(
             "{{ target.busName }}",
             "{{ target.objectPath }}",
             introspection
@@ -48,6 +49,13 @@ class {{ object.name }}Client():
         {% endif %}
         {% endfor %}
         await bus.wait_for_disconnect()
+
+    def stop(self):
+        """
+        Closes the D-Bus connection
+        """
+        if self._bus:
+            self._bus.disconnect()
 {% for member in object.members %}
 
 {% if member.kind == 'signal' %}
