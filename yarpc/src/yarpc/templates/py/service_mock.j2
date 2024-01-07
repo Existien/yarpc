@@ -30,6 +30,12 @@ class {{ target.className }}(ServiceInterface):
         self._bus = None
         self.mock = AsyncMock()
 
+        {% for member in object.members %}
+        {% if member.kind == 'method' %}
+        self.mock.{{ member.name }}.return_value = None
+        {% endif %}
+        {% endfor %}
+
     async def run(self):
         """
         Initializes the D-Bus connection and waits until it is closed
@@ -43,7 +49,7 @@ class {{ target.className }}(ServiceInterface):
         """
         Closes the D-Bus connection
         """
-        if self._bus is None:
+        if self._bus:
             self._bus.disconnect()
 
     async def _await_mock_method(self, method, local_variables):
@@ -60,7 +66,6 @@ class {{ target.className }}(ServiceInterface):
         return
 {% endif %}
 {% if member.kind == 'method' %}
-{% set handler = 'self._'+member.name+'_handler' %}
     @method()
     async def {{ member.name }}(self) -> None:
         """

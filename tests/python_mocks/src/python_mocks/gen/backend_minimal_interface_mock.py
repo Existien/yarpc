@@ -30,6 +30,8 @@ class BackendMinimalInterfaceMock(ServiceInterface):
         self._bus = None
         self.mock = AsyncMock()
 
+        self.mock.Bump.return_value = None
+
     async def run(self):
         """
         Initializes the D-Bus connection and waits until it is closed
@@ -43,7 +45,7 @@ class BackendMinimalInterfaceMock(ServiceInterface):
         """
         Closes the D-Bus connection
         """
-        if self._bus is None:
+        if self._bus:
             self._bus.disconnect()
 
     async def _await_mock_method(self, method, local_variables):

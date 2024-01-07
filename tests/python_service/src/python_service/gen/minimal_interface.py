@@ -36,7 +36,7 @@ class MinimalInterface(ServiceInterface):
         """
         Closes the D-Bus connection
         """
-        if self._bus is None:
+        if self._bus:
             self._bus.disconnect()
 
     @signal()
