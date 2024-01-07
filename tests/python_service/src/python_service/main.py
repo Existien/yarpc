@@ -1,26 +1,26 @@
-from .gen.minimal_service import MinimalServiceInterface
-from .gen.minimal_client import MinimalClient
+from .gen.minimal_interface import MinimalInterface
+from .gen.backend_minimal_client import BackendMinimalClient
 import asyncio
 
 async def run():
-    service = MinimalServiceInterface()
-    client = MinimalClient()
+    service = MinimalInterface()
+    backend_client = BackendMinimalClient()
 
     async def bump_handler():
-        return await client.Bump()
+        return await backend_client.Bump()
 
     def on_bumped():
         service.Bumped()
         print("Bump emitted")
 
     service.on_Bump(bump_handler)
-    client.on_Bumped(on_bumped)
+    backend_client.on_Bumped(on_bumped)
 
     print("Service running")
 
     await asyncio.gather(
         service.run(),
-        client.run()
+        backend_client.run()
     )
 
 def main():

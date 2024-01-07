@@ -3,16 +3,17 @@
 # Spec:
 #   File: /workspace/tests/specs/primitives.yml
 #   Object: Minimal
+#   Template: service_mock
 
 from dbus_next.aio import MessageBus
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
 from dbus_next import Variant, DBusError
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock
 import asyncio
 
-class MinimalServiceInterfaceMock(ServiceInterface):
+class BackendMinimalInterfaceMock(ServiceInterface):
     """
     Mock service implementation of the Minimal D-Bus interface.
 
@@ -62,60 +63,3 @@ class MinimalServiceInterfaceMock(ServiceInterface):
         a simple method without args
         """
         return await self._await_mock_method("Bump", locals())
-
-
-class MinimalClientMock():
-    """
-    Mock client implementation of the Minimal D-Bus interface
-
-    The Mock instance can be accessed via the `mock` attribute.
-    All received signals will be forwarded to the mock using keyword arguments.
-    E.g.
-    A received signal `Fooed('bar')`
-    might result in the following call of the mock:
-    `client.mock.Fooed(msg='bar')`
-    """
-
-    def __init__(self):
-        self._bus = None
-        self._interface = None
-        self.mock = Mock()
-
-    async def run(self):
-        """
-        Initializes the D-Bus connection and waits until it is closed
-        """
-        self._bus = await MessageBus().connect()
-        introspection = await self._bus.introspect(
-            "com.yarpc.backend",
-            "/com/yarpc/backend",
-        )
-        proxy_object = self._bus.get_proxy_object(
-            "com.yarpc.backend",
-            "/com/yarpc/backend",
-            introspection
-        )
-        self._interface = proxy_object.get_interface(
-            "com.yarpc.backend.minimal"
-        )
-
-        self._interface.on_bumped(self._Bumped_handler)
-        await self._bus.wait_for_disconnect()
-
-    def stop(self):
-        """
-        Closes the D-Bus connection
-        """
-        if self._bus:
-            self._bus.disconnect()
-
-    def _Bumped_handler(self):
-        self.mock.Bumped()
-
-    async def Bump(self) -> None:
-        """
-        a simple method without args
-        """
-        while not self._interface:
-            await asyncio.sleep(0.1)
-        return await self._interface.call_bump()

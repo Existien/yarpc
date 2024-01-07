@@ -20,7 +20,11 @@
             "type": "array",
             "items": {"$ref": "common.schema.json#/interface"}
         },
-        "mocks": {
+        "service_mocks": {
+            "type": "array",
+            "items": {"$ref": "common.schema.json#/interface"}
+        },
+        "client_mocks": {
             "type": "array",
             "items": {"$ref": "common.schema.json#/interface"}
         }

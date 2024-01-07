@@ -3,22 +3,30 @@
 # Spec:
 #   File: /workspace/tests/specs/primitives.yml
 #   Object: Minimal
+#   Template: client_mock
 
 from dbus_next.aio import MessageBus
 from dbus_next import Variant, DBusError
-
+from unittest.mock import Mock
 import asyncio
 
 
-class MinimalClient():
+class MinimalClientMock():
     """
-    A interface using signals and methods without args
+    Mock client implementation of the Minimal D-Bus interface
+
+    The Mock instance can be accessed via the `mock` attribute.
+    All received signals will be forwarded to the mock using keyword arguments.
+    E.g.
+    A received signal `Fooed('bar')`
+    might result in the following call of the mock:
+    `client.mock.Fooed(msg='bar')`
     """
 
     def __init__(self):
         self._bus = None
         self._interface = None
-        self._Bumped_handler = None
+        self.mock = Mock()
 
     async def run(self):
         """
@@ -26,20 +34,19 @@ class MinimalClient():
         """
         self._bus = await MessageBus().connect()
         introspection = await self._bus.introspect(
-            "com.yarpc.backend",
-            "/com/yarpc/backend",
+            "com.yarpc.testservice",
+            "/com/yarpc/testservice",
         )
         proxy_object = self._bus.get_proxy_object(
-            "com.yarpc.backend",
-            "/com/yarpc/backend",
+            "com.yarpc.testservice",
+            "/com/yarpc/testservice",
             introspection
         )
         self._interface = proxy_object.get_interface(
-            "com.yarpc.backend.minimal"
+            "com.yarpc.testservice.minimal"
         )
 
-        if self._Bumped_handler:
-            self._interface.on_bumped(self._Bumped_handler)
+        self._interface.on_bumped(self._Bumped_handler)
         await self._bus.wait_for_disconnect()
 
     def stop(self):
@@ -49,16 +56,8 @@ class MinimalClient():
         if self._bus:
             self._bus.disconnect()
 
-    def on_Bumped(self, handler):
-        """
-        Set handler for Bumped signal
-
-        Args:
-            handler (Callable[[], None)
-        """
-        self._Bumped_handler = handler
-        if self._interface:
-            self._interface.on_bumped(self._Bumped_handler)
+    def _Bumped_handler(self):
+        self.mock.Bumped()
 
     async def Bump(self) -> None:
         """

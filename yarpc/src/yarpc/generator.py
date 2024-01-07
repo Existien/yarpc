@@ -61,7 +61,7 @@ class Generator:
         is_up_to_date = True
         for target in object['targets']:
             target_context = {**context, 'target': target}
-            filename = Path(f"{self._get_location(output)}/{self._generate_filename(object['name'], target['template'], language)}")
+            filename = Path(f"{self._get_location(output)}/{self._generate_filename(target['className'], target['template'], language)}")
             is_up_to_date = (
                 is_up_to_date and
                 self._generate_file(filename, language, target['template'], target_context, check_only)
@@ -71,7 +71,7 @@ class Generator:
     def _generate_filename(self, name, template, language) -> str:
         match language:
             case 'py':
-                return f"{to_snake_case(name)}_{template}.py"
+                return f"{to_snake_case(name)}.py"
         raise Exception(f"Filename for language {language} and template {template} could not be generated")
 
     def _generate_file(self, filename: Path, language: str, template: Path, context: dict, check_only: bool) -> bool:

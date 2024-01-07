@@ -13,25 +13,33 @@ class SpecResolver:
         outputs = []
         for spec in filter(lambda x: 'outputs' in x, self._specs):
             outputs.extend(spec['outputs'])
-        self._check_for_duplicate_names(outputs)
+        self._check_for_duplicate_names(outputs, kind='output name')
+        for output in outputs:
+            targets = []
+            for key in filter(
+                lambda x: x in ['services', 'clients', 'service_mocks', 'client_mocks'],
+                output.keys()
+            ):
+                targets.extend(output[key])
+            self._check_for_duplicate_names(targets, kind='class name', key='className')
 
         objects = []
         for spec in filter(lambda x: 'objects' in x, self._specs):
             objects.extend(spec['objects'])
-        self._check_for_duplicate_names(objects)
+        self._check_for_duplicate_names(objects, kind='object name')
 
         for output in outputs:
             output['objects'] = self._get_dependencies(output, objects)
 
         return outputs
 
-    def _check_for_duplicate_names(self, items):
+    def _check_for_duplicate_names(self, items, kind='name', key='name'):
         names = []
         for item in items:
-            if item['name'] in names:
-                raise RuntimeError(f"Duplicate name: '{item['name']}'")
+            if item[key] in names:
+                raise RuntimeError(f"Duplicate {kind}: '{item[key]}'")
             else:
-                names.append(item['name'])
+                names.append(item[key])
 
     def _get_dependencies(self, output, objects) -> list:
         interfaces = self._get_interfaces(output, objects)
@@ -41,6 +49,7 @@ class SpecResolver:
     def _get_interfaces(self, output, objects) -> list:
         def interface_list_to_dict(list_key, template):
             return { x['spec']: {
+            'className': x['className'],
             'template': template,
             'busName': x['busName'],
             'objectPath': x['objectPath'],
@@ -49,8 +58,9 @@ class SpecResolver:
 
         services = interface_list_to_dict('services', 'service')
         clients = interface_list_to_dict('clients', 'client')
-        mocks = interface_list_to_dict('mocks', 'mock')
-        all_names = set([*services.keys(), *clients.keys(), *mocks.keys()])
+        service_mocks = interface_list_to_dict('service_mocks', 'service_mock')
+        client_mocks = interface_list_to_dict('client_mocks', 'client_mock')
+        all_names = set([*services.keys(), *clients.keys(), *service_mocks.keys(), *client_mocks.keys()])
 
         interfaces = list(map(
             lambda x: deepcopy(x),
@@ -73,10 +83,12 @@ class SpecResolver:
                 interface['targets'].append(services[name])
             if name in clients.keys():
                 interface['targets'].append(clients[name])
-            if name in mocks.keys():
-                interface['targets'].append(mocks[name])
+            if name in service_mocks.keys():
+                interface['targets'].append(service_mocks[name])
+            if name in client_mocks.keys():
+                interface['targets'].append(client_mocks[name])
 
-        self._validate_targets(interface['targets'])
+            self._validate_targets(interface['targets'])
         return interfaces
 
     def _validate_targets(self, targets):

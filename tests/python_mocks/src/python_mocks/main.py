@@ -1,9 +1,9 @@
-from python_mocks import MinimalServiceInterfaceMock
+from python_mocks import BackendMinimalInterfaceMock
 from unittest.mock import AsyncMock
 import asyncio
 
 def main():
-    service = MinimalServiceInterfaceMock()
+    service = BackendMinimalInterfaceMock()
     async def bump_handler():
         await asyncio.sleep(1)
         service.Bumped()

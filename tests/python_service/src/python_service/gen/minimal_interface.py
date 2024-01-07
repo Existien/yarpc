@@ -3,6 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/primitives.yml
 #   Object: Minimal
+#   Template: service
 
 from dbus_next.aio import MessageBus
 from dbus_next.service import (
@@ -12,7 +13,7 @@ from dbus_next import Variant, DBusError
 
 import asyncio
 
-class MinimalServiceInterface(ServiceInterface):
+class MinimalInterface(ServiceInterface):
     """
     A interface using signals and methods without args
     """

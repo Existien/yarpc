@@ -19,12 +19,14 @@
     "interface": {
         "additionalProperties": false,
         "required": [
+            "className",
             "spec",
             "busName",
             "objectPath",
             "interfaceName"
         ],
         "properties": {
+            "className": {"$ref": "common.schema.json#/pascalName"},
             "spec": {"$ref": "common.schema.json#/pascalName"},
             "busName": {"type": "string"},
             "objectPath": {"type": "string"},

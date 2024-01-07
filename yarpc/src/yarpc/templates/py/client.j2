@@ -3,6 +3,7 @@
 # Spec:
 #   File: {{ object.specPath }}
 #   Object: {{ object.name }}
+#   Template: {{ target.template }}
 
 from dbus_next.aio import MessageBus
 from dbus_next import Variant, DBusError
@@ -10,7 +11,7 @@ from dbus_next import Variant, DBusError
 import asyncio
 
 
-class {{ object.name }}Client():
+class {{ target.className }}():
     """
     {{ object.docs }}
     """
