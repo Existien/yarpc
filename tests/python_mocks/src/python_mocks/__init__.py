@@ -1,0 +1,1 @@
+from .gen.minimal_mock import MinimalServiceInterfaceMock, MinimalClientMock

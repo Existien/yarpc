@@ -7,14 +7,19 @@ outputs:
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.minimal
-# - name: MinimalServiceMock
-#   language: py
-#   location: python_mocks/src/python_mocks/gen
-#   dbusName: com.yarpc.testservice
-#   mocks:
-#   - spec: Minimal
-#     name: minimal
-#     path: /com/yarpc/testservice
+  clients:
+  - spec: Minimal
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.minimal
+- name: MinimalServiceMock
+  language: py
+  location: python_mocks/src/python_mocks/gen
+  mocks:
+  - spec: Minimal
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.minimal
 - name: MinimalClient
   language: py
   location: python_client/src/python_client/gen

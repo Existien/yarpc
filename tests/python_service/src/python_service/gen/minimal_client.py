@@ -26,16 +26,16 @@ class MinimalClient():
         """
         self._bus = await MessageBus().connect()
         introspection = await self._bus.introspect(
-            "com.yarpc.testservice",
-            "/com/yarpc/testservice",
+            "com.yarpc.backend",
+            "/com/yarpc/backend",
         )
         proxy_object = self._bus.get_proxy_object(
-            "com.yarpc.testservice",
-            "/com/yarpc/testservice",
+            "com.yarpc.backend",
+            "/com/yarpc/backend",
             introspection
         )
         self._interface = proxy_object.get_interface(
-            "com.yarpc.testservice.minimal"
+            "com.yarpc.backend.minimal"
         )
 
         if self._Bumped_handler:

@@ -19,16 +19,24 @@ class MinimalServiceInterface(ServiceInterface):
 
     def __init__(self):
         super().__init__("com.yarpc.testservice.minimal")
+        self._bus = None
         self._Bump_handler = None
 
     async def run(self):
         """
         Initializes the D-Bus connection and waits until it is closed
         """
-        bus = await MessageBus().connect()
-        bus.export("/com/yarpc/testservice", self)
-        await bus.request_name("com.yarpc.testservice")
-        await bus.wait_for_disconnect()
+        self._bus = await MessageBus().connect()
+        self._bus.export("/com/yarpc/testservice", self)
+        await self._bus.request_name("com.yarpc.testservice")
+        await self._bus.wait_for_disconnect()
+
+    def stop(self):
+        """
+        Closes the D-Bus connection
+        """
+        if self._bus is None:
+            self._bus.disconnect()
 
     @signal()
     def Bumped(self) -> None:
