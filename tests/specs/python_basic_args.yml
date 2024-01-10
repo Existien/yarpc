@@ -1,5 +1,5 @@
 outputs:
-- name: MinimalService
+- name: BasicArgsService
   language: py
   location: python_service/src/python_service/gen
   services:
@@ -14,7 +14,7 @@ outputs:
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.minimal
-- name: Mocks
+- name: BasicArgsMocks
   language: py
   location: python_mocks/src/python_mocks/gen
   service_mocks:
@@ -29,7 +29,7 @@ outputs:
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.minimal
-- name: MinimalClient
+- name: BasicArgsClient
   language: py
   location: python_client/src/python_client/gen
   clients:

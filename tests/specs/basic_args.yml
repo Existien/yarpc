@@ -10,7 +10,7 @@ objects:
     kind: method
     docs: a simple method without args
 
-- name: Primitives
+- name: WithArgs
   kind: interface
   docs: A interface using only primitive types
   members:
@@ -22,7 +22,7 @@ objects:
       type: string
       docs: The message
   - name: OrderReceived
-    docs: a simple signal with multiple argument
+    docs: a simple signal with multiple arguments
     kind: signal
     args:
     - name: item
