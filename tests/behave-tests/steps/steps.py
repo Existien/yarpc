@@ -3,7 +3,7 @@ from behave.api.async_step import async_run_until_complete
 import subprocess
 import os
 import asyncio
-from python_mocks import MinimalClientMock, BackendMinimalInterfaceMock
+from python_mocks import MinimalClientMock, BackendMinimalInterfaceMock, Connection
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
 
@@ -28,10 +28,10 @@ async def wait_for_dbus(bus_name, object_path, interface_name):
 @async_run_until_complete(timeout=STEP_TIMEOUT)
 async def step_impl(context, name):
     service = BackendMinimalInterfaceMock()
-    service_task = asyncio.create_task(service.run())
+    service_task = asyncio.create_task(Connection.run(service))
     context.mocks[name] = service
     context.tasks.append(service_task)
-    context.cleanup_actions.append(service.stop)
+    context.cleanup_actions.append(Connection.close)
     await wait_for_dbus(
         bus_name="com.yarpc.backend",
         object_path="/com/yarpc/backend",
@@ -43,10 +43,9 @@ async def step_impl(context, name):
 @async_run_until_complete(timeout=STEP_TIMEOUT)
 async def step_impl(context, name):
     client = MinimalClientMock()
-    client_task = asyncio.create_task(client.run())
+    client_task = asyncio.create_task(client.connect())
     context.mocks[name] = client
     context.tasks.append(client_task)
-    context.cleanup_actions.append(client.stop)
     await asyncio.sleep(0.1)
 
 

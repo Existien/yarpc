@@ -5,7 +5,6 @@
 #   Object: Minimal
 #   Template: service
 
-from dbus_next.aio import MessageBus
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -20,24 +19,8 @@ class MinimalInterface(ServiceInterface):
 
     def __init__(self):
         super().__init__("com.yarpc.testservice.minimal")
-        self._bus = None
+        self.object_path = "/com/yarpc/testservice"
         self._Bump_handler = None
-
-    async def run(self):
-        """
-        Initializes the D-Bus connection and waits until it is closed
-        """
-        self._bus = await MessageBus().connect()
-        self._bus.export("/com/yarpc/testservice", self)
-        await self._bus.request_name("com.yarpc.testservice")
-        await self._bus.wait_for_disconnect()
-
-    def stop(self):
-        """
-        Closes the D-Bus connection
-        """
-        if self._bus:
-            self._bus.disconnect()
 
     @signal()
     def Bumped(self) -> None:

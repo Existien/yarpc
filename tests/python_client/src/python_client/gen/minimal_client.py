@@ -5,7 +5,7 @@
 #   Object: Minimal
 #   Template: client
 
-from dbus_next.aio import MessageBus
+from .connection import Connection
 from dbus_next import Variant, DBusError
 
 import asyncio
@@ -17,20 +17,19 @@ class MinimalClient():
     """
 
     def __init__(self):
-        self._bus = None
         self._interface = None
         self._Bumped_handler = None
 
-    async def run(self):
+    async def connect(self):
         """
         Initializes the D-Bus connection and waits until it is closed
         """
-        self._bus = await MessageBus().connect()
-        introspection = await self._bus.introspect(
+        bus = await Connection.bus()
+        introspection = await bus.introspect(
             "com.yarpc.testservice",
             "/com/yarpc/testservice",
         )
-        proxy_object = self._bus.get_proxy_object(
+        proxy_object = bus.get_proxy_object(
             "com.yarpc.testservice",
             "/com/yarpc/testservice",
             introspection
@@ -41,14 +40,7 @@ class MinimalClient():
 
         if self._Bumped_handler:
             self._interface.on_bumped(self._Bumped_handler)
-        await self._bus.wait_for_disconnect()
-
-    def stop(self):
-        """
-        Closes the D-Bus connection
-        """
-        if self._bus:
-            self._bus.disconnect()
+        await bus.wait_for_disconnect()
 
     def on_Bumped(self, handler):
         """

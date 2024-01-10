@@ -16,7 +16,7 @@
         "type": "string",
         "pattern": "^[a-zA-Z][a-zA-Z0-9<,>]*$"
     },
-    "interface": {
+    "clientInterface": {
         "additionalProperties": false,
         "required": [
             "className",
@@ -26,11 +26,44 @@
             "interfaceName"
         ],
         "properties": {
-            "className": {"$ref": "common.schema.json#/pascalName"},
-            "spec": {"$ref": "common.schema.json#/pascalName"},
-            "busName": {"type": "string"},
-            "objectPath": {"type": "string"},
-            "interfaceName": {"type": "string"}
+            "className": {
+                "$ref": "common.schema.json#/pascalName"
+            },
+            "spec": {
+                "$ref": "common.schema.json#/pascalName"
+            },
+            "busName": {
+                "type": "string"
+            },
+            "objectPath": {
+                "type": "string"
+            },
+            "interfaceName": {
+                "type": "string"
+            }
+        }
+    },
+    "serviceInterface": {
+        "additionalProperties": false,
+        "required": [
+            "className",
+            "spec",
+            "objectPath",
+            "interfaceName"
+        ],
+        "properties": {
+            "className": {
+                "$ref": "common.schema.json#/pascalName"
+            },
+            "spec": {
+                "$ref": "common.schema.json#/pascalName"
+            },
+            "objectPath": {
+                "type": "string"
+            },
+            "interfaceName": {
+                "type": "string"
+            }
         }
     }
 }

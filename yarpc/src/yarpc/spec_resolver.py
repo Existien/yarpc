@@ -51,7 +51,7 @@ class SpecResolver:
             return { x['spec']: {
             'className': x['className'],
             'template': template,
-            'busName': x['busName'],
+            'busName': x.get('busName', output['busName']),
             'objectPath': x['objectPath'],
             'interfaceName': x['interfaceName'],
         } for x in output.get(list_key, [])}
@@ -78,7 +78,12 @@ class SpecResolver:
 
         for interface in interfaces:
             name = interface['name']
-            interface['targets'] = []
+            interface['targets'] = [
+                {
+                    'template': 'bus',
+                    'className': 'Connection',
+                }
+            ]
             if name in services.keys():
                 interface['targets'].append(services[name])
             if name in clients.keys():
@@ -88,10 +93,10 @@ class SpecResolver:
             if name in client_mocks.keys():
                 interface['targets'].append(client_mocks[name])
 
-            self._validate_targets(interface['targets'])
+            self._validate_interface_targets(interface['targets'][1:])
         return interfaces
 
-    def _validate_targets(self, targets):
+    def _validate_interface_targets(self, targets):
         for target in targets:
             if not self._interface_name_pattern.match(target['interfaceName']):
                 raise RuntimeError(f"Invalid interface name: {target['interfaceName']}")

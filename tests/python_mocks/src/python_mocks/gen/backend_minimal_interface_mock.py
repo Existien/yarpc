@@ -5,7 +5,6 @@
 #   Object: Minimal
 #   Template: service_mock
 
-from dbus_next.aio import MessageBus
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -27,26 +26,10 @@ class BackendMinimalInterfaceMock(ServiceInterface):
 
     def __init__(self):
         super().__init__("com.yarpc.backend.minimal")
-        self._bus = None
         self.mock = AsyncMock()
+        self.object_path = "/com/yarpc/backend"
 
         self.mock.Bump.return_value = None
-
-    async def run(self):
-        """
-        Initializes the D-Bus connection and waits until it is closed
-        """
-        self._bus = await MessageBus().connect()
-        self._bus.export("/com/yarpc/backend", self)
-        await self._bus.request_name("com.yarpc.backend")
-        await self._bus.wait_for_disconnect()
-
-    def stop(self):
-        """
-        Closes the D-Bus connection
-        """
-        if self._bus:
-            self._bus.disconnect()
 
     async def _await_mock_method(self, method, local_variables):
         kwargs = dict(filter(lambda kv: kv[0] != 'self', local_variables.items()))

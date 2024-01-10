@@ -15,7 +15,7 @@ async def runner():
     client.on_Bumped(on_bumped)
     print("Client running")
     await asyncio.gather(
-        client.run(),
+        client.connect(),
         bumper(),
     )
 

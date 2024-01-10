@@ -6,27 +6,45 @@
     "required": [
         "name",
         "language",
-        "location"
+        "location",
+        "busName"
     ],
     "properties": {
-        "name": {"type": "string"},
-        "language": {"const": "py"},
-        "location": {"type": "string"},
+        "name": {
+            "type": "string"
+        },
+        "language": {
+            "const": "py"
+        },
+        "location": {
+            "type": "string"
+        },
+        "busName": {
+            "type": "string"
+        },
         "services": {
             "type": "array",
-            "items": {"$ref": "common.schema.json#/interface"}
+            "items": {
+                "$ref": "common.schema.json#/serviceInterface"
+            }
         },
         "clients": {
             "type": "array",
-            "items": {"$ref": "common.schema.json#/interface"}
+            "items": {
+                "$ref": "common.schema.json#/clientInterface"
+            }
         },
         "service_mocks": {
             "type": "array",
-            "items": {"$ref": "common.schema.json#/interface"}
+            "items": {
+                "$ref": "common.schema.json#/serviceInterface"
+            }
         },
         "client_mocks": {
             "type": "array",
-            "items": {"$ref": "common.schema.json#/interface"}
+            "items": {
+                "$ref": "common.schema.json#/clientInterface"
+            }
         }
     }
 }

@@ -5,7 +5,7 @@
 #   Object: {{ object.name }}
 #   Template: {{ target.template }}
 
-from dbus_next.aio import MessageBus
+from .connection import Connection
 from dbus_next import Variant, DBusError
 
 import asyncio
@@ -17,7 +17,6 @@ class {{ target.className }}():
     """
 
     def __init__(self):
-        self._bus = None
         self._interface = None
         {% for member in object.members %}
         {% if member['kind'] == 'signal' %}
@@ -25,16 +24,16 @@ class {{ target.className }}():
         {% endif %}
         {% endfor %}
 
-    async def run(self):
+    async def connect(self):
         """
         Initializes the D-Bus connection and waits until it is closed
         """
-        self._bus = await MessageBus().connect()
-        introspection = await self._bus.introspect(
+        bus = await Connection.bus()
+        introspection = await bus.introspect(
             "{{ target.busName }}",
             "{{ target.objectPath }}",
         )
-        proxy_object = self._bus.get_proxy_object(
+        proxy_object = bus.get_proxy_object(
             "{{ target.busName }}",
             "{{ target.objectPath }}",
             introspection
@@ -49,14 +48,7 @@ class {{ target.className }}():
             self._interface.on_{{ member.name|snake_case }}(self._{{ member.name }}_handler)
         {% endif %}
         {% endfor %}
-        await self._bus.wait_for_disconnect()
-
-    def stop(self):
-        """
-        Closes the D-Bus connection
-        """
-        if self._bus:
-            self._bus.disconnect()
+        await bus.wait_for_disconnect()
 {% for member in object.members %}
 
 {% if member.kind == 'signal' %}
