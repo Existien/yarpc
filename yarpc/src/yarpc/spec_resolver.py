@@ -1,5 +1,6 @@
 import re
 from copy import deepcopy
+from .utils import find_type
 
 class SpecResolver:
 
@@ -43,8 +44,21 @@ class SpecResolver:
 
     def _get_dependencies(self, output, objects) -> list:
         interfaces = self._get_interfaces(output, objects)
-        required_objects = interfaces
+        types = self._get_types(interfaces, objects)
+        required_objects = [*types, *interfaces]
         return required_objects
+
+    def _get_types(self, interfaces, objects) -> list:
+        types = []
+        for interface in interfaces:
+            for member in interface.get('members', []):
+                for arg in member.get('args', []):
+                    type_name = arg['type']
+                    type_object = find_type(type_name, objects)
+                    if type_object.get('kind') == 'builtin':
+                        if not find_type(type_name, types):
+                            types.append(type_object)
+        return types
 
     def _get_interfaces(self, output, objects) -> list:
         def interface_list_to_dict(list_key, template):

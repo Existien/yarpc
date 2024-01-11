@@ -7,7 +7,7 @@
 
 from .connection import Connection
 from dbus_next import Variant, DBusError
-
+import sys
 import asyncio
 
 
@@ -24,39 +24,45 @@ class BackendMinimalClient():
         """
         Initializes the D-Bus connection and waits until it is closed
         """
-        bus = await Connection.bus()
-        introspection = await bus.introspect(
-            "com.yarpc.backend",
-            "/com/yarpc/backend",
-        )
-        proxy_object = bus.get_proxy_object(
-            "com.yarpc.backend",
-            "/com/yarpc/backend",
-            introspection
-        )
-        self._interface = proxy_object.get_interface(
-            "com.yarpc.backend.minimal"
-        )
+        try:
+            bus = await Connection.bus()
+            introspection = await bus.introspect(
+                "com.yarpc.backend",
+                "/com/yarpc/backend",
+            )
+            proxy_object = bus.get_proxy_object(
+                "com.yarpc.backend",
+                "/com/yarpc/backend",
+                introspection
+            )
+            self._interface = proxy_object.get_interface(
+                "com.yarpc.backend.minimal"
+            )
 
-        if self._Bumped_handler:
-            self._interface.on_bumped(self._Bumped_handler)
-        await bus.wait_for_disconnect()
+            if self._Bumped_handler:
+                self._interface.on_bumped(self._Bumped_handler)
+            await bus.wait_for_disconnect()
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}", file=sys.stderr)
 
     def on_Bumped(self, handler):
         """
         Set handler for Bumped signal
 
         Args:
-            handler (Callable[[], None)
+            handler (Callable[[], None]): the signal handler
         """
         self._Bumped_handler = handler
         if self._interface:
             self._interface.on_bumped(self._Bumped_handler)
 
-    async def Bump(self) -> None:
+    async def Bump(
+        self,
+    ) -> None:
         """
         a simple method without args
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_bump()
+        return await self._interface.call_bump(
+        )

@@ -36,14 +36,17 @@ class BackendMinimalInterfaceMock(ServiceInterface):
         return await getattr(self.mock, method)(**kwargs)
 
     @signal()
-    def Bumped(self) -> None:
+    def Bumped(
+        self,
+    ) -> None:
         """
         a simple signal without arguments
         """
-        return
 
     @method()
-    async def Bump(self) -> None:
+    async def Bump(
+        self,
+    ) -> None:
         """
         a simple method without args
         """

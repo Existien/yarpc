@@ -3,25 +3,38 @@
 # Spec:
 #   File: /workspace/tests/specs/basic_args.yml
 #   Object: WithArgs
-#   Template: service
+#   Template: service_mock
 
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
 from dbus_next import Variant, DBusError
-
+from unittest.mock import AsyncMock
 import asyncio
 
-class WithArgsInterface(ServiceInterface):
+class BackendWithArgsInterfaceMock(ServiceInterface):
     """
-    A interface using only primitive types
+    Mock service implementation of the WithArgs D-Bus interface.
+
+    The AsyncMock instance can be accessed via the `mock` attribute.
+    All method calls will be forwarded to the mock using keyword arguments.
+    E.g.
+    `await service.Foo('bar')`
+    might result in the following await of the mock:
+    `await service.mock.Foo(msg='bar')`
     """
 
     def __init__(self):
-        super().__init__("com.yarpc.testservice.withArgs")
-        self.object_path = "/com/yarpc/testservice"
-        self._Notify_handler = None
-        self._Order_handler = None
+        super().__init__("com.yarpc.backend.withArgs")
+        self.mock = AsyncMock()
+        self.object_path = "/com/yarpc/backend"
+
+        self.mock.Notify.return_value = None
+        self.mock.Order.return_value = None
+
+    async def _await_mock_method(self, method, local_variables):
+        kwargs = dict(filter(lambda kv: kv[0] != 'self', local_variables.items()))
+        return await getattr(self.mock, method)(**kwargs)
 
     @signal()
     def Notified(
@@ -57,16 +70,6 @@ class WithArgsInterface(ServiceInterface):
             pricePerItem,
         ]
 
-
-    def on_Notify(self, handler) -> None:
-        """
-        Set handler for Notify method
-
-        Args:
-            handler (Callable[[string], Awaitable[None]]): the method handler
-        """
-        self._Notify_handler = handler
-
     @method()
     async def Notify(
         self,
@@ -78,22 +81,7 @@ class WithArgsInterface(ServiceInterface):
         Args:
             message (str): The message
         """
-        if self._Notify_handler is None:
-            raise NotImplementedError()
-
-        return await self._Notify_handler(
-            message,
-        )
-
-
-    def on_Order(self, handler) -> None:
-        """
-        Set handler for Order method
-
-        Args:
-            handler (Callable[[string, uint32, double], Awaitable[None]]): the method handler
-        """
-        self._Order_handler = handler
+        return await self._await_mock_method("Notify", locals())
 
     @method()
     async def Order(
@@ -110,11 +98,4 @@ class WithArgsInterface(ServiceInterface):
             amount (int): a amount ordered
             pricePerItem (float): the price per item
         """
-        if self._Order_handler is None:
-            raise NotImplementedError()
-
-        return await self._Order_handler(
-            item,
-            amount,
-            pricePerItem,
-        )
+        return await self._await_mock_method("Order", locals())

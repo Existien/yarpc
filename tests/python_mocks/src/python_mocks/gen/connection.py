@@ -2,11 +2,12 @@
 # Version:  0.1.0+editable
 # Spec:
 #   File: /workspace/tests/specs/basic_args.yml
-#   Object: Minimal
+#   Object: WithArgs
 #   Template: bus
 
 from dbus_next.aio import MessageBus
 import asyncio
+import sys
 
 
 class Connection:
@@ -44,8 +45,11 @@ class Connection:
         Args:
             interfaces: interfaces to service
         """
-        bus = await cls.bus()
-        for interface in interfaces:
-            bus.export(interface.object_path, interface)
-        await bus.request_name("com.yarpc.backend")
-        await bus.wait_for_disconnect()
+        try:
+            bus = await cls.bus()
+            for interface in interfaces:
+                bus.export(interface.object_path, interface)
+            await bus.request_name("com.yarpc.backend")
+            await bus.wait_for_disconnect()
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}", file=sys.stderr)

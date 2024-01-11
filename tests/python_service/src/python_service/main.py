@@ -1,40 +1,53 @@
 from .gen.minimal_interface import MinimalInterface
 from .gen.with_args_interface import WithArgsInterface
 from .gen.backend_minimal_client import BackendMinimalClient
+from .gen.backend_with_args_client import BackendWithArgsClient
 from .gen.connection import Connection
 import asyncio
 
-async def run():
-    minimal_service = MinimalInterface()
-    with_args_service = WithArgsInterface()
-    minimal_backend_client = BackendMinimalClient()
 
+def _configure_minimal_interface():
+    service = MinimalInterface()
+    backend_client = BackendMinimalClient()
     async def bump_handler():
-        return await minimal_backend_client.Bump()
-
+        return await backend_client.Bump()
     def on_bumped():
-        minimal_service.Bumped()
+        service.Bumped()
         print("Bump emitted")
+    service.on_Bump(bump_handler)
+    backend_client.on_Bumped(on_bumped)
+    return service, backend_client
 
-    minimal_service.on_Bump(bump_handler)
-    minimal_backend_client.on_Bumped(on_bumped)
 
-    async def on_notify():
-        with_args_service.Notified()
-        print("Notification emitted")
+def _configure_with_args_interface():
+    service = WithArgsInterface()
+    backend_client = BackendWithArgsClient()
+    async def notify_handler(message: str):
+        return await backend_client.Notify(message)
+    async def order_handler(item: str, amount, price_per_item):
+        return await backend_client.Order(item, amount, price_per_item)
+    def on_notified(message: str):
+        service.Notified(message)
+        print(f"Notification emitted: {message}")
+    def on_order_received(item: str, amount: int, price_per_item: float):
+        service.OrderReceived(item, amount, price_per_item)
+        print(f"Order received: {item} - {amount} x {price_per_item}")
+    service.on_Notify(notify_handler)
+    service.on_Order(order_handler)
+    backend_client.on_Notified(on_notified)
+    backend_client.on_OrderReceived(on_order_received)
+    return service, backend_client
 
-    async def on_order():
-        with_args_service.OrderReceived()
-        print("Order received")
 
-    with_args_service.on_Notify(on_notify)
-    with_args_service.on_Order(on_order)
+async def run():
+    minimal_service, minimal_backend_client = _configure_minimal_interface()
+    with_args_service, with_args_backend_client = _configure_with_args_interface()
 
     print("Service running")
-
     _, pending = await asyncio.wait(
         map(lambda x: asyncio.create_task(x), [
             minimal_backend_client.connect(),
+            with_args_backend_client.connect(),
             Connection.run(minimal_service, with_args_service),
         ]),
         return_when=asyncio.FIRST_EXCEPTION

@@ -29,11 +29,32 @@ class {{ target.className }}(ServiceInterface):
 
 {% if member.kind == 'signal' %}
     @signal()
-    def {{ member.name }}(self) -> None:
+    def {{ member.name }}(
+        self,
+        {% for arg in member.args %}
+        {{ arg.name }}: {{ (arg.type|find_type(output.objects)).py }},
+        {% endfor %}
+    ) ->{{ ' ' }}
+    {%- if member.args|count > 0 %}'{% for arg in member.args %}{{ (arg.type|find_type(output.objects)).dbus }}{% endfor %}'{% else %}None{% endif %}:
         """
         {{ member.docs }}
+        {% if member.args|count > 0 %}
+
+        Args:
+        {% for arg in member.args %}
+            {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
+        {% endfor %}
+        {% endif %}
         """
-        return
+        {% if member.args|count > 1 %}
+        return [
+            {% for arg in member.args %}
+            {{ arg.name }},
+            {% endfor %}
+        ]
+        {% elif member.args|count == 1 %}
+        return {{ member.args[0].name }}
+        {% endif %}
 {% endif %}
 {% if member.kind == 'method' %}
 {% set handler = 'self._'+member.name+'_handler' %}
@@ -43,18 +64,35 @@ class {{ target.className }}(ServiceInterface):
         Set handler for {{ member.name }} method
 
         Args:
-            handler (Callable[[], Awaitable[None]]): the method handler
+            handler (Callable[[{{member.args|map(attribute='type')|join(', ')}}], Awaitable[None]]): the method handler
         """
         {{ handler }} = handler
 
     @method()
-    async def {{ member.name }}(self) -> None:
+    async def {{ member.name }}(
+        self,
+        {% for arg in member.args %}
+        {{ arg.name }}: '{{ (arg.type|find_type(output.objects)).dbus }}',
+        {% endfor %}
+    ) ->{{ ' ' }}
+    {%- if member.returns %}'{{ (member.returns.type|find_type(output.objects)).dbus }}'{% else %}None{% endif %}:
         """
         {{ member.docs }}
+        {% if member.args|count > 0 %}
+
+        Args:
+        {% for arg in member.args %}
+            {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
+        {% endfor %}
+        {% endif %}
         """
         if {{ handler }} is None:
             raise NotImplementedError()
 
-        return await {{ handler }}()
+        return await {{ handler }}(
+            {% for arg in member.args %}
+            {{ arg.name }},
+            {% endfor %}
+        )
 {% endif %}
 {% endfor %}

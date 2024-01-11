@@ -18,6 +18,12 @@ outputs:
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.minimal
+  - className: BackendWithArgsClient
+    spec: WithArgs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.withArgs
+
 - name: BasicArgsMocks
   language: py
   location: python_mocks/src/python_mocks/gen
@@ -27,12 +33,22 @@ outputs:
     spec: Minimal
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.minimal
+  - className: BackendWithArgsInterfaceMock
+    spec: WithArgs
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.withArgs
   client_mocks:
   - className: MinimalClientMock
     spec: Minimal
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.minimal
+  - className: WithArgsClientMock
+    spec: WithArgs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.withArgs
+
 - name: BasicArgsClient
   language: py
   location: python_client/src/python_client/gen
@@ -43,3 +59,8 @@ outputs:
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.minimal
+  - className: WithArgsClient
+    spec: WithArgs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.withArgs

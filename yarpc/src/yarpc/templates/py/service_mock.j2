@@ -42,17 +42,51 @@ class {{ target.className }}(ServiceInterface):
 
 {% if member.kind == 'signal' %}
     @signal()
-    def {{ member.name }}(self) -> None:
+    def {{ member.name }}(
+        self,
+        {% for arg in member.args %}
+        {{ arg.name }}: {{ (arg.type|find_type(output.objects)).py }},
+        {% endfor %}
+    ) ->{{ ' ' }}
+    {%- if member.args|count > 0 %}'{% for arg in member.args %}{{ (arg.type|find_type(output.objects)).dbus }}{% endfor %}'{% else %}None{% endif %}:
         """
         {{ member.docs }}
+        {% if member.args|count > 0 %}
+
+        Args:
+        {% for arg in member.args %}
+            {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
+        {% endfor %}
+        {% endif %}
         """
-        return
+        {% if member.args|count > 1 %}
+        return [
+            {% for arg in member.args %}
+            {{ arg.name }},
+            {% endfor %}
+        ]
+        {% elif member.args|count == 1 %}
+        return {{ member.args[0].name }}
+        {% endif %}
 {% endif %}
 {% if member.kind == 'method' %}
     @method()
-    async def {{ member.name }}(self) -> None:
+    async def {{ member.name }}(
+        self,
+        {% for arg in member.args %}
+        {{ arg.name }}: '{{ (arg.type|find_type(output.objects)).dbus }}',
+        {% endfor %}
+    ) ->{{ ' ' }}
+    {%- if member.returns %}'{{ (member.returns.type|find_type(output.objects)).dbus }}'{% else %}None{% endif %}:
         """
         {{ member.docs }}
+        {% if member.args|count > 0 %}
+
+        Args:
+        {% for arg in member.args %}
+            {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
+        {% endfor %}
+        {% endif %}
         """
         return await self._await_mock_method("{{ member.name }}", locals())
 {% endif %}

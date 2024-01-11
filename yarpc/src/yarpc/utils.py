@@ -1,3 +1,9 @@
+def find_type(type_name: str, objects: list) -> dict:
+    hits = list(filter(lambda x: x.get('name') == type_name, objects))
+    if len(hits) == 1:
+        return hits[0]
+    return {}
+
 def to_snake_case(name: str) -> str:
     new_name = name[0].lower()
     was_lower = name[0].islower()

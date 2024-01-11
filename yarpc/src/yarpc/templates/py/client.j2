@@ -7,7 +7,7 @@
 
 from .connection import Connection
 from dbus_next import Variant, DBusError
-
+import sys
 import asyncio
 
 
@@ -28,27 +28,30 @@ class {{ target.className }}():
         """
         Initializes the D-Bus connection and waits until it is closed
         """
-        bus = await Connection.bus()
-        introspection = await bus.introspect(
-            "{{ target.busName }}",
-            "{{ target.objectPath }}",
-        )
-        proxy_object = bus.get_proxy_object(
-            "{{ target.busName }}",
-            "{{ target.objectPath }}",
-            introspection
-        )
-        self._interface = proxy_object.get_interface(
-            "{{ target.interfaceName }}"
-        )
+        try:
+            bus = await Connection.bus()
+            introspection = await bus.introspect(
+                "{{ target.busName }}",
+                "{{ target.objectPath }}",
+            )
+            proxy_object = bus.get_proxy_object(
+                "{{ target.busName }}",
+                "{{ target.objectPath }}",
+                introspection
+            )
+            self._interface = proxy_object.get_interface(
+                "{{ target.interfaceName }}"
+            )
 
-        {% for member in object.members %}
-        {% if member['kind'] == 'signal' %}
-        if self._{{ member['name'] }}_handler:
-            self._interface.on_{{ member.name|snake_case }}(self._{{ member.name }}_handler)
-        {% endif %}
-        {% endfor %}
-        await bus.wait_for_disconnect()
+            {% for member in object.members %}
+            {% if member['kind'] == 'signal' %}
+            if self._{{ member['name'] }}_handler:
+                self._interface.on_{{ member.name|snake_case }}(self._{{ member.name }}_handler)
+            {% endif %}
+            {% endfor %}
+            await bus.wait_for_disconnect()
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}", file=sys.stderr)
 {% for member in object.members %}
 
 {% if member.kind == 'signal' %}
@@ -57,19 +60,35 @@ class {{ target.className }}():
         Set handler for {{ member.name }} signal
 
         Args:
-            handler (Callable[[], None)
+            handler (Callable[[{{member.args|map(attribute='type')|join(', ')}}], None]): the signal handler
         """
         self._{{ member.name }}_handler = handler
         if self._interface:
             self._interface.on_{{ member.name|snake_case }}(self._{{ member.name }}_handler)
 {% endif %}
 {% if member.kind == 'method' %}
-    async def {{ member.name }}(self) -> None:
+    async def {{ member.name }}(
+        self,
+        {% for arg in member.args %}
+        {{ arg.name }}: {{ (arg.type|find_type(output.objects)).py }},
+        {% endfor %}
+    ) -> None:
         """
         {{ member.docs }}
+        {% if member.args|count > 0 %}
+
+        Args:
+        {% for arg in member.args %}
+            {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
+        {% endfor %}
+        {% endif %}
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_{{ member.name|snake_case }}()
+        return await self._interface.call_{{ member.name|snake_case }}(
+        {% for arg in member.args %}
+            {{ arg.name }},
+        {% endfor %}
+        )
 {% endif %}
 {% endfor %}

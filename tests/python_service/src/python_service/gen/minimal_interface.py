@@ -23,11 +23,12 @@ class MinimalInterface(ServiceInterface):
         self._Bump_handler = None
 
     @signal()
-    def Bumped(self) -> None:
+    def Bumped(
+        self,
+    ) -> None:
         """
         a simple signal without arguments
         """
-        return
 
 
     def on_Bump(self, handler) -> None:
@@ -40,11 +41,14 @@ class MinimalInterface(ServiceInterface):
         self._Bump_handler = handler
 
     @method()
-    async def Bump(self) -> None:
+    async def Bump(
+        self,
+    ) -> None:
         """
         a simple method without args
         """
         if self._Bump_handler is None:
             raise NotImplementedError()
 
-        return await self._Bump_handler()
+        return await self._Bump_handler(
+        )

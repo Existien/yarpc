@@ -59,7 +59,7 @@ class Generator:
         }
         language = output['language']
         is_up_to_date = True
-        for target in object['targets']:
+        for target in object.get('targets', []):
             target_context = {**context, 'target': target}
             filename = Path(f"{self._get_location(output)}/{self._generate_filename(target['className'], target['template'], language)}")
             is_up_to_date = (
