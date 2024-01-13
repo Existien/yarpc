@@ -3,7 +3,11 @@ from behave.api.async_step import async_run_until_complete
 import subprocess
 import os
 import asyncio
-from python_mocks import MinimalClientMock, BackendMinimalInterfaceMock, Connection
+from python_mocks import (
+    Connection,
+    MinimalClientMock, BackendMinimalInterfaceMock,
+    WithArgsClientMock, BackendWithArgsInterfaceMock,
+)
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
 
@@ -24,29 +28,48 @@ async def wait_for_dbus(bus_name, object_path, interface_name):
             pass
 
 
-@given("a mocked backend service '{name}'")
+@given("a mocked backend service with the following interfaces")
 @async_run_until_complete(timeout=STEP_TIMEOUT)
-async def step_impl(context, name):
-    service = BackendMinimalInterfaceMock()
-    service_task = asyncio.create_task(Connection.run(service))
-    context.mocks[name] = service
-    context.tasks.append(service_task)
-    context.cleanup_actions.append(Connection.close)
-    await wait_for_dbus(
-        bus_name="com.yarpc.backend",
-        object_path="/com/yarpc/backend",
-        interface_name="com.yarpc.backend.minimal"
-    )
+async def step_impl(context):
+    async def start_interface(interface, name):
+        service = None
+        match interface:
+            case 'Minimal':
+                service = BackendMinimalInterfaceMock()
+            case 'WithArgs':
+                service = BackendWithArgsInterfaceMock()
+        assert service is not None, f"Could not find service '{interface}'"
+        service_task = asyncio.create_task(Connection.run(service))
+        if name:
+            context.mocks[name] = service
+        context.tasks.append(service_task)
+        context.cleanup_actions.append(Connection.close)
+        await wait_for_dbus(
+            bus_name="com.yarpc.backend",
+            object_path="/com/yarpc/backend",
+            interface_name=service.name
+        )
+    for row in context.table:
+        await start_interface(row['interface'], row['name'])
 
 
-@given("a mocked python client '{name}'")
+
+@given("a mocked python client connecting to the following interfaces")
 @async_run_until_complete(timeout=STEP_TIMEOUT)
-async def step_impl(context, name):
-    client = MinimalClientMock()
-    client_task = asyncio.create_task(client.connect())
-    context.mocks[name] = client
-    context.tasks.append(client_task)
-    await asyncio.sleep(0.1)
+async def step_impl(context):
+    async def connect_to_interface(interface, name):
+        client = None
+        match interface:
+            case 'Minimal':
+                client = MinimalClientMock()
+            case 'WithArgs':
+                client = WithArgsClientMock()
+        client_task = asyncio.create_task(client.connect())
+        context.mocks[name] = client
+        context.tasks.append(client_task)
+        await asyncio.sleep(0.1)
+    for row in context.table:
+        await connect_to_interface(row['interface'], row['name'])
 
 
 @given("a running python service")

@@ -1,15 +1,19 @@
 Feature: Minimal interface
 
-    Scenario: Method call without arguments or return value
-        Given a mocked backend service 'Bob'
+    Background:
+        Given a mocked backend service with the following interfaces
+            | interface | name   |
+            | Minimal   | Bob    |
+            | WithArgs  |        |
          And a running python service
-         And a mocked python client 'Alice'
+         And a mocked python client connecting to the following interfaces
+            | interface | name     |
+            | Minimal   | Alice    |
+
+    Scenario: Method call without arguments or return value
         When the 'Bump' method is called by 'Alice'
         Then 'Bob' receives a 'Bump' method call
 
     Scenario: Signal without arguments
-        Given a mocked backend service 'Bob'
-         And a running python service
-         And a mocked python client 'Alice'
         When a 'Bumped' signal is emitted by 'Bob'
         Then 'Alice' receives a 'Bumped' signal
