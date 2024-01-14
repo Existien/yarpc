@@ -46,6 +46,7 @@ def before_scenario(context, _scenario):
     context.cleanup_actions = []
     context.tasks = []
     context.mocks = {}
+    context.last_return_values = {}
 
 
 def after_scenario(context, _scenario):

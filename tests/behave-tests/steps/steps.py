@@ -28,6 +28,24 @@ async def wait_for_dbus(bus_name, object_path, interface_name):
             pass
 
 
+def cast(value: str, type: str):
+    return __builtins__[type](value)
+
+
+def table_to_args(table):
+    args = []
+    for row in table:
+        args.append(cast(row['value'], row['type']))
+    return args
+
+
+def table_to_kwargs(table):
+    kwargs = {}
+    for row in table:
+        kwargs[row['name']] = cast(row['value'], row['type'])
+    return kwargs
+
+
 @given("a mocked backend service with the following interfaces")
 @async_run_until_complete(timeout=STEP_TIMEOUT)
 async def step_impl(context):
@@ -89,10 +107,29 @@ async def step_impl(context):
     )
 
 
+@given("'{name}' replies to a '{method}' method call with the following return value")
+@async_run_until_complete(timeout=STEP_TIMEOUT)
+async def step_impl(context, name, method):
+    return_value = table_to_args(context.table)[0]
+    service = context.mocks[name]
+    mock = getattr(service.mock, method)
+    mock.return_value = return_value
+
+
 @when("the '{method}' method is called by '{name}'")
 @async_run_until_complete(timeout=STEP_TIMEOUT)
 async def step_impl(context, method, name):
-    await getattr(context.mocks[name], method)()
+    return_value = await getattr(context.mocks[name], method)()
+    context.last_return_values[name] = return_value
+
+
+@then("'{name}' receives a return value of")
+@async_run_until_complete(timeout=STEP_TIMEOUT)
+async def step_impl(context, name):
+    expected = table_to_args(context.table)[0]
+    actual = context.last_return_values[name]
+    assert expected == actual, f"Expected return value {expected}, but got {actual}"
+    context.last_return_values[name]= None
 
 
 @when("a '{signal}' signal is emitted by '{name}'")
@@ -118,4 +155,42 @@ async def step_impl(context, name, signal):
     mock = getattr(client.mock, signal)
     while mock.call_count == 0:
         await asyncio.sleep(0.1)
+    mock.reset_mock()
+
+
+@when("the '{method}' method is called by '{name}' with the following parameters")
+@async_run_until_complete(timeout=STEP_TIMEOUT)
+async def step_impl(context, method, name):
+    kwargs = table_to_kwargs(context.table)
+    await getattr(context.mocks[name], method)(**kwargs)
+
+
+@then("'{name}' receives a '{method}' method call with the following parameters")
+@async_run_until_complete(timeout=STEP_TIMEOUT)
+async def step_impl(context, name, method):
+    service = context.mocks[name]
+    mock = getattr(service.mock, method)
+    while mock.await_count == 0:
+        await asyncio.sleep(0.1)
+    kwargs = table_to_kwargs(context.table)
+    mock.assert_awaited_with(**kwargs)
+    mock.reset_mock()
+
+
+@when("a '{signal}' signal is emitted by '{name}' with the following parameters")
+@async_run_until_complete(timeout=STEP_TIMEOUT)
+async def step_impl(context, signal, name):
+    kwargs = table_to_kwargs(context.table)
+    getattr(context.mocks[name], signal)(**kwargs)
+
+
+@then("'{name}' receives a '{signal}' signal with the following parameters")
+@async_run_until_complete(timeout=STEP_TIMEOUT)
+async def step_impl(context, name, signal):
+    kwargs = table_to_kwargs(context.table)
+    client = context.mocks[name]
+    mock = getattr(client.mock, signal)
+    while mock.call_count == 0:
+        await asyncio.sleep(0.1)
+    mock.assert_awaited_with(**kwargs)
     mock.reset_mock()

@@ -14,6 +14,6 @@ Feature: Minimal interface
         When the 'Bump' method is called by 'Alice'
         Then 'Bob' receives a 'Bump' method call
 
-    Scenario: Signal without arguments
+    Scenario: Emit a signal without arguments
         When a 'Bumped' signal is emitted by 'Bob'
         Then 'Alice' receives a 'Bumped' signal
