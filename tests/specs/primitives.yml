@@ -1,0 +1,176 @@
+objects:
+- name: Primitives
+  kind: interface
+  docs: A interface using all builtin primitive types
+  members:
+  - name: Uint8Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: uint8
+      docs: the value
+  - name: BoolSignal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: bool
+      docs: the value
+  - name: Int16Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: int16
+      docs: the value
+  - name: Uint16Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: uint16
+      docs: the value
+  - name: Int32Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: int32
+      docs: the value
+  - name: Uint32Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: uint32
+      docs: the value
+  - name: Int64Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: int64
+      docs: the value
+  - name: Uint64Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: uint64
+      docs: the value
+  - name: DoubleSignal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: double
+      docs: the value
+  - name: StringSignal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: string
+      docs: the value
+
+  - name: Uint8Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: uint8
+      docs: the value
+    returns:
+      type: uint8
+      docs: the return type
+  - name: BoolMethod
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: bool
+      docs: the value
+    returns:
+      type: bool
+      docs: the return type
+  - name: Int16Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: int16
+      docs: the value
+    returns:
+      type: int16
+      docs: the return type
+  - name: Uint16Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: uint16
+      docs: the value
+    returns:
+      type: uint16
+      docs: the return type
+  - name: Int32Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: int32
+      docs: the value
+    returns:
+      type: int32
+      docs: the return type
+  - name: Uint32Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: uint32
+      docs: the value
+    returns:
+      type: uint32
+      docs: the return type
+  - name: Int64Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: int64
+      docs: the value
+    returns:
+      type: int64
+      docs: the return type
+  - name: Uint64Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: uint64
+      docs: the value
+    returns:
+      type: uint64
+      docs: the return type
+  - name: DoubleMethod
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: double
+      docs: the value
+    returns:
+      type: double
+      docs: the return type
+  - name: StringMethod
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: string
+      docs: the value
+    returns:
+      type: string
+      docs: the return type

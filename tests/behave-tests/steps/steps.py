@@ -7,12 +7,10 @@ from python_mocks import (
     Connection,
     MinimalClientMock, BackendMinimalInterfaceMock,
     WithArgsClientMock, BackendWithArgsInterfaceMock,
+    PrimitivesClientMock, BackendPrimitivesInterfaceMock,
 )
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
-
-
-STEP_TIMEOUT = 5
 
 
 async def wait_for_dbus(bus_name, object_path, interface_name):
@@ -29,7 +27,17 @@ async def wait_for_dbus(bus_name, object_path, interface_name):
 
 
 def cast(value: str, type: str):
-    return __builtins__[type](value)
+    match type:
+        case 'bool':
+            match value:
+                case 'True':
+                    return True
+                case 'False':
+                    return False
+                case _:
+                    raise ValueError("Invalid boolean. Use 'True' or 'False'")
+        case _:
+            return __builtins__[type](value)
 
 
 def table_to_args(table):
@@ -47,7 +55,7 @@ def table_to_kwargs(table):
 
 
 @given("a mocked backend service with the following interfaces")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context):
     async def start_interface(interface, name):
         service = None
@@ -56,6 +64,10 @@ async def step_impl(context):
                 service = BackendMinimalInterfaceMock()
             case 'WithArgs':
                 service = BackendWithArgsInterfaceMock()
+            case 'Primitives':
+                service = BackendPrimitivesInterfaceMock()
+            case _:
+                assert False, f"Unknown interface '{interface}'"
         assert service is not None, f"Could not find service '{interface}'"
         service_task = asyncio.create_task(Connection.run(service))
         if name:
@@ -73,7 +85,7 @@ async def step_impl(context):
 
 
 @given("a mocked python client connecting to the following interfaces")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context):
     async def connect_to_interface(interface, name):
         client = None
@@ -82,6 +94,10 @@ async def step_impl(context):
                 client = MinimalClientMock()
             case 'WithArgs':
                 client = WithArgsClientMock()
+            case 'Primitives':
+                client = PrimitivesClientMock()
+            case _:
+                assert False, f"Unknown interface '{interface}'"
         client_task = asyncio.create_task(client.connect())
         context.mocks[name] = client
         context.tasks.append(client_task)
@@ -91,7 +107,7 @@ async def step_impl(context):
 
 
 @given("a running python service")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context):
     process = subprocess.Popen(
         args=["pdm", "run", "-p", "python_service", "service"],
@@ -108,23 +124,25 @@ async def step_impl(context):
 
 
 @given("'{name}' replies to a '{method}' method call with the following return value")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, name, method):
     return_value = table_to_args(context.table)[0]
+    assert name in context.mocks.keys(), f"Service {name} not found"
     service = context.mocks[name]
     mock = getattr(service.mock, method)
     mock.return_value = return_value
 
 
 @when("the '{method}' method is called by '{name}'")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, method, name):
+    assert name in context.mocks.keys(), f"Client {name} not found"
     return_value = await getattr(context.mocks[name], method)()
     context.last_return_values[name] = return_value
 
 
 @then("'{name}' receives a return value of")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, name):
     expected = table_to_args(context.table)[0]
     actual = context.last_return_values[name]
@@ -133,14 +151,16 @@ async def step_impl(context, name):
 
 
 @when("a '{signal}' signal is emitted by '{name}'")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, signal, name):
+    assert name in context.mocks.keys(), f"Service {name} not found"
     getattr(context.mocks[name], signal)()
 
 
 @then("'{name}' receives a '{method}' method call")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, name, method):
+    assert name in context.mocks.keys(), f"Service {name} not found"
     service = context.mocks[name]
     mock = getattr(service.mock, method)
     while mock.await_count == 0:
@@ -149,8 +169,9 @@ async def step_impl(context, name, method):
 
 
 @then("'{name}' receives a '{signal}' signal")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, name, signal):
+    assert name in context.mocks.keys(), f"Client {name} not found"
     client = context.mocks[name]
     mock = getattr(client.mock, signal)
     while mock.call_count == 0:
@@ -159,15 +180,18 @@ async def step_impl(context, name, signal):
 
 
 @when("the '{method}' method is called by '{name}' with the following parameters")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, method, name):
     kwargs = table_to_kwargs(context.table)
-    await getattr(context.mocks[name], method)(**kwargs)
+    assert name in context.mocks.keys(), f"Client {name} not found"
+    return_value = await getattr(context.mocks[name], method)(**kwargs)
+    context.last_return_values[name] = return_value
 
 
 @then("'{name}' receives a '{method}' method call with the following parameters")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, name, method):
+    assert name in context.mocks.keys(), f"Service {name} not found"
     service = context.mocks[name]
     mock = getattr(service.mock, method)
     while mock.await_count == 0:
@@ -178,19 +202,21 @@ async def step_impl(context, name, method):
 
 
 @when("a '{signal}' signal is emitted by '{name}' with the following parameters")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, signal, name):
     kwargs = table_to_kwargs(context.table)
+    assert name in context.mocks.keys(), f"Service {name} not found"
     getattr(context.mocks[name], signal)(**kwargs)
 
 
 @then("'{name}' receives a '{signal}' signal with the following parameters")
-@async_run_until_complete(timeout=STEP_TIMEOUT)
+@async_run_until_complete
 async def step_impl(context, name, signal):
     kwargs = table_to_kwargs(context.table)
+    assert name in context.mocks.keys(), f"Client {name} not found"
     client = context.mocks[name]
     mock = getattr(client.mock, signal)
     while mock.call_count == 0:
         await asyncio.sleep(0.1)
-    mock.assert_awaited_with(**kwargs)
+    mock.called_once_with(**kwargs)
     mock.reset_mock()

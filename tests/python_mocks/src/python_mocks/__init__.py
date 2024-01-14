@@ -2,4 +2,6 @@ from .gen.minimal_client_mock import MinimalClientMock
 from .gen.backend_minimal_interface_mock import BackendMinimalInterfaceMock
 from .gen.backend_with_args_interface_mock import BackendWithArgsInterfaceMock
 from .gen.with_args_client_mock import WithArgsClientMock
+from .gen.backend_primitives_interface_mock import BackendPrimitivesInterfaceMock
+from .gen.primitives_client_mock import PrimitivesClientMock
 from .gen.connection import Connection

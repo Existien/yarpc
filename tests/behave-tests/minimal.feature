@@ -2,13 +2,14 @@ Feature: Minimal interface
 
     Background:
         Given a mocked backend service with the following interfaces
-            | interface | name   |
-            | Minimal   | Bob    |
-            | WithArgs  |        |
-         And a running python service
-         And a mocked python client connecting to the following interfaces
-            | interface | name     |
-            | Minimal   | Alice    |
+            | interface  | name |
+            | Minimal    | Bob  |
+            | WithArgs   |      |
+            | Primitives |      |
+        And a running python service
+        And a mocked python client connecting to the following interfaces
+            | interface | name  |
+            | Minimal   | Alice |
 
     Scenario: Method call without arguments or return value
         When the 'Bump' method is called by 'Alice'

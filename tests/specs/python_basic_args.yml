@@ -12,6 +12,10 @@ outputs:
     spec: WithArgs
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.withArgs
+  - className: PrimitivesInterface
+    spec: Primitives
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.primitives
   clients:
   - className: BackendMinimalClient
     spec: Minimal
@@ -23,6 +27,11 @@ outputs:
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.withArgs
+  - className: BackendPrimitivesClient
+    spec: Primitives
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.primitives
 
 - name: BasicArgsMocks
   language: py
@@ -37,6 +46,10 @@ outputs:
     spec: WithArgs
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.withArgs
+  - className: BackendPrimitivesInterfaceMock
+    spec: Primitives
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.primitives
   client_mocks:
   - className: MinimalClientMock
     spec: Minimal
@@ -48,6 +61,11 @@ outputs:
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.withArgs
+  - className: PrimitivesClientMock
+    spec: Primitives
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.primitives
 
 - name: BasicArgsClient
   language: py

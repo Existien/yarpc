@@ -2,13 +2,14 @@ Feature: WithArgs interface
 
     Background:
         Given a mocked backend service with the following interfaces
-            | interface | name   |
-            | Minimal   |        |
-            | WithArgs  | Bob    |
-         And a running python service
-         And a mocked python client connecting to the following interfaces
-            | interface | name     |
-            | WithArgs  | Alice    |
+            | interface  | name |
+            | Minimal    |      |
+            | WithArgs   | Bob  |
+            | Primitives |      |
+        And a running python service
+        And a mocked python client connecting to the following interfaces
+            | interface | name  |
+            | WithArgs  | Alice |
 
     Scenario: Method call with a single argument, without a return value
         When the 'Notify' method is called by 'Alice' with the following parameters
@@ -38,7 +39,7 @@ Feature: WithArgs interface
         Then 'Alice' receives a return value of
             | value | type  |
             | 6.022 | float |
-         And 'Bob' receives a 'Order' method call with the following parameters
+        And 'Bob' receives a 'Order' method call with the following parameters
             | name         | value   | type  |
             | item         | Marbles | str   |
             | amount       | 33      | int   |
