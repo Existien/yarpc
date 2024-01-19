@@ -12,6 +12,8 @@ requires-python = "==3.11.*"
 readme = "README.md"
 license = {text = "MIT"}
 
+[project.scripts]
+mock = "python_mocks.main:main"
 
 [tool.pdm]
 package-type = "application"
