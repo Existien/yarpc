@@ -60,7 +60,14 @@ class {{ target.className }}():
         Set handler for {{ member.name }} signal
 
         Args:
-            handler (Callable[[{{member.args|map(attribute='type')|join(', ')}}], None]): the signal handler
+            handler (Callable[[
+            {%- for i in range(0,member.args|count) -%}
+            {{ (member.args[i].type|find_type(output.objects)).py }}
+            {%- if i < member.args|count - 1 -%}
+            {{', '}}
+            {%- endif -%}
+            {%- endfor -%}
+            ], None]): the signal handler
         """
         self._{{ member.name }}_handler = handler
         if self._interface:

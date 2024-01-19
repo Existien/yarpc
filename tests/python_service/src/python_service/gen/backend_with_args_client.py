@@ -53,7 +53,7 @@ class BackendWithArgsClient():
         Set handler for Notified signal
 
         Args:
-            handler (Callable[[string], None]): the signal handler
+            handler (Callable[[str], None]): the signal handler
         """
         self._Notified_handler = handler
         if self._interface:
@@ -64,7 +64,7 @@ class BackendWithArgsClient():
         Set handler for OrderReceived signal
 
         Args:
-            handler (Callable[[string, uint32, double], None]): the signal handler
+            handler (Callable[[str, int, float], None]): the signal handler
         """
         self._OrderReceived_handler = handler
         if self._interface:

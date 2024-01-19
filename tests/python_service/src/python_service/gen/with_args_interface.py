@@ -63,7 +63,7 @@ class WithArgsInterface(ServiceInterface):
         Set handler for Notify method
 
         Args:
-            handler (Callable[[string], Awaitable[None]]): the method handler
+            handler (Callable[[str], Awaitable[None]]): the method handler
         """
         self._Notify_handler = handler
 
@@ -91,7 +91,7 @@ class WithArgsInterface(ServiceInterface):
         Set handler for Order method
 
         Args:
-            handler (Callable[[string, uint32, double], Awaitable[None]]): the method handler
+            handler (Callable[[str, int, float], Awaitable[None]]): the method handler
         """
         self._Order_handler = handler
 
