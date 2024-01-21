@@ -181,6 +181,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         if self._Uint8Method_handler is None:
             raise NotImplementedError()
@@ -209,6 +212,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (bool): the value
+
+        Returns:
+            bool: the return type
         """
         if self._BoolMethod_handler is None:
             raise NotImplementedError()
@@ -237,6 +243,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         if self._Int16Method_handler is None:
             raise NotImplementedError()
@@ -265,6 +274,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         if self._Uint16Method_handler is None:
             raise NotImplementedError()
@@ -293,6 +305,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         if self._Int32Method_handler is None:
             raise NotImplementedError()
@@ -321,6 +336,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         if self._Uint32Method_handler is None:
             raise NotImplementedError()
@@ -349,6 +367,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         if self._Int64Method_handler is None:
             raise NotImplementedError()
@@ -377,6 +398,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         if self._Uint64Method_handler is None:
             raise NotImplementedError()
@@ -405,6 +429,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (float): the value
+
+        Returns:
+            float: the return type
         """
         if self._DoubleMethod_handler is None:
             raise NotImplementedError()
@@ -433,6 +460,9 @@ class PrimitivesInterface(ServiceInterface):
 
         Args:
             value (str): the value
+
+        Returns:
+            str: the return type
         """
         if self._StringMethod_handler is None:
             raise NotImplementedError()

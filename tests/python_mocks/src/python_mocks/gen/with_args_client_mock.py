@@ -94,7 +94,7 @@ class WithArgsClientMock():
         item: str,
         amount: int,
         pricePerItem: float,
-    ) -> None:
+    ) -> float:
         """
         a simple method with args and return value
 

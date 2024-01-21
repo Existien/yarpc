@@ -109,6 +109,9 @@ class WithArgsInterface(ServiceInterface):
             item (str): The item
             amount (int): a amount ordered
             pricePerItem (float): the price per item
+
+        Returns:
+            float: the total price
         """
         if self._Order_handler is None:
             raise NotImplementedError()

@@ -144,7 +144,7 @@ class PrimitivesClientMock():
     async def Uint8Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
@@ -160,7 +160,7 @@ class PrimitivesClientMock():
     async def BoolMethod(
         self,
         value: bool,
-    ) -> None:
+    ) -> bool:
         """
         a method
 
@@ -176,7 +176,7 @@ class PrimitivesClientMock():
     async def Int16Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
@@ -192,7 +192,7 @@ class PrimitivesClientMock():
     async def Uint16Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
@@ -208,7 +208,7 @@ class PrimitivesClientMock():
     async def Int32Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
@@ -224,7 +224,7 @@ class PrimitivesClientMock():
     async def Uint32Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
@@ -240,7 +240,7 @@ class PrimitivesClientMock():
     async def Int64Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
@@ -256,7 +256,7 @@ class PrimitivesClientMock():
     async def Uint64Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
@@ -272,7 +272,7 @@ class PrimitivesClientMock():
     async def DoubleMethod(
         self,
         value: float,
-    ) -> None:
+    ) -> float:
         """
         a method
 
@@ -288,7 +288,7 @@ class PrimitivesClientMock():
     async def StringMethod(
         self,
         value: str,
-    ) -> None:
+    ) -> str:
         """
         a method
 

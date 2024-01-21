@@ -184,6 +184,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         return await self._await_mock_method("Uint8Method", locals())
 
@@ -197,6 +200,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (bool): the value
+
+        Returns:
+            bool: the return type
         """
         return await self._await_mock_method("BoolMethod", locals())
 
@@ -210,6 +216,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         return await self._await_mock_method("Int16Method", locals())
 
@@ -223,6 +232,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         return await self._await_mock_method("Uint16Method", locals())
 
@@ -236,6 +248,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         return await self._await_mock_method("Int32Method", locals())
 
@@ -249,6 +264,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         return await self._await_mock_method("Uint32Method", locals())
 
@@ -262,6 +280,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         return await self._await_mock_method("Int64Method", locals())
 
@@ -275,6 +296,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         return await self._await_mock_method("Uint64Method", locals())
 
@@ -288,6 +312,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (float): the value
+
+        Returns:
+            float: the return type
         """
         return await self._await_mock_method("DoubleMethod", locals())
 
@@ -301,5 +328,8 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
 
         Args:
             value (str): the value
+
+        Returns:
+            str: the return type
         """
         return await self._await_mock_method("StringMethod", locals())

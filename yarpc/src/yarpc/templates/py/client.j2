@@ -79,7 +79,8 @@ class {{ target.className }}():
         {% for arg in member.args %}
         {{ arg.name }}: {{ (arg.type|find_type(output.objects)).py }},
         {% endfor %}
-    ) -> None:
+    ) ->{{ ' ' }}
+    {%- if member.returns %}{{ (member.returns.type|find_type(output.objects)).py }}{% else %}None{% endif %}:
         """
         {{ member.docs }}
         {% if member.args|count > 0 %}
@@ -88,6 +89,11 @@ class {{ target.className }}():
         {% for arg in member.args %}
             {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
         {% endfor %}
+        {% endif %}
+        {% if member.returns %}
+
+        Returns:
+            {{ (member.returns.type|find_type(output.objects)).py }}: {{ member.returns.docs }}
         {% endif %}
         """
         while not self._interface:

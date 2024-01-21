@@ -91,7 +91,7 @@ class BackendWithArgsClient():
         item: str,
         amount: int,
         pricePerItem: float,
-    ) -> None:
+    ) -> float:
         """
         a simple method with args and return value
 
@@ -99,6 +99,9 @@ class BackendWithArgsClient():
             item (str): The item
             amount (int): a amount ordered
             pricePerItem (float): the price per item
+
+        Returns:
+            float: the total price
         """
         while not self._interface:
             await asyncio.sleep(0.1)

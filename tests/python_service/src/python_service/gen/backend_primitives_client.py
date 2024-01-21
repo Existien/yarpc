@@ -185,12 +185,15 @@ class BackendPrimitivesClient():
     async def Uint8Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -201,12 +204,15 @@ class BackendPrimitivesClient():
     async def BoolMethod(
         self,
         value: bool,
-    ) -> None:
+    ) -> bool:
         """
         a method
 
         Args:
             value (bool): the value
+
+        Returns:
+            bool: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -217,12 +223,15 @@ class BackendPrimitivesClient():
     async def Int16Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -233,12 +242,15 @@ class BackendPrimitivesClient():
     async def Uint16Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -249,12 +261,15 @@ class BackendPrimitivesClient():
     async def Int32Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -265,12 +280,15 @@ class BackendPrimitivesClient():
     async def Uint32Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -281,12 +299,15 @@ class BackendPrimitivesClient():
     async def Int64Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -297,12 +318,15 @@ class BackendPrimitivesClient():
     async def Uint64Method(
         self,
         value: int,
-    ) -> None:
+    ) -> int:
         """
         a method
 
         Args:
             value (int): the value
+
+        Returns:
+            int: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -313,12 +337,15 @@ class BackendPrimitivesClient():
     async def DoubleMethod(
         self,
         value: float,
-    ) -> None:
+    ) -> float:
         """
         a method
 
         Args:
             value (float): the value
+
+        Returns:
+            float: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -329,12 +356,15 @@ class BackendPrimitivesClient():
     async def StringMethod(
         self,
         value: str,
-    ) -> None:
+    ) -> str:
         """
         a method
 
         Args:
             value (str): the value
+
+        Returns:
+            str: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)

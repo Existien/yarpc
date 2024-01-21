@@ -97,5 +97,8 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
             item (str): The item
             amount (int): a amount ordered
             pricePerItem (float): the price per item
+
+        Returns:
+            float: the total price
         """
         return await self._await_mock_method("Order", locals())

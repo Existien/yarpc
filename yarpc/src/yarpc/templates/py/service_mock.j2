@@ -87,6 +87,11 @@ class {{ target.className }}(ServiceInterface):
             {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
         {% endfor %}
         {% endif %}
+        {% if member.returns %}
+
+        Returns:
+            {{ (member.returns.type|find_type(output.objects)).py }}: {{ member.returns.docs }}
+        {% endif %}
         """
         return await self._await_mock_method("{{ member.name }}", locals())
 {% endif %}
