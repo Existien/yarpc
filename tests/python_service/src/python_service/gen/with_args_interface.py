@@ -5,23 +5,185 @@
 #   Object: WithArgs
 #   Template: service
 
+from typing import Protocol
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
+from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
-
+from copy import deepcopy
 import asyncio
+
+
+class ProvidesWithArgsInterfaceProperties(Protocol):
+    """Protocol for property providers of WithArgsInterface
+    """
+
+
+    async def get_Speed(self) -> float:
+        """Getter for Speed property
+
+        Returns:
+            float: the current value
+        """
+        ...
+
+    async def set_Speed(self, value: float) -> dict:
+        """Setter for Speed property
+
+        Args:
+            value (float): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        ...
+
+    async def get_Distance(self) -> int:
+        """Getter for Distance property
+
+        Returns:
+            int: the current value
+        """
+        ...
+
+    async def set_Distance(self, value: int) -> dict:
+        """Setter for Distance property
+
+        Args:
+            value (int): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        ...
+
+    async def get_Duration(self) -> float:
+        """Getter for Duration property
+
+        Returns:
+            float: the current value
+        """
+        ...
+
+    async def set_Duration(self, value: float) -> dict:
+        """Setter for Duration property
+
+        Args:
+            value (float): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        ...
+
+
+class WithArgsInterfaceProperties:
+    """Manages the state of the properties for WithArgsInterface
+
+    Args:
+        Speed (float): the speed in m/s
+        Distance (int): the distance to travel in m
+        Duration (float): the time until the distance is covered at the current speed
+    """
+
+    def __init__(
+        self,
+        Speed: float,
+        Distance: int,
+        Duration: float,
+    ):
+        self._properties = {
+            "Speed": Speed,
+            "Distance": Distance,
+            "Duration": Duration,
+        }
+
+
+    async def get_Speed(self) -> float:
+        """Getter for Speed property
+
+        Returns:
+            float: the current value
+        """
+        return self._properties["Speed"]
+
+    async def set_Speed(self, value: float) -> dict:
+        """Setter for Speed property
+
+        Args:
+            value (float): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        if value == self._properties["Speed"]:
+            return {}
+        self._properties["Speed"] = value
+        return {"Speed": value}
+
+    async def get_Distance(self) -> int:
+        """Getter for Distance property
+
+        Returns:
+            int: the current value
+        """
+        return self._properties["Distance"]
+
+    async def set_Distance(self, value: int) -> dict:
+        """Setter for Distance property
+
+        Args:
+            value (int): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        if value == self._properties["Distance"]:
+            return {}
+        self._properties["Distance"] = value
+        return {"Distance": value}
+
+    async def get_Duration(self) -> float:
+        """Getter for Duration property
+
+        Returns:
+            float: the current value
+        """
+        return self._properties["Duration"]
+
+    async def set_Duration(self, value: float) -> dict:
+        """Setter for Duration property
+
+        Args:
+            value (float): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        if value == self._properties["Duration"]:
+            return {}
+        self._properties["Duration"] = value
+        return {"Duration": value}
 
 class WithArgsInterface(ServiceInterface):
     """
     A interface using only primitive types
+
+    Args:
+        property_provider (ProvidesWithArgsInterfaceProperties): provider for interface properties
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        property_provider: ProvidesWithArgsInterfaceProperties,
+    ):
         super().__init__("com.yarpc.testservice.withArgs")
         self.object_path = "/com/yarpc/testservice"
+
         self._Notify_handler = None
         self._Order_handler = None
+        self._properties = property_provider
 
     @signal()
     def Notified(
@@ -85,7 +247,6 @@ class WithArgsInterface(ServiceInterface):
             message,
         )
 
-
     def on_Order(self, handler) -> None:
         """
         Set handler for Order method
@@ -121,3 +282,27 @@ class WithArgsInterface(ServiceInterface):
             amount,
             pricePerItem,
         )
+
+    @dbus_property(access=PropertyAccess.READWRITE)
+    async def Speed(self) -> 'd':
+        return await self._properties.get_Speed()
+
+    @Speed.setter
+    async def Speed(self, value: 'd'):
+        changed_properties = await self._properties.set_Speed(value)
+        if changed_properties:
+            self.emit_properties_changed(changed_properties)
+
+    @dbus_property(access=PropertyAccess.READWRITE)
+    async def Distance(self) -> 'u':
+        return await self._properties.get_Distance()
+
+    @Distance.setter
+    async def Distance(self, value: 'u'):
+        changed_properties = await self._properties.set_Distance(value)
+        if changed_properties:
+            self.emit_properties_changed(changed_properties)
+
+    @dbus_property(access=PropertyAccess.READ)
+    async def Duration(self) -> 'd':
+        return await self._properties.get_Duration()

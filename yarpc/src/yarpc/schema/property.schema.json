@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Schema for properties",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "name",
+        "kind",
+        "type",
+        "docs"
+    ],
+    "properties": {
+        "name": {
+            "$ref": "common.schema.json#/pascalName"
+        },
+        "kind": {
+            "type": "string",
+            "const": "property"
+        },
+        "docs": {
+            "$ref": "common.schema.json#/docs"
+        },
+        "type": {
+            "$ref": "common.schema.json#/type"
+        },
+        "readonly": {
+            "type": "boolean"
+        }
+    }
+}

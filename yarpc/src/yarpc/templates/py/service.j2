@@ -5,26 +5,117 @@
 #   Object: {{ object.name }}
 #   Template: {{ target.template }}
 
+from typing import Protocol
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
+from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
-
+from copy import deepcopy
 import asyncio
+
+{% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+
+class Provides{{ target.className }}Properties(Protocol):
+    """Protocol for property providers of {{ target.className }}
+    """
+
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+
+    async def get_{{ member.name }}(self) -> {{ (member.type|find_type(output.objects)).py }}:
+        """Getter for {{ member.name }} property
+
+        Returns:
+            {{ (member.type|find_type(output.objects)).py }}: the current value
+        """
+        ...
+
+    async def set_{{ member.name }}(self, value: {{ (member.type|find_type(output.objects)).py }}) -> dict:
+        """Setter for {{ member.name }} property
+
+        Args:
+            value ({{ (member.type|find_type(output.objects)).py }}): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        ...
+    {% endfor %}
+
+
+class {{ target.className }}Properties:
+    """Manages the state of the properties for {{ target.className }}
+
+    Args:
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        {{ member.name }} ({{ (member.type|find_type(output.objects)).py }}): {{ member.docs }}
+        {% endfor %}
+    """
+
+    def __init__(
+        self,
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        {{ member.name }}: {{ (member.type|find_type(output.objects)).py }},
+        {% endfor %}
+    ):
+        self._properties = {
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        {% set type = member.type|find_type(output.objects) %}
+            "{{ member.name }}": {{ member.name }},
+        {% endfor %}
+        }
+
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+
+    async def get_{{ member.name }}(self) -> {{ (member.type|find_type(output.objects)).py }}:
+        """Getter for {{ member.name }} property
+
+        Returns:
+            {{ (member.type|find_type(output.objects)).py }}: the current value
+        """
+        return self._properties["{{ member.name }}"]
+
+    async def set_{{ member.name }}(self, value: {{ (member.type|find_type(output.objects)).py }}) -> dict:
+        """Setter for {{ member.name }} property
+
+        Args:
+            value ({{ (member.type|find_type(output.objects)).py }}): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        if value == self._properties["{{ member.name }}"]:
+            return {}
+        self._properties["{{ member.name }}"] = value
+        return {"{{ member.name }}": value}
+    {% endfor %}
+{% endif %}
 
 class {{ target.className }}(ServiceInterface):
     """
     {{ object.docs }}
+    {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+
+    Args:
+        property_provider (Provides{{ target.className }}Properties): provider for interface properties
+    {% endif %}
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+        property_provider: Provides{{ target.className }}Properties,
+        {% endif %}
+    ):
         super().__init__("{{ target.interfaceName }}")
         self.object_path = "{{ target.objectPath }}"
-        {% for member in object.members %}
-        {% if member['kind'] == 'method' %}
-        self._{{ member['name'] }}_handler = None
-        {% endif %}
+
+        {% for member in object.members|selectattr('kind', 'equalto', 'method') %}
+        self._{{ member.name }}_handler = None
         {% endfor %}
+        {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+        self._properties = property_provider
+        {% endif %}
 {% for member in object.members %}
 
 {% if member.kind == 'signal' %}
@@ -55,7 +146,7 @@ class {{ target.className }}(ServiceInterface):
         {% elif member.args|count == 1 %}
         return {{ member.args[0].name }}
         {% endif %}
-{% endif %}
+{%- endif -%}
 {% if member.kind == 'method' %}
 {% set handler = 'self._'+member.name+'_handler' %}
 
@@ -106,5 +197,24 @@ class {{ target.className }}(ServiceInterface):
             {{ arg.name }},
             {% endfor %}
         )
+{%- endif -%}
+{% if member.kind == 'property' %}
+{% if member.readonly %}
+{% set access = 'PropertyAccess.READ' %}
+{% else %}
+{% set access = 'PropertyAccess.READWRITE' %}
+{% endif %}
+
+    @dbus_property(access={{ access }})
+    async def {{ member.name }}(self) -> '{{ (member.type|find_type(output.objects)).dbus }}':
+        return await self._properties.get_{{ member.name }}()
+{% if not member.readonly %}
+
+    @{{ member.name }}.setter
+    async def {{ member.name }}(self, value: '{{ (member.type|find_type(output.objects)).dbus }}'):
+        changed_properties = await self._properties.set_{{ member.name }}(value)
+        if changed_properties:
+            self.emit_properties_changed(changed_properties)
+{%- endif -%}
 {% endif %}
 {% endfor %}

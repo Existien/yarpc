@@ -8,8 +8,10 @@
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
+from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
 from unittest.mock import AsyncMock
+from copy import deepcopy
 import asyncio
 
 class BackendWithArgsInterfaceMock(ServiceInterface):
@@ -22,15 +24,42 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
     `await service.Foo('bar')`
     might result in the following await of the mock:
     `await service.mock.Foo(msg='bar')`
+
+    Setting properties will trigger a on_<property>_changed call to the mock with
+    the new value and a dictionary with the current properties as arguments. The mock is expected to return
+    an updated dictionary of properties.
+
+    Per default, the mock is configured to just return the updated value.
+
+    Args:
+        Speed (float): the speed in m/s
+        Distance (int): the distance to travel in m
+        Duration (float): the time until the distance is covered at the current speed
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        Speed: float,
+        Distance: int,
+        Duration: float,
+    ):
         super().__init__("com.yarpc.backend.withArgs")
         self.mock = AsyncMock()
         self.object_path = "/com/yarpc/backend"
 
         self.mock.Notify.return_value = None
         self.mock.Order.return_value = None
+
+        self._properties = {}
+        self._properties["Speed"] = Speed
+        self._Speed_change_handler = BackendWithArgsInterfaceMock._default_Speed_change_handler
+        self.mock.on_Speed_changed = AsyncMock(wraps=self._Speed_change_handler)
+        self._properties["Distance"] = Distance
+        self._Distance_change_handler = BackendWithArgsInterfaceMock._default_Distance_change_handler
+        self.mock.on_Distance_changed = AsyncMock(wraps=self._Distance_change_handler)
+        self._properties["Duration"] = Duration
+        self._Duration_change_handler = BackendWithArgsInterfaceMock._default_Duration_change_handler
+        self.mock.on_Duration_changed = AsyncMock(wraps=self._Duration_change_handler)
 
     async def _await_mock_method(self, method, local_variables):
         kwargs = dict(filter(lambda kv: kv[0] != 'self', local_variables.items()))
@@ -82,7 +111,6 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
             message (str): The message
         """
         return await self._await_mock_method("Notify", locals())
-
     @method()
     async def Order(
         self,
@@ -102,3 +130,122 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
             float: the total price
         """
         return await self._await_mock_method("Order", locals())
+
+    @dbus_property(access=PropertyAccess.READWRITE)
+    def Speed(self) -> 'd':
+        return self._properties["Speed"]
+
+    def on_Speed_changed(self, handler) -> None:
+        """
+        Set handler for property changes due to Speed changes
+
+        The handler takes the new Speed value and a dictionary of the current properties
+        and returns a dictionary with the current property values, or just the changed ones
+
+        Args:
+            handler(Callable[[float, dict], Awaitable[dict]]): the properties change handler
+
+        Returns:
+            dict: the changed properties
+        """
+        self._Speed_change_handler = handler
+        self.mock.on_Speed_changed = AsyncMock(wraps=self._Speed_change_handler)
+
+    async def _default_Speed_change_handler(value: float, _: dict) -> dict:
+        return { "Speed": value }
+
+    async def set_Speed(self, value: float):
+        properties_working_copy = deepcopy(self._properties)
+        changed_properties = await self.mock.on_Speed_changed(value, properties_working_copy)
+        properties_working_copy.update(changed_properties)
+        for key in self._properties.keys():
+            if key not in properties_working_copy:
+                continue
+            if properties_working_copy[key] == self._properties[key]:
+                del properties_working_copy[key]
+            else:
+                self._properties[key] = properties_working_copy[key]
+        if properties_working_copy:
+            self.emit_properties_changed(properties_working_copy)
+
+    @Speed.setter
+    async def Speed(self, value: 'd'):
+        await self.set_Speed(value)
+
+    @dbus_property(access=PropertyAccess.READWRITE)
+    def Distance(self) -> 'u':
+        return self._properties["Distance"]
+
+    def on_Distance_changed(self, handler) -> None:
+        """
+        Set handler for property changes due to Distance changes
+
+        The handler takes the new Distance value and a dictionary of the current properties
+        and returns a dictionary with the current property values, or just the changed ones
+
+        Args:
+            handler(Callable[[int, dict], Awaitable[dict]]): the properties change handler
+
+        Returns:
+            dict: the changed properties
+        """
+        self._Distance_change_handler = handler
+        self.mock.on_Distance_changed = AsyncMock(wraps=self._Distance_change_handler)
+
+    async def _default_Distance_change_handler(value: int, _: dict) -> dict:
+        return { "Distance": value }
+
+    async def set_Distance(self, value: int):
+        properties_working_copy = deepcopy(self._properties)
+        changed_properties = await self.mock.on_Distance_changed(value, properties_working_copy)
+        properties_working_copy.update(changed_properties)
+        for key in self._properties.keys():
+            if key not in properties_working_copy:
+                continue
+            if properties_working_copy[key] == self._properties[key]:
+                del properties_working_copy[key]
+            else:
+                self._properties[key] = properties_working_copy[key]
+        if properties_working_copy:
+            self.emit_properties_changed(properties_working_copy)
+
+    @Distance.setter
+    async def Distance(self, value: 'u'):
+        await self.set_Distance(value)
+
+    @dbus_property(access=PropertyAccess.READ)
+    def Duration(self) -> 'd':
+        return self._properties["Duration"]
+
+    def on_Duration_changed(self, handler) -> None:
+        """
+        Set handler for property changes due to Duration changes
+
+        The handler takes the new Duration value and a dictionary of the current properties
+        and returns a dictionary with the current property values, or just the changed ones
+
+        Args:
+            handler(Callable[[float, dict], Awaitable[dict]]): the properties change handler
+
+        Returns:
+            dict: the changed properties
+        """
+        self._Duration_change_handler = handler
+        self.mock.on_Duration_changed = AsyncMock(wraps=self._Duration_change_handler)
+
+    async def _default_Duration_change_handler(value: float, _: dict) -> dict:
+        return { "Duration": value }
+
+    async def set_Duration(self, value: float):
+        properties_working_copy = deepcopy(self._properties)
+        changed_properties = await self.mock.on_Duration_changed(value, properties_working_copy)
+        properties_working_copy.update(changed_properties)
+        for key in self._properties.keys():
+            if key not in properties_working_copy:
+                continue
+            if properties_working_copy[key] == self._properties[key]:
+                del properties_working_copy[key]
+            else:
+                self._properties[key] = properties_working_copy[key]
+        if properties_working_copy:
+            self.emit_properties_changed(properties_working_copy)

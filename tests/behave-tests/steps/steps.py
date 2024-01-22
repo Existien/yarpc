@@ -28,6 +28,9 @@ async def wait_for_dbus(bus_name, object_path, interface_name):
 
 def cast(value: str, type: str):
     match type:
+        case 'json':
+            import json
+            return json.loads(value)
         case 'bool':
             match value:
                 case 'True':
@@ -63,7 +66,11 @@ async def step_impl(context):
             case 'Minimal':
                 service = BackendMinimalInterfaceMock()
             case 'WithArgs':
-                service = BackendWithArgsInterfaceMock()
+                service = BackendWithArgsInterfaceMock(
+                    Speed=10.0,
+                    Distance=200,
+                    Duration=200/10.0,
+                )
             case 'Primitives':
                 service = BackendPrimitivesInterfaceMock()
             case _:
@@ -219,4 +226,44 @@ async def step_impl(context, name, signal):
     while mock.call_count == 0:
         await asyncio.sleep(0.1)
     mock.called_once_with(**kwargs)
+    mock.reset_mock()
+
+
+@when("all properties are queried from '{name}'")
+@async_run_until_complete
+async def step_impl(context, name):
+    assert name in context.mocks.keys(), f"Client {name} not found"
+    client = context.mocks[name]
+    return_value = await client.get_all_properties()
+    context.last_return_values[name] = return_value
+
+
+@when("the '{prop}' property is queried from '{name}'")
+@async_run_until_complete
+async def step_impl(context, name, prop):
+    assert name in context.mocks.keys(), f"Client {name} not found"
+    client = context.mocks[name]
+    return_value = await getattr(client, f"get_{prop}")()
+    context.last_return_values[name] = return_value
+
+
+@when("the '{prop}' property is set by '{name}' to a value of")
+@async_run_until_complete
+async def step_impl(context, name, prop):
+    value = table_to_args(context.table)[0]
+    assert name in context.mocks.keys(), f"Client {name} not found"
+    client = context.mocks[name]
+    await getattr(client, f"set_{prop}")(value)
+
+
+@then("'{name}' receives a property change signal with the following parameters")
+@async_run_until_complete
+async def step_impl(context, name):
+    kwargs = table_to_kwargs(context.table)
+    assert name in context.mocks.keys(), f"Client {name} not found"
+    client = context.mocks[name]
+    mock = client.mock.on_properties_changed
+    while mock.call_count == 0:
+        await asyncio.sleep(0.1)
+    mock.called_once_with(kwargs)
     mock.reset_mock()

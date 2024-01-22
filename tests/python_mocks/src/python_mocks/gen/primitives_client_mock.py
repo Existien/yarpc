@@ -25,7 +25,9 @@ class PrimitivesClientMock():
     """
 
     def __init__(self):
+        self.name = "com.yarpc.testservice.primitives"
         self._interface = None
+        self._property_interface = None
         self.mock = Mock()
 
     async def connect(self):
@@ -44,7 +46,7 @@ class PrimitivesClientMock():
                 introspection
             )
             self._interface = proxy_object.get_interface(
-                "com.yarpc.testservice.primitives"
+                self.name
             )
 
             self._interface.on_uint8_signal(self._Uint8Signal_handler)
@@ -57,9 +59,43 @@ class PrimitivesClientMock():
             self._interface.on_uint64_signal(self._Uint64Signal_handler)
             self._interface.on_double_signal(self._DoubleSignal_handler)
             self._interface.on_string_signal(self._StringSignal_handler)
+
+            self._property_interface = proxy_object.get_interface(
+                "org.freedesktop.DBus.Properties"
+            )
+            if self._properties_changed_handler:
+                self._property_interface.on_properties_changed(self._properties_changed_handler)
+
             await bus.wait_for_disconnect()
         except Exception as e:
             print(f"{type(e).__name__}: {e}", file=sys.stderr)
+
+    def _unpack_prop(self, name, variant):
+        prop_map = {
+            }
+        if name in prop_map:
+            return prop_map[name](variant.value)
+        return None
+
+    def _unpack_properties(self, packed_properties):
+        return {
+            key: self._unpack_prop(key, packed_properties[key])
+            for key in packed_properties.keys()
+        }
+
+    async def get_all_properties(self) -> dict:
+        """Getter for all properties
+
+        Returns:
+            dict: a dictionary containing the current state of all properties
+        """
+        properties = await self._property_interface.call_get_all(self.name)
+        return self._unpack_properties(properties)
+
+    def _properties_changed_handler(self, interface: str, properties: dict, _invalidated: list):
+        if interface == self.name:
+            properties = self._unpack_properties(properties)
+            self.mock.on_properties_changed(properties=properties)
 
     def _Uint8Signal_handler(
         self,
@@ -156,7 +192,6 @@ class PrimitivesClientMock():
         return await self._interface.call_uint8_method(
             value,
         )
-
     async def BoolMethod(
         self,
         value: bool,
@@ -172,7 +207,6 @@ class PrimitivesClientMock():
         return await self._interface.call_bool_method(
             value,
         )
-
     async def Int16Method(
         self,
         value: int,
@@ -188,7 +222,6 @@ class PrimitivesClientMock():
         return await self._interface.call_int16_method(
             value,
         )
-
     async def Uint16Method(
         self,
         value: int,
@@ -204,7 +237,6 @@ class PrimitivesClientMock():
         return await self._interface.call_uint16_method(
             value,
         )
-
     async def Int32Method(
         self,
         value: int,
@@ -220,7 +252,6 @@ class PrimitivesClientMock():
         return await self._interface.call_int32_method(
             value,
         )
-
     async def Uint32Method(
         self,
         value: int,
@@ -236,7 +267,6 @@ class PrimitivesClientMock():
         return await self._interface.call_uint32_method(
             value,
         )
-
     async def Int64Method(
         self,
         value: int,
@@ -252,7 +282,6 @@ class PrimitivesClientMock():
         return await self._interface.call_int64_method(
             value,
         )
-
     async def Uint64Method(
         self,
         value: int,
@@ -268,7 +297,6 @@ class PrimitivesClientMock():
         return await self._interface.call_uint64_method(
             value,
         )
-
     async def DoubleMethod(
         self,
         value: float,
@@ -284,7 +312,6 @@ class PrimitivesClientMock():
         return await self._interface.call_double_method(
             value,
         )
-
     async def StringMethod(
         self,
         value: str,

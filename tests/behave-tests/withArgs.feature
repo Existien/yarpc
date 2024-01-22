@@ -56,3 +56,36 @@ Feature: WithArgs interface
             | item         | Marbles | str   |
             | amount       | 33      | int   |
             | pricePerItem | 0.33    | float |
+
+    Scenario: Get all properties
+        When all properties are queried from 'Alice'
+        Then 'Alice' receives a return value of
+            | value                                         | type |
+            | {"Speed":10.0,"Distance":200,"Duration":20.0} | json |
+
+    Scenario: Getting read-only properties
+        When the 'Duration' property is queried from 'Alice'
+        Then 'Alice' receives a return value of
+            | value | type  |
+            | 20.0  | float |
+
+    Scenario Outline: Geting and setting read-write properties
+        When the '<prop>' property is queried from 'Alice'
+        Then 'Alice' receives a return value of
+            | value | type   |
+            | <old> | <type> |
+        When the '<prop>' property is set by 'Alice' to a value of
+            | value | type   |
+            | <new> | <type> |
+        Then 'Alice' receives a property change signal with the following parameters
+            | name   | value | type   |
+            | <prop> | <new> | <type> |
+        When the '<prop>' property is queried from 'Alice'
+        Then 'Alice' receives a return value of
+            | value | type   |
+            | <new> | <type> |
+
+        Examples: Properties
+            | prop     | old  | new  | type  |
+            | Distance | 200  | 50   | int   |
+            | Speed    | 10.0 | 5    | float |

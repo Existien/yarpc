@@ -8,8 +8,10 @@
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
+from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
 from unittest.mock import AsyncMock
+from copy import deepcopy
 import asyncio
 
 class BackendMinimalInterfaceMock(ServiceInterface):
@@ -24,12 +26,16 @@ class BackendMinimalInterfaceMock(ServiceInterface):
     `await service.mock.Foo(msg='bar')`
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+    ):
         super().__init__("com.yarpc.backend.minimal")
         self.mock = AsyncMock()
         self.object_path = "/com/yarpc/backend"
 
         self.mock.Bump.return_value = None
+
+        self._properties = {}
 
     async def _await_mock_method(self, method, local_variables):
         kwargs = dict(filter(lambda kv: kv[0] != 'self', local_variables.items()))

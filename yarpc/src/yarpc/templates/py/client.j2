@@ -17,7 +17,10 @@ class {{ target.className }}():
     """
 
     def __init__(self):
+        self.name = "{{ target.interfaceName }}"
         self._interface = None
+        self._property_interface = None
+        self._properties_changed_handler = None
         {% for member in object.members %}
         {% if member['kind'] == 'signal' %}
         self._{{ member['name'] }}_handler = None
@@ -40,7 +43,7 @@ class {{ target.className }}():
                 introspection
             )
             self._interface = proxy_object.get_interface(
-                "{{ target.interfaceName }}"
+                self.name
             )
 
             {% for member in object.members %}
@@ -49,9 +52,49 @@ class {{ target.className }}():
                 self._interface.on_{{ member.name|snake_case }}(self._{{ member.name }}_handler)
             {% endif %}
             {% endfor %}
+
+            self._property_interface = proxy_object.get_interface(
+                "org.freedesktop.DBus.Properties"
+            )
+            if self._properties_changed_handler:
+                self._property_interface.on_properties_changed(self._properties_changed_wrapper)
+
             await bus.wait_for_disconnect()
         except Exception as e:
             print(f"{type(e).__name__}: {e}", file=sys.stderr)
+
+    def _unpack_prop(self, name, variant):
+        prop_map = {
+                {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+                "{{ member.name }}": {{ (member.type|find_type(output.objects)).py }},
+                {% endfor %}
+            }
+        if name in prop_map:
+            return prop_map[name](variant.value)
+        return None
+
+    def _unpack_properties(self, packed_properties):
+        return {
+            key: self._unpack_prop(key, packed_properties[key])
+            for key in packed_properties.keys()
+        }
+
+
+    async def get_all_properties(self) -> dict:
+        """Getter for all properties
+
+        Returns:
+            dict: a dictionary containing the current state of all properties
+        """
+        while not self._property_interface:
+            await asyncio.sleep(0.1)
+        properties = await self._property_interface.call_get_all(self.name)
+        return self._unpack_properties(properties)
+
+    def _properties_changed_wrapper(self, interface: str, properties: dict, _invalidated: list):
+        if self._properties_changed_handler and interface == self.name:
+            properties = self._unpack_properties(properties)
+            self._properties_changed_handler(properties)
 {% for member in object.members %}
 
 {% if member.kind == 'signal' %}
@@ -103,5 +146,44 @@ class {{ target.className }}():
             {{ arg.name }},
         {% endfor %}
         )
+{%- endif -%}
+{% if member.kind == 'property' %}
+
+    async def get_{{ member.name }}(self) -> {{ (member.type|find_type(output.objects)).py }}:
+        """Getter for property '{{ member.name }}'
+
+        {{ member.docs }}
+
+        Returns:
+            {{ (member.type|find_type(output.objects)).py }}: the current value
+        """
+        while not self._interface:
+            await asyncio.sleep(0.1)
+        return await self._interface.get_{{ member.name|snake_case }}()
+
+    def on_properties_changed(self, handler) -> None:
+        """
+        Set handler for property changes
+
+        The handler takes a dictionary of the changed properties
+
+        Args:
+            handler(Callable[[dict], None]): the handler
+        """
+        self._properties_changed_handler = handler
+{% if not member.readonly %}
+
+    async def set_{{ member.name }}(self, value: {{ (member.type|find_type(output.objects)).py }}) -> None:
+        """Setter for property '{{ member.name }}'
+
+        {{ member.docs }}
+
+        Args:
+            value ({{ (member.type|find_type(output.objects)).py }}): the new value
+        """
+        while not self._interface:
+            await asyncio.sleep(0.1)
+        return await self._interface.set_{{ member.name|snake_case }}(value)
+{%- endif -%}
 {% endif %}
 {% endfor %}

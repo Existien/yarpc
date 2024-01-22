@@ -17,7 +17,10 @@ class BackendWithArgsClient():
     """
 
     def __init__(self):
+        self.name = "com.yarpc.backend.withArgs"
         self._interface = None
+        self._property_interface = None
+        self._properties_changed_handler = None
         self._Notified_handler = None
         self._OrderReceived_handler = None
 
@@ -37,16 +40,56 @@ class BackendWithArgsClient():
                 introspection
             )
             self._interface = proxy_object.get_interface(
-                "com.yarpc.backend.withArgs"
+                self.name
             )
 
             if self._Notified_handler:
                 self._interface.on_notified(self._Notified_handler)
             if self._OrderReceived_handler:
                 self._interface.on_order_received(self._OrderReceived_handler)
+
+            self._property_interface = proxy_object.get_interface(
+                "org.freedesktop.DBus.Properties"
+            )
+            if self._properties_changed_handler:
+                self._property_interface.on_properties_changed(self._properties_changed_wrapper)
+
             await bus.wait_for_disconnect()
         except Exception as e:
             print(f"{type(e).__name__}: {e}", file=sys.stderr)
+
+    def _unpack_prop(self, name, variant):
+        prop_map = {
+                "Speed": float,
+                "Distance": int,
+                "Duration": float,
+            }
+        if name in prop_map:
+            return prop_map[name](variant.value)
+        return None
+
+    def _unpack_properties(self, packed_properties):
+        return {
+            key: self._unpack_prop(key, packed_properties[key])
+            for key in packed_properties.keys()
+        }
+
+
+    async def get_all_properties(self) -> dict:
+        """Getter for all properties
+
+        Returns:
+            dict: a dictionary containing the current state of all properties
+        """
+        while not self._property_interface:
+            await asyncio.sleep(0.1)
+        properties = await self._property_interface.call_get_all(self.name)
+        return self._unpack_properties(properties)
+
+    def _properties_changed_wrapper(self, interface: str, properties: dict, _invalidated: list):
+        if self._properties_changed_handler and interface == self.name:
+            properties = self._unpack_properties(properties)
+            self._properties_changed_handler(properties)
 
     def on_Notified(self, handler):
         """
@@ -85,7 +128,6 @@ class BackendWithArgsClient():
         return await self._interface.call_notify(
             message,
         )
-
     async def Order(
         self,
         item: str,
@@ -110,3 +152,96 @@ class BackendWithArgsClient():
             amount,
             pricePerItem,
         )
+
+    async def get_Speed(self) -> float:
+        """Getter for property 'Speed'
+
+        the speed in m/s
+
+        Returns:
+            float: the current value
+        """
+        while not self._interface:
+            await asyncio.sleep(0.1)
+        return await self._interface.get_speed()
+
+    def on_properties_changed(self, handler) -> None:
+        """
+        Set handler for property changes
+
+        The handler takes a dictionary of the changed properties
+
+        Args:
+            handler(Callable[[dict], None]): the handler
+        """
+        self._properties_changed_handler = handler
+
+    async def set_Speed(self, value: float) -> None:
+        """Setter for property 'Speed'
+
+        the speed in m/s
+
+        Args:
+            value (float): the new value
+        """
+        while not self._interface:
+            await asyncio.sleep(0.1)
+        return await self._interface.set_speed(value)
+
+    async def get_Distance(self) -> int:
+        """Getter for property 'Distance'
+
+        the distance to travel in m
+
+        Returns:
+            int: the current value
+        """
+        while not self._interface:
+            await asyncio.sleep(0.1)
+        return await self._interface.get_distance()
+
+    def on_properties_changed(self, handler) -> None:
+        """
+        Set handler for property changes
+
+        The handler takes a dictionary of the changed properties
+
+        Args:
+            handler(Callable[[dict], None]): the handler
+        """
+        self._properties_changed_handler = handler
+
+    async def set_Distance(self, value: int) -> None:
+        """Setter for property 'Distance'
+
+        the distance to travel in m
+
+        Args:
+            value (int): the new value
+        """
+        while not self._interface:
+            await asyncio.sleep(0.1)
+        return await self._interface.set_distance(value)
+
+    async def get_Duration(self) -> float:
+        """Getter for property 'Duration'
+
+        the time until the distance is covered at the current speed
+
+        Returns:
+            float: the current value
+        """
+        while not self._interface:
+            await asyncio.sleep(0.1)
+        return await self._interface.get_duration()
+
+    def on_properties_changed(self, handler) -> None:
+        """
+        Set handler for property changes
+
+        The handler takes a dictionary of the changed properties
+
+        Args:
+            handler(Callable[[dict], None]): the handler
+        """
+        self._properties_changed_handler = handler

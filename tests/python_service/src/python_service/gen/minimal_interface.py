@@ -5,21 +5,27 @@
 #   Object: Minimal
 #   Template: service
 
+from typing import Protocol
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
+from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
-
+from copy import deepcopy
 import asyncio
+
 
 class MinimalInterface(ServiceInterface):
     """
     A interface using signals and methods without args
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+    ):
         super().__init__("com.yarpc.testservice.minimal")
         self.object_path = "/com/yarpc/testservice"
+
         self._Bump_handler = None
 
     @signal()

@@ -8,8 +8,10 @@
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
+from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
 from unittest.mock import AsyncMock
+from copy import deepcopy
 import asyncio
 
 class BackendPrimitivesInterfaceMock(ServiceInterface):
@@ -24,7 +26,9 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
     `await service.mock.Foo(msg='bar')`
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+    ):
         super().__init__("com.yarpc.backend.primitives")
         self.mock = AsyncMock()
         self.object_path = "/com/yarpc/backend"
@@ -39,6 +43,8 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
         self.mock.Uint64Method.return_value = None
         self.mock.DoubleMethod.return_value = None
         self.mock.StringMethod.return_value = None
+
+        self._properties = {}
 
     async def _await_mock_method(self, method, local_variables):
         kwargs = dict(filter(lambda kv: kv[0] != 'self', local_variables.items()))
@@ -189,7 +195,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             int: the return type
         """
         return await self._await_mock_method("Uint8Method", locals())
-
     @method()
     async def BoolMethod(
         self,
@@ -205,7 +210,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             bool: the return type
         """
         return await self._await_mock_method("BoolMethod", locals())
-
     @method()
     async def Int16Method(
         self,
@@ -221,7 +225,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             int: the return type
         """
         return await self._await_mock_method("Int16Method", locals())
-
     @method()
     async def Uint16Method(
         self,
@@ -237,7 +240,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             int: the return type
         """
         return await self._await_mock_method("Uint16Method", locals())
-
     @method()
     async def Int32Method(
         self,
@@ -253,7 +255,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             int: the return type
         """
         return await self._await_mock_method("Int32Method", locals())
-
     @method()
     async def Uint32Method(
         self,
@@ -269,7 +270,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             int: the return type
         """
         return await self._await_mock_method("Uint32Method", locals())
-
     @method()
     async def Int64Method(
         self,
@@ -285,7 +285,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             int: the return type
         """
         return await self._await_mock_method("Int64Method", locals())
-
     @method()
     async def Uint64Method(
         self,
@@ -301,7 +300,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             int: the return type
         """
         return await self._await_mock_method("Uint64Method", locals())
-
     @method()
     async def DoubleMethod(
         self,
@@ -317,7 +315,6 @@ class BackendPrimitivesInterfaceMock(ServiceInterface):
             float: the return type
         """
         return await self._await_mock_method("DoubleMethod", locals())
-
     @method()
     async def StringMethod(
         self,

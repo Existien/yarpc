@@ -10,12 +10,16 @@
         "members"
     ],
     "properties": {
-        "name": {"$ref": "common.schema.json#/pascalName"},
+        "name": {
+            "$ref": "common.schema.json#/pascalName"
+        },
         "kind": {
             "type": "string",
             "const": "interface"
         },
-        "docs": {"$ref": "common.schema.json#/docs"},
+        "docs": {
+            "$ref": "common.schema.json#/docs"
+        },
         "members": {
             "type": "array",
             "items": {
@@ -26,17 +30,29 @@
                     "docs"
                 ],
                 "properties": {
-                    "name": {"$ref": "common.schema.json#/pascalName"},
-                    "docs": {"$ref": "common.schema.json#/docs"},
+                    "name": {
+                        "$ref": "common.schema.json#/pascalName"
+                    },
+                    "docs": {
+                        "$ref": "common.schema.json#/docs"
+                    },
                     "kind": {
                         "type": "string",
-                        "enum": ["signal", "method"]
+                        "enum": [
+                            "signal",
+                            "method",
+                            "property"
+                        ]
                     }
                 },
                 "allOf": [
                     {
                         "if": {
-                            "properties": {"kind": {"const": "signal"}}
+                            "properties": {
+                                "kind": {
+                                    "const": "signal"
+                                }
+                            }
                         },
                         "then": {
                             "$ref": "signal.schema.json"
@@ -44,10 +60,26 @@
                     },
                     {
                         "if": {
-                            "properties": {"kind": {"const": "method"}}
+                            "properties": {
+                                "kind": {
+                                    "const": "method"
+                                }
+                            }
                         },
                         "then": {
                             "$ref": "method.schema.json"
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "kind": {
+                                    "const": "property"
+                                }
+                            }
+                        },
+                        "then": {
+                            "$ref": "property.schema.json"
                         }
                     }
                 ]

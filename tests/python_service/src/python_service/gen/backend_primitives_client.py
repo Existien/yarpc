@@ -17,7 +17,10 @@ class BackendPrimitivesClient():
     """
 
     def __init__(self):
+        self.name = "com.yarpc.backend.primitives"
         self._interface = None
+        self._property_interface = None
+        self._properties_changed_handler = None
         self._Uint8Signal_handler = None
         self._BoolSignal_handler = None
         self._Int16Signal_handler = None
@@ -45,7 +48,7 @@ class BackendPrimitivesClient():
                 introspection
             )
             self._interface = proxy_object.get_interface(
-                "com.yarpc.backend.primitives"
+                self.name
             )
 
             if self._Uint8Signal_handler:
@@ -68,9 +71,46 @@ class BackendPrimitivesClient():
                 self._interface.on_double_signal(self._DoubleSignal_handler)
             if self._StringSignal_handler:
                 self._interface.on_string_signal(self._StringSignal_handler)
+
+            self._property_interface = proxy_object.get_interface(
+                "org.freedesktop.DBus.Properties"
+            )
+            if self._properties_changed_handler:
+                self._property_interface.on_properties_changed(self._properties_changed_wrapper)
+
             await bus.wait_for_disconnect()
         except Exception as e:
             print(f"{type(e).__name__}: {e}", file=sys.stderr)
+
+    def _unpack_prop(self, name, variant):
+        prop_map = {
+            }
+        if name in prop_map:
+            return prop_map[name](variant.value)
+        return None
+
+    def _unpack_properties(self, packed_properties):
+        return {
+            key: self._unpack_prop(key, packed_properties[key])
+            for key in packed_properties.keys()
+        }
+
+
+    async def get_all_properties(self) -> dict:
+        """Getter for all properties
+
+        Returns:
+            dict: a dictionary containing the current state of all properties
+        """
+        while not self._property_interface:
+            await asyncio.sleep(0.1)
+        properties = await self._property_interface.call_get_all(self.name)
+        return self._unpack_properties(properties)
+
+    def _properties_changed_wrapper(self, interface: str, properties: dict, _invalidated: list):
+        if self._properties_changed_handler and interface == self.name:
+            properties = self._unpack_properties(properties)
+            self._properties_changed_handler(properties)
 
     def on_Uint8Signal(self, handler):
         """
@@ -200,7 +240,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_uint8_method(
             value,
         )
-
     async def BoolMethod(
         self,
         value: bool,
@@ -219,7 +258,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_bool_method(
             value,
         )
-
     async def Int16Method(
         self,
         value: int,
@@ -238,7 +276,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_int16_method(
             value,
         )
-
     async def Uint16Method(
         self,
         value: int,
@@ -257,7 +294,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_uint16_method(
             value,
         )
-
     async def Int32Method(
         self,
         value: int,
@@ -276,7 +312,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_int32_method(
             value,
         )
-
     async def Uint32Method(
         self,
         value: int,
@@ -295,7 +330,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_uint32_method(
             value,
         )
-
     async def Int64Method(
         self,
         value: int,
@@ -314,7 +348,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_int64_method(
             value,
         )
-
     async def Uint64Method(
         self,
         value: int,
@@ -333,7 +366,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_uint64_method(
             value,
         )
-
     async def DoubleMethod(
         self,
         value: float,
@@ -352,7 +384,6 @@ class BackendPrimitivesClient():
         return await self._interface.call_double_method(
             value,
         )
-
     async def StringMethod(
         self,
         value: str,

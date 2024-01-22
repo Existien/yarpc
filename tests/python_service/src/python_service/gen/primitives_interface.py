@@ -5,21 +5,27 @@
 #   Object: Primitives
 #   Template: service
 
+from typing import Protocol
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
+from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
-
+from copy import deepcopy
 import asyncio
+
 
 class PrimitivesInterface(ServiceInterface):
     """
     A interface using all builtin primitive types
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+    ):
         super().__init__("com.yarpc.testservice.primitives")
         self.object_path = "/com/yarpc/testservice"
+
         self._Uint8Method_handler = None
         self._BoolMethod_handler = None
         self._Int16Method_handler = None
@@ -192,7 +198,6 @@ class PrimitivesInterface(ServiceInterface):
             value,
         )
 
-
     def on_BoolMethod(self, handler) -> None:
         """
         Set handler for BoolMethod method
@@ -222,7 +227,6 @@ class PrimitivesInterface(ServiceInterface):
         return await self._BoolMethod_handler(
             value,
         )
-
 
     def on_Int16Method(self, handler) -> None:
         """
@@ -254,7 +258,6 @@ class PrimitivesInterface(ServiceInterface):
             value,
         )
 
-
     def on_Uint16Method(self, handler) -> None:
         """
         Set handler for Uint16Method method
@@ -284,7 +287,6 @@ class PrimitivesInterface(ServiceInterface):
         return await self._Uint16Method_handler(
             value,
         )
-
 
     def on_Int32Method(self, handler) -> None:
         """
@@ -316,7 +318,6 @@ class PrimitivesInterface(ServiceInterface):
             value,
         )
 
-
     def on_Uint32Method(self, handler) -> None:
         """
         Set handler for Uint32Method method
@@ -346,7 +347,6 @@ class PrimitivesInterface(ServiceInterface):
         return await self._Uint32Method_handler(
             value,
         )
-
 
     def on_Int64Method(self, handler) -> None:
         """
@@ -378,7 +378,6 @@ class PrimitivesInterface(ServiceInterface):
             value,
         )
 
-
     def on_Uint64Method(self, handler) -> None:
         """
         Set handler for Uint64Method method
@@ -409,7 +408,6 @@ class PrimitivesInterface(ServiceInterface):
             value,
         )
 
-
     def on_DoubleMethod(self, handler) -> None:
         """
         Set handler for DoubleMethod method
@@ -439,7 +437,6 @@ class PrimitivesInterface(ServiceInterface):
         return await self._DoubleMethod_handler(
             value,
         )
-
 
     def on_StringMethod(self, handler) -> None:
         """

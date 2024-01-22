@@ -57,3 +57,17 @@ objects:
     returns:
       type: double
       docs: the total price
+  - name: Speed
+    kind: property
+    type: double
+    docs: the speed in m/s
+  - name: Distance
+    kind: property
+    type: uint32
+    docs: the distance to travel in m
+    readonly: false
+  - name: Duration
+    kind: property
+    type: double
+    readonly: true
+    docs: the time until the distance is covered at the current speed
