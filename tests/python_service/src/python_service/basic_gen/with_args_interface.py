@@ -3,7 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/basic_args.yml
 #   Object: WithArgs
-#   Template: service
+#   Template: py/service.j2
 
 from typing import Protocol
 from dbus_next.service import (
@@ -11,14 +11,11 @@ from dbus_next.service import (
 )
 from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
-from copy import deepcopy
-import asyncio
 
 
 class ProvidesWithArgsInterfaceProperties(Protocol):
     """Protocol for property providers of WithArgsInterface
     """
-
 
     async def get_Speed(self) -> float:
         """Getter for Speed property
@@ -99,7 +96,6 @@ class WithArgsInterfaceProperties:
             "Duration": Duration,
         }
 
-
     async def get_Speed(self) -> float:
         """Getter for Speed property
 
@@ -166,7 +162,91 @@ class WithArgsInterfaceProperties:
         self._properties["Duration"] = value
         return {"Duration": value}
 
-class WithArgsInterface(ServiceInterface):
+
+class _Interface(ServiceInterface):
+    """
+    D-Bus interface implementation for WithArgs
+
+    Args:
+        wrapper(WithArgsInterface): Wrapper responsible for (un-)marhsalling D-Bus types
+    """
+
+    def __init__(self, wrapper):
+        super().__init__("com.yarpc.testservice.withArgs")
+        self.object_path = "/com/yarpc/testservice"
+        self._wrapper = wrapper
+
+    @signal()
+    def Notified(
+        self,
+        message: 's',
+    ) -> 's':
+        return message
+
+    @signal()
+    def OrderReceived(
+        self,
+        item: 's',
+        amount: 'u',
+        pricePerItem: 'd',
+    ) -> 'sud':
+        return [
+            item,
+            amount,
+            pricePerItem,
+        ]
+
+    @method()
+    async def Notify(
+        self,
+        message: 's',
+    ) -> None:
+        await self._wrapper.Notify(
+            message,
+        )
+        return None
+
+    @method()
+    async def Order(
+        self,
+        item: 's',
+        amount: 'u',
+        pricePerItem: 'd',
+    ) -> 'd':
+        raw_return = await self._wrapper.Order(
+            item,
+            amount,
+            pricePerItem,
+        )
+        return raw_return
+
+    @dbus_property(access=PropertyAccess.READWRITE)
+    async def Speed(self) -> 'd':
+        unmarshalled = await self._wrapper.get_Speed()
+        return unmarshalled
+
+    @Speed.setter
+    async def Speed(self, value: 'd'):
+        unmarshalled = value
+        await self._wrapper.set_Speed(unmarshalled)
+
+    @dbus_property(access=PropertyAccess.READWRITE)
+    async def Distance(self) -> 'u':
+        unmarshalled = await self._wrapper.get_Distance()
+        return unmarshalled
+
+    @Distance.setter
+    async def Distance(self, value: 'u'):
+        unmarshalled = value
+        await self._wrapper.set_Distance(unmarshalled)
+
+    @dbus_property(access=PropertyAccess.READ)
+    async def Duration(self) -> 'd':
+        unmarshalled = await self._wrapper.get_Duration()
+        return unmarshalled
+
+
+class WithArgsInterface():
     """
     A interface using only primitive types
 
@@ -178,33 +258,58 @@ class WithArgsInterface(ServiceInterface):
         self,
         property_provider: ProvidesWithArgsInterfaceProperties,
     ):
-        super().__init__("com.yarpc.testservice.withArgs")
-        self.object_path = "/com/yarpc/testservice"
+        self.interface = _Interface(self)
+        self.name = self.interface.name
+        self.object_path = self.interface.object_path
 
         self._Notify_handler = None
         self._Order_handler = None
         self._properties = property_provider
 
-    @signal()
+    def emit_properties_changed(self, changed_properties: dict) -> None:
+        """Informs clients about changed properties
+
+        Args:
+            changed_properties (dict): A dictionary containing all changed properties with their new values
+        """
+        if not changed_properties: return
+
+        def marshal(data):
+            if isinstance(data, dict):
+                for key in data.keys():
+                    data[key] = marshal(data[key])
+                return data
+            elif isinstance(data, list):
+                for i in range(0, len(data)):
+                    data[i] = marshal(data[i])
+                return data
+            elif hasattr(data, 'to_dbus'):
+                return data.to_dbus()
+            else:
+                return data
+        marshalled = marshal(changed_properties)
+        self.interface.emit_properties_changed(marshalled)
+
     def Notified(
         self,
         message: str,
-    ) -> 's':
+    ) -> None:
         """
         a simple signal with one argument
 
         Args:
             message (str): The message
         """
-        return message
+        self.interface.Notified(
+            message,
+        )
 
-    @signal()
     def OrderReceived(
         self,
         item: str,
         amount: int,
         pricePerItem: float,
-    ) -> 'sud':
+    ) -> None:
         """
         a simple signal with multiple arguments
 
@@ -213,12 +318,11 @@ class WithArgsInterface(ServiceInterface):
             amount (int): a amount ordered
             pricePerItem (float): the price per item
         """
-        return [
+        self.interface.OrderReceived(
             item,
             amount,
             pricePerItem,
-        ]
-
+        )
 
     def on_Notify(self, handler) -> None:
         """
@@ -229,10 +333,9 @@ class WithArgsInterface(ServiceInterface):
         """
         self._Notify_handler = handler
 
-    @method()
     async def Notify(
         self,
-        message: 's',
+        message: str,
     ) -> None:
         """
         a simple method with one argument
@@ -252,17 +355,16 @@ class WithArgsInterface(ServiceInterface):
         Set handler for Order method
 
         Args:
-            handler (Callable[[str, int, float], Awaitable[None]]): the method handler
+            handler (Callable[[str, int, float], Awaitable[float]]): the method handler
         """
         self._Order_handler = handler
 
-    @method()
     async def Order(
         self,
-        item: 's',
-        amount: 'u',
-        pricePerItem: 'd',
-    ) -> 'd':
+        item: str,
+        amount: int,
+        pricePerItem: float,
+    ) -> float:
         """
         a simple method with args and return value
 
@@ -283,26 +385,68 @@ class WithArgsInterface(ServiceInterface):
             pricePerItem,
         )
 
-    @dbus_property(access=PropertyAccess.READWRITE)
-    async def Speed(self) -> 'd':
+    async def get_Speed(self) -> float:
+        """Getter for property Speed
+
+        the speed in m/s
+
+        Returns:
+            float: the current value
+        """
         return await self._properties.get_Speed()
 
-    @Speed.setter
-    async def Speed(self, value: 'd'):
-        changed_properties = await self._properties.set_Speed(value)
-        if changed_properties:
-            self.emit_properties_changed(changed_properties)
+    async def set_Speed(self, value: float):
+        """Setter for property Speed
 
-    @dbus_property(access=PropertyAccess.READWRITE)
-    async def Distance(self) -> 'u':
+        the speed in m/s
+
+        Args:
+            value (float): the new value
+        """
+        changed_properties = await self._properties.set_Speed(value)
+
+        self.emit_properties_changed(changed_properties)
+
+    async def get_Distance(self) -> int:
+        """Getter for property Distance
+
+        the distance to travel in m
+
+        Returns:
+            int: the current value
+        """
         return await self._properties.get_Distance()
 
-    @Distance.setter
-    async def Distance(self, value: 'u'):
-        changed_properties = await self._properties.set_Distance(value)
-        if changed_properties:
-            self.emit_properties_changed(changed_properties)
+    async def set_Distance(self, value: int):
+        """Setter for property Distance
 
-    @dbus_property(access=PropertyAccess.READ)
-    async def Duration(self) -> 'd':
+        the distance to travel in m
+
+        Args:
+            value (int): the new value
+        """
+        changed_properties = await self._properties.set_Distance(value)
+
+        self.emit_properties_changed(changed_properties)
+
+    async def get_Duration(self) -> float:
+        """Getter for property Duration
+
+        the time until the distance is covered at the current speed
+
+        Returns:
+            float: the current value
+        """
         return await self._properties.get_Duration()
+
+    async def set_Duration(self, value: float):
+        """Setter for property Duration
+
+        the time until the distance is covered at the current speed
+
+        Args:
+            value (float): the new value
+        """
+        changed_properties = await self._properties.set_Duration(value)
+
+        self.emit_properties_changed(changed_properties)

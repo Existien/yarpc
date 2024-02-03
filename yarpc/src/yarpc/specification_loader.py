@@ -27,7 +27,7 @@ def __load_yaml(filename: Path, validator: Draft7Validator):
     for obj in parsed.get('objects', []):
         obj['specName'] = filename.stem
         obj['specPath'] = str(filename.absolute().resolve())
-        obj['regex'] = re.compile('^' + obj['regex' if 'regex' in obj else 'name'] + '$')
+        # obj['regex'] = re.compile('^' + obj['regex' if 'regex' in obj else 'name'] + '$')
     return parsed
 
 def __get_schema_validator():

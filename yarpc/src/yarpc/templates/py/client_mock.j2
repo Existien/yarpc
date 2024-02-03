@@ -3,13 +3,18 @@
 # Spec:
 #   File: {{ object.specPath }}
 #   Object: {{ object.name }}
-#   Template: {{ target.template }}
+#   Template: py/client_mock.j2
+{% import "dbus_common.j2" as dbus %}
+{% import "py/common.j2" as py %}
 
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock
 import sys
 import asyncio
+{% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
+from .{{ object.name|snake_case }} import {{ object.name }}
+{% endfor %}
 
 
 class {{ target.className }}():
@@ -67,10 +72,11 @@ class {{ target.className }}():
 
     def _unpack_prop(self, name, variant):
         prop_map = {
-                {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-                "{{ member.name }}": {{ (member.type|find_type(output.objects)).py }},
-                {% endfor %}
-            }
+            {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+            {% set prop_type = py.type(member.type, output.objects) %}
+            "{{ member.name }}": {{prop_type}}.from_dbus if hasattr({{prop_type}}, 'from_dbus') else {{prop_type}},
+            {% endfor %}
+        }
         if name in prop_map:
             return prop_map[name](variant.value)
         return None
@@ -100,12 +106,12 @@ class {{ target.className }}():
     def _{{ member.name }}_handler(
         self,
         {% for arg in member.args %}
-            {{ arg.name }}: {{ (arg.type|find_type(output.objects)).py }},
+            {{ arg.name }}: '{{ dbus.type(arg.type, output.objects) }}',
         {% endfor %}
     ):
         self.mock.{{ member.name }}(
         {% for arg in member.args %}
-            {{ arg.name }},
+            {{ py.from_dbus(arg.name, arg.type, output.objects) }},
         {% endfor %}
         )
 {% endif %}
@@ -113,54 +119,61 @@ class {{ target.className }}():
     async def {{ member.name }}(
         self,
         {% for arg in member.args %}
-        {{ arg.name }}: {{ (arg.type|find_type(output.objects)).py }},
+        {{ arg.name }}: {{ py.type(arg.type, output.objects) }},
         {% endfor %}
     ) ->{{ ' ' }}
-    {%- if member.returns %}{{ (member.returns.type|find_type(output.objects)).py }}{% else %}None{% endif %}:
+    {%- if member.returns %}{{ py.type(member.returns.type, output.objects) }}{% else %}None{% endif %}:
         """
         {{ member.docs }}
         {% if member.args|count > 0 %}
 
         Args:
         {% for arg in member.args %}
-            {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
+            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs }}
         {% endfor %}
         {% endif %}
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_{{ member.name|snake_case }}(
+        raw_return = await self._interface.call_{{ member.name|snake_case }}(
         {% for arg in member.args %}
-            {{ arg.name }},
+            {{ py.to_dbus(arg.name, arg.type, output.objects) }},
         {% endfor %}
         )
+        {% if member.returns %}
+        return {{ py.from_dbus('raw_return', member.returns.type, output.objects)|indent(8) }}
+        {% else %}
+        return None
+        {% endif %}
 {%- endif -%}
 {% if member.kind == 'property' %}
-
-    async def get_{{ member.name }}(self) -> {{ (member.type|find_type(output.objects)).py }}:
+    async def get_{{ member.name }}(self) -> {{ py.type(member.type, output.objects) }}:
         """Getter for property '{{ member.name }}'
 
         {{ member.docs }}
 
         Returns:
-            {{ (member.type|find_type(output.objects)).py }}: the current value
+            {{ py.type(member.type, output.objects) }}: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.get_{{ member.name|snake_case }}()
+        raw_return = await self._interface.get_{{ member.name|snake_case }}()
+        unmarshalled = {{ py.from_dbus('raw_return', member.type, output.objects) }}
+        return unmarshalled
 {% if not member.readonly %}
 
-    async def set_{{ member.name }}(self, value: {{ (member.type|find_type(output.objects)).py }}) -> None:
+    async def set_{{ member.name }}(self, value: {{ py.type(member.type, output.objects) }}) -> None:
         """Setter for property '{{ member.name }}'
 
         {{ member.docs }}
 
         Args:
-            value ({{ (member.type|find_type(output.objects)).py }}): the new value
+            value ({{ py.type(member.type, output.objects) }}): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.set_{{ member.name|snake_case }}(value)
-{%- endif -%}
+        marshalled = {{ py.to_dbus('value', member.type, output.objects)|indent(8) }}
+        return await self._interface.set_{{ member.name|snake_case }}(marshalled)
+{% endif %}
 {% endif %}
 {% endfor %}

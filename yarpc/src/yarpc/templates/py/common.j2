@@ -1,0 +1,69 @@
+{#
+    Find *type_as_str* in *objects*
+    and return the respective python type
+#}
+{% macro type(type_as_str, objects) %}
+{%- set object = type_as_str|find_type(objects) -%}
+{%- if object.kind == 'struct' -%}
+{{ object.name }}
+{%- elif object.kind == 'builtin' -%}
+{{ object.py }}
+{%- endif -%}
+{%- endmacro %}
+{#
+    Convert *value* from the format returned by
+    dbus-next into *type_as_str* from *objects*
+#}
+{%- macro unmarshal(value, type_as_str, objects) -%}
+{%- set object = type_as_str|find_type(objects) -%}
+{%- if object.kind == 'struct' -%}
+{{ object.name }}(
+    {% for index in range(0, object.members|count) %}
+    {% set member = object.members[index] %}
+    {{ member.name }}={{ unmarshal(value+"["+index|string+"]", member.type, objects)|indent }},
+    {% endfor %}
+)
+{%- elif object.kind == 'builtin' -%}
+{{ value }}
+{%- endif -%}
+{%- endmacro -%}
+{#
+    Convert *value* of type *type_as_str* from *objects*
+    into the format expected by dbus-next
+#}
+{%- macro marshal(value, type_as_str, objects) -%}
+{%- set object = type_as_str|find_type(objects) -%}
+{%- if object.kind == 'struct' -%}
+[
+    {% for member in object.members %}
+    {{ marshal(value+"."+member.name, member.type, objects)|indent }},
+    {% endfor %}
+]
+{%- elif object.kind == 'builtin' -%}
+{{ value }}
+{%- endif -%}
+{%- endmacro -%}
+{#
+    Unmarshall *value* of type *type_as_str* in *objects*
+    if it is a struct
+#}
+{%- macro from_dbus(value, type_as_str, objects) -%}
+{%- set object = type_as_str|find_type(objects) -%}
+{%- if object.kind == 'struct' -%}
+{{ type_as_str }}.from_dbus({{ value }})
+{%- else -%}
+{{ value }}
+{%- endif -%}
+{%- endmacro -%}
+{#
+    Marshall *value* of type *type_as_str* in *objects*
+    if it is a struct
+#}
+{%- macro to_dbus(value, type_as_str, objects) -%}
+{%- set object = type_as_str|find_type(objects) -%}
+{%- if object.kind == 'struct' -%}
+{{ value }}.to_dbus()
+{%- else -%}
+{{ value }}
+{%- endif -%}
+{%- endmacro -%}

@@ -1,5 +1,5 @@
-from .gen.with_args_interface import WithArgsInterface
-from .gen.backend_with_args_client import BackendWithArgsClient
+from .basic_gen.with_args_interface import WithArgsInterface
+from .basic_gen.backend_with_args_client import BackendWithArgsClient
 import asyncio
 
 class ProxyProperties:

@@ -2,6 +2,7 @@ from python_mocks import Connection
 from .minimal_mock import get_minimal_mock
 from .with_args_mock import get_with_args_mock
 from .primitives_mock import get_primitives_mock
+from .structs_mock import get_structs_mock
 import asyncio
 
 
@@ -10,6 +11,7 @@ def main():
         get_minimal_mock(),
         get_with_args_mock(),
         get_primitives_mock(),
+        get_structs_mock(),
     ]
 
     print("Python mock service running")

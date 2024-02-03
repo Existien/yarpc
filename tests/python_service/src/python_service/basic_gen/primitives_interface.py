@@ -3,7 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/primitives.yml
 #   Object: Primitives
-#   Template: service
+#   Template: py/service.j2
 
 from typing import Protocol
 from dbus_next.service import (
@@ -11,11 +11,194 @@ from dbus_next.service import (
 )
 from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
-from copy import deepcopy
-import asyncio
 
 
-class PrimitivesInterface(ServiceInterface):
+
+class _Interface(ServiceInterface):
+    """
+    D-Bus interface implementation for Primitives
+
+    Args:
+        wrapper(PrimitivesInterface): Wrapper responsible for (un-)marhsalling D-Bus types
+    """
+
+    def __init__(self, wrapper):
+        super().__init__("com.yarpc.testservice.primitives")
+        self.object_path = "/com/yarpc/testservice"
+        self._wrapper = wrapper
+
+    @signal()
+    def Uint8Signal(
+        self,
+        value: 'y',
+    ) -> 'y':
+        return value
+
+    @signal()
+    def BoolSignal(
+        self,
+        value: 'b',
+    ) -> 'b':
+        return value
+
+    @signal()
+    def Int16Signal(
+        self,
+        value: 'n',
+    ) -> 'n':
+        return value
+
+    @signal()
+    def Uint16Signal(
+        self,
+        value: 'q',
+    ) -> 'q':
+        return value
+
+    @signal()
+    def Int32Signal(
+        self,
+        value: 'i',
+    ) -> 'i':
+        return value
+
+    @signal()
+    def Uint32Signal(
+        self,
+        value: 'u',
+    ) -> 'u':
+        return value
+
+    @signal()
+    def Int64Signal(
+        self,
+        value: 'x',
+    ) -> 'x':
+        return value
+
+    @signal()
+    def Uint64Signal(
+        self,
+        value: 't',
+    ) -> 't':
+        return value
+
+    @signal()
+    def DoubleSignal(
+        self,
+        value: 'd',
+    ) -> 'd':
+        return value
+
+    @signal()
+    def StringSignal(
+        self,
+        value: 's',
+    ) -> 's':
+        return value
+
+    @method()
+    async def Uint8Method(
+        self,
+        value: 'y',
+    ) -> 'y':
+        raw_return = await self._wrapper.Uint8Method(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def BoolMethod(
+        self,
+        value: 'b',
+    ) -> 'b':
+        raw_return = await self._wrapper.BoolMethod(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def Int16Method(
+        self,
+        value: 'n',
+    ) -> 'n':
+        raw_return = await self._wrapper.Int16Method(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def Uint16Method(
+        self,
+        value: 'q',
+    ) -> 'q':
+        raw_return = await self._wrapper.Uint16Method(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def Int32Method(
+        self,
+        value: 'i',
+    ) -> 'i':
+        raw_return = await self._wrapper.Int32Method(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def Uint32Method(
+        self,
+        value: 'u',
+    ) -> 'u':
+        raw_return = await self._wrapper.Uint32Method(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def Int64Method(
+        self,
+        value: 'x',
+    ) -> 'x':
+        raw_return = await self._wrapper.Int64Method(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def Uint64Method(
+        self,
+        value: 't',
+    ) -> 't':
+        raw_return = await self._wrapper.Uint64Method(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def DoubleMethod(
+        self,
+        value: 'd',
+    ) -> 'd':
+        raw_return = await self._wrapper.DoubleMethod(
+            value,
+        )
+        return raw_return
+
+    @method()
+    async def StringMethod(
+        self,
+        value: 's',
+    ) -> 's':
+        raw_return = await self._wrapper.StringMethod(
+            value,
+        )
+        return raw_return
+
+
+class PrimitivesInterface():
     """
     A interface using all builtin primitive types
     """
@@ -23,8 +206,9 @@ class PrimitivesInterface(ServiceInterface):
     def __init__(
         self,
     ):
-        super().__init__("com.yarpc.testservice.primitives")
-        self.object_path = "/com/yarpc/testservice"
+        self.interface = _Interface(self)
+        self.name = self.interface.name
+        self.object_path = self.interface.object_path
 
         self._Uint8Method_handler = None
         self._BoolMethod_handler = None
@@ -37,151 +221,183 @@ class PrimitivesInterface(ServiceInterface):
         self._DoubleMethod_handler = None
         self._StringMethod_handler = None
 
-    @signal()
+    def emit_properties_changed(self, changed_properties: dict) -> None:
+        """Informs clients about changed properties
+
+        Args:
+            changed_properties (dict): A dictionary containing all changed properties with their new values
+        """
+        if not changed_properties: return
+
+        def marshal(data):
+            if isinstance(data, dict):
+                for key in data.keys():
+                    data[key] = marshal(data[key])
+                return data
+            elif isinstance(data, list):
+                for i in range(0, len(data)):
+                    data[i] = marshal(data[i])
+                return data
+            elif hasattr(data, 'to_dbus'):
+                return data.to_dbus()
+            else:
+                return data
+        marshalled = marshal(changed_properties)
+        self.interface.emit_properties_changed(marshalled)
+
     def Uint8Signal(
         self,
         value: int,
-    ) -> 'y':
+    ) -> None:
         """
         a signal
 
         Args:
             value (int): the value
         """
-        return value
+        self.interface.Uint8Signal(
+            value,
+        )
 
-    @signal()
     def BoolSignal(
         self,
         value: bool,
-    ) -> 'b':
+    ) -> None:
         """
         a signal
 
         Args:
             value (bool): the value
         """
-        return value
+        self.interface.BoolSignal(
+            value,
+        )
 
-    @signal()
     def Int16Signal(
         self,
         value: int,
-    ) -> 'n':
+    ) -> None:
         """
         a signal
 
         Args:
             value (int): the value
         """
-        return value
+        self.interface.Int16Signal(
+            value,
+        )
 
-    @signal()
     def Uint16Signal(
         self,
         value: int,
-    ) -> 'q':
+    ) -> None:
         """
         a signal
 
         Args:
             value (int): the value
         """
-        return value
+        self.interface.Uint16Signal(
+            value,
+        )
 
-    @signal()
     def Int32Signal(
         self,
         value: int,
-    ) -> 'i':
+    ) -> None:
         """
         a signal
 
         Args:
             value (int): the value
         """
-        return value
+        self.interface.Int32Signal(
+            value,
+        )
 
-    @signal()
     def Uint32Signal(
         self,
         value: int,
-    ) -> 'u':
+    ) -> None:
         """
         a signal
 
         Args:
             value (int): the value
         """
-        return value
+        self.interface.Uint32Signal(
+            value,
+        )
 
-    @signal()
     def Int64Signal(
         self,
         value: int,
-    ) -> 'x':
+    ) -> None:
         """
         a signal
 
         Args:
             value (int): the value
         """
-        return value
+        self.interface.Int64Signal(
+            value,
+        )
 
-    @signal()
     def Uint64Signal(
         self,
         value: int,
-    ) -> 't':
+    ) -> None:
         """
         a signal
 
         Args:
             value (int): the value
         """
-        return value
+        self.interface.Uint64Signal(
+            value,
+        )
 
-    @signal()
     def DoubleSignal(
         self,
         value: float,
-    ) -> 'd':
+    ) -> None:
         """
         a signal
 
         Args:
             value (float): the value
         """
-        return value
+        self.interface.DoubleSignal(
+            value,
+        )
 
-    @signal()
     def StringSignal(
         self,
         value: str,
-    ) -> 's':
+    ) -> None:
         """
         a signal
 
         Args:
             value (str): the value
         """
-        return value
-
+        self.interface.StringSignal(
+            value,
+        )
 
     def on_Uint8Method(self, handler) -> None:
         """
         Set handler for Uint8Method method
 
         Args:
-            handler (Callable[[int], Awaitable[None]]): the method handler
+            handler (Callable[[int], Awaitable[int]]): the method handler
         """
         self._Uint8Method_handler = handler
 
-    @method()
     async def Uint8Method(
         self,
-        value: 'y',
-    ) -> 'y':
+        value: int,
+    ) -> int:
         """
         a method
 
@@ -203,15 +419,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for BoolMethod method
 
         Args:
-            handler (Callable[[bool], Awaitable[None]]): the method handler
+            handler (Callable[[bool], Awaitable[bool]]): the method handler
         """
         self._BoolMethod_handler = handler
 
-    @method()
     async def BoolMethod(
         self,
-        value: 'b',
-    ) -> 'b':
+        value: bool,
+    ) -> bool:
         """
         a method
 
@@ -233,15 +448,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for Int16Method method
 
         Args:
-            handler (Callable[[int], Awaitable[None]]): the method handler
+            handler (Callable[[int], Awaitable[int]]): the method handler
         """
         self._Int16Method_handler = handler
 
-    @method()
     async def Int16Method(
         self,
-        value: 'n',
-    ) -> 'n':
+        value: int,
+    ) -> int:
         """
         a method
 
@@ -263,15 +477,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for Uint16Method method
 
         Args:
-            handler (Callable[[int], Awaitable[None]]): the method handler
+            handler (Callable[[int], Awaitable[int]]): the method handler
         """
         self._Uint16Method_handler = handler
 
-    @method()
     async def Uint16Method(
         self,
-        value: 'q',
-    ) -> 'q':
+        value: int,
+    ) -> int:
         """
         a method
 
@@ -293,15 +506,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for Int32Method method
 
         Args:
-            handler (Callable[[int], Awaitable[None]]): the method handler
+            handler (Callable[[int], Awaitable[int]]): the method handler
         """
         self._Int32Method_handler = handler
 
-    @method()
     async def Int32Method(
         self,
-        value: 'i',
-    ) -> 'i':
+        value: int,
+    ) -> int:
         """
         a method
 
@@ -323,15 +535,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for Uint32Method method
 
         Args:
-            handler (Callable[[int], Awaitable[None]]): the method handler
+            handler (Callable[[int], Awaitable[int]]): the method handler
         """
         self._Uint32Method_handler = handler
 
-    @method()
     async def Uint32Method(
         self,
-        value: 'u',
-    ) -> 'u':
+        value: int,
+    ) -> int:
         """
         a method
 
@@ -353,15 +564,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for Int64Method method
 
         Args:
-            handler (Callable[[int], Awaitable[None]]): the method handler
+            handler (Callable[[int], Awaitable[int]]): the method handler
         """
         self._Int64Method_handler = handler
 
-    @method()
     async def Int64Method(
         self,
-        value: 'x',
-    ) -> 'x':
+        value: int,
+    ) -> int:
         """
         a method
 
@@ -383,15 +593,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for Uint64Method method
 
         Args:
-            handler (Callable[[int], Awaitable[None]]): the method handler
+            handler (Callable[[int], Awaitable[int]]): the method handler
         """
         self._Uint64Method_handler = handler
 
-    @method()
     async def Uint64Method(
         self,
-        value: 't',
-    ) -> 't':
+        value: int,
+    ) -> int:
         """
         a method
 
@@ -413,15 +622,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for DoubleMethod method
 
         Args:
-            handler (Callable[[float], Awaitable[None]]): the method handler
+            handler (Callable[[float], Awaitable[float]]): the method handler
         """
         self._DoubleMethod_handler = handler
 
-    @method()
     async def DoubleMethod(
         self,
-        value: 'd',
-    ) -> 'd':
+        value: float,
+    ) -> float:
         """
         a method
 
@@ -443,15 +651,14 @@ class PrimitivesInterface(ServiceInterface):
         Set handler for StringMethod method
 
         Args:
-            handler (Callable[[str], Awaitable[None]]): the method handler
+            handler (Callable[[str], Awaitable[str]]): the method handler
         """
         self._StringMethod_handler = handler
 
-    @method()
     async def StringMethod(
         self,
-        value: 's',
-    ) -> 's':
+        value: str,
+    ) -> str:
         """
         a method
 

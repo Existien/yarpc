@@ -3,7 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/primitives.yml
 #   Object: Primitives
-#   Template: client_mock
+#   Template: py/client_mock.j2
 
 from .connection import Connection
 from dbus_next import Variant, DBusError
@@ -72,7 +72,7 @@ class PrimitivesClientMock():
 
     def _unpack_prop(self, name, variant):
         prop_map = {
-            }
+        }
         if name in prop_map:
             return prop_map[name](variant.value)
         return None
@@ -99,7 +99,7 @@ class PrimitivesClientMock():
 
     def _Uint8Signal_handler(
         self,
-            value: int,
+            value: 'y',
     ):
         self.mock.Uint8Signal(
             value,
@@ -107,7 +107,7 @@ class PrimitivesClientMock():
 
     def _BoolSignal_handler(
         self,
-            value: bool,
+            value: 'b',
     ):
         self.mock.BoolSignal(
             value,
@@ -115,7 +115,7 @@ class PrimitivesClientMock():
 
     def _Int16Signal_handler(
         self,
-            value: int,
+            value: 'n',
     ):
         self.mock.Int16Signal(
             value,
@@ -123,7 +123,7 @@ class PrimitivesClientMock():
 
     def _Uint16Signal_handler(
         self,
-            value: int,
+            value: 'q',
     ):
         self.mock.Uint16Signal(
             value,
@@ -131,7 +131,7 @@ class PrimitivesClientMock():
 
     def _Int32Signal_handler(
         self,
-            value: int,
+            value: 'i',
     ):
         self.mock.Int32Signal(
             value,
@@ -139,7 +139,7 @@ class PrimitivesClientMock():
 
     def _Uint32Signal_handler(
         self,
-            value: int,
+            value: 'u',
     ):
         self.mock.Uint32Signal(
             value,
@@ -147,7 +147,7 @@ class PrimitivesClientMock():
 
     def _Int64Signal_handler(
         self,
-            value: int,
+            value: 'x',
     ):
         self.mock.Int64Signal(
             value,
@@ -155,7 +155,7 @@ class PrimitivesClientMock():
 
     def _Uint64Signal_handler(
         self,
-            value: int,
+            value: 't',
     ):
         self.mock.Uint64Signal(
             value,
@@ -163,7 +163,7 @@ class PrimitivesClientMock():
 
     def _DoubleSignal_handler(
         self,
-            value: float,
+            value: 'd',
     ):
         self.mock.DoubleSignal(
             value,
@@ -171,7 +171,7 @@ class PrimitivesClientMock():
 
     def _StringSignal_handler(
         self,
-            value: str,
+            value: 's',
     ):
         self.mock.StringSignal(
             value,
@@ -189,9 +189,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_uint8_method(
+        raw_return = await self._interface.call_uint8_method(
             value,
         )
+        return raw_return
+
     async def BoolMethod(
         self,
         value: bool,
@@ -204,9 +206,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_bool_method(
+        raw_return = await self._interface.call_bool_method(
             value,
         )
+        return raw_return
+
     async def Int16Method(
         self,
         value: int,
@@ -219,9 +223,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_int16_method(
+        raw_return = await self._interface.call_int16_method(
             value,
         )
+        return raw_return
+
     async def Uint16Method(
         self,
         value: int,
@@ -234,9 +240,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_uint16_method(
+        raw_return = await self._interface.call_uint16_method(
             value,
         )
+        return raw_return
+
     async def Int32Method(
         self,
         value: int,
@@ -249,9 +257,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_int32_method(
+        raw_return = await self._interface.call_int32_method(
             value,
         )
+        return raw_return
+
     async def Uint32Method(
         self,
         value: int,
@@ -264,9 +274,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_uint32_method(
+        raw_return = await self._interface.call_uint32_method(
             value,
         )
+        return raw_return
+
     async def Int64Method(
         self,
         value: int,
@@ -279,9 +291,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_int64_method(
+        raw_return = await self._interface.call_int64_method(
             value,
         )
+        return raw_return
+
     async def Uint64Method(
         self,
         value: int,
@@ -294,9 +308,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_uint64_method(
+        raw_return = await self._interface.call_uint64_method(
             value,
         )
+        return raw_return
+
     async def DoubleMethod(
         self,
         value: float,
@@ -309,9 +325,11 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_double_method(
+        raw_return = await self._interface.call_double_method(
             value,
         )
+        return raw_return
+
     async def StringMethod(
         self,
         value: str,
@@ -324,6 +342,7 @@ class PrimitivesClientMock():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_string_method(
+        raw_return = await self._interface.call_string_method(
             value,
         )
+        return raw_return

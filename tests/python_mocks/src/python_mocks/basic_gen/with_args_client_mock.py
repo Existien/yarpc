@@ -3,26 +3,32 @@
 # Spec:
 #   File: /workspace/tests/specs/basic_args.yml
 #   Object: WithArgs
-#   Template: client
+#   Template: py/client_mock.j2
 
 from .connection import Connection
 from dbus_next import Variant, DBusError
+from unittest.mock import Mock
 import sys
 import asyncio
 
 
-class BackendWithArgsClient():
+class WithArgsClientMock():
     """
-    A interface using only primitive types
+    Mock client implementation of the WithArgs D-Bus interface
+
+    The Mock instance can be accessed via the `mock` attribute.
+    All received signals will be forwarded to the mock using keyword arguments.
+    E.g.
+    A received signal `Fooed('bar')`
+    might result in the following call of the mock:
+    `client.mock.Fooed(msg='bar')`
     """
 
     def __init__(self):
-        self.name = "com.yarpc.backend.withArgs"
+        self.name = "com.yarpc.testservice.withArgs"
         self._interface = None
         self._property_interface = None
-        self._properties_changed_handler = None
-        self._Notified_handler = None
-        self._OrderReceived_handler = None
+        self.mock = Mock()
 
     async def connect(self):
         """
@@ -31,28 +37,26 @@ class BackendWithArgsClient():
         try:
             bus = await Connection.bus()
             introspection = await bus.introspect(
-                "com.yarpc.backend",
-                "/com/yarpc/backend",
+                "com.yarpc.testservice",
+                "/com/yarpc/testservice",
             )
             proxy_object = bus.get_proxy_object(
-                "com.yarpc.backend",
-                "/com/yarpc/backend",
+                "com.yarpc.testservice",
+                "/com/yarpc/testservice",
                 introspection
             )
             self._interface = proxy_object.get_interface(
                 self.name
             )
 
-            if self._Notified_handler:
-                self._interface.on_notified(self._Notified_handler)
-            if self._OrderReceived_handler:
-                self._interface.on_order_received(self._OrderReceived_handler)
+            self._interface.on_notified(self._Notified_handler)
+            self._interface.on_order_received(self._OrderReceived_handler)
 
             self._property_interface = proxy_object.get_interface(
                 "org.freedesktop.DBus.Properties"
             )
             if self._properties_changed_handler:
-                self._property_interface.on_properties_changed(self._properties_changed_wrapper)
+                self._property_interface.on_properties_changed(self._properties_changed_handler)
 
             await bus.wait_for_disconnect()
         except Exception as e:
@@ -60,10 +64,10 @@ class BackendWithArgsClient():
 
     def _unpack_prop(self, name, variant):
         prop_map = {
-                "Speed": float,
-                "Distance": int,
-                "Duration": float,
-            }
+            "Speed": float.from_dbus if hasattr(float, 'from_dbus') else float,
+            "Distance": int.from_dbus if hasattr(int, 'from_dbus') else int,
+            "Duration": float.from_dbus if hasattr(float, 'from_dbus') else float,
+        }
         if name in prop_map:
             return prop_map[name](variant.value)
         return None
@@ -74,44 +78,39 @@ class BackendWithArgsClient():
             for key in packed_properties.keys()
         }
 
-
     async def get_all_properties(self) -> dict:
         """Getter for all properties
 
         Returns:
             dict: a dictionary containing the current state of all properties
         """
-        while not self._property_interface:
-            await asyncio.sleep(0.1)
         properties = await self._property_interface.call_get_all(self.name)
         return self._unpack_properties(properties)
 
-    def _properties_changed_wrapper(self, interface: str, properties: dict, _invalidated: list):
-        if self._properties_changed_handler and interface == self.name:
+    def _properties_changed_handler(self, interface: str, properties: dict, _invalidated: list):
+        if interface == self.name:
             properties = self._unpack_properties(properties)
-            self._properties_changed_handler(properties)
+            self.mock.on_properties_changed(properties=properties)
 
-    def on_Notified(self, handler):
-        """
-        Set handler for Notified signal
+    def _Notified_handler(
+        self,
+            message: 's',
+    ):
+        self.mock.Notified(
+            message,
+        )
 
-        Args:
-            handler (Callable[[str], None]): the signal handler
-        """
-        self._Notified_handler = handler
-        if self._interface:
-            self._interface.on_notified(self._Notified_handler)
-
-    def on_OrderReceived(self, handler):
-        """
-        Set handler for OrderReceived signal
-
-        Args:
-            handler (Callable[[str, int, float], None]): the signal handler
-        """
-        self._OrderReceived_handler = handler
-        if self._interface:
-            self._interface.on_order_received(self._OrderReceived_handler)
+    def _OrderReceived_handler(
+        self,
+            item: 's',
+            amount: 'u',
+            pricePerItem: 'd',
+    ):
+        self.mock.OrderReceived(
+            item,
+            amount,
+            pricePerItem,
+        )
 
     async def Notify(
         self,
@@ -125,9 +124,11 @@ class BackendWithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_notify(
+        raw_return = await self._interface.call_notify(
             message,
         )
+        return None
+
     async def Order(
         self,
         item: str,
@@ -141,17 +142,15 @@ class BackendWithArgsClient():
             item (str): The item
             amount (int): a amount ordered
             pricePerItem (float): the price per item
-
-        Returns:
-            float: the total price
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_order(
+        raw_return = await self._interface.call_order(
             item,
             amount,
             pricePerItem,
         )
+        return raw_return
 
     async def get_Speed(self) -> float:
         """Getter for property 'Speed'
@@ -163,18 +162,9 @@ class BackendWithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.get_speed()
-
-    def on_properties_changed(self, handler) -> None:
-        """
-        Set handler for property changes
-
-        The handler takes a dictionary of the changed properties
-
-        Args:
-            handler(Callable[[dict], None]): the handler
-        """
-        self._properties_changed_handler = handler
+        raw_return = await self._interface.get_speed()
+        unmarshalled = raw_return
+        return unmarshalled
 
     async def set_Speed(self, value: float) -> None:
         """Setter for property 'Speed'
@@ -186,7 +176,8 @@ class BackendWithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.set_speed(value)
+        marshalled = value
+        return await self._interface.set_speed(marshalled)
 
     async def get_Distance(self) -> int:
         """Getter for property 'Distance'
@@ -198,18 +189,9 @@ class BackendWithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.get_distance()
-
-    def on_properties_changed(self, handler) -> None:
-        """
-        Set handler for property changes
-
-        The handler takes a dictionary of the changed properties
-
-        Args:
-            handler(Callable[[dict], None]): the handler
-        """
-        self._properties_changed_handler = handler
+        raw_return = await self._interface.get_distance()
+        unmarshalled = raw_return
+        return unmarshalled
 
     async def set_Distance(self, value: int) -> None:
         """Setter for property 'Distance'
@@ -221,7 +203,8 @@ class BackendWithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.set_distance(value)
+        marshalled = value
+        return await self._interface.set_distance(marshalled)
 
     async def get_Duration(self) -> float:
         """Getter for property 'Duration'
@@ -233,15 +216,6 @@ class BackendWithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.get_duration()
-
-    def on_properties_changed(self, handler) -> None:
-        """
-        Set handler for property changes
-
-        The handler takes a dictionary of the changed properties
-
-        Args:
-            handler(Callable[[dict], None]): the handler
-        """
-        self._properties_changed_handler = handler
+        raw_return = await self._interface.get_duration()
+        unmarshalled = raw_return
+        return unmarshalled

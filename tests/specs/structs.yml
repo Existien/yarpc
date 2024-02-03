@@ -1,0 +1,49 @@
+objects:
+- name: SimpleStruct
+  kind: struct
+  docs: An order
+  members:
+  - name: item
+    type: Item
+    docs: The item
+  - name: amount
+    type: uint32
+    docs: the amount ordered
+- name: Item
+  kind: struct
+  docs: an item
+  members:
+  - name: name
+    type: string
+    docs: the name
+  - name: price
+    type: double
+    docs: the price
+- name: Structs
+  kind: interface
+  docs: A interface with structures
+  members:
+  - name: SendStruct
+    kind: method
+    docs: a method with a struct as args
+    args:
+    - name: simpleStruct
+      type: SimpleStruct
+      docs: the SimpleStruct to send
+    returns:
+      type: SimpleStruct
+      docs: the SimpleStruct
+  - name: StructReceived
+    kind: signal
+    docs: a signal with a struct as args
+    args:
+    - name: simpleStruct
+      type: SimpleStruct
+      docs: the SimpleStruct
+    - name: totalCosts
+      type: double
+      docs: the total costs
+  - name: Simple
+    docs: a property for a simple struct
+    kind: property
+    type: SimpleStruct

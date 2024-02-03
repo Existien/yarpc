@@ -6,6 +6,7 @@ Feature: Primitives interface
             | Minimal    |      |
             | WithArgs   |      |
             | Primitives | Bob  |
+            | Structs    |      |
         And a running python service
         And a mocked python client connecting to the following interfaces
             | interface  | name  |

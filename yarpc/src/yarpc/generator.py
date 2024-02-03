@@ -66,6 +66,12 @@ class Generator:
                 is_up_to_date and
                 self._generate_file(filename, language, target['template'], target_context, check_only)
             )
+        if object.get('kind') == 'struct':
+            filename = Path(f"{self._get_location(output)}/{self._generate_filename(object['name'], 'struct', language)}")
+            is_up_to_date = (
+                is_up_to_date and
+                self._generate_file(filename, language, 'struct', context, check_only)
+            )
         return is_up_to_date
 
     def _generate_filename(self, name, template, language) -> str:

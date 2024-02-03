@@ -3,7 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/basic_args.yml
 #   Object: WithArgs
-#   Template: service_mock
+#   Template: py/service_mock.j2
 
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
@@ -12,9 +12,92 @@ from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
 from unittest.mock import AsyncMock
 from copy import deepcopy
-import asyncio
 
-class BackendWithArgsInterfaceMock(ServiceInterface):
+
+class _Interface(ServiceInterface):
+    """
+    D-Bus interface implementation for WithArgs
+
+    Args:
+        wrapper(BackendWithArgsInterfaceMock): Wrapper responsible for (un-)marhsalling D-Bus types
+    """
+
+    def __init__(self, wrapper):
+        super().__init__("com.yarpc.backend.withArgs")
+        self.object_path = "/com/yarpc/backend"
+        self._wrapper = wrapper
+
+    @signal()
+    def Notified(
+        self,
+        message: 's',
+    ) -> 's':
+        return message
+
+    @signal()
+    def OrderReceived(
+        self,
+        item: 's',
+        amount: 'u',
+        pricePerItem: 'd',
+    ) -> 'sud':
+        return [
+            item,
+            amount,
+            pricePerItem,
+        ]
+
+    @method()
+    async def Notify(
+        self,
+        message: 's',
+    ) -> None:
+        await self._wrapper.Notify(
+            message,
+        )
+        return None
+
+    @method()
+    async def Order(
+        self,
+        item: 's',
+        amount: 'u',
+        pricePerItem: 'd',
+    ) -> 'd':
+        raw_return = await self._wrapper.Order(
+            item,
+            amount,
+            pricePerItem,
+        )
+        return raw_return
+
+    @dbus_property(access=PropertyAccess.READWRITE)
+    async def Speed(self) -> 'd':
+        unmarshalled = await self._wrapper.get_Speed()
+        return unmarshalled
+
+    @Speed.setter
+    async def Speed(self, value: 'd'):
+        unmarshalled = value
+        await self._wrapper.set_Speed(unmarshalled)
+
+    @dbus_property(access=PropertyAccess.READWRITE)
+    async def Distance(self) -> 'u':
+        unmarshalled = await self._wrapper.get_Distance()
+        return unmarshalled
+
+    @Distance.setter
+    async def Distance(self, value: 'u'):
+        unmarshalled = value
+        await self._wrapper.set_Distance(unmarshalled)
+
+    @dbus_property(access=PropertyAccess.READ)
+    async def Duration(self) -> 'd':
+        unmarshalled = await self._wrapper.get_Duration()
+        return unmarshalled
+
+
+class BackendWithArgsInterfaceMock():
     """
     Mock service implementation of the WithArgs D-Bus interface.
 
@@ -43,9 +126,10 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
         Distance: int,
         Duration: float,
     ):
-        super().__init__("com.yarpc.backend.withArgs")
+        self.interface = _Interface(self)
+        self.name = self.interface.name
+        self.object_path = self.interface.object_path
         self.mock = AsyncMock()
-        self.object_path = "/com/yarpc/backend"
 
         self.mock.Notify.return_value = None
         self.mock.Order.return_value = None
@@ -65,26 +149,50 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
         kwargs = dict(filter(lambda kv: kv[0] != 'self', local_variables.items()))
         return await getattr(self.mock, method)(**kwargs)
 
-    @signal()
+    def emit_properties_changed(self, changed_properties: dict) -> None:
+        """Informs clients about changed properties
+
+        Args:
+            changed_properties (dict): A dictionary containing all changed properties with their new values
+        """
+        if not changed_properties: return
+
+        def marshal(data):
+            if isinstance(data, dict):
+                for key in data.keys():
+                    data[key] = marshal(data[key])
+                return data
+            elif isinstance(data, list):
+                for i in range(0, len(data)):
+                    data[i] = marshal(data[i])
+                return data
+            elif hasattr(data, 'to_dbus'):
+                return data.to_dbus()
+            else:
+                return data
+        marshalled = marshal(changed_properties)
+        self.interface.emit_properties_changed(marshalled)
+
     def Notified(
         self,
         message: str,
-    ) -> 's':
+    ) -> None:
         """
         a simple signal with one argument
 
         Args:
             message (str): The message
         """
-        return message
+        self.interface.Notified(
+            message,
+        )
 
-    @signal()
     def OrderReceived(
         self,
         item: str,
         amount: int,
         pricePerItem: float,
-    ) -> 'sud':
+    ) -> None:
         """
         a simple signal with multiple arguments
 
@@ -93,16 +201,15 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
             amount (int): a amount ordered
             pricePerItem (float): the price per item
         """
-        return [
+        self.interface.OrderReceived(
             item,
             amount,
             pricePerItem,
-        ]
+        )
 
-    @method()
     async def Notify(
         self,
-        message: 's',
+        message: str,
     ) -> None:
         """
         a simple method with one argument
@@ -111,13 +218,13 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
             message (str): The message
         """
         return await self._await_mock_method("Notify", locals())
-    @method()
+
     async def Order(
         self,
-        item: 's',
-        amount: 'u',
-        pricePerItem: 'd',
-    ) -> 'd':
+        item: str,
+        amount: int,
+        pricePerItem: float,
+    ) -> float:
         """
         a simple method with args and return value
 
@@ -131,8 +238,14 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
         """
         return await self._await_mock_method("Order", locals())
 
-    @dbus_property(access=PropertyAccess.READWRITE)
-    def Speed(self) -> 'd':
+    async def get_Speed(self) -> float:
+        """Getter for property Speed
+
+        the speed in m/s
+
+        Returns:
+            float: the current value
+        """
         return self._properties["Speed"]
 
     def on_Speed_changed(self, handler) -> None:
@@ -155,6 +268,13 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
         return { "Speed": value }
 
     async def set_Speed(self, value: float):
+        """Setter for property Speed
+
+        the speed in m/s
+
+        Args:
+            value (float): the new value
+        """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_Speed_changed(value, properties_working_copy)
         properties_working_copy.update(changed_properties)
@@ -165,15 +285,17 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
                 del properties_working_copy[key]
             else:
                 self._properties[key] = properties_working_copy[key]
-        if properties_working_copy:
+
             self.emit_properties_changed(properties_working_copy)
 
-    @Speed.setter
-    async def Speed(self, value: 'd'):
-        await self.set_Speed(value)
+    async def get_Distance(self) -> int:
+        """Getter for property Distance
 
-    @dbus_property(access=PropertyAccess.READWRITE)
-    def Distance(self) -> 'u':
+        the distance to travel in m
+
+        Returns:
+            int: the current value
+        """
         return self._properties["Distance"]
 
     def on_Distance_changed(self, handler) -> None:
@@ -196,6 +318,13 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
         return { "Distance": value }
 
     async def set_Distance(self, value: int):
+        """Setter for property Distance
+
+        the distance to travel in m
+
+        Args:
+            value (int): the new value
+        """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_Distance_changed(value, properties_working_copy)
         properties_working_copy.update(changed_properties)
@@ -206,15 +335,17 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
                 del properties_working_copy[key]
             else:
                 self._properties[key] = properties_working_copy[key]
-        if properties_working_copy:
+
             self.emit_properties_changed(properties_working_copy)
 
-    @Distance.setter
-    async def Distance(self, value: 'u'):
-        await self.set_Distance(value)
+    async def get_Duration(self) -> float:
+        """Getter for property Duration
 
-    @dbus_property(access=PropertyAccess.READ)
-    def Duration(self) -> 'd':
+        the time until the distance is covered at the current speed
+
+        Returns:
+            float: the current value
+        """
         return self._properties["Duration"]
 
     def on_Duration_changed(self, handler) -> None:
@@ -237,6 +368,13 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
         return { "Duration": value }
 
     async def set_Duration(self, value: float):
+        """Setter for property Duration
+
+        the time until the distance is covered at the current speed
+
+        Args:
+            value (float): the new value
+        """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_Duration_changed(value, properties_working_copy)
         properties_working_copy.update(changed_properties)
@@ -247,5 +385,5 @@ class BackendWithArgsInterfaceMock(ServiceInterface):
                 del properties_working_copy[key]
             else:
                 self._properties[key] = properties_working_copy[key]
-        if properties_working_copy:
+
             self.emit_properties_changed(properties_working_copy)

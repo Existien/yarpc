@@ -1,4 +1,4 @@
-from .gen.minimal_client import MinimalClient
+from .basic_gen.minimal_client import MinimalClient
 import asyncio
 
 async def minimal_loop(client):

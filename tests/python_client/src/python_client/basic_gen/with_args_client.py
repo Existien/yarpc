@@ -3,7 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/basic_args.yml
 #   Object: WithArgs
-#   Template: client
+#   Template: py/client.j2
 
 from .connection import Connection
 from dbus_next import Variant, DBusError
@@ -44,9 +44,9 @@ class WithArgsClient():
             )
 
             if self._Notified_handler:
-                self._interface.on_notified(self._Notified_handler)
+                self._interface.on_notified(self._Notified_wrapper)
             if self._OrderReceived_handler:
-                self._interface.on_order_received(self._OrderReceived_handler)
+                self._interface.on_order_received(self._OrderReceived_wrapper)
 
             self._property_interface = proxy_object.get_interface(
                 "org.freedesktop.DBus.Properties"
@@ -60,10 +60,10 @@ class WithArgsClient():
 
     def _unpack_prop(self, name, variant):
         prop_map = {
-                "Speed": float,
-                "Distance": int,
-                "Duration": float,
-            }
+            "Speed": float.from_dbus if hasattr(float, 'from_dbus') else float,
+            "Distance": int.from_dbus if hasattr(int, 'from_dbus') else int,
+            "Duration": float.from_dbus if hasattr(float, 'from_dbus') else float,
+        }
         if name in prop_map:
             return prop_map[name](variant.value)
         return None
@@ -73,7 +73,6 @@ class WithArgsClient():
             key: self._unpack_prop(key, packed_properties[key])
             for key in packed_properties.keys()
         }
-
 
     async def get_all_properties(self) -> dict:
         """Getter for all properties
@@ -91,6 +90,14 @@ class WithArgsClient():
             properties = self._unpack_properties(properties)
             self._properties_changed_handler(properties)
 
+    def _Notified_wrapper(
+        self,
+        message: 's',
+    ):
+        self._Notified_handler(
+            message,
+        )
+
     def on_Notified(self, handler):
         """
         Set handler for Notified signal
@@ -100,7 +107,19 @@ class WithArgsClient():
         """
         self._Notified_handler = handler
         if self._interface:
-            self._interface.on_notified(self._Notified_handler)
+            self._interface.on_notified(self._Notified_wrapper)
+
+    def _OrderReceived_wrapper(
+        self,
+        item: 's',
+        amount: 'u',
+        pricePerItem: 'd',
+    ):
+        self._OrderReceived_handler(
+            item,
+            amount,
+            pricePerItem,
+        )
 
     def on_OrderReceived(self, handler):
         """
@@ -111,11 +130,11 @@ class WithArgsClient():
         """
         self._OrderReceived_handler = handler
         if self._interface:
-            self._interface.on_order_received(self._OrderReceived_handler)
+            self._interface.on_order_received(self._OrderReceived_wrapper)
 
     async def Notify(
         self,
-        message: str,
+        message: 'str',
     ) -> None:
         """
         a simple method with one argument
@@ -125,14 +144,16 @@ class WithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_notify(
+        raw_return = await self._interface.call_notify(
             message,
         )
+        return None
+
     async def Order(
         self,
-        item: str,
-        amount: int,
-        pricePerItem: float,
+        item: 'str',
+        amount: 'int',
+        pricePerItem: 'float',
     ) -> float:
         """
         a simple method with args and return value
@@ -147,11 +168,12 @@ class WithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_order(
+        raw_return = await self._interface.call_order(
             item,
             amount,
             pricePerItem,
         )
+        return raw_return
 
     async def get_Speed(self) -> float:
         """Getter for property 'Speed'
@@ -163,7 +185,9 @@ class WithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.get_speed()
+        raw_return = await self._interface.get_speed()
+        unmarshalled = raw_return
+        return unmarshalled
 
     def on_properties_changed(self, handler) -> None:
         """
@@ -186,7 +210,8 @@ class WithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.set_speed(value)
+        marshalled = value
+        return await self._interface.set_speed(marshalled)
 
     async def get_Distance(self) -> int:
         """Getter for property 'Distance'
@@ -198,7 +223,9 @@ class WithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.get_distance()
+        raw_return = await self._interface.get_distance()
+        unmarshalled = raw_return
+        return unmarshalled
 
     def on_properties_changed(self, handler) -> None:
         """
@@ -221,7 +248,8 @@ class WithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.set_distance(value)
+        marshalled = value
+        return await self._interface.set_distance(marshalled)
 
     async def get_Duration(self) -> float:
         """Getter for property 'Duration'
@@ -233,7 +261,9 @@ class WithArgsClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.get_duration()
+        raw_return = await self._interface.get_duration()
+        unmarshalled = raw_return
+        return unmarshalled
 
     def on_properties_changed(self, handler) -> None:
         """

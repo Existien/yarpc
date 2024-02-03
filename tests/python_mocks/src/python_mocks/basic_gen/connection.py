@@ -3,7 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/primitives.yml
 #   Object: Primitives
-#   Template: bus
+#   Template: py/bus.j2
 
 from dbus_next.aio import MessageBus
 import asyncio
@@ -48,7 +48,7 @@ class Connection:
         try:
             bus = await cls.bus()
             for interface in interfaces:
-                bus.export(interface.object_path, interface)
+                bus.export(interface.object_path, interface.interface)
             await bus.request_name("com.yarpc.backend")
             await bus.wait_for_disconnect()
         except Exception as e:

@@ -3,7 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/primitives.yml
 #   Object: Primitives
-#   Template: client
+#   Template: py/client.j2
 
 from .connection import Connection
 from dbus_next import Variant, DBusError
@@ -52,25 +52,25 @@ class BackendPrimitivesClient():
             )
 
             if self._Uint8Signal_handler:
-                self._interface.on_uint8_signal(self._Uint8Signal_handler)
+                self._interface.on_uint8_signal(self._Uint8Signal_wrapper)
             if self._BoolSignal_handler:
-                self._interface.on_bool_signal(self._BoolSignal_handler)
+                self._interface.on_bool_signal(self._BoolSignal_wrapper)
             if self._Int16Signal_handler:
-                self._interface.on_int16_signal(self._Int16Signal_handler)
+                self._interface.on_int16_signal(self._Int16Signal_wrapper)
             if self._Uint16Signal_handler:
-                self._interface.on_uint16_signal(self._Uint16Signal_handler)
+                self._interface.on_uint16_signal(self._Uint16Signal_wrapper)
             if self._Int32Signal_handler:
-                self._interface.on_int32_signal(self._Int32Signal_handler)
+                self._interface.on_int32_signal(self._Int32Signal_wrapper)
             if self._Uint32Signal_handler:
-                self._interface.on_uint32_signal(self._Uint32Signal_handler)
+                self._interface.on_uint32_signal(self._Uint32Signal_wrapper)
             if self._Int64Signal_handler:
-                self._interface.on_int64_signal(self._Int64Signal_handler)
+                self._interface.on_int64_signal(self._Int64Signal_wrapper)
             if self._Uint64Signal_handler:
-                self._interface.on_uint64_signal(self._Uint64Signal_handler)
+                self._interface.on_uint64_signal(self._Uint64Signal_wrapper)
             if self._DoubleSignal_handler:
-                self._interface.on_double_signal(self._DoubleSignal_handler)
+                self._interface.on_double_signal(self._DoubleSignal_wrapper)
             if self._StringSignal_handler:
-                self._interface.on_string_signal(self._StringSignal_handler)
+                self._interface.on_string_signal(self._StringSignal_wrapper)
 
             self._property_interface = proxy_object.get_interface(
                 "org.freedesktop.DBus.Properties"
@@ -84,7 +84,7 @@ class BackendPrimitivesClient():
 
     def _unpack_prop(self, name, variant):
         prop_map = {
-            }
+        }
         if name in prop_map:
             return prop_map[name](variant.value)
         return None
@@ -94,7 +94,6 @@ class BackendPrimitivesClient():
             key: self._unpack_prop(key, packed_properties[key])
             for key in packed_properties.keys()
         }
-
 
     async def get_all_properties(self) -> dict:
         """Getter for all properties
@@ -112,6 +111,14 @@ class BackendPrimitivesClient():
             properties = self._unpack_properties(properties)
             self._properties_changed_handler(properties)
 
+    def _Uint8Signal_wrapper(
+        self,
+        value: 'y',
+    ):
+        self._Uint8Signal_handler(
+            value,
+        )
+
     def on_Uint8Signal(self, handler):
         """
         Set handler for Uint8Signal signal
@@ -121,7 +128,15 @@ class BackendPrimitivesClient():
         """
         self._Uint8Signal_handler = handler
         if self._interface:
-            self._interface.on_uint8_signal(self._Uint8Signal_handler)
+            self._interface.on_uint8_signal(self._Uint8Signal_wrapper)
+
+    def _BoolSignal_wrapper(
+        self,
+        value: 'b',
+    ):
+        self._BoolSignal_handler(
+            value,
+        )
 
     def on_BoolSignal(self, handler):
         """
@@ -132,7 +147,15 @@ class BackendPrimitivesClient():
         """
         self._BoolSignal_handler = handler
         if self._interface:
-            self._interface.on_bool_signal(self._BoolSignal_handler)
+            self._interface.on_bool_signal(self._BoolSignal_wrapper)
+
+    def _Int16Signal_wrapper(
+        self,
+        value: 'n',
+    ):
+        self._Int16Signal_handler(
+            value,
+        )
 
     def on_Int16Signal(self, handler):
         """
@@ -143,7 +166,15 @@ class BackendPrimitivesClient():
         """
         self._Int16Signal_handler = handler
         if self._interface:
-            self._interface.on_int16_signal(self._Int16Signal_handler)
+            self._interface.on_int16_signal(self._Int16Signal_wrapper)
+
+    def _Uint16Signal_wrapper(
+        self,
+        value: 'q',
+    ):
+        self._Uint16Signal_handler(
+            value,
+        )
 
     def on_Uint16Signal(self, handler):
         """
@@ -154,7 +185,15 @@ class BackendPrimitivesClient():
         """
         self._Uint16Signal_handler = handler
         if self._interface:
-            self._interface.on_uint16_signal(self._Uint16Signal_handler)
+            self._interface.on_uint16_signal(self._Uint16Signal_wrapper)
+
+    def _Int32Signal_wrapper(
+        self,
+        value: 'i',
+    ):
+        self._Int32Signal_handler(
+            value,
+        )
 
     def on_Int32Signal(self, handler):
         """
@@ -165,7 +204,15 @@ class BackendPrimitivesClient():
         """
         self._Int32Signal_handler = handler
         if self._interface:
-            self._interface.on_int32_signal(self._Int32Signal_handler)
+            self._interface.on_int32_signal(self._Int32Signal_wrapper)
+
+    def _Uint32Signal_wrapper(
+        self,
+        value: 'u',
+    ):
+        self._Uint32Signal_handler(
+            value,
+        )
 
     def on_Uint32Signal(self, handler):
         """
@@ -176,7 +223,15 @@ class BackendPrimitivesClient():
         """
         self._Uint32Signal_handler = handler
         if self._interface:
-            self._interface.on_uint32_signal(self._Uint32Signal_handler)
+            self._interface.on_uint32_signal(self._Uint32Signal_wrapper)
+
+    def _Int64Signal_wrapper(
+        self,
+        value: 'x',
+    ):
+        self._Int64Signal_handler(
+            value,
+        )
 
     def on_Int64Signal(self, handler):
         """
@@ -187,7 +242,15 @@ class BackendPrimitivesClient():
         """
         self._Int64Signal_handler = handler
         if self._interface:
-            self._interface.on_int64_signal(self._Int64Signal_handler)
+            self._interface.on_int64_signal(self._Int64Signal_wrapper)
+
+    def _Uint64Signal_wrapper(
+        self,
+        value: 't',
+    ):
+        self._Uint64Signal_handler(
+            value,
+        )
 
     def on_Uint64Signal(self, handler):
         """
@@ -198,7 +261,15 @@ class BackendPrimitivesClient():
         """
         self._Uint64Signal_handler = handler
         if self._interface:
-            self._interface.on_uint64_signal(self._Uint64Signal_handler)
+            self._interface.on_uint64_signal(self._Uint64Signal_wrapper)
+
+    def _DoubleSignal_wrapper(
+        self,
+        value: 'd',
+    ):
+        self._DoubleSignal_handler(
+            value,
+        )
 
     def on_DoubleSignal(self, handler):
         """
@@ -209,7 +280,15 @@ class BackendPrimitivesClient():
         """
         self._DoubleSignal_handler = handler
         if self._interface:
-            self._interface.on_double_signal(self._DoubleSignal_handler)
+            self._interface.on_double_signal(self._DoubleSignal_wrapper)
+
+    def _StringSignal_wrapper(
+        self,
+        value: 's',
+    ):
+        self._StringSignal_handler(
+            value,
+        )
 
     def on_StringSignal(self, handler):
         """
@@ -220,11 +299,11 @@ class BackendPrimitivesClient():
         """
         self._StringSignal_handler = handler
         if self._interface:
-            self._interface.on_string_signal(self._StringSignal_handler)
+            self._interface.on_string_signal(self._StringSignal_wrapper)
 
     async def Uint8Method(
         self,
-        value: int,
+        value: 'int',
     ) -> int:
         """
         a method
@@ -237,12 +316,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_uint8_method(
+        raw_return = await self._interface.call_uint8_method(
             value,
         )
+        return raw_return
+
     async def BoolMethod(
         self,
-        value: bool,
+        value: 'bool',
     ) -> bool:
         """
         a method
@@ -255,12 +336,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_bool_method(
+        raw_return = await self._interface.call_bool_method(
             value,
         )
+        return raw_return
+
     async def Int16Method(
         self,
-        value: int,
+        value: 'int',
     ) -> int:
         """
         a method
@@ -273,12 +356,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_int16_method(
+        raw_return = await self._interface.call_int16_method(
             value,
         )
+        return raw_return
+
     async def Uint16Method(
         self,
-        value: int,
+        value: 'int',
     ) -> int:
         """
         a method
@@ -291,12 +376,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_uint16_method(
+        raw_return = await self._interface.call_uint16_method(
             value,
         )
+        return raw_return
+
     async def Int32Method(
         self,
-        value: int,
+        value: 'int',
     ) -> int:
         """
         a method
@@ -309,12 +396,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_int32_method(
+        raw_return = await self._interface.call_int32_method(
             value,
         )
+        return raw_return
+
     async def Uint32Method(
         self,
-        value: int,
+        value: 'int',
     ) -> int:
         """
         a method
@@ -327,12 +416,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_uint32_method(
+        raw_return = await self._interface.call_uint32_method(
             value,
         )
+        return raw_return
+
     async def Int64Method(
         self,
-        value: int,
+        value: 'int',
     ) -> int:
         """
         a method
@@ -345,12 +436,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_int64_method(
+        raw_return = await self._interface.call_int64_method(
             value,
         )
+        return raw_return
+
     async def Uint64Method(
         self,
-        value: int,
+        value: 'int',
     ) -> int:
         """
         a method
@@ -363,12 +456,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_uint64_method(
+        raw_return = await self._interface.call_uint64_method(
             value,
         )
+        return raw_return
+
     async def DoubleMethod(
         self,
-        value: float,
+        value: 'float',
     ) -> float:
         """
         a method
@@ -381,12 +476,14 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_double_method(
+        raw_return = await self._interface.call_double_method(
             value,
         )
+        return raw_return
+
     async def StringMethod(
         self,
-        value: str,
+        value: 'str',
     ) -> str:
         """
         a method
@@ -399,6 +496,7 @@ class BackendPrimitivesClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_string_method(
+        raw_return = await self._interface.call_string_method(
             value,
         )
+        return raw_return

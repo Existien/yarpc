@@ -1,7 +1,8 @@
-from .gen.connection import Connection
+from .basic_gen.connection import Connection
 from .minimal_service import get_minimal_service_and_backend_client
 from .with_args_service import get_with_args_service_and_backend_client
 from .primitives_service import get_primitives_service_and_backend_client
+from .structs_service import get_structs_service_and_backend_client
 import asyncio
 
 
@@ -10,6 +11,7 @@ async def run():
         get_minimal_service_and_backend_client(),
         get_with_args_service_and_backend_client(),
         get_primitives_service_and_backend_client(),
+        get_structs_service_and_backend_client(),
     ))
 
     print("Service running")

@@ -3,11 +3,13 @@ from behave.api.async_step import async_run_until_complete
 import subprocess
 import os
 import asyncio
+import json
 from python_mocks import (
     Connection,
     MinimalClientMock, BackendMinimalInterfaceMock,
     WithArgsClientMock, BackendWithArgsInterfaceMock,
     PrimitivesClientMock, BackendPrimitivesInterfaceMock,
+    StructsClientMock, BackendStructsInterfaceMock, SimpleStruct, Item
 )
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
@@ -28,8 +30,9 @@ async def wait_for_dbus(bus_name, object_path, interface_name):
 
 def cast(value: str, type: str):
     match type:
+        case 'py':
+            return eval(value)
         case 'json':
-            import json
             return json.loads(value)
         case 'bool':
             match value:
@@ -40,7 +43,7 @@ def cast(value: str, type: str):
                 case _:
                     raise ValueError("Invalid boolean. Use 'True' or 'False'")
         case _:
-            return __builtins__[type](value)
+                return __builtins__[type](value)
 
 
 def table_to_args(table):
@@ -73,6 +76,16 @@ async def step_impl(context):
                 )
             case 'Primitives':
                 service = BackendPrimitivesInterfaceMock()
+            case 'Structs':
+                service = BackendStructsInterfaceMock(
+                    SimpleStruct(
+                        Item(
+                            name="Foo",
+                            price=0.98,
+                        ),
+                        amount=42,
+                    )
+                )
             case _:
                 assert False, f"Unknown interface '{interface}'"
         assert service is not None, f"Could not find service '{interface}'"
@@ -103,6 +116,8 @@ async def step_impl(context):
                 client = WithArgsClientMock()
             case 'Primitives':
                 client = PrimitivesClientMock()
+            case 'Structs':
+                client = StructsClientMock()
             case _:
                 assert False, f"Unknown interface '{interface}'"
         client_task = asyncio.create_task(client.connect())

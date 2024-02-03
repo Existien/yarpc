@@ -1,7 +1,7 @@
 outputs:
 - name: BasicArgsService
   language: py
-  location: python_service/src/python_service/gen
+  location: python_service/src/python_service/basic_gen
   busName: com.yarpc.testservice
   services:
   - className: MinimalInterface
@@ -35,7 +35,7 @@ outputs:
 
 - name: BasicArgsMocks
   language: py
-  location: python_mocks/src/python_mocks/gen
+  location: python_mocks/src/python_mocks/basic_gen
   busName: com.yarpc.backend
   service_mocks:
   - className: BackendMinimalInterfaceMock
@@ -69,7 +69,7 @@ outputs:
 
 - name: BasicArgsClient
   language: py
-  location: python_client/src/python_client/gen
+  location: python_client/src/python_client/basic_gen
   busName: com.yarpc.testclient
   clients:
   - className: MinimalClient

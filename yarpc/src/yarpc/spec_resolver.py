@@ -50,17 +50,25 @@ class SpecResolver:
 
     def _get_types(self, interfaces, objects) -> list:
         types = []
+
         def add_type(type_name: str):
+            if find_type(type_name, types):
+                return
             type_object = find_type(type_name, objects)
             if type_object.get('kind') == 'builtin':
-                if not find_type(type_name, types):
-                    types.append(type_object)
+                types.append(type_object)
+            if type_object.get('kind') == 'struct':
+                types.append(type_object)
+                for member in type_object.get('members', []):
+                    add_type(member['type'])
+
         for interface in interfaces:
             for member in interface.get('members', []):
                 if member.get('type'):
                     add_type(member['type'])
                 for arg in member.get('args', []):
                     add_type(arg['type'])
+
         return types
 
     def _get_interfaces(self, output, objects) -> list:

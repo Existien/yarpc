@@ -3,7 +3,9 @@
 # Spec:
 #   File: {{ object.specPath }}
 #   Object: {{ object.name }}
-#   Template: {{ target.template }}
+#   Template: py/service_mock.j2
+{% import "dbus_common.j2" as dbus %}
+{% import "py/common.j2" as py %}
 
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
@@ -12,9 +14,89 @@ from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
 from unittest.mock import AsyncMock
 from copy import deepcopy
-import asyncio
+{% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
+from .{{ object.name|snake_case }} import {{ object.name }}
+{% endfor %}
 
-class {{ target.className }}(ServiceInterface):
+
+class _Interface(ServiceInterface):
+    """
+    D-Bus interface implementation for {{ object.name }}
+
+    Args:
+        wrapper({{ target.className }}): Wrapper responsible for (un-)marhsalling D-Bus types
+    """
+
+    def __init__(self, wrapper):
+        super().__init__("{{ target.interfaceName }}")
+        self.object_path = "{{ target.objectPath }}"
+        self._wrapper = wrapper
+{% for member in object.members %}
+
+{% if member.kind == 'signal' %}
+    @signal()
+    def {{ member.name }}(
+        self,
+        {% for arg in member.args %}
+        {{ arg.name }}: '{{ dbus.type(arg.type, output.objects) }}',
+        {% endfor %}
+    ) ->{{ ' ' }}
+    {%- if member.args|count > 0 %}'{% for arg in member.args %}{{ dbus.type(arg.type, output.objects) }}{% endfor %}'{% else %}None{% endif %}:
+        {% if member.args|count > 1 %}
+        return [
+            {% for arg in member.args %}
+            {{ arg.name }},
+            {% endfor %}
+        ]
+        {% elif member.args|count == 1 %}
+        return {{ member.args[0].name }}
+        {% else %}
+        return None
+        {% endif %}
+{%- endif -%}
+{% if member.kind == 'method' %}
+{% set handler = 'self._'+member.name+'_handler' %}
+    @method()
+    async def {{ member.name }}(
+        self,
+        {% for arg in member.args %}
+        {{ arg.name }}: '{{ dbus.type(arg.type, output.objects) }}',
+        {% endfor %}
+    ) ->{{ ' ' }}
+    {%- if member.returns %}'{{ dbus.type(member.returns.type, output.objects) }}'{% else %}None{% endif %}:
+        {{''}}{% if member.returns %}raw_return = {% endif %}await self._wrapper.{{ member.name }}(
+            {% for arg in member.args %}
+            {{ py.from_dbus(arg.name, arg.type, output.objects) }},
+            {% endfor %}
+        )
+        {% if member.returns %}
+        return {{ py.to_dbus('raw_return', member.returns.type, output.objects)|indent(8) }}
+        {% else %}
+        return None
+        {% endif %}
+{%- endif -%}
+{% if member.kind == 'property' %}
+{% if member.readonly %}
+{% set access = 'PropertyAccess.READ' %}
+{% else %}
+{% set access = 'PropertyAccess.READWRITE' %}
+{% endif %}
+    @dbus_property(access={{ access }})
+    async def {{ member.name }}(self) -> '{{ dbus.type(member.type, output.objects) }}':
+        unmarshalled = await self._wrapper.get_{{ member.name}}()
+        return {{ py.to_dbus('unmarshalled', member.type, output.objects)|indent(8) }}
+{% if not member.readonly %}
+
+    @{{ member.name }}.setter
+    async def {{ member.name }}(self, value: '{{ dbus.type(member.type, output.objects) }}'):
+        unmarshalled = {{ py.from_dbus('value', member.type, output.objects) }}
+        await self._wrapper.set_{{ member.name }}(unmarshalled)
+{% endif %}
+{% endif %}
+{% endfor %}
+
+
+class {{ target.className }}():
     """
     Mock service implementation of the {{ object.name }} D-Bus interface.
 
@@ -34,7 +116,7 @@ class {{ target.className }}(ServiceInterface):
 
     Args:
         {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-        {{ member.name }} ({{ (member.type|find_type(output.objects)).py }}): {{ member.docs }}
+        {{ member.name }} ({{ py.type(member.type, output.objects) }}): {{ member.docs }}
         {% endfor %}
     {% endif %}
     """
@@ -42,12 +124,13 @@ class {{ target.className }}(ServiceInterface):
     def __init__(
         self,
         {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-        {{ member.name }}: {{ (member.type|find_type(output.objects)).py }},
+        {{ member.name }}: {{ py.type(member.type, output.objects) }},
         {% endfor %}
     ):
-        super().__init__("{{ target.interfaceName }}")
+        self.interface = _Interface(self)
+        self.name = self.interface.name
+        self.object_path = self.interface.object_path
         self.mock = AsyncMock()
-        self.object_path = "{{ target.objectPath }}"
 
         {% for member in object.members|selectattr('kind', 'equalto', 'method') %}
         self.mock.{{ member.name }}.return_value = None
@@ -64,72 +147,94 @@ class {{ target.className }}(ServiceInterface):
     async def _await_mock_method(self, method, local_variables):
         kwargs = dict(filter(lambda kv: kv[0] != 'self', local_variables.items()))
         return await getattr(self.mock, method)(**kwargs)
+
+    def emit_properties_changed(self, changed_properties: dict) -> None:
+        """Informs clients about changed properties
+
+        Args:
+            changed_properties (dict): A dictionary containing all changed properties with their new values
+        """
+        if not changed_properties: return
+
+        def marshal(data):
+            if isinstance(data, dict):
+                for key in data.keys():
+                    data[key] = marshal(data[key])
+                return data
+            elif isinstance(data, list):
+                for i in range(0, len(data)):
+                    data[i] = marshal(data[i])
+                return data
+            elif hasattr(data, 'to_dbus'):
+                return data.to_dbus()
+            else:
+                return data
+        marshalled = marshal(changed_properties)
+        self.interface.emit_properties_changed(marshalled)
 {% for member in object.members %}
 
 {% if member.kind == 'signal' %}
-    @signal()
     def {{ member.name }}(
         self,
         {% for arg in member.args %}
-        {{ arg.name }}: {{ (arg.type|find_type(output.objects)).py }},
+        {{ arg.name }}: {{ py.type(arg.type, output.objects) }},
         {% endfor %}
-    ) ->{{ ' ' }}
-    {%- if member.args|count > 0 %}'{% for arg in member.args %}{{ (arg.type|find_type(output.objects)).dbus }}{% endfor %}'{% else %}None{% endif %}:
+    ) -> None:
         """
         {{ member.docs }}
         {% if member.args|count > 0 %}
 
         Args:
         {% for arg in member.args %}
-            {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
+            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs }}
         {% endfor %}
         {% endif %}
         """
-        {% if member.args|count > 1 %}
-        return [
+        self.interface.{{ member.name }}(
             {% for arg in member.args %}
-            {{ arg.name }},
+            {{ py.to_dbus(arg.name, arg.type, output.objects)|indent(12) }},
             {% endfor %}
-        ]
-        {% elif member.args|count == 1 %}
-        return {{ member.args[0].name }}
-        {% endif %}
+        )
 {% endif %}
 {% if member.kind == 'method' %}
-    @method()
     async def {{ member.name }}(
         self,
         {% for arg in member.args %}
-        {{ arg.name }}: '{{ (arg.type|find_type(output.objects)).dbus }}',
+        {{ arg.name }}: {{ py.type(arg.type, output.objects) }},
         {% endfor %}
     ) ->{{ ' ' }}
-    {%- if member.returns %}'{{ (member.returns.type|find_type(output.objects)).dbus }}'{% else %}None{% endif %}:
+    {%- if member.returns %}{{ py.type(member.returns.type, output.objects) }}{% else %}None{% endif %}:
         """
         {{ member.docs }}
         {% if member.args|count > 0 %}
 
         Args:
         {% for arg in member.args %}
-            {{ arg.name }} ({{ (arg.type|find_type(output.objects)).py }}): {{ arg.docs }}
+            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs }}
         {% endfor %}
         {% endif %}
         {% if member.returns %}
 
         Returns:
-            {{ (member.returns.type|find_type(output.objects)).py }}: {{ member.returns.docs }}
+            {{ py.type(member.returns.type, output.objects) }}: {{ member.returns.docs }}
         {% endif %}
         """
         return await self._await_mock_method("{{ member.name }}", locals())
-{%- endif -%}
+{% endif %}
 {% if member.kind == 'property' %}
 {% if member.readonly %}
 {% set access = 'PropertyAccess.READ' %}
 {% else %}
 {% set access = 'PropertyAccess.READWRITE' %}
 {% endif %}
+    async def get_{{ member.name }}(self) -> {{ py.type(member.type, output.objects) }}:
+        """Getter for property {{ member.name }}
 
-    @dbus_property(access={{ access }})
-    def {{ member.name }}(self) -> '{{ (member.type|find_type(output.objects)).dbus }}':
+        {{ member.docs }}
+
+        Returns:
+            {{ py.type(member.type, output.objects) }}: the current value
+        """
         return self._properties["{{ member.name }}"]
 
     def on_{{ member.name }}_changed(self, handler) -> None:
@@ -140,7 +245,7 @@ class {{ target.className }}(ServiceInterface):
         and returns a dictionary with the current property values, or just the changed ones
 
         Args:
-            handler(Callable[[{{ (member.type|find_type(output.objects)).py }}, dict], Awaitable[dict]]): the properties change handler
+            handler(Callable[[{{ py.type(member.type, output.objects) }}, dict], Awaitable[dict]]): the properties change handler
 
         Returns:
             dict: the changed properties
@@ -148,10 +253,17 @@ class {{ target.className }}(ServiceInterface):
         self._{{ member.name }}_change_handler = handler
         self.mock.on_{{ member.name }}_changed = AsyncMock(wraps=self._{{ member.name }}_change_handler)
 
-    async def _default_{{ member.name }}_change_handler(value: {{ (member.type|find_type(output.objects)).py }}, _: dict) -> dict:
+    async def _default_{{ member.name }}_change_handler(value: {{ py.type(member.type, output.objects) }}, _: dict) -> dict:
         return { "{{ member.name }}": value }
 
-    async def set_{{ member.name }}(self, value: {{ (member.type|find_type(output.objects)).py }}):
+    async def set_{{ member.name }}(self, value: {{ py.type(member.type, output.objects) }}):
+        """Setter for property {{ member.name }}
+
+        {{ member.docs }}
+
+        Args:
+            value ({{ py.type(member.type, output.objects) }}): the new value
+        """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_{{ member.name }}_changed(value, properties_working_copy)
         properties_working_copy.update(changed_properties)
@@ -162,13 +274,7 @@ class {{ target.className }}(ServiceInterface):
                 del properties_working_copy[key]
             else:
                 self._properties[key] = properties_working_copy[key]
-        if properties_working_copy:
-            self.emit_properties_changed(properties_working_copy)
-{% if not member.readonly %}
 
-    @{{ member.name }}.setter
-    async def {{ member.name }}(self, value: '{{ (member.type|find_type(output.objects)).dbus }}'):
-        await self.set_{{ member.name }}(value)
-{%- endif -%}
+            self.emit_properties_changed(properties_working_copy)
 {% endif %}
 {% endfor %}

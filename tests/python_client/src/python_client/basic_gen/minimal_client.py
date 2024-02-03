@@ -3,7 +3,7 @@
 # Spec:
 #   File: /workspace/tests/specs/basic_args.yml
 #   Object: Minimal
-#   Template: client
+#   Template: py/client.j2
 
 from .connection import Connection
 from dbus_next import Variant, DBusError
@@ -11,13 +11,13 @@ import sys
 import asyncio
 
 
-class BackendMinimalClient():
+class MinimalClient():
     """
     A interface using signals and methods without args
     """
 
     def __init__(self):
-        self.name = "com.yarpc.backend.minimal"
+        self.name = "com.yarpc.testservice.minimal"
         self._interface = None
         self._property_interface = None
         self._properties_changed_handler = None
@@ -30,12 +30,12 @@ class BackendMinimalClient():
         try:
             bus = await Connection.bus()
             introspection = await bus.introspect(
-                "com.yarpc.backend",
-                "/com/yarpc/backend",
+                "com.yarpc.testservice",
+                "/com/yarpc/testservice",
             )
             proxy_object = bus.get_proxy_object(
-                "com.yarpc.backend",
-                "/com/yarpc/backend",
+                "com.yarpc.testservice",
+                "/com/yarpc/testservice",
                 introspection
             )
             self._interface = proxy_object.get_interface(
@@ -43,7 +43,7 @@ class BackendMinimalClient():
             )
 
             if self._Bumped_handler:
-                self._interface.on_bumped(self._Bumped_handler)
+                self._interface.on_bumped(self._Bumped_wrapper)
 
             self._property_interface = proxy_object.get_interface(
                 "org.freedesktop.DBus.Properties"
@@ -57,7 +57,7 @@ class BackendMinimalClient():
 
     def _unpack_prop(self, name, variant):
         prop_map = {
-            }
+        }
         if name in prop_map:
             return prop_map[name](variant.value)
         return None
@@ -67,7 +67,6 @@ class BackendMinimalClient():
             key: self._unpack_prop(key, packed_properties[key])
             for key in packed_properties.keys()
         }
-
 
     async def get_all_properties(self) -> dict:
         """Getter for all properties
@@ -85,6 +84,12 @@ class BackendMinimalClient():
             properties = self._unpack_properties(properties)
             self._properties_changed_handler(properties)
 
+    def _Bumped_wrapper(
+        self,
+    ):
+        self._Bumped_handler(
+        )
+
     def on_Bumped(self, handler):
         """
         Set handler for Bumped signal
@@ -94,7 +99,7 @@ class BackendMinimalClient():
         """
         self._Bumped_handler = handler
         if self._interface:
-            self._interface.on_bumped(self._Bumped_handler)
+            self._interface.on_bumped(self._Bumped_wrapper)
 
     async def Bump(
         self,
@@ -104,5 +109,6 @@ class BackendMinimalClient():
         """
         while not self._interface:
             await asyncio.sleep(0.1)
-        return await self._interface.call_bump(
+        raw_return = await self._interface.call_bump(
         )
+        return None
