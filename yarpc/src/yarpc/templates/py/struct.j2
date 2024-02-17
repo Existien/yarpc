@@ -6,13 +6,14 @@
 #   Template: py/struct.j2
 {% import "dbus_common.j2" as dbus %}
 {% import "py/common.j2" as py %}
-{% for member in object.members %}
-{% if (member.type|find_type(output.objects)).kind == 'struct' %}
-from .{{ member.type|snake_case }} import {{ member.type }}
+
+{% for item in object.name | extract_structs(output.objects) %}
+{% if item != object.name %}
+from .{{ item|snake_case }} import {{ item }}
 {% endif %}
 {% endfor %}
-
 from dataclasses import dataclass
+from typing import Sequence
 
 @dataclass
 class {{ object.name }}:
@@ -35,7 +36,11 @@ class {{ object.name }}:
         Returns:
             list: the marshalled structure
         """
-        return {{ py.marshal('self', object.name, output.objects)|indent(8) }}
+        return [
+            {% for member in object.members %}
+            {{ py.marshal("self."+member.name, member.type, output.objects)|indent }},
+            {% endfor %}
+        ]
 
     def from_dbus(dbus_struct: list):
         """
@@ -47,5 +52,10 @@ class {{ object.name }}:
         Returns:
             {{ object.name }}: the unmarshalled structure
         """
-        return {{ py.unmarshal('dbus_struct', object.name, output.objects)|indent(8) }}
+        return {{ object.name }}(
+            {% for index in range(0, object.members|count) %}
+            {% set member = object.members[index] %}
+            {{ member.name }}={{ py.unmarshal("dbus_struct["+index|string+"]", member.type, output.objects)|indent }},
+            {% endfor %}
+        )
 

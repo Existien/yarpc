@@ -7,22 +7,25 @@
 {%- if object.kind == 'struct' -%}
 {{ object.name }}
 {%- elif object.kind == 'builtin' -%}
+{%- if object.name == 'array' -%}
+{%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
+{{ object.py|replace("$1", inner_type) }}
+{%- else -%}
 {{ object.py }}
+{%- endif -%}
 {%- endif -%}
 {%- endmacro %}
 {#
     Convert *value* from the format returned by
     dbus-next into *type_as_str* from *objects*
 #}
-{%- macro unmarshal(value, type_as_str, objects) -%}
+{%- macro unmarshal(value, type_as_str, objects, idx=0) -%}
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
-{{ object.name }}(
-    {% for index in range(0, object.members|count) %}
-    {% set member = object.members[index] %}
-    {{ member.name }}={{ unmarshal(value+"["+index|string+"]", member.type, objects)|indent }},
-    {% endfor %}
-)
+{{ object.name }}.from_dbus({{value}})
+{%- elif object.name == 'array' -%}
+{%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
+[ {{ unmarshal('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
 {%- elif object.kind == 'builtin' -%}
 {{ value }}
 {%- endif -%}
@@ -31,14 +34,13 @@
     Convert *value* of type *type_as_str* from *objects*
     into the format expected by dbus-next
 #}
-{%- macro marshal(value, type_as_str, objects) -%}
+{%- macro marshal(value, type_as_str, objects, idx=0) -%}
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
-[
-    {% for member in object.members %}
-    {{ marshal(value+"."+member.name, member.type, objects)|indent }},
-    {% endfor %}
-]
+{{ value }}.to_dbus()
+{%- elif object.name == 'array' -%}
+{%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
+[ {{ marshal('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
 {%- elif object.kind == 'builtin' -%}
 {{ value }}
 {%- endif -%}
@@ -47,10 +49,13 @@
     Unmarshall *value* of type *type_as_str* in *objects*
     if it is a struct
 #}
-{%- macro from_dbus(value, type_as_str, objects) -%}
+{%- macro from_dbus(value, type_as_str, objects, idx=0) -%}
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ type_as_str }}.from_dbus({{ value }})
+{%- elif object.name == 'array' -%}
+{%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
+[ {{ from_dbus('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
 {%- else -%}
 {{ value }}
 {%- endif -%}
@@ -59,10 +64,13 @@
     Marshall *value* of type *type_as_str* in *objects*
     if it is a struct
 #}
-{%- macro to_dbus(value, type_as_str, objects) -%}
+{%- macro to_dbus(value, type_as_str, objects, idx=0) -%}
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ value }}.to_dbus()
+{%- elif object.name == 'array' -%}
+{%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
+[ {{ to_dbus('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
 {%- else -%}
 {{ value }}
 {%- endif -%}

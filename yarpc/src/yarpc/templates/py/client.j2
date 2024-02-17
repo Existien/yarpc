@@ -7,6 +7,7 @@
 {% import "dbus_common.j2" as dbus %}
 {% import "py/common.j2" as py %}
 
+from typing import Sequence
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys
@@ -71,8 +72,7 @@ class {{ target.className }}():
     def _unpack_prop(self, name, variant):
         prop_map = {
             {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-            {% set prop_type = py.type(member.type, output.objects) %}
-            "{{ member.name }}": {{prop_type}}.from_dbus if hasattr({{prop_type}}, 'from_dbus') else {{prop_type}},
+            "{{ member.name }}": lambda value: {{ py.unmarshal('value', member.type, output.objects)|indent(12) }},
             {% endfor %}
         }
         if name in prop_map:

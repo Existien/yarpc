@@ -5,6 +5,7 @@
 #   Object: Minimal
 #   Template: py/client.j2
 
+from typing import Sequence
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys
@@ -83,6 +84,17 @@ class MinimalClient():
         if self._properties_changed_handler and interface == self.name:
             properties = self._unpack_properties(properties)
             self._properties_changed_handler(properties)
+
+    def on_properties_changed(self, handler) -> None:
+        """
+        Set handler for property changes
+
+        The handler takes a dictionary of the changed properties
+
+        Args:
+            handler(Callable[[dict], None]): the handler
+        """
+        self._properties_changed_handler = handler
 
     def _Bumped_wrapper(
         self,

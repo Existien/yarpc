@@ -9,3 +9,8 @@ from .structs_gen.backend_structs_interface_mock import BackendStructsInterfaceM
 from .structs_gen.structs_client_mock import StructsClientMock
 from .structs_gen.simple_struct import SimpleStruct
 from .structs_gen.item import Item
+from .arrays_gen.arrays_client_mock import ArraysClientMock
+from .arrays_gen.backend_arrays_interface_mock import BackendArraysInterfaceMock
+from .arrays_gen.arrays_with_structs_client_mock import ArraysWithStructsClientMock
+from .arrays_gen.backend_arrays_with_structs_interface_mock import BackendArraysWithStructsInterfaceMock
+from .arrays_gen.simons_array import StructArray, SimonsArray

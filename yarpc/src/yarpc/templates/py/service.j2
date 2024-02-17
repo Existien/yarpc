@@ -7,12 +7,13 @@
 {% import "dbus_common.j2" as dbus %}
 {% import "py/common.j2" as py %}
 
-from typing import Protocol
+from typing import Protocol, Sequence
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
 from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
+from copy import deepcopy
 {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
 from .{{ object.name|snake_case }} import {{ object.name }}
 {% endfor %}
@@ -218,7 +219,7 @@ class {{ target.className }}():
                 return data.to_dbus()
             else:
                 return data
-        marshalled = marshal(changed_properties)
+        marshalled = marshal(deepcopy(changed_properties))
         self.interface.emit_properties_changed(marshalled)
 {% for member in object.members %}
 

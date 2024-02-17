@@ -5,6 +5,7 @@
 #   Object: Structs
 #   Template: py/client.j2
 
+from typing import Sequence
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys
@@ -59,7 +60,7 @@ class BackendStructsClient():
 
     def _unpack_prop(self, name, variant):
         prop_map = {
-            "Simple": SimpleStruct.from_dbus if hasattr(SimpleStruct, 'from_dbus') else SimpleStruct,
+            "Simple": lambda value: SimpleStruct.from_dbus(value),
         }
         if name in prop_map:
             return prop_map[name](variant.value)
@@ -86,6 +87,17 @@ class BackendStructsClient():
         if self._properties_changed_handler and interface == self.name:
             properties = self._unpack_properties(properties)
             self._properties_changed_handler(properties)
+
+    def on_properties_changed(self, handler) -> None:
+        """
+        Set handler for property changes
+
+        The handler takes a dictionary of the changed properties
+
+        Args:
+            handler(Callable[[dict], None]): the handler
+        """
+        self._properties_changed_handler = handler
 
     async def SendStruct(
         self,
@@ -142,16 +154,6 @@ class BackendStructsClient():
         unmarshalled = SimpleStruct.from_dbus(raw_return)
         return unmarshalled
 
-    def on_properties_changed(self, handler) -> None:
-        """
-        Set handler for property changes
-
-        The handler takes a dictionary of the changed properties
-
-        Args:
-            handler(Callable[[dict], None]): the handler
-        """
-        self._properties_changed_handler = handler
 
     async def set_Simple(self, value: SimpleStruct) -> None:
         """Setter for property 'Simple'

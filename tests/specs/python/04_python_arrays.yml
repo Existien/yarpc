@@ -1,0 +1,66 @@
+outputs:
+- name: ArraysService
+  language: py
+  location: python_service/src/python_service/arrays_gen
+  busName: com.yarpc.testservice
+  services:
+  - className: ArraysInterface
+    spec: Arrays
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arrays
+  - className: ArraysWithStructsInterface
+    spec: ArraysWithStructs
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arraysWithStructs
+  clients:
+  - className: BackendArraysClient
+    spec: Arrays
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.arrays
+  - className: BackendArraysWithStructsClient
+    spec: ArraysWithStructs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.arraysWithStructs
+
+- name: ArraysMocks
+  language: py
+  location: python_mocks/src/python_mocks/arrays_gen
+  busName: com.yarpc.backend
+  service_mocks:
+  - className: BackendArraysInterfaceMock
+    spec: Arrays
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.arrays
+  - className: BackendArraysWithStructsInterfaceMock
+    spec: ArraysWithStructs
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.arraysWithStructs
+  client_mocks:
+  - className: ArraysClientMock
+    spec: Arrays
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arrays
+  - className: ArraysWithStructsClientMock
+    spec: ArraysWithStructs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arraysWithStructs
+
+- name: ArraysClient
+  language: py
+  location: python_client/src/python_client/arrays_gen
+  busName: com.yarpc.testclient
+  clients:
+  - className: ArraysClient
+    spec: Arrays
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arrays
+  - className: ArraysWithStructsClient
+    spec: ArraysWithStructs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arraysWithStructs

@@ -1,6 +1,6 @@
 import re
 from copy import deepcopy
-from .utils import find_type
+from .utils import find_types
 
 class SpecResolver:
 
@@ -51,16 +51,21 @@ class SpecResolver:
     def _get_types(self, interfaces, objects) -> list:
         types = []
 
+        def is_already_accounted_for(type_name: str) -> bool:
+            return bool(list(filter(lambda x: x.get('name') == type_name, types)))
+
         def add_type(type_name: str):
-            if find_type(type_name, types):
-                return
-            type_object = find_type(type_name, objects)
-            if type_object.get('kind') == 'builtin':
-                types.append(type_object)
-            if type_object.get('kind') == 'struct':
-                types.append(type_object)
-                for member in type_object.get('members', []):
-                    add_type(member['type'])
+            type_objects = find_types(type_name, objects)
+            for type_object in type_objects:
+                if is_already_accounted_for(type_object.get('name')):
+                    continue
+
+                if type_object.get('kind') == 'builtin':
+                    types.append(type_object)
+                if type_object.get('kind') == 'struct':
+                    types.append(type_object)
+                    for member in type_object.get('members', []):
+                        add_type(member['type'])
 
         for interface in interfaces:
             for member in interface.get('members', []):
@@ -68,6 +73,9 @@ class SpecResolver:
                     add_type(member['type'])
                 for arg in member.get('args', []):
                     add_type(arg['type'])
+                returns = member.get('returns')
+                if returns:
+                    add_type(returns.get('type'))
 
         return types
 

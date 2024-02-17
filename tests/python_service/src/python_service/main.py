@@ -3,6 +3,8 @@ from .minimal_service import get_minimal_service_and_backend_client
 from .with_args_service import get_with_args_service_and_backend_client
 from .primitives_service import get_primitives_service_and_backend_client
 from .structs_service import get_structs_service_and_backend_client
+from .arrays_service import get_arrays_service_and_backend_client
+from .arrays_with_structs_service import get_arrays_with_struct_service_and_backend_client
 import asyncio
 
 
@@ -12,6 +14,8 @@ async def run():
         get_with_args_service_and_backend_client(),
         get_primitives_service_and_backend_client(),
         get_structs_service_and_backend_client(),
+        get_arrays_service_and_backend_client(),
+        get_arrays_with_struct_service_and_backend_client(),
     ))
 
     print("Service running")

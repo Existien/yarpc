@@ -5,6 +5,7 @@
 #   Object: Minimal
 #   Template: py/service_mock.j2
 
+from typing import Sequence
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -91,7 +92,7 @@ class BackendMinimalInterfaceMock():
                 return data.to_dbus()
             else:
                 return data
-        marshalled = marshal(changed_properties)
+        marshalled = marshal(deepcopy(changed_properties))
         self.interface.emit_properties_changed(marshalled)
 
     def Bumped(

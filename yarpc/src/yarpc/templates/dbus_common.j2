@@ -7,6 +7,11 @@
 {%- if object.kind == 'struct' -%}
 ({% for member in object.members %}{{ type(member.type, objects) }}{% endfor %})
 {%- elif object.kind == 'builtin' -%}
+{%- if object.name == 'array' -%}
+{%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
+{{ object.dbus|replace("$1", inner_type) }}
+{%- else -%}
 {{ object.dbus }}
+{%- endif -%}
 {%- endif -%}
 {%- endmacro %}

@@ -27,7 +27,7 @@ def __load_yaml(filename: Path, validator: Draft7Validator):
     for obj in parsed.get('objects', []):
         obj['specName'] = filename.stem
         obj['specPath'] = str(filename.absolute().resolve())
-        # obj['regex'] = re.compile('^' + obj['regex' if 'regex' in obj else 'name'] + '$')
+        obj['regex'] = f"^{obj['regex' if 'regex' in obj else 'name']}$"
     return parsed
 
 def __get_schema_validator():
@@ -50,62 +50,69 @@ def __get_builtins():
                 "name": "uint8",
                 "kind": "builtin",
                 "dbus": "y",
-                "py": "int"
+                "py": "int",
             },
             {
                 "name": "bool",
                 "kind": "builtin",
                 "dbus": "b",
-                "py": "bool"
+                "py": "bool",
             },
             {
                 "name": "int16",
                 "kind": "builtin",
                 "dbus": "n",
-                "py": "int"
+                "py": "int",
             },
             {
                 "name": "uint16",
                 "kind": "builtin",
                 "dbus": "q",
-                "py": "int"
+                "py": "int",
             },
             {
                 "name": "int32",
                 "kind": "builtin",
                 "dbus": "i",
-                "py": "int"
+                "py": "int",
             },
             {
                 "name": "uint32",
                 "kind": "builtin",
                 "dbus": "u",
-                "py": "int"
+                "py": "int",
             },
             {
                 "name": "int64",
                 "kind": "builtin",
                 "dbus": "x",
-                "py": "int"
+                "py": "int",
             },
             {
                 "name": "uint64",
                 "kind": "builtin",
                 "dbus": "t",
-                "py": "int"
+                "py": "int",
             },
             {
                 "name": "double",
                 "kind": "builtin",
                 "dbus": "d",
-                "py": "float"
+                "py": "float",
             },
             {
                 "name": "string",
                 "kind": "builtin",
                 "dbus": "s",
-                "py": "str"
+                "py": "str",
             },
+            {
+                "name": "array",
+                "kind": "builtin",
+                "regex": "array<(.*)>",
+                "dbus": "a$1",
+                "py": "Sequence[$1]",
+            }
         ]
     }
 
@@ -113,6 +120,6 @@ def load_specifications(spec_dir: str):
 
     validator = __get_schema_validator()
     specifications = [__get_builtins()]
-    for filename in chain(Path(spec_dir).glob("*.yml"), Path(spec_dir).glob("*.yaml")):
+    for filename in chain(Path(spec_dir).glob("**/*.yml"), Path(spec_dir).glob("**/*.yaml")):
         specifications.append(__load_yaml(filename, validator))
     return specifications

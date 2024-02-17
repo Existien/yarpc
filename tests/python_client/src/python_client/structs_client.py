@@ -4,7 +4,7 @@ import asyncio
 async def structs_loop(client: StructsClient):
     i=0
     while True:
-        await asyncio.sleep(3)
+        await asyncio.sleep(7)
         reply = await client.SendStruct(SimpleStruct(
             item=Item(
                 name="Trash",

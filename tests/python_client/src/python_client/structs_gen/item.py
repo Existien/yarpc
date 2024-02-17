@@ -6,6 +6,7 @@
 #   Template: py/struct.j2
 
 from dataclasses import dataclass
+from typing import Sequence
 
 @dataclass
 class Item:

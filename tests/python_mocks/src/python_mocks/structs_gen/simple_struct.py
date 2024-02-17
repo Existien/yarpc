@@ -4,9 +4,10 @@
 #   File: /workspace/tests/specs/03_structs.yml
 #   Object: SimpleStruct
 #   Template: py/struct.j2
-from .item import Item
 
+from .item import Item
 from dataclasses import dataclass
+from typing import Sequence
 
 @dataclass
 class SimpleStruct:
@@ -28,10 +29,7 @@ class SimpleStruct:
             list: the marshalled structure
         """
         return [
-            [
-                self.item.name,
-                self.item.price,
-            ],
+            self.item.to_dbus(),
             self.amount,
         ]
 
@@ -46,9 +44,6 @@ class SimpleStruct:
             SimpleStruct: the unmarshalled structure
         """
         return SimpleStruct(
-            item=Item(
-                name=dbus_struct[0][0],
-                price=dbus_struct[0][1],
-            ),
+            item=Item.from_dbus(dbus_struct[0]),
             amount=dbus_struct[1],
         )

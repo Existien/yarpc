@@ -5,6 +5,7 @@
 #   Object: Minimal
 #   Template: py/client_mock.j2
 
+from typing import Sequence
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock

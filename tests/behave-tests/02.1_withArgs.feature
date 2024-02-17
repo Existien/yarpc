@@ -2,11 +2,13 @@ Feature: WithArgs interface
 
     Background:
         Given a mocked backend service with the following interfaces
-            | interface  | name |
-            | Minimal    |      |
-            | WithArgs   | Bob  |
-            | Primitives |      |
-            | Structs    |      |
+            | interface         | name |
+            | Minimal           |      |
+            | WithArgs          | Bob  |
+            | Primitives        |      |
+            | Structs           |      |
+            | Arrays            |      |
+            | ArraysWithStructs |      |
         And a running python service
         And a mocked python client connecting to the following interfaces
             | interface | name  |

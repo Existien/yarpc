@@ -5,6 +5,7 @@
 #   Object: Structs
 #   Template: py/client_mock.j2
 
+from typing import Sequence
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock
@@ -65,7 +66,7 @@ class StructsClientMock():
 
     def _unpack_prop(self, name, variant):
         prop_map = {
-            "Simple": SimpleStruct.from_dbus if hasattr(SimpleStruct, 'from_dbus') else SimpleStruct,
+            "Simple": lambda value: SimpleStruct.from_dbus(value),
         }
         if name in prop_map:
             return prop_map[name](variant.value)

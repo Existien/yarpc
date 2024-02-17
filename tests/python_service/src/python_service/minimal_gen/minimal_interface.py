@@ -5,12 +5,13 @@
 #   Object: Minimal
 #   Template: py/service.j2
 
-from typing import Protocol
+from typing import Protocol, Sequence
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
 from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
+from copy import deepcopy
 
 
 
@@ -77,7 +78,7 @@ class MinimalInterface():
                 return data.to_dbus()
             else:
                 return data
-        marshalled = marshal(changed_properties)
+        marshalled = marshal(deepcopy(changed_properties))
         self.interface.emit_properties_changed(marshalled)
 
     def Bumped(

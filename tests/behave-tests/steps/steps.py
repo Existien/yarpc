@@ -9,7 +9,9 @@ from python_mocks import (
     MinimalClientMock, BackendMinimalInterfaceMock,
     WithArgsClientMock, BackendWithArgsInterfaceMock,
     PrimitivesClientMock, BackendPrimitivesInterfaceMock,
-    StructsClientMock, BackendStructsInterfaceMock, SimpleStruct, Item
+    StructsClientMock, BackendStructsInterfaceMock, SimpleStruct, Item,
+    ArraysClientMock, BackendArraysInterfaceMock,
+    ArraysWithStructsClientMock, BackendArraysWithStructsInterfaceMock, StructArray, SimonsArray,
 )
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
@@ -60,13 +62,21 @@ async def step_impl(context):
                 service = BackendPrimitivesInterfaceMock()
             case 'Structs':
                 service = BackendStructsInterfaceMock(
-                    SimpleStruct(
+                    Simple=SimpleStruct(
                         Item(
                             name="Foo",
                             price=0.98,
                         ),
                         amount=42,
                     )
+                )
+            case 'Arrays':
+                service=BackendArraysInterfaceMock(
+                    ArrayProperty=[["Foo", "Bar"], ["Baz"]]
+                )
+            case 'ArraysWithStructs':
+                service=BackendArraysWithStructsInterfaceMock(
+                    ArrayStructProperty=[StructArray(numbers=[[1],[2]]),StructArray(numbers=[[3,4]])]
                 )
             case _:
                 assert False, f"Unknown interface '{interface}'"
@@ -100,6 +110,10 @@ async def step_impl(context):
                 client = PrimitivesClientMock()
             case 'Structs':
                 client = StructsClientMock()
+            case 'Arrays':
+                client = ArraysClientMock()
+            case 'ArraysWithStructs':
+                client = ArraysWithStructsClientMock()
             case _:
                 assert False, f"Unknown interface '{interface}'"
         client_task = asyncio.create_task(client.connect())

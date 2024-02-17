@@ -4,7 +4,7 @@ import asyncio
 async def with_args_loop(client: WithArgsClient):
     i=0
     while True:
-        await asyncio.sleep(1)
+        await asyncio.sleep(5)
         await client.Notify("Just bumped")
         total = await client.Order("Thingy", i, 3.5)
         print(f"Total: {total}")

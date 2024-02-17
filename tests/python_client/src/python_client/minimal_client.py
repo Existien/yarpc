@@ -3,7 +3,7 @@ import asyncio
 
 async def minimal_loop(client):
     while True:
-        await asyncio.sleep(1)
+        await asyncio.sleep(11)
         await client.Bump()
 
 def get_minimal_client():
