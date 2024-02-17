@@ -1,0 +1,11 @@
+objects:
+- name: Minimal
+  kind: interface
+  docs: A interface using signals and methods without args
+  members:
+  - name: Bumped
+    kind: signal
+    docs: a simple signal without arguments
+  - name: Bump
+    kind: method
+    docs: a simple method without args

@@ -1,13 +1,9 @@
 outputs:
-- name: BasicArgsService
+- name: WithArgsService
   language: py
-  location: python_service/src/python_service/basic_gen
+  location: python_service/src/python_service/with_args_gen
   busName: com.yarpc.testservice
   services:
-  - className: MinimalInterface
-    spec: Minimal
-    objectPath: /com/yarpc/testservice
-    interfaceName: com.yarpc.testservice.minimal
   - className: WithArgsInterface
     spec: WithArgs
     objectPath: /com/yarpc/testservice
@@ -17,11 +13,6 @@ outputs:
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.primitives
   clients:
-  - className: BackendMinimalClient
-    spec: Minimal
-    busName: com.yarpc.backend
-    objectPath: /com/yarpc/backend
-    interfaceName: com.yarpc.backend.minimal
   - className: BackendWithArgsClient
     spec: WithArgs
     busName: com.yarpc.backend
@@ -33,15 +24,11 @@ outputs:
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.primitives
 
-- name: BasicArgsMocks
+- name: WithArgsMocks
   language: py
-  location: python_mocks/src/python_mocks/basic_gen
+  location: python_mocks/src/python_mocks/with_args_gen
   busName: com.yarpc.backend
   service_mocks:
-  - className: BackendMinimalInterfaceMock
-    spec: Minimal
-    objectPath: /com/yarpc/backend
-    interfaceName: com.yarpc.backend.minimal
   - className: BackendWithArgsInterfaceMock
     spec: WithArgs
     objectPath: /com/yarpc/backend
@@ -51,11 +38,6 @@ outputs:
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.primitives
   client_mocks:
-  - className: MinimalClientMock
-    spec: Minimal
-    busName: com.yarpc.testservice
-    objectPath: /com/yarpc/testservice
-    interfaceName: com.yarpc.testservice.minimal
   - className: WithArgsClientMock
     spec: WithArgs
     busName: com.yarpc.testservice
@@ -67,16 +49,11 @@ outputs:
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.primitives
 
-- name: BasicArgsClient
+- name: WithArgsClient
   language: py
-  location: python_client/src/python_client/basic_gen
+  location: python_client/src/python_client/with_args_gen
   busName: com.yarpc.testclient
   clients:
-  - className: MinimalClient
-    spec: Minimal
-    busName: com.yarpc.testservice
-    objectPath: /com/yarpc/testservice
-    interfaceName: com.yarpc.testservice.minimal
   - className: WithArgsClient
     spec: WithArgs
     busName: com.yarpc.testservice

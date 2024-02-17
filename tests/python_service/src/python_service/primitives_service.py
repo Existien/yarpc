@@ -1,5 +1,5 @@
-from .basic_gen.primitives_interface import PrimitivesInterface
-from .basic_gen.backend_primitives_client import BackendPrimitivesClient
+from .with_args_gen.primitives_interface import PrimitivesInterface
+from .with_args_gen.backend_primitives_client import BackendPrimitivesClient
 
 def get_primitives_service_and_backend_client():
     service = PrimitivesInterface()

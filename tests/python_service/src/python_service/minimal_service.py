@@ -1,5 +1,5 @@
-from .basic_gen.minimal_interface import MinimalInterface
-from .basic_gen.backend_minimal_client import BackendMinimalClient
+from .minimal_gen.minimal_interface import MinimalInterface
+from .minimal_gen.backend_minimal_client import BackendMinimalClient
 
 def get_minimal_service_and_backend_client():
     service = MinimalInterface()

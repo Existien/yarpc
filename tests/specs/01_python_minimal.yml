@@ -1,0 +1,43 @@
+outputs:
+- name: MinimalService
+  language: py
+  location: python_service/src/python_service/minimal_gen
+  busName: com.yarpc.testservice
+  services:
+  - className: MinimalInterface
+    spec: Minimal
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.minimal
+  clients:
+  - className: BackendMinimalClient
+    spec: Minimal
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.minimal
+
+- name: MinimalMocks
+  language: py
+  location: python_mocks/src/python_mocks/minimal_gen
+  busName: com.yarpc.backend
+  service_mocks:
+  - className: BackendMinimalInterfaceMock
+    spec: Minimal
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.minimal
+  client_mocks:
+  - className: MinimalClientMock
+    spec: Minimal
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.minimal
+
+- name: MinimalClient
+  language: py
+  location: python_client/src/python_client/minimal_gen
+  busName: com.yarpc.testclient
+  clients:
+  - className: MinimalClient
+    spec: Minimal
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.minimal

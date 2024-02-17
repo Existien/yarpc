@@ -1,4 +1,4 @@
-from .basic_gen.connection import Connection
+from .minimal_gen.connection import Connection
 from .minimal_service import get_minimal_service_and_backend_client
 from .with_args_service import get_with_args_service_and_backend_client
 from .primitives_service import get_primitives_service_and_backend_client

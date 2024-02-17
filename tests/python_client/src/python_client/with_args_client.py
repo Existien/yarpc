@@ -1,4 +1,4 @@
-from .basic_gen.with_args_client import WithArgsClient
+from .with_args_gen.with_args_client import WithArgsClient
 import asyncio
 
 async def with_args_loop(client: WithArgsClient):
