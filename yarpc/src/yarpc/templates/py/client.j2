@@ -100,6 +100,17 @@ class {{ target.className }}():
         if self._properties_changed_handler and interface == self.name:
             properties = self._unpack_properties(properties)
             self._properties_changed_handler(properties)
+
+    def on_properties_changed(self, handler) -> None:
+        """
+        Set handler for property changes
+
+        The handler takes a dictionary of the changed properties
+
+        Args:
+            handler(Callable[[dict], None]): the handler
+        """
+        self._properties_changed_handler = handler
 {% for member in object.members %}
 
 {% if member.kind == 'signal' %}
@@ -184,16 +195,6 @@ class {{ target.className }}():
         unmarshalled = {{ py.from_dbus('raw_return', member.type, output.objects) }}
         return unmarshalled
 
-    def on_properties_changed(self, handler) -> None:
-        """
-        Set handler for property changes
-
-        The handler takes a dictionary of the changed properties
-
-        Args:
-            handler(Callable[[dict], None]): the handler
-        """
-        self._properties_changed_handler = handler
 {% if not member.readonly %}
 
     async def set_{{ member.name }}(self, value: {{ py.type(member.type, output.objects) }}) -> None:
