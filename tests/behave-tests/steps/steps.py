@@ -28,35 +28,17 @@ async def wait_for_dbus(bus_name, object_path, interface_name):
             pass
 
 
-def cast(value: str, type: str):
-    match type:
-        case 'py':
-            return eval(value)
-        case 'json':
-            return json.loads(value)
-        case 'bool':
-            match value:
-                case 'True':
-                    return True
-                case 'False':
-                    return False
-                case _:
-                    raise ValueError("Invalid boolean. Use 'True' or 'False'")
-        case _:
-                return __builtins__[type](value)
-
-
 def table_to_args(table):
     args = []
     for row in table:
-        args.append(cast(row['value'], row['type']))
+        args.append(eval(row['value']))
     return args
 
 
 def table_to_kwargs(table):
     kwargs = {}
     for row in table:
-        kwargs[row['name']] = cast(row['value'], row['type'])
+        kwargs[row['name']] = eval(row['value'])
     return kwargs
 
 

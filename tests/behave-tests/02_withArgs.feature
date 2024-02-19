@@ -14,79 +14,79 @@ Feature: WithArgs interface
 
     Scenario: Method call with a single argument, without a return value
         When the 'Notify' method is called by 'Alice' with the following parameters
-            | name    | value | type |
-            | message | Foo   | str  |
+            | name    | value |
+            | message | "Foo" |
         Then 'Bob' receives a 'Notify' method call with the following parameters
-            | name    | value | type |
-            | message | Foo   | str  |
+            | name    | value |
+            | message | "Foo" |
 
     Scenario: Emit a signal with a single parameter
         When a 'Notified' signal is emitted by 'Bob' with the following parameters
-            | name    | value | type |
-            | message | Foo   | str  |
+            | name    | value |
+            | message | "Foo" |
         Then 'Alice' receives a 'Notified' signal with the following parameters
-            | name    | value | type |
-            | message | Foo   | str  |
+            | name    | value |
+            | message | "Foo" |
 
     Scenario: Method call with multiple arguments and a return value
         Given 'Bob' replies to a 'Order' method call with the following return value
-            | value | type  |
-            | 6.022 | float |
+            | value |
+            | 6.022 |
         When the 'Order' method is called by 'Alice' with the following parameters
-            | name         | value   | type  |
-            | item         | Marbles | str   |
-            | amount       | 33      | int   |
-            | pricePerItem | 0.33    | float |
+            | name         | value     |
+            | item         | "Marbles" |
+            | amount       | 33        |
+            | pricePerItem | 0.33      |
         Then 'Alice' receives a return value of
-            | value | type  |
-            | 6.022 | float |
+            | value |
+            | 6.022 |
         And 'Bob' receives a 'Order' method call with the following parameters
-            | name         | value   | type  |
-            | item         | Marbles | str   |
-            | amount       | 33      | int   |
-            | pricePerItem | 0.33    | float |
+            | name         | value     |
+            | item         | "Marbles" |
+            | amount       | 33        |
+            | pricePerItem | 0.33      |
 
     Scenario: Emit a signal with multiple parameters
         When a 'OrderReceived' signal is emitted by 'Bob' with the following parameters
-            | name         | value   | type  |
-            | item         | Marbles | str   |
-            | amount       | 33      | int   |
-            | pricePerItem | 0.33    | float |
+            | name         | value     |
+            | item         | "Marbles" |
+            | amount       | 33        |
+            | pricePerItem | 0.33      |
         Then 'Alice' receives a 'OrderReceived' signal with the following parameters
-            | name         | value   | type  |
-            | item         | Marbles | str   |
-            | amount       | 33      | int   |
-            | pricePerItem | 0.33    | float |
+            | name         | value     |
+            | item         | "Marbles" |
+            | amount       | 33        |
+            | pricePerItem | 0.33      |
 
     Scenario: Get all properties
         When all properties are queried from 'Alice'
         Then 'Alice' receives a return value of
-            | value                                         | type |
-            | {"Speed":10.0,"Distance":200,"Duration":20.0} | json |
+            | value                                         |
+            | {"Speed":10.0,"Distance":200,"Duration":20.0} |
 
     Scenario: Getting read-only properties
         When the 'Duration' property is queried from 'Alice'
         Then 'Alice' receives a return value of
-            | value | type  |
-            | 20.0  | float |
+            | value |
+            | 20.0  |
 
     Scenario Outline: Geting and setting read-write properties
         When the '<prop>' property is queried from 'Alice'
         Then 'Alice' receives a return value of
-            | value | type   |
-            | <old> | <type> |
+            | value |
+            | <old> |
         When the '<prop>' property is set by 'Alice' to a value of
-            | value | type   |
-            | <new> | <type> |
+            | value |
+            | <new> |
         Then 'Alice' receives a property change signal with the following parameters
-            | name   | value | type   |
-            | <prop> | <new> | <type> |
+            | name   | value |
+            | <prop> | <new> |
         When the '<prop>' property is queried from 'Alice'
         Then 'Alice' receives a return value of
-            | value | type   |
-            | <new> | <type> |
+            | value |
+            | <new> |
 
         Examples: Properties
-            | prop     | old  | new  | type  |
-            | Distance | 200  | 50   | int   |
-            | Speed    | 10.0 | 5    | float |
+            | prop     | old  | new  |
+            | Distance | 200  | 50   |
+            | Speed    | 10.0 | 5    |
