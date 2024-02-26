@@ -1,14 +1,18 @@
 objects:
 - name: SimpleStruct
   kind: struct
-  docs: An order
+  docs: |
+    An
+    order
   members:
   - name: item
     type: Item
     docs: The item
   - name: amount
     type: uint32
-    docs: the amount ordered
+    docs: |
+      the amount
+      ordered
 - name: Item
   kind: struct
   docs: an item

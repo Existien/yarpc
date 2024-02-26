@@ -19,7 +19,7 @@ from .{{ object.name|snake_case }} import {{ object.name }}
 
 class {{ target.className }}():
     """
-    {{ object.docs }}
+    {{ object.docs|indent(4) }}
     """
 
     def __init__(self):
@@ -153,18 +153,18 @@ class {{ target.className }}():
     ) ->{{ ' ' }}
     {%- if member.returns %}{{ py.type(member.returns.type, output.objects) }}{% else %}None{% endif %}:
         """
-        {{ member.docs }}
+        {{ member.docs|indent(8) }}
         {% if member.args|count > 0 %}
 
         Args:
         {% for arg in member.args %}
-            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs }}
+            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs|indent(16) }}
         {% endfor %}
         {% endif %}
         {% if member.returns %}
 
         Returns:
-            {{ py.type(member.returns.type, output.objects) }}: {{ member.returns.docs }}
+            {{ py.type(member.returns.type, output.objects) }}: {{ member.returns.docs|indent(16) }}
         {% endif %}
         """
         while not self._interface:
@@ -184,7 +184,7 @@ class {{ target.className }}():
     async def get_{{ member.name }}(self) -> {{ py.type(member.type, output.objects) }}:
         """Getter for property '{{ member.name }}'
 
-        {{ member.docs }}
+        {{ member.docs|indent(8) }}
 
         Returns:
             {{ py.type(member.type, output.objects) }}: the current value
@@ -200,7 +200,7 @@ class {{ target.className }}():
     async def set_{{ member.name }}(self, value: {{ py.type(member.type, output.objects) }}) -> None:
         """Setter for property '{{ member.name }}'
 
-        {{ member.docs }}
+        {{ member.docs|indent(8) }}
 
         Args:
             value ({{ py.type(member.type, output.objects) }}): the new value

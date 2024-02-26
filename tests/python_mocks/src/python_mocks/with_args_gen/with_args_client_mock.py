@@ -137,10 +137,14 @@ class WithArgsClientMock():
         pricePerItem: float,
     ) -> float:
         """
-        a simple method with args and return value
+        a simple method
+        with args and return value
+
 
         Args:
-            item (str): The item
+            item (str): The
+                item
+
             amount (int): a amount ordered
             pricePerItem (float): the price per item
         """
@@ -156,7 +160,9 @@ class WithArgsClientMock():
     async def get_Speed(self) -> float:
         """Getter for property 'Speed'
 
-        the speed in m/s
+        the speed
+        in m/s
+
 
         Returns:
             float: the current value
@@ -170,7 +176,9 @@ class WithArgsClientMock():
     async def set_Speed(self, value: float) -> None:
         """Setter for property 'Speed'
 
-        the speed in m/s
+        the speed
+        in m/s
+
 
         Args:
             value (float): the new value

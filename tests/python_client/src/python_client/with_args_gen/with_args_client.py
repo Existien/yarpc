@@ -15,6 +15,9 @@ import asyncio
 class WithArgsClient():
     """
     A interface using only primitive types
+
+    And some elaborate docstring
+
     """
 
     def __init__(self):
@@ -168,15 +171,21 @@ class WithArgsClient():
         pricePerItem: 'float',
     ) -> float:
         """
-        a simple method with args and return value
+        a simple method
+        with args and return value
+
 
         Args:
-            item (str): The item
+            item (str): The
+                item
+
             amount (int): a amount ordered
             pricePerItem (float): the price per item
 
         Returns:
-            float: the total price
+            float: the
+                total price
+
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -190,7 +199,9 @@ class WithArgsClient():
     async def get_Speed(self) -> float:
         """Getter for property 'Speed'
 
-        the speed in m/s
+        the speed
+        in m/s
+
 
         Returns:
             float: the current value
@@ -205,7 +216,9 @@ class WithArgsClient():
     async def set_Speed(self, value: float) -> None:
         """Setter for property 'Speed'
 
-        the speed in m/s
+        the speed
+        in m/s
+
 
         Args:
             value (float): the new value

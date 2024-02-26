@@ -1,7 +1,10 @@
 objects:
 - name: WithArgs
   kind: interface
-  docs: A interface using only primitive types
+  docs: |
+    A interface using only primitive types
+
+    And some elaborate docstring
   members:
   - name: Notified
     docs: a simple signal with one argument
@@ -11,7 +14,9 @@ objects:
       type: string
       docs: The message
   - name: OrderReceived
-    docs: a simple signal with multiple arguments
+    docs: |
+        a simple signal with
+        multiple arguments
     kind: signal
     args:
     - name: item
@@ -19,7 +24,9 @@ objects:
       docs: The item
     - name: amount
       type: uint32
-      docs: a amount ordered
+      docs: |
+        a amount
+        ordered
     - name: pricePerItem
       type: double
       docs: the price per item
@@ -32,11 +39,15 @@ objects:
       docs: The message
   - name: Order
     kind: method
-    docs: a simple method with args and return value
+    docs: |
+      a simple method
+      with args and return value
     args:
     - name: item
       type: string
-      docs: The item
+      docs: |
+        The
+        item
     - name: amount
       type: uint32
       docs: a amount ordered
@@ -45,11 +56,15 @@ objects:
       docs: the price per item
     returns:
       type: double
-      docs: the total price
+      docs: |
+        the
+        total price
   - name: Speed
     kind: property
     type: double
-    docs: the speed in m/s
+    docs: |
+      the speed
+      in m/s
   - name: Distance
     kind: property
     type: uint32

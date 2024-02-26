@@ -117,7 +117,7 @@ class {{ target.className }}():
 
     Args:
         {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-        {{ member.name }} ({{ py.type(member.type, output.objects) }}): {{ member.docs }}
+        {{ member.name }} ({{ py.type(member.type, output.objects) }}): {{ member.docs|indent(12) }}
         {% endfor %}
     {% endif %}
     """
@@ -182,18 +182,18 @@ class {{ target.className }}():
         {% endfor %}
     ) -> None:
         """
-        {{ member.docs }}
+        {{ member.docs|indent(8) }}
         {% if member.args|count > 0 %}
 
         Args:
         {% for arg in member.args %}
-            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs }}
+            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs|indent(12) }}
         {% endfor %}
         {% endif %}
         """
         self.interface.{{ member.name }}(
             {% for arg in member.args %}
-            {{ py.to_dbus(arg.name, arg.type, output.objects)|indent(12) }},
+            {{ py.to_dbus(arg.name, arg.type, output.objects)|indent(16) }},
             {% endfor %}
         )
 {% endif %}
@@ -206,18 +206,18 @@ class {{ target.className }}():
     ) ->{{ ' ' }}
     {%- if member.returns %}{{ py.type(member.returns.type, output.objects) }}{% else %}None{% endif %}:
         """
-        {{ member.docs }}
+        {{ member.docs|indent(8) }}
         {% if member.args|count > 0 %}
 
         Args:
         {% for arg in member.args %}
-            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs }}
+            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs|indent(16) }}
         {% endfor %}
         {% endif %}
         {% if member.returns %}
 
         Returns:
-            {{ py.type(member.returns.type, output.objects) }}: {{ member.returns.docs }}
+            {{ py.type(member.returns.type, output.objects) }}: {{ member.returns.docs|indent(16) }}
         {% endif %}
         """
         return await self._await_mock_method("{{ member.name }}", locals())
@@ -231,7 +231,7 @@ class {{ target.className }}():
     async def get_{{ member.name }}(self) -> {{ py.type(member.type, output.objects) }}:
         """Getter for property {{ member.name }}
 
-        {{ member.docs }}
+        {{ member.docs|indent(8) }}
 
         Returns:
             {{ py.type(member.type, output.objects) }}: the current value
@@ -260,7 +260,7 @@ class {{ target.className }}():
     async def set_{{ member.name }}(self, value: {{ py.type(member.type, output.objects) }}):
         """Setter for property {{ member.name }}
 
-        {{ member.docs }}
+        {{ member.docs|indent(8) }}
 
         Args:
             value ({{ py.type(member.type, output.objects) }}): the new value

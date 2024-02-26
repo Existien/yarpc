@@ -18,11 +18,11 @@ from typing import Sequence
 @dataclass
 class {{ object.name }}:
     """
-    {{ object.docs }}
+    {{ object.docs|indent(4) }}
 
     Args:
     {% for member in object.members %}
-        {{ member.name }} ({{ py.type(member.type, output.objects) }}): {{ member.docs }}
+        {{ member.name }} ({{ py.type(member.type, output.objects) }}): {{ member.docs|indent(12) }}
     {% endfor %}
     """
     {% for member in object.members %}

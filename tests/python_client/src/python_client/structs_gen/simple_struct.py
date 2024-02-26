@@ -12,11 +12,15 @@ from typing import Sequence
 @dataclass
 class SimpleStruct:
     """
-    An order
+    An
+    order
+
 
     Args:
         item (Item): The item
-        amount (int): the amount ordered
+        amount (int): the amount
+            ordered
+
     """
     item: Item
     amount: int

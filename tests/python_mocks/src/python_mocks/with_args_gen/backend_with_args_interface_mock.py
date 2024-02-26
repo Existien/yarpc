@@ -116,7 +116,9 @@ class BackendWithArgsInterfaceMock():
     Per default, the mock is configured to just return the updated value.
 
     Args:
-        Speed (float): the speed in m/s
+        Speed (float): the speed
+            in m/s
+
         Distance (int): the distance to travel in m
         Duration (float): the time until the distance is covered at the current speed
     """
@@ -195,11 +197,15 @@ class BackendWithArgsInterfaceMock():
         pricePerItem: float,
     ) -> None:
         """
-        a simple signal with multiple arguments
+        a simple signal with
+        multiple arguments
+
 
         Args:
             item (str): The item
-            amount (int): a amount ordered
+            amount (int): a amount
+            ordered
+
             pricePerItem (float): the price per item
         """
         self.interface.OrderReceived(
@@ -227,22 +233,30 @@ class BackendWithArgsInterfaceMock():
         pricePerItem: float,
     ) -> float:
         """
-        a simple method with args and return value
+        a simple method
+        with args and return value
+
 
         Args:
-            item (str): The item
+            item (str): The
+                item
+
             amount (int): a amount ordered
             pricePerItem (float): the price per item
 
         Returns:
-            float: the total price
+            float: the
+                total price
+
         """
         return await self._await_mock_method("Order", locals())
 
     async def get_Speed(self) -> float:
         """Getter for property Speed
 
-        the speed in m/s
+        the speed
+        in m/s
+
 
         Returns:
             float: the current value
@@ -271,7 +285,9 @@ class BackendWithArgsInterfaceMock():
     async def set_Speed(self, value: float):
         """Setter for property Speed
 
-        the speed in m/s
+        the speed
+        in m/s
+
 
         Args:
             value (float): the new value

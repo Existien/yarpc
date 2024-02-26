@@ -80,7 +80,9 @@ class WithArgsInterfaceProperties:
     """Manages the state of the properties for WithArgsInterface
 
     Args:
-        Speed (float): the speed in m/s
+        Speed (float): the speed
+            in m/s
+
         Distance (int): the distance to travel in m
         Duration (float): the time until the distance is covered at the current speed
     """
@@ -251,6 +253,9 @@ class WithArgsInterface():
     """
     A interface using only primitive types
 
+    And some elaborate docstring
+
+
     Args:
         property_provider (ProvidesWithArgsInterfaceProperties): provider for interface properties
     """
@@ -312,11 +317,15 @@ class WithArgsInterface():
         pricePerItem: float,
     ) -> None:
         """
-        a simple signal with multiple arguments
+        a simple signal with
+        multiple arguments
+
 
         Args:
             item (str): The item
-            amount (int): a amount ordered
+            amount (int): a amount
+                ordered
+
             pricePerItem (float): the price per item
         """
         self.interface.OrderReceived(
@@ -367,15 +376,21 @@ class WithArgsInterface():
         pricePerItem: float,
     ) -> float:
         """
-        a simple method with args and return value
+        a simple method
+        with args and return value
+
 
         Args:
-            item (str): The item
+            item (str): The
+                item
+
             amount (int): a amount ordered
             pricePerItem (float): the price per item
 
         Returns:
-            float: the total price
+            float: the
+                total price
+
         """
         if self._Order_handler is None:
             raise NotImplementedError()
@@ -389,7 +404,9 @@ class WithArgsInterface():
     async def get_Speed(self) -> float:
         """Getter for property Speed
 
-        the speed in m/s
+        the speed
+        in m/s
+
 
         Returns:
             float: the current value
@@ -399,7 +416,9 @@ class WithArgsInterface():
     async def set_Speed(self, value: float):
         """Setter for property Speed
 
-        the speed in m/s
+        the speed
+        in m/s
+
 
         Args:
             value (float): the new value
