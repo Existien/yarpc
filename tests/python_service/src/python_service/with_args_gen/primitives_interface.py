@@ -5,7 +5,7 @@
 #   Object: Primitives
 #   Template: py/service.j2
 
-from typing import Protocol, Sequence
+from typing import Protocol, Sequence, Mapping
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )

@@ -1,0 +1,112 @@
+outputs:
+- name: DictsService
+  language: py
+  location: python_service/src/python_service/dicts_gen
+  busName: com.yarpc.testservice
+  services:
+  - className: DictsInterface
+    spec: Dicts
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dicts
+  - className: DictsWithStructsInterface
+    spec: DictsWithStructs
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictsWithStructs
+  - className: DictsWithArraysInterface
+    spec: DictsWithArrays
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictsWithArrays
+  - className: DictKeysInterface
+    spec: DictKeys
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictKeys
+  clients:
+  - className: BackendDictsClient
+    spec: Dicts
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.dicts
+  - className: BackendDictsWithStructsClient
+    spec: DictsWithStructs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.dictsWithStructs
+  - className: BackendDictsWithArraysClient
+    spec: DictsWithArrays
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.dictsWithArrays
+  - className: BackendDictKeysClient
+    spec: DictKeys
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.dictKeys
+
+- name: DictsMocks
+  language: py
+  location: python_mocks/src/python_mocks/dicts_gen
+  busName: com.yarpc.backend
+  service_mocks:
+  - className: BackendDictsInterfaceMock
+    spec: Dicts
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.dicts
+  - className: BackendDictsWithStructsInterfaceMock
+    spec: DictsWithStructs
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.dictsWithStructs
+  - className: BackendDictsWithArraysInterfaceMock
+    spec: DictsWithArrays
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.dictsWithArrays
+  - className: BackendDictKeysInterfaceMock
+    spec: DictKeys
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.dictKeys
+  client_mocks:
+  - className: DictsClientMock
+    spec: Dicts
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dicts
+  - className: DictsWithStructsClientMock
+    spec: DictsWithStructs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictsWithStructs
+  - className: DictsWithArraysClientMock
+    spec: DictsWithArrays
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictsWithArrays
+  - className: DictKeysClientMock
+    spec: DictKeys
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictKeys
+
+- name: DictsClient
+  language: py
+  location: python_client/src/python_client/dicts_gen
+  busName: com.yarpc.testclient
+  clients:
+  - className: DictsClient
+    spec: Dicts
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dicts
+  - className: DictsWithStructsClient
+    spec: DictsWithStructs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictsWithStructs
+  - className: DictsWithArraysClient
+    spec: DictsWithArrays
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictsWithArrays
+  - className: DictKeysClient
+    spec: DictKeys
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.dictKeys

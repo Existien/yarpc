@@ -12,6 +12,10 @@ from python_mocks import (
     StructsClientMock, BackendStructsInterfaceMock, SimpleStruct, Item,
     ArraysClientMock, BackendArraysInterfaceMock,
     ArraysWithStructsClientMock, BackendArraysWithStructsInterfaceMock, StructArray, SimonsArray,
+    DictsClientMock, BackendDictsInterfaceMock,
+    DictsWithStructsClientMock, BackendDictsWithStructsInterfaceMock, StructDict, SimonsDict,
+    DictsWithArraysClientMock, BackendDictsWithArraysInterfaceMock,
+    DictKeysClientMock, BackendDictKeysInterfaceMock,
 )
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
@@ -78,6 +82,32 @@ async def step_impl(context):
                 service=BackendArraysWithStructsInterfaceMock(
                     ArrayStructProperty=[StructArray(numbers=[[1],[2]]),StructArray(numbers=[[3,4]])]
                 )
+            case 'Dictionaries':
+                service=BackendDictsInterfaceMock(
+                    DictProperty={"Fizz":3, "Buzz": 5}
+                )
+            case 'DictsWithStructs':
+                service=BackendDictsWithStructsInterfaceMock(
+                    DictStructProperty={
+                        "first": StructDict(numbers={
+                            "1": {"Fizz": 3, "Buzz": 5},
+                            "2": {"One": 1, "Two": 2},
+                        }),
+                        "second": StructDict(numbers={
+                            "Legs": {"Fish": 0, "Dog": 4, "Ant": 6},
+                            "Wings": {"Fish": 0, "Dog": 0, "Ant": 2},
+                        }),
+                    }
+                )
+            case 'DictsWithArrays':
+                service=BackendDictsWithArraysInterfaceMock(
+                    DictArrayProperty={
+                        "A": [{"AA1": 11, "AA2": 12}, {"AB1": 21, "AB2": 22}],
+                        "B": [{"BA1": 11, "BA2": 12}, {"BB1": 21, "BB2": 22}],
+                    }
+                )
+            case 'DictKeys':
+                service=BackendDictKeysInterfaceMock()
             case _:
                 assert False, f"Unknown interface '{interface}'"
         assert service is not None, f"Could not find service '{interface}'"
@@ -114,6 +144,14 @@ async def step_impl(context):
                 client = ArraysClientMock()
             case 'ArraysWithStructs':
                 client = ArraysWithStructsClientMock()
+            case 'Dictionaries':
+                client = DictsClientMock()
+            case 'DictsWithStructs':
+                client = DictsWithStructsClientMock()
+            case 'DictsWithArrays':
+                client = DictsWithArraysClientMock()
+            case 'DictKeys':
+                client = DictKeysClientMock()
             case _:
                 assert False, f"Unknown interface '{interface}'"
         client_task = asyncio.create_task(client.connect())

@@ -32,7 +32,7 @@ def extract_structs(type_name: str, objects: list) -> list:
         inner.append(outer.get('name'))
         for member in outer.get('members'):
             inner.extend(extract_structs(member.get('type'), objects))
-    elif outer.get('name') == 'array':
+    elif outer.get('name') == 'array' or outer.get('name') == 'dict':
         in_arr = find_types(type_name, objects)
         for i in in_arr:
             inner.extend(extract_structs(i.get('name'), objects))

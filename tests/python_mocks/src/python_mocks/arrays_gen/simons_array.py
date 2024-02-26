@@ -7,7 +7,7 @@
 
 from .struct_array import StructArray
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Sequence, Mapping
 
 @dataclass
 class SimonsArray:

@@ -1,0 +1,40 @@
+objects:
+- name: StructDict
+  kind: struct
+  docs: A struct containing dicts
+  members:
+  - name: numbers
+    type: dict<string,dict<string,uint32>>
+    docs: some numbers
+- name: SimonsDict
+  kind: struct
+  docs: A struct containing dicts
+  members:
+  - name: numbers
+    type: dict<string,StructDict>
+    docs: some struct dicts
+- name: DictsWithStructs
+  kind: interface
+  docs: A interface using dicts using structs using dicts
+  members:
+  - name: DictsStructMethod
+    kind: method
+    docs: a simple method with one argument
+    args:
+    - name: numbers
+      type: dict<string,StructDict>
+      docs: Some numbers
+    returns:
+      type: dict<string,SimonsDict>
+      docs: more numbers
+  - name: DictStructSignal
+    kind: signal
+    docs: a simple signal with one argument
+    args:
+    - name: numbers
+      type: dict<string, StructDict>
+      docs: numbers
+  - name: DictStructProperty
+    kind: property
+    docs: a simple property
+    type: dict<string, StructDict>

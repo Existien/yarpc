@@ -1,0 +1,26 @@
+objects:
+- name: Dicts
+  kind: interface
+  docs: A interface using dictionaries
+  members:
+  - name: DictMethod
+    kind: method
+    docs: a simple method with one argument
+    args:
+    - name: keysNValues
+      type: dict<string, uint32>
+      docs: a dictionary
+    returns:
+      type: dict<string,string>
+      docs: another one
+  - name: DictSignal
+    kind: signal
+    docs: a signal
+    args:
+    - name: keysNValues
+      type: dict<string, uint32>
+      docs: a dictionary
+  - name: DictProperty
+    kind: property
+    docs: a prop
+    type: dict<string, uint32>

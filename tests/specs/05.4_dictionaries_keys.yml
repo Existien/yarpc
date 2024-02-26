@@ -1,0 +1,176 @@
+objects:
+- name: DictKeys
+  kind: interface
+  docs: A interface using dictionaries with different keys
+  members:
+  - name: Uint8Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<uint8, string>
+      docs: the value
+  - name: BoolSignal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<bool, string>
+      docs: the value
+  - name: Int16Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<int16, string>
+      docs: the value
+  - name: Uint16Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<uint16, string>
+      docs: the value
+  - name: Int32Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<int32, string>
+      docs: the value
+  - name: Uint32Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<uint32, string>
+      docs: the value
+  - name: Int64Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<int64, string>
+      docs: the value
+  - name: Uint64Signal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<uint64, string>
+      docs: the value
+  - name: DoubleSignal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<double, string>
+      docs: the value
+  - name: StringSignal
+    kind: signal
+    docs: a signal
+    args:
+    - name: value
+      type: dict<string, string>
+      docs: the value
+
+  - name: Uint8Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<uint8, string>
+      docs: the value
+    returns:
+      type: dict<uint8, string>
+      docs: the return type
+  - name: BoolMethod
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<bool, string>
+      docs: the value
+    returns:
+      type: dict<bool, string>
+      docs: the return type
+  - name: Int16Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<int16, string>
+      docs: the value
+    returns:
+      type: dict<int16, string>
+      docs: the return type
+  - name: Uint16Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<uint16, string>
+      docs: the value
+    returns:
+      type: dict<uint16, string>
+      docs: the return type
+  - name: Int32Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<int32, string>
+      docs: the value
+    returns:
+      type: dict<int32, string>
+      docs: the return type
+  - name: Uint32Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<uint32, string>
+      docs: the value
+    returns:
+      type: dict<uint32, string>
+      docs: the return type
+  - name: Int64Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<int64, string>
+      docs: the value
+    returns:
+      type: dict<int64, string>
+      docs: the return type
+  - name: Uint64Method
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<uint64, string>
+      docs: the value
+    returns:
+      type: dict<uint64, string>
+      docs: the return type
+  - name: DoubleMethod
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<double, string>
+      docs: the value
+    returns:
+      type: dict<double, string>
+      docs: the return type
+  - name: StringMethod
+    kind: method
+    docs: a method
+    args:
+    - name: value
+      type: dict<string, string>
+      docs: the value
+    returns:
+      type: dict<string, string>
+      docs: the return type

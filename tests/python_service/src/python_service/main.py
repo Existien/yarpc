@@ -5,6 +5,10 @@ from .primitives_service import get_primitives_service_and_backend_client
 from .structs_service import get_structs_service_and_backend_client
 from .arrays_service import get_arrays_service_and_backend_client
 from .arrays_with_structs_service import get_arrays_with_struct_service_and_backend_client
+from .dicts_service import get_dicts_service_and_backend_client
+from .dicts_with_structs_service import get_dicts_with_struct_service_and_backend_client
+from .dicts_with_arrays_service import get_dicts_with_array_service_and_backend_client
+from .dict_keys_service import get_dict_keys_service_and_backend_client
 import asyncio
 
 
@@ -16,6 +20,10 @@ async def run():
         get_structs_service_and_backend_client(),
         get_arrays_service_and_backend_client(),
         get_arrays_with_struct_service_and_backend_client(),
+        get_dicts_service_and_backend_client(),
+        get_dicts_with_struct_service_and_backend_client(),
+        get_dicts_with_array_service_and_backend_client(),
+        get_dict_keys_service_and_backend_client(),
     ))
 
     print("Service running")

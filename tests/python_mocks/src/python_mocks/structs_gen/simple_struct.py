@@ -7,7 +7,7 @@
 
 from .item import Item
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Sequence, Mapping
 
 @dataclass
 class SimpleStruct:

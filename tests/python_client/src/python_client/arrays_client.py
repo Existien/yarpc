@@ -16,8 +16,8 @@ async def arrays_loop(client: ArraysClient):
         for v_seq, n_seq in zip(values, normalized):
             seq_change = [f"{v} -> {n}" for v,n in zip(v_seq, n_seq)]
             change.append(seq_change)
-        # previous = await client.get_ArrayProperty()
-        # print(f"Previous prop: {previous}")
+        previous = await client.get_ArrayProperty()
+        print(f"Previous prop: {previous}")
         await client.set_ArrayProperty(change)
         print(f"Current Props: {await client.get_all_properties()}")
         await asyncio.sleep(3)

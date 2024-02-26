@@ -10,6 +10,11 @@
 {%- if object.name == 'array' -%}
 {%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
 {{ object.py|replace("$1", inner_type) }}
+{%- elif object.name == 'dict' -%}
+{%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
+{%- set key = type(inner_types_as_str[0], objects) -%}
+{%- set value = type(inner_types_as_str[1], objects) -%}
+{{ object.py|replace("$1", key)|replace("$2", value) }}
 {%- else -%}
 {{ object.py }}
 {%- endif -%}
@@ -26,6 +31,10 @@
 {%- elif object.name == 'array' -%}
 {%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
 [ {{ unmarshal('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
+{%- elif object.name == 'dict' -%}
+{%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
+{%- set value_as_str = inner_types_as_str[1] -%}
+{ k{{idx}}: {{ unmarshal('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
 {%- elif object.kind == 'builtin' -%}
 {{ value }}
 {%- endif -%}
@@ -41,6 +50,10 @@
 {%- elif object.name == 'array' -%}
 {%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
 [ {{ marshal('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
+{%- elif object.name == 'dict' -%}
+{%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
+{%- set value_as_str = inner_types_as_str[1] -%}
+{ k{{idx}}: {{ marshal('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
 {%- elif object.kind == 'builtin' -%}
 {{ value }}
 {%- endif -%}
@@ -56,6 +69,10 @@
 {%- elif object.name == 'array' -%}
 {%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
 [ {{ from_dbus('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
+{%- elif object.name == 'dict' -%}
+{%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
+{%- set value_as_str = inner_types_as_str[1] -%}
+{ k{{idx}}: {{ from_dbus('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
 {%- else -%}
 {{ value }}
 {%- endif -%}
@@ -71,6 +88,10 @@
 {%- elif object.name == 'array' -%}
 {%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
 [ {{ to_dbus('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
+{%- elif object.name == 'dict' -%}
+{%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
+{%- set value_as_str = inner_types_as_str[1] -%}
+{ k{{idx}}: {{ to_dbus('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
 {%- else -%}
 {{ value }}
 {%- endif -%}

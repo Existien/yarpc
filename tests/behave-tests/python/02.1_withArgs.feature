@@ -9,6 +9,10 @@ Feature: WithArgs interface
             | Structs           |      |
             | Arrays            |      |
             | ArraysWithStructs |      |
+            | Dictionaries      |      |
+            | DictsWithStructs  |      |
+            | DictsWithArrays   |      |
+            | DictKeys          |      |
         And a running python service
         And a mocked python client connecting to the following interfaces
             | interface | name  |

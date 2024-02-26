@@ -5,7 +5,7 @@
 #   Object: ArraysWithStructs
 #   Template: py/client.j2
 
-from typing import Sequence
+from typing import Sequence, Mapping
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys

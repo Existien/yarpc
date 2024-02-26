@@ -112,7 +112,14 @@ def __get_builtins():
                 "regex": "array<(.*)>",
                 "dbus": "a$1",
                 "py": "Sequence[$1]",
-            }
+            },
+            {
+                "name": "dict",
+                "kind": "builtin",
+                "regex": "dict<(.*?), *(.*)>",
+                "dbus": "a{$1$2}",
+                "py": "Mapping[$1, $2]",
+            },
         ]
     }
 

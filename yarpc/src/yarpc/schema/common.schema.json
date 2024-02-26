@@ -14,7 +14,7 @@
     },
     "type": {
         "type": "string",
-        "pattern": "^[a-zA-Z][a-zA-Z0-9<,>]*$"
+        "pattern": "^[a-zA-Z][a-zA-Z0-9<, >]*$"
     },
     "clientInterface": {
         "additionalProperties": false,
