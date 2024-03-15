@@ -66,6 +66,9 @@ class SpecResolver:
                     types.append(type_object)
                     for member in type_object.get('members', []):
                         add_type(member['type'])
+                if type_object.get('kind') == 'enum':
+                    types.append(type_object)
+                    add_type('int32')
 
         for interface in interfaces:
             for member in interface.get('members', []):

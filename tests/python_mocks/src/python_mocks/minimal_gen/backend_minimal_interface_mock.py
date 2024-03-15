@@ -13,6 +13,7 @@ from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
 from unittest.mock import AsyncMock
 from copy import deepcopy
+from enum import Enum
 
 
 class _Interface(ServiceInterface):
@@ -81,13 +82,16 @@ class BackendMinimalInterfaceMock():
 
         def marshal(data):
             if isinstance(data, dict):
+                new_data = {}
                 for key in data.keys():
-                    data[key] = marshal(data[key])
-                return data
+                    new_data[key.value if isinstance(key, Enum) else key] = marshal(data[key])
+                return new_data
             elif isinstance(data, list):
                 for i in range(0, len(data)):
                     data[i] = marshal(data[i])
                 return data
+            elif isinstance(data, Enum):
+                return data.value
             elif hasattr(data, 'to_dbus'):
                 return data.to_dbus()
             else:

@@ -13,6 +13,10 @@ Feature: Dictionary interface
             | DictsWithStructs  | Bob  |
             | DictsWithArrays   |      |
             | DictKeys          |      |
+            | Enums             |      |
+            | EnumsWithArrays   |      |
+            | EnumsWithDicts    |      |
+            | EnumsWithStructs  |      |
         And a running python service
         And a mocked python client connecting to the following interfaces
             | interface        | name  |

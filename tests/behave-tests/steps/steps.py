@@ -16,6 +16,10 @@ from python_mocks import (
     DictsWithStructsClientMock, BackendDictsWithStructsInterfaceMock, StructDict, SimonsDict,
     DictsWithArraysClientMock, BackendDictsWithArraysInterfaceMock,
     DictKeysClientMock, BackendDictKeysInterfaceMock,
+    EnumsClientMock, BackendEnumsInterfaceMock, Color,
+    EnumsWithArraysClientMock, BackendEnumsWithArraysInterfaceMock,
+    EnumsWithDictsClientMock, BackendEnumsWithDictsInterfaceMock,
+    EnumsWithStructsClientMock, BackendEnumsWithStructsInterfaceMock, EnumStruct,
 )
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
@@ -108,6 +112,34 @@ async def step_impl(context):
                 )
             case 'DictKeys':
                 service=BackendDictKeysInterfaceMock()
+            case 'Enums':
+                service=BackendEnumsInterfaceMock(
+                    EnumProperty=Color.GREEN
+                )
+            case 'EnumsWithArrays':
+                service=BackendEnumsWithArraysInterfaceMock(
+                    EnumProperty=[Color.RED, Color.GREEN, Color.BLUE]
+                )
+            case 'EnumsWithDicts':
+                service=BackendEnumsWithDictsInterfaceMock(
+                    EnumProperty={
+                        Color.RED: Color.GREEN,
+                        Color.GREEN: Color.RED,
+                        Color.BLUE: Color.ORANGE,
+                    }
+                )
+            case 'EnumsWithStructs':
+                service=BackendEnumsWithStructsInterfaceMock(
+                    EnumProperty=EnumStruct(
+                        color=Color.GREEN,
+                        colorArray=[Color.RED, Color.GREEN, Color.BLUE],
+                        colorDict={
+                            Color.RED: Color.GREEN,
+                            Color.GREEN: Color.RED,
+                            Color.BLUE: Color.ORANGE,
+                        }
+                    )
+                )
             case _:
                 assert False, f"Unknown interface '{interface}'"
         assert service is not None, f"Could not find service '{interface}'"
@@ -152,6 +184,14 @@ async def step_impl(context):
                 client = DictsWithArraysClientMock()
             case 'DictKeys':
                 client = DictKeysClientMock()
+            case 'Enums':
+                client = EnumsClientMock()
+            case 'EnumsWithArrays':
+                client = EnumsWithArraysClientMock()
+            case 'EnumsWithDicts':
+                client = EnumsWithDictsClientMock()
+            case 'EnumsWithStructs':
+                client = EnumsWithStructsClientMock()
             case _:
                 assert False, f"Unknown interface '{interface}'"
         client_task = asyncio.create_task(client.connect())

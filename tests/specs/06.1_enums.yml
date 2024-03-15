@@ -1,0 +1,34 @@
+objects:
+- name: Color
+  kind: enum
+  docs: A enum of colors
+  members:
+  - RED: 0
+  - GREEN: 1
+  - BLUE: 2
+  - ORANGE: 3
+- name: Enums
+  kind: interface
+  docs: A interface using enums
+  members:
+  - name: EnumMethod
+    kind: method
+    docs: a simple method with one argument
+    args:
+    - name: color
+      type: Color
+      docs: a color
+    returns:
+      type: Color
+      docs: another color
+  - name: EnumSignal
+    kind: signal
+    docs: a simple signal with one argument
+    args:
+    - name: color
+      type: Color
+      docs: a color
+  - name: EnumProperty
+    kind: property
+    docs: a property
+    type: Color

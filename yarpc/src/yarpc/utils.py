@@ -25,17 +25,19 @@ def find_types(type_name: str, objects: list) -> list:
             found_types.extend(find_types(inner_name, objects))
     return found_types
 
-def extract_structs(type_name: str, objects: list) -> list:
+def extract_dependencies(type_name: str, objects: list) -> list:
     inner = []
     outer = find_type(type_name, objects)
     if outer.get('kind') == 'struct':
         inner.append(outer.get('name'))
         for member in outer.get('members'):
-            inner.extend(extract_structs(member.get('type'), objects))
+            inner.extend(extract_dependencies(member.get('type'), objects))
+    elif outer.get('kind') == 'enum':
+        inner.append(outer.get('name'))
     elif outer.get('name') == 'array' or outer.get('name') == 'dict':
         in_arr = find_types(type_name, objects)
         for i in in_arr:
-            inner.extend(extract_structs(i.get('name'), objects))
+            inner.extend(extract_dependencies(i.get('name'), objects))
     return set(inner)
 
 def to_snake_case(name: str) -> str:

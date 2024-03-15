@@ -18,7 +18,14 @@
         "docs": {"$ref": "common.schema.json#/docs"},
         "members": {
             "type": "array",
-            "items": {"$ref": "common.schema.json#/camelName"}
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "patternProperties": {
+                    "^[A-Z][a-zA-Z0-9_]*$": { "type": "integer" }
+                }
+            },
+            "uniqueItems": true
         }
     }
 }

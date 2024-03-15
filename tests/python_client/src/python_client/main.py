@@ -6,6 +6,10 @@ from .arrays_with_structs_client import get_arrays_with_struct_client
 from .dicts_client import get_dicts_client
 from .dicts_with_structs_client import get_dicts_with_struct_client
 from .dicts_with_arrays_client import get_dicts_with_arrays_client
+from .enums_client import get_enums_client
+from .enums_with_structs_client import get_enums_with_structs_client
+from .enums_with_arrays_client import get_enums_with_arrays_client
+from .enums_with_dicts_client import get_enums_with_dicts_client
 
 import asyncio
 
@@ -17,8 +21,12 @@ async def runner():
         # get_arrays_client(),
         # get_arrays_with_struct_client(),
         # get_dicts_client(),
-        get_dicts_with_struct_client(),
+        # get_dicts_with_struct_client(),
         # get_dicts_with_arrays_client(),
+        # get_enums_client(),
+        # get_enums_with_structs_client(),
+        # get_enums_with_arrays_client(),
+        get_enums_with_dicts_client(),
     ))
 
     print("Client running")

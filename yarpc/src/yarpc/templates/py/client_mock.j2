@@ -16,6 +16,9 @@ import asyncio
 {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
 from .{{ object.name|snake_case }} import {{ object.name }}
 {% endfor %}
+{% for object in output.objects|selectattr('kind', 'equalto', 'enum') %}
+from .{{ object.name|snake_case }} import {{ object.name }}
+{% endfor %}
 
 
 class {{ target.className }}():

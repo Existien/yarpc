@@ -1,0 +1,26 @@
+objects:
+- name: EnumsWithArrays
+  kind: interface
+  docs: A interface using enums
+  members:
+  - name: EnumMethod
+    kind: method
+    docs: a simple method with one argument
+    args:
+    - name: color
+      type: array<Color>
+      docs: a color
+    returns:
+      type: array<Color>
+      docs: another color
+  - name: EnumSignal
+    kind: signal
+    docs: a simple signal with one argument
+    args:
+    - name: color
+      type: array<Color>
+      docs: a color
+  - name: EnumProperty
+    kind: property
+    docs: a property
+    type: array<Color>

@@ -1,7 +1,6 @@
 from python_mocks import BackendDictsInterfaceMock
 from unittest.mock import AsyncMock
 from typing import Mapping, Dict
-import asyncio
 
 def get_dicts_mock():
     service = BackendDictsInterfaceMock(

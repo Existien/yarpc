@@ -6,6 +6,8 @@
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ object.name }}
+{%- elif object.kind == 'enum' -%}
+{{ object.name }}
 {%- elif object.kind == 'builtin' -%}
 {%- if object.name == 'array' -%}
 {%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
@@ -28,13 +30,16 @@
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ object.name }}.from_dbus({{value}})
+{%- elif object.kind == 'enum' -%}
+{{ object.name }}({{value}})
 {%- elif object.name == 'array' -%}
 {%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
 [ {{ unmarshal('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
 {%- elif object.name == 'dict' -%}
 {%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
 {%- set value_as_str = inner_types_as_str[1] -%}
-{ k{{idx}}: {{ unmarshal('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
+{%- set key_as_str = inner_types_as_str[0] -%}
+{ {{ unmarshal('k'+idx|string, key_as_str, objects, idx+1) }}: {{ unmarshal('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
 {%- elif object.kind == 'builtin' -%}
 {{ value }}
 {%- endif -%}
@@ -47,13 +52,16 @@
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ value }}.to_dbus()
+{%- elif object.kind == 'enum' -%}
+{{ value }}.value
 {%- elif object.name == 'array' -%}
 {%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
 [ {{ marshal('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
 {%- elif object.name == 'dict' -%}
 {%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
 {%- set value_as_str = inner_types_as_str[1] -%}
-{ k{{idx}}: {{ marshal('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
+{%- set key_as_str = inner_types_as_str[0] -%}
+{ {{ marshal('k'+idx|string, key_as_str, objects, idx+1) }}: {{ marshal('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
 {%- elif object.kind == 'builtin' -%}
 {{ value }}
 {%- endif -%}
@@ -66,13 +74,16 @@
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ type_as_str }}.from_dbus({{ value }})
+{%- elif object.kind == 'enum' -%}
+{{ object.name }}({{value}})
 {%- elif object.name == 'array' -%}
 {%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
 [ {{ from_dbus('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
 {%- elif object.name == 'dict' -%}
 {%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
 {%- set value_as_str = inner_types_as_str[1] -%}
-{ k{{idx}}: {{ from_dbus('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
+{%- set key_as_str = inner_types_as_str[0] -%}
+{ {{ from_dbus('k'+idx|string, key_as_str, objects, idx+1) }}: {{ from_dbus('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
 {%- else -%}
 {{ value }}
 {%- endif -%}
@@ -85,13 +96,16 @@
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ value }}.to_dbus()
+{%- elif object.kind == 'enum' -%}
+{{ value }}.value
 {%- elif object.name == 'array' -%}
 {%- set inner_type_as_str = type_as_str|extract_inner(object)|first -%}
 [ {{ to_dbus('x'+idx|string, inner_type_as_str, objects, idx+1) }} for x{{idx}} in {{ value }} ]
 {%- elif object.name == 'dict' -%}
 {%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
 {%- set value_as_str = inner_types_as_str[1] -%}
-{ k{{idx}}: {{ to_dbus('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
+{%- set key_as_str = inner_types_as_str[0] -%}
+{ {{ to_dbus('k'+idx|string, key_as_str, objects, idx+1) }}: {{ to_dbus('v'+idx|string, value_as_str, objects, idx+1 )}} for k{{idx}}, v{{idx}} in {{ value }}.items() }
 {%- else -%}
 {{ value }}
 {%- endif -%}
