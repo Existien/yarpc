@@ -3,6 +3,11 @@ from copy import deepcopy
 from .utils import find_types
 
 class SpecResolver:
+    """Accepts a list of specifications and turns it into outputs.
+
+    Args:
+        specs (list): a list of loaded specifications
+    """
 
     def __init__(self, specs):
         self._specs = specs
@@ -10,7 +15,13 @@ class SpecResolver:
         self._bus_name_pattern = re.compile("^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_])+")
         self._object_path_pattern = re.compile("^\/([a-zA-Z0-9_]+(\/[a-zA-Z0-9_]+)*)?")
 
-    def get_outputs(self):
+    def get_outputs(self) -> list:
+        """Returns a list of outputs that contain
+        all information needed to generate them.
+
+        Returns:
+            list: A list of outputs to be generated
+        """
         outputs = []
         for spec in filter(lambda x: 'outputs' in x, self._specs):
             outputs.extend(spec['outputs'])
@@ -34,7 +45,16 @@ class SpecResolver:
 
         return outputs
 
-    def _check_for_duplicate_names(self, items, kind='name', key='name'):
+    def _check_for_duplicate_names(self, items: list, kind='name', key='name'):
+        """Checks for duplicate names and raises a RuntimeError if duplicates are found.
+
+        Args:
+            items (list): A list of items to search for duplicates
+            kind (str): The string representation of the duplication to check for (only used in Error messages)
+            key (str): The attribute to check duplication for
+        Throws:
+            RuntimeError: If a duplicate was found
+        """
         names = []
         for item in items:
             if item[key] in names:
@@ -42,13 +62,31 @@ class SpecResolver:
             else:
                 names.append(item[key])
 
-    def _get_dependencies(self, output, objects) -> list:
+    def _get_dependencies(self, output: dict, objects: list) -> list:
+        """Returns all dependencies of output found in objects
+
+        Args:
+            output (dict): The output to find dependencies for
+            objects (list): A list of objects to look for dependencies in
+
+        Returns:
+            list: A list of objects needed for the output provided
+        """
         interfaces = self._get_interfaces(output, objects)
         types = self._get_types(interfaces, objects)
         required_objects = [*types, *interfaces]
         return required_objects
 
-    def _get_types(self, interfaces, objects) -> list:
+    def _get_types(self, interfaces: list, objects: list) -> list:
+        """Returns a list of types needed for the interfaces provided
+
+        Args:
+            interfaces (list): A list of interfaces to return the types for
+            objects (list): The list of objects to search for the types in
+
+        Returns:
+            list: A list of types needed for the interfaces provided
+        """
         types = []
 
         def is_already_accounted_for(type_name: str) -> bool:
@@ -82,7 +120,16 @@ class SpecResolver:
 
         return types
 
-    def _get_interfaces(self, output, objects) -> list:
+    def _get_interfaces(self, output: dict, objects: list) -> list:
+        """Extracts interfaces needed for an output from a list of objects
+
+        Args:
+            output (dict): The output to find interfaces for
+            objects (list): The list of objects to find the interfaces in
+
+        Returns:
+            list: The list of interfaces to generate
+        """
         def interface_list_to_dict(list_key, template):
             return { x['spec']: {
             'className': x['className'],
@@ -132,7 +179,16 @@ class SpecResolver:
             self._validate_interface_targets(interface['targets'][1:])
         return interfaces
 
-    def _validate_interface_targets(self, targets):
+    def _validate_interface_targets(self, targets: list):
+        """Checks whether D-Bus attributes conform to D-Bus spec.
+        Throws RuntimeErrors if not.
+
+        Args:
+            targets (list): A list of targets
+
+        Throws:
+            RuntimeError: If the target attributes do not conform to the D-Bus spec
+        """
         for target in targets:
             if not self._interface_name_pattern.match(target['interfaceName']):
                 raise RuntimeError(f"Invalid interface name: {target['interfaceName']}")

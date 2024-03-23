@@ -7,6 +7,11 @@ from yarpc.spec_resolver import SpecResolver
 from yarpc.generator import Generator
 
 def __parse_args():
+    """Parses the command line arguments
+
+    Returns:
+        Namespace: Object containing the parsed command line arguments
+    """
     parser = ArgumentParser(
         description="Codegenerator for creating D-Bus "
         "clients and services from yaml specifications"

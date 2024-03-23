@@ -7,12 +7,27 @@ import pkg_resources
 
 
 class Generator:
+    """Code generator using a templating engine.
 
-    def __init__(self, output_base_dir):
+    Args:
+        output_base_dir (str): The directory the paths provided in the spec are relative to
+    """
+
+    def __init__(self, output_base_dir: str):
         self._output_base_dir = output_base_dir
         self._engine = TemplatingEngine(f"{Path(__file__).parent}/templates")
 
-    def generate(self, outputs, check_only) -> bool:
+    def generate(self, outputs: list, check_only: bool) -> bool:
+        """Generates code based on the provided specification
+
+        Args:
+            outputs (list): A list of outputs to be generated
+            check_only (bool): If True, does not persist the generate,
+                but only uses it to check for differences.
+        Returns:
+            bool: Whether there are no differences between the existing code
+                and the generated one. Always True if check_only is False.
+        """
         is_up_to_date = True
         for output in outputs:
             output_location = self._get_location(output)
@@ -26,13 +41,29 @@ class Generator:
                 )
         return is_up_to_date
 
-    def _get_location(self, output) -> str:
+    def _get_location(self, output: dict) -> str:
+        """Returns the output location relative to the
+        configured output base dir.
+
+        Args:
+            output (dict): The output specification
+        Returns:
+            str: The output path
+        """
         if output['location'][0] == '/':
             return output['location']
         else:
             return f"{self._output_base_dir}/{output['location']}"
 
-    def _is_up_to_date(self, filename, content):
+    def _is_up_to_date(self, filename: str, content: str) -> bool:
+        """Returns whether a file is consistent with the generated content.
+
+        Args:
+            filename (str): the file to compare
+            content (str): the content to compare it with
+        Returns:
+            bool: Whether the file contains the expected content
+        """
         try:
             with open(filename, "r") as f:
                 old_content = f.read().splitlines()
@@ -51,7 +82,18 @@ class Generator:
             return False
         return True
 
-    def _generate_object(self, object, output, check_only) -> bool:
+    def _generate_object(self, object: dict, output: dict, check_only: bool) -> bool:
+        """Generates an object for a specific output
+
+        Args:
+            object (dict): The object to generate
+            output (dict): The output to generate it for
+            check_only (bool): If True, the object will not be persisted,
+                but just used to compare the existing file with the generate.
+        Returns:
+            bool: Whether the existing file is in sync with the generate.
+                Always True if check_only is False.
+        """
         context = {
             "object": object,
             "output": output,
@@ -80,7 +122,17 @@ class Generator:
             )
         return is_up_to_date
 
-    def _generate_filename(self, name, template, language) -> str:
+    def _generate_filename(self, name: str, template: str, language: str) -> str:
+        """Generates a filename based on the object name, template and language.
+
+        Args:
+            name (str): The name of the object
+            template (str): The kind of object
+            language (str): The language the file should be in
+
+        Returns:
+            str: The filename
+        """
         match language:
             case 'py':
                 return f"{to_snake_case(name)}.py"
