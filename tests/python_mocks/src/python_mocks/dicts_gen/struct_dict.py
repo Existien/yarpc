@@ -6,7 +6,7 @@
 #   Template: py/struct.j2
 
 from dataclasses import dataclass
-from typing import Sequence, Mapping
+from typing import List, Dict
 
 @dataclass
 class StructDict:
@@ -14,9 +14,9 @@ class StructDict:
     A struct containing dicts
 
     Args:
-        numbers (Mapping[str, Mapping[str, int]]): some numbers
+        numbers (Dict[str, Dict[str, int]]): some numbers
     """
-    numbers: Mapping[str, Mapping[str, int]]
+    numbers: Dict[str, Dict[str, int]]
 
     def to_dbus(self):
         """

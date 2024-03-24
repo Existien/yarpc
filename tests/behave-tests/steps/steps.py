@@ -25,6 +25,23 @@ from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
 
 
+@given("a running python service")
+@async_run_until_complete
+async def step_impl(context):
+    process = subprocess.Popen(
+        args=["pdm", "run", "-p", "python_service", "service"],
+        cwd="/workspace/tests",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    context.processes.append(process)
+    await wait_for_dbus(
+        bus_name="com.yarpc.testservice",
+        object_path="/com/yarpc/testservice",
+        interface_name="com.yarpc.testservice.minimal"
+    )
+
+
 async def wait_for_dbus(bus_name, object_path, interface_name):
     bus = await MessageBus().connect()
     interface = None
@@ -200,23 +217,6 @@ async def step_impl(context):
         await asyncio.sleep(0.1)
     for row in context.table:
         await connect_to_interface(row['interface'], row['name'])
-
-
-@given("a running python service")
-@async_run_until_complete
-async def step_impl(context):
-    process = subprocess.Popen(
-        args=["pdm", "run", "-p", "python_service", "service"],
-        cwd="/workspace/tests",
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
-    context.processes.append(process)
-    await wait_for_dbus(
-        bus_name="com.yarpc.testservice",
-        object_path="/com/yarpc/testservice",
-        interface_name="com.yarpc.testservice.minimal"
-    )
 
 
 @given("'{name}' replies to a '{method}' method call with the following return value")

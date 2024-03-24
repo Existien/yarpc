@@ -5,7 +5,7 @@
 #   Object: DictKeys
 #   Template: py/client.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys
@@ -138,7 +138,7 @@ class DictKeysClient():
         Set handler for Uint8Signal signal
 
         Args:
-            handler (Callable[[Mapping[int, str]], None]): the signal handler
+            handler (Callable[[Dict[int, str]], None]): the signal handler
         """
         self._Uint8Signal_handler = handler
         if self._interface:
@@ -157,7 +157,7 @@ class DictKeysClient():
         Set handler for BoolSignal signal
 
         Args:
-            handler (Callable[[Mapping[bool, str]], None]): the signal handler
+            handler (Callable[[Dict[bool, str]], None]): the signal handler
         """
         self._BoolSignal_handler = handler
         if self._interface:
@@ -176,7 +176,7 @@ class DictKeysClient():
         Set handler for Int16Signal signal
 
         Args:
-            handler (Callable[[Mapping[int, str]], None]): the signal handler
+            handler (Callable[[Dict[int, str]], None]): the signal handler
         """
         self._Int16Signal_handler = handler
         if self._interface:
@@ -195,7 +195,7 @@ class DictKeysClient():
         Set handler for Uint16Signal signal
 
         Args:
-            handler (Callable[[Mapping[int, str]], None]): the signal handler
+            handler (Callable[[Dict[int, str]], None]): the signal handler
         """
         self._Uint16Signal_handler = handler
         if self._interface:
@@ -214,7 +214,7 @@ class DictKeysClient():
         Set handler for Int32Signal signal
 
         Args:
-            handler (Callable[[Mapping[int, str]], None]): the signal handler
+            handler (Callable[[Dict[int, str]], None]): the signal handler
         """
         self._Int32Signal_handler = handler
         if self._interface:
@@ -233,7 +233,7 @@ class DictKeysClient():
         Set handler for Uint32Signal signal
 
         Args:
-            handler (Callable[[Mapping[int, str]], None]): the signal handler
+            handler (Callable[[Dict[int, str]], None]): the signal handler
         """
         self._Uint32Signal_handler = handler
         if self._interface:
@@ -252,7 +252,7 @@ class DictKeysClient():
         Set handler for Int64Signal signal
 
         Args:
-            handler (Callable[[Mapping[int, str]], None]): the signal handler
+            handler (Callable[[Dict[int, str]], None]): the signal handler
         """
         self._Int64Signal_handler = handler
         if self._interface:
@@ -271,7 +271,7 @@ class DictKeysClient():
         Set handler for Uint64Signal signal
 
         Args:
-            handler (Callable[[Mapping[int, str]], None]): the signal handler
+            handler (Callable[[Dict[int, str]], None]): the signal handler
         """
         self._Uint64Signal_handler = handler
         if self._interface:
@@ -290,7 +290,7 @@ class DictKeysClient():
         Set handler for DoubleSignal signal
 
         Args:
-            handler (Callable[[Mapping[float, str]], None]): the signal handler
+            handler (Callable[[Dict[float, str]], None]): the signal handler
         """
         self._DoubleSignal_handler = handler
         if self._interface:
@@ -309,7 +309,7 @@ class DictKeysClient():
         Set handler for StringSignal signal
 
         Args:
-            handler (Callable[[Mapping[str, str]], None]): the signal handler
+            handler (Callable[[Dict[str, str]], None]): the signal handler
         """
         self._StringSignal_handler = handler
         if self._interface:
@@ -317,16 +317,16 @@ class DictKeysClient():
 
     async def Uint8Method(
         self,
-        value: 'Mapping[int, str]',
-    ) -> Mapping[int, str]:
+        value: 'Dict[int, str]',
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -337,16 +337,16 @@ class DictKeysClient():
 
     async def BoolMethod(
         self,
-        value: 'Mapping[bool, str]',
-    ) -> Mapping[bool, str]:
+        value: 'Dict[bool, str]',
+    ) -> Dict[bool, str]:
         """
         a method
 
         Args:
-            value (Mapping[bool, str]): the value
+            value (Dict[bool, str]): the value
 
         Returns:
-            Mapping[bool, str]: the return type
+            Dict[bool, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -357,16 +357,16 @@ class DictKeysClient():
 
     async def Int16Method(
         self,
-        value: 'Mapping[int, str]',
-    ) -> Mapping[int, str]:
+        value: 'Dict[int, str]',
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -377,16 +377,16 @@ class DictKeysClient():
 
     async def Uint16Method(
         self,
-        value: 'Mapping[int, str]',
-    ) -> Mapping[int, str]:
+        value: 'Dict[int, str]',
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -397,16 +397,16 @@ class DictKeysClient():
 
     async def Int32Method(
         self,
-        value: 'Mapping[int, str]',
-    ) -> Mapping[int, str]:
+        value: 'Dict[int, str]',
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -417,16 +417,16 @@ class DictKeysClient():
 
     async def Uint32Method(
         self,
-        value: 'Mapping[int, str]',
-    ) -> Mapping[int, str]:
+        value: 'Dict[int, str]',
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -437,16 +437,16 @@ class DictKeysClient():
 
     async def Int64Method(
         self,
-        value: 'Mapping[int, str]',
-    ) -> Mapping[int, str]:
+        value: 'Dict[int, str]',
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -457,16 +457,16 @@ class DictKeysClient():
 
     async def Uint64Method(
         self,
-        value: 'Mapping[int, str]',
-    ) -> Mapping[int, str]:
+        value: 'Dict[int, str]',
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -477,16 +477,16 @@ class DictKeysClient():
 
     async def DoubleMethod(
         self,
-        value: 'Mapping[float, str]',
-    ) -> Mapping[float, str]:
+        value: 'Dict[float, str]',
+    ) -> Dict[float, str]:
         """
         a method
 
         Args:
-            value (Mapping[float, str]): the value
+            value (Dict[float, str]): the value
 
         Returns:
-            Mapping[float, str]: the return type
+            Dict[float, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -497,16 +497,16 @@ class DictKeysClient():
 
     async def StringMethod(
         self,
-        value: 'Mapping[str, str]',
-    ) -> Mapping[str, str]:
+        value: 'Dict[str, str]',
+    ) -> Dict[str, str]:
         """
         a method
 
         Args:
-            value (Mapping[str, str]): the value
+            value (Dict[str, str]): the value
 
         Returns:
-            Mapping[str, str]: the return type
+            Dict[str, str]: the return type
         """
         while not self._interface:
             await asyncio.sleep(0.1)

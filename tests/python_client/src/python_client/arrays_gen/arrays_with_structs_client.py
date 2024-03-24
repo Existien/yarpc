@@ -5,7 +5,7 @@
 #   Object: ArraysWithStructs
 #   Template: py/client.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys
@@ -101,16 +101,16 @@ class ArraysWithStructsClient():
 
     async def ArrayStructMethod(
         self,
-        numbers: 'Sequence[StructArray]',
-    ) -> Sequence[SimonsArray]:
+        numbers: 'List[StructArray]',
+    ) -> List[SimonsArray]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Sequence[StructArray]): Some numbers
+            numbers (List[StructArray]): Some numbers
 
         Returns:
-            Sequence[SimonsArray]: more numbers
+            List[SimonsArray]: more numbers
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -132,19 +132,19 @@ class ArraysWithStructsClient():
         Set handler for ArrayStructSignal signal
 
         Args:
-            handler (Callable[[Sequence[StructArray]], None]): the signal handler
+            handler (Callable[[List[StructArray]], None]): the signal handler
         """
         self._ArrayStructSignal_handler = handler
         if self._interface:
             self._interface.on_array_struct_signal(self._ArrayStructSignal_wrapper)
 
-    async def get_ArrayStructProperty(self) -> Sequence[StructArray]:
+    async def get_ArrayStructProperty(self) -> List[StructArray]:
         """Getter for property 'ArrayStructProperty'
 
         a simple property
 
         Returns:
-            Sequence[StructArray]: the current value
+            List[StructArray]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -153,13 +153,13 @@ class ArraysWithStructsClient():
         return unmarshalled
 
 
-    async def set_ArrayStructProperty(self, value: Sequence[StructArray]) -> None:
+    async def set_ArrayStructProperty(self, value: List[StructArray]) -> None:
         """Setter for property 'ArrayStructProperty'
 
         a simple property
 
         Args:
-            value (Sequence[StructArray]): the new value
+            value (List[StructArray]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

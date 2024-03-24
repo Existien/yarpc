@@ -5,7 +5,7 @@
 #   Object: DictsWithArrays
 #   Template: py/service_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -77,12 +77,12 @@ class BackendDictsWithArraysInterfaceMock():
     Per default, the mock is configured to just return the updated value.
 
     Args:
-        DictArrayProperty (Mapping[str, Sequence[Mapping[str, int]]]): a simple property
+        DictArrayProperty (Dict[str, List[Dict[str, int]]]): a simple property
     """
 
     def __init__(
         self,
-        DictArrayProperty: Mapping[str, Sequence[Mapping[str, int]]],
+        DictArrayProperty: Dict[str, List[Dict[str, int]]],
     ):
         self.interface = _Interface(self)
         self.name = self.interface.name
@@ -129,40 +129,40 @@ class BackendDictsWithArraysInterfaceMock():
 
     async def DictsArrayMethod(
         self,
-        numbers: Mapping[str, Sequence[Mapping[str, int]]],
-    ) -> Mapping[str, Sequence[Mapping[str, int]]]:
+        numbers: Dict[str, List[Dict[str, int]]],
+    ) -> Dict[str, List[Dict[str, int]]]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Mapping[str, Sequence[Mapping[str, int]]]): some numbers
+            numbers (Dict[str, List[Dict[str, int]]]): some numbers
 
         Returns:
-            Mapping[str, Sequence[Mapping[str, int]]]: some numbers
+            Dict[str, List[Dict[str, int]]]: some numbers
         """
         return await self._await_mock_method("DictsArrayMethod", locals())
 
     def DictsArraySignal(
         self,
-        numbers: Mapping[str, Sequence[Mapping[str, int]]],
+        numbers: Dict[str, List[Dict[str, int]]],
     ) -> None:
         """
         a simple signal with one argument
 
         Args:
-            numbers (Mapping[str, Sequence[Mapping[str, int]]]): some numbers
+            numbers (Dict[str, List[Dict[str, int]]]): some numbers
         """
         self.interface.DictsArraySignal(
             { k0: [ { k2: v2 for k2, v2 in x1.items() } for x1 in v0 ] for k0, v0 in numbers.items() },
         )
 
-    async def get_DictArrayProperty(self) -> Mapping[str, Sequence[Mapping[str, int]]]:
+    async def get_DictArrayProperty(self) -> Dict[str, List[Dict[str, int]]]:
         """Getter for property DictArrayProperty
 
         a simple property
 
         Returns:
-            Mapping[str, Sequence[Mapping[str, int]]]: the current value
+            Dict[str, List[Dict[str, int]]]: the current value
         """
         return self._properties["DictArrayProperty"]
 
@@ -174,7 +174,7 @@ class BackendDictsWithArraysInterfaceMock():
         and returns a dictionary with the current property values, or just the changed ones
 
         Args:
-            handler(Callable[[Mapping[str, Sequence[Mapping[str, int]]], dict], Awaitable[dict]]): the properties change handler
+            handler(Callable[[Dict[str, List[Dict[str, int]]], dict], Awaitable[dict]]): the properties change handler
 
         Returns:
             dict: the changed properties
@@ -182,16 +182,16 @@ class BackendDictsWithArraysInterfaceMock():
         self._DictArrayProperty_change_handler = handler
         self.mock.on_DictArrayProperty_changed = AsyncMock(wraps=self._DictArrayProperty_change_handler)
 
-    async def _default_DictArrayProperty_change_handler(value: Mapping[str, Sequence[Mapping[str, int]]], _: dict) -> dict:
+    async def _default_DictArrayProperty_change_handler(value: Dict[str, List[Dict[str, int]]], _: dict) -> dict:
         return { "DictArrayProperty": value }
 
-    async def set_DictArrayProperty(self, value: Mapping[str, Sequence[Mapping[str, int]]]):
+    async def set_DictArrayProperty(self, value: Dict[str, List[Dict[str, int]]]):
         """Setter for property DictArrayProperty
 
         a simple property
 
         Args:
-            value (Mapping[str, Sequence[Mapping[str, int]]]): the new value
+            value (Dict[str, List[Dict[str, int]]]): the new value
         """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_DictArrayProperty_changed(value, properties_working_copy)

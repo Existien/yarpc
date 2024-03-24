@@ -5,7 +5,7 @@
 #   Object: DictsWithArrays
 #   Template: py/client_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock
@@ -94,13 +94,13 @@ class DictsWithArraysClientMock():
 
     async def DictsArrayMethod(
         self,
-        numbers: Mapping[str, Sequence[Mapping[str, int]]],
-    ) -> Mapping[str, Sequence[Mapping[str, int]]]:
+        numbers: Dict[str, List[Dict[str, int]]],
+    ) -> Dict[str, List[Dict[str, int]]]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Mapping[str, Sequence[Mapping[str, int]]]): some numbers
+            numbers (Dict[str, List[Dict[str, int]]]): some numbers
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -117,13 +117,13 @@ class DictsWithArraysClientMock():
             { k0: [ { k2: v2 for k2, v2 in x1.items() } for x1 in v0 ] for k0, v0 in numbers.items() },
         )
 
-    async def get_DictArrayProperty(self) -> Mapping[str, Sequence[Mapping[str, int]]]:
+    async def get_DictArrayProperty(self) -> Dict[str, List[Dict[str, int]]]:
         """Getter for property 'DictArrayProperty'
 
         a simple property
 
         Returns:
-            Mapping[str, Sequence[Mapping[str, int]]]: the current value
+            Dict[str, List[Dict[str, int]]]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -131,13 +131,13 @@ class DictsWithArraysClientMock():
         unmarshalled = { k0: [ { k2: v2 for k2, v2 in x1.items() } for x1 in v0 ] for k0, v0 in raw_return.items() }
         return unmarshalled
 
-    async def set_DictArrayProperty(self, value: Mapping[str, Sequence[Mapping[str, int]]]) -> None:
+    async def set_DictArrayProperty(self, value: Dict[str, List[Dict[str, int]]]) -> None:
         """Setter for property 'DictArrayProperty'
 
         a simple property
 
         Args:
-            value (Mapping[str, Sequence[Mapping[str, int]]]): the new value
+            value (Dict[str, List[Dict[str, int]]]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

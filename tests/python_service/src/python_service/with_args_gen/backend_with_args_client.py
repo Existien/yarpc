@@ -5,7 +5,7 @@
 #   Object: WithArgs
 #   Template: py/client.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys

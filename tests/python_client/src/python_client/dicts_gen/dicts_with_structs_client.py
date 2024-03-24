@@ -5,7 +5,7 @@
 #   Object: DictsWithStructs
 #   Template: py/client.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys
@@ -101,16 +101,16 @@ class DictsWithStructsClient():
 
     async def DictsStructMethod(
         self,
-        numbers: 'Mapping[str, StructDict]',
-    ) -> Mapping[str, SimonsDict]:
+        numbers: 'Dict[str, StructDict]',
+    ) -> Dict[str, SimonsDict]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Mapping[str, StructDict]): Some numbers
+            numbers (Dict[str, StructDict]): Some numbers
 
         Returns:
-            Mapping[str, SimonsDict]: more numbers
+            Dict[str, SimonsDict]: more numbers
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -132,19 +132,19 @@ class DictsWithStructsClient():
         Set handler for DictStructSignal signal
 
         Args:
-            handler (Callable[[Mapping[str, StructDict]], None]): the signal handler
+            handler (Callable[[Dict[str, StructDict]], None]): the signal handler
         """
         self._DictStructSignal_handler = handler
         if self._interface:
             self._interface.on_dict_struct_signal(self._DictStructSignal_wrapper)
 
-    async def get_DictStructProperty(self) -> Mapping[str, StructDict]:
+    async def get_DictStructProperty(self) -> Dict[str, StructDict]:
         """Getter for property 'DictStructProperty'
 
         a simple property
 
         Returns:
-            Mapping[str, StructDict]: the current value
+            Dict[str, StructDict]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -153,13 +153,13 @@ class DictsWithStructsClient():
         return unmarshalled
 
 
-    async def set_DictStructProperty(self, value: Mapping[str, StructDict]) -> None:
+    async def set_DictStructProperty(self, value: Dict[str, StructDict]) -> None:
         """Setter for property 'DictStructProperty'
 
         a simple property
 
         Args:
-            value (Mapping[str, StructDict]): the new value
+            value (Dict[str, StructDict]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

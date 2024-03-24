@@ -5,7 +5,7 @@
 #   Object: Dicts
 #   Template: py/service.j2
 
-from typing import Protocol, Sequence, Mapping
+from typing import Protocol, List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -21,19 +21,19 @@ class ProvidesDictsInterfaceProperties(Protocol):
     """Protocol for property providers of DictsInterface
     """
 
-    async def get_DictProperty(self) -> Mapping[str, int]:
+    async def get_DictProperty(self) -> Dict[str, int]:
         """Getter for DictProperty property
 
         Returns:
-            Mapping[str, int]: the current value
+            Dict[str, int]: the current value
         """
         ...
 
-    async def set_DictProperty(self, value: Mapping[str, int]) -> dict:
+    async def set_DictProperty(self, value: Dict[str, int]) -> dict:
         """Setter for DictProperty property
 
         Args:
-            value (Mapping[str, int]): the new value
+            value (Dict[str, int]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -45,30 +45,30 @@ class DictsInterfaceProperties:
     """Manages the state of the properties for DictsInterface
 
     Args:
-        DictProperty (Mapping[str, int]): a prop
+        DictProperty (Dict[str, int]): a prop
     """
 
     def __init__(
         self,
-        DictProperty: Mapping[str, int],
+        DictProperty: Dict[str, int],
     ):
         self._properties = {
             "DictProperty": DictProperty,
         }
 
-    async def get_DictProperty(self) -> Mapping[str, int]:
+    async def get_DictProperty(self) -> Dict[str, int]:
         """Getter for DictProperty property
 
         Returns:
-            Mapping[str, int]: the current value
+            Dict[str, int]: the current value
         """
         return self._properties["DictProperty"]
 
-    async def set_DictProperty(self, value: Mapping[str, int]) -> dict:
+    async def set_DictProperty(self, value: Dict[str, int]) -> dict:
         """Setter for DictProperty property
 
         Args:
-            value (Mapping[str, int]): the new value
+            value (Dict[str, int]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -171,22 +171,22 @@ class DictsInterface():
         Set handler for DictMethod method
 
         Args:
-            handler (Callable[[Mapping[str, int]], Awaitable[Mapping[str, str]]]): the method handler
+            handler (Callable[[Dict[str, int]], Awaitable[Dict[str, str]]]): the method handler
         """
         self._DictMethod_handler = handler
 
     async def DictMethod(
         self,
-        keysNValues: Mapping[str, int],
-    ) -> Mapping[str, str]:
+        keysNValues: Dict[str, int],
+    ) -> Dict[str, str]:
         """
         a simple method with one argument
 
         Args:
-            keysNValues (Mapping[str, int]): a dictionary
+            keysNValues (Dict[str, int]): a dictionary
 
         Returns:
-            Mapping[str, str]: another one
+            Dict[str, str]: another one
         """
         if self._DictMethod_handler is None:
             raise NotImplementedError()
@@ -197,35 +197,35 @@ class DictsInterface():
 
     def DictSignal(
         self,
-        keysNValues: Mapping[str, int],
+        keysNValues: Dict[str, int],
     ) -> None:
         """
         a signal
 
         Args:
-            keysNValues (Mapping[str, int]): a dictionary
+            keysNValues (Dict[str, int]): a dictionary
         """
         self.interface.DictSignal(
             { k0: v0 for k0, v0 in keysNValues.items() },
         )
 
-    async def get_DictProperty(self) -> Mapping[str, int]:
+    async def get_DictProperty(self) -> Dict[str, int]:
         """Getter for property DictProperty
 
         a prop
 
         Returns:
-            Mapping[str, int]: the current value
+            Dict[str, int]: the current value
         """
         return await self._properties.get_DictProperty()
 
-    async def set_DictProperty(self, value: Mapping[str, int]):
+    async def set_DictProperty(self, value: Dict[str, int]):
         """Setter for property DictProperty
 
         a prop
 
         Args:
-            value (Mapping[str, int]): the new value
+            value (Dict[str, int]): the new value
         """
         changed_properties = await self._properties.set_DictProperty(value)
 

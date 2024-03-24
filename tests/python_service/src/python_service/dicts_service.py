@@ -1,6 +1,6 @@
 from .dicts_gen.dicts_interface import DictsInterface
 from .dicts_gen.backend_dicts_client import BackendDictsClient
-from typing import Mapping, Dict
+from typing import Dict, Dict
 import asyncio
 
 class ProxyProperties:

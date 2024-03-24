@@ -7,7 +7,7 @@
 
 from .struct_dict import StructDict
 from dataclasses import dataclass
-from typing import Sequence, Mapping
+from typing import List, Dict
 
 @dataclass
 class SimonsDict:
@@ -15,9 +15,9 @@ class SimonsDict:
     A struct containing dicts
 
     Args:
-        numbers (Mapping[str, StructDict]): some struct dicts
+        numbers (Dict[str, StructDict]): some struct dicts
     """
-    numbers: Mapping[str, StructDict]
+    numbers: Dict[str, StructDict]
 
     def to_dbus(self):
         """

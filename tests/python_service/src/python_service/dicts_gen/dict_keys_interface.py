@@ -5,7 +5,7 @@
 #   Object: DictKeys
 #   Template: py/service.j2
 
-from typing import Protocol, Sequence, Mapping
+from typing import Protocol, List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -254,13 +254,13 @@ class DictKeysInterface():
 
     def Uint8Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Uint8Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -268,13 +268,13 @@ class DictKeysInterface():
 
     def BoolSignal(
         self,
-        value: Mapping[bool, str],
+        value: Dict[bool, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[bool, str]): the value
+            value (Dict[bool, str]): the value
         """
         self.interface.BoolSignal(
             { k0: v0 for k0, v0 in value.items() },
@@ -282,13 +282,13 @@ class DictKeysInterface():
 
     def Int16Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Int16Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -296,13 +296,13 @@ class DictKeysInterface():
 
     def Uint16Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Uint16Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -310,13 +310,13 @@ class DictKeysInterface():
 
     def Int32Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Int32Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -324,13 +324,13 @@ class DictKeysInterface():
 
     def Uint32Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Uint32Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -338,13 +338,13 @@ class DictKeysInterface():
 
     def Int64Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Int64Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -352,13 +352,13 @@ class DictKeysInterface():
 
     def Uint64Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Uint64Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -366,13 +366,13 @@ class DictKeysInterface():
 
     def DoubleSignal(
         self,
-        value: Mapping[float, str],
+        value: Dict[float, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[float, str]): the value
+            value (Dict[float, str]): the value
         """
         self.interface.DoubleSignal(
             { k0: v0 for k0, v0 in value.items() },
@@ -380,13 +380,13 @@ class DictKeysInterface():
 
     def StringSignal(
         self,
-        value: Mapping[str, str],
+        value: Dict[str, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[str, str]): the value
+            value (Dict[str, str]): the value
         """
         self.interface.StringSignal(
             { k0: v0 for k0, v0 in value.items() },
@@ -397,22 +397,22 @@ class DictKeysInterface():
         Set handler for Uint8Method method
 
         Args:
-            handler (Callable[[Mapping[int, str]], Awaitable[Mapping[int, str]]]): the method handler
+            handler (Callable[[Dict[int, str]], Awaitable[Dict[int, str]]]): the method handler
         """
         self._Uint8Method_handler = handler
 
     async def Uint8Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         if self._Uint8Method_handler is None:
             raise NotImplementedError()
@@ -426,22 +426,22 @@ class DictKeysInterface():
         Set handler for BoolMethod method
 
         Args:
-            handler (Callable[[Mapping[bool, str]], Awaitable[Mapping[bool, str]]]): the method handler
+            handler (Callable[[Dict[bool, str]], Awaitable[Dict[bool, str]]]): the method handler
         """
         self._BoolMethod_handler = handler
 
     async def BoolMethod(
         self,
-        value: Mapping[bool, str],
-    ) -> Mapping[bool, str]:
+        value: Dict[bool, str],
+    ) -> Dict[bool, str]:
         """
         a method
 
         Args:
-            value (Mapping[bool, str]): the value
+            value (Dict[bool, str]): the value
 
         Returns:
-            Mapping[bool, str]: the return type
+            Dict[bool, str]: the return type
         """
         if self._BoolMethod_handler is None:
             raise NotImplementedError()
@@ -455,22 +455,22 @@ class DictKeysInterface():
         Set handler for Int16Method method
 
         Args:
-            handler (Callable[[Mapping[int, str]], Awaitable[Mapping[int, str]]]): the method handler
+            handler (Callable[[Dict[int, str]], Awaitable[Dict[int, str]]]): the method handler
         """
         self._Int16Method_handler = handler
 
     async def Int16Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         if self._Int16Method_handler is None:
             raise NotImplementedError()
@@ -484,22 +484,22 @@ class DictKeysInterface():
         Set handler for Uint16Method method
 
         Args:
-            handler (Callable[[Mapping[int, str]], Awaitable[Mapping[int, str]]]): the method handler
+            handler (Callable[[Dict[int, str]], Awaitable[Dict[int, str]]]): the method handler
         """
         self._Uint16Method_handler = handler
 
     async def Uint16Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         if self._Uint16Method_handler is None:
             raise NotImplementedError()
@@ -513,22 +513,22 @@ class DictKeysInterface():
         Set handler for Int32Method method
 
         Args:
-            handler (Callable[[Mapping[int, str]], Awaitable[Mapping[int, str]]]): the method handler
+            handler (Callable[[Dict[int, str]], Awaitable[Dict[int, str]]]): the method handler
         """
         self._Int32Method_handler = handler
 
     async def Int32Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         if self._Int32Method_handler is None:
             raise NotImplementedError()
@@ -542,22 +542,22 @@ class DictKeysInterface():
         Set handler for Uint32Method method
 
         Args:
-            handler (Callable[[Mapping[int, str]], Awaitable[Mapping[int, str]]]): the method handler
+            handler (Callable[[Dict[int, str]], Awaitable[Dict[int, str]]]): the method handler
         """
         self._Uint32Method_handler = handler
 
     async def Uint32Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         if self._Uint32Method_handler is None:
             raise NotImplementedError()
@@ -571,22 +571,22 @@ class DictKeysInterface():
         Set handler for Int64Method method
 
         Args:
-            handler (Callable[[Mapping[int, str]], Awaitable[Mapping[int, str]]]): the method handler
+            handler (Callable[[Dict[int, str]], Awaitable[Dict[int, str]]]): the method handler
         """
         self._Int64Method_handler = handler
 
     async def Int64Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         if self._Int64Method_handler is None:
             raise NotImplementedError()
@@ -600,22 +600,22 @@ class DictKeysInterface():
         Set handler for Uint64Method method
 
         Args:
-            handler (Callable[[Mapping[int, str]], Awaitable[Mapping[int, str]]]): the method handler
+            handler (Callable[[Dict[int, str]], Awaitable[Dict[int, str]]]): the method handler
         """
         self._Uint64Method_handler = handler
 
     async def Uint64Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         if self._Uint64Method_handler is None:
             raise NotImplementedError()
@@ -629,22 +629,22 @@ class DictKeysInterface():
         Set handler for DoubleMethod method
 
         Args:
-            handler (Callable[[Mapping[float, str]], Awaitable[Mapping[float, str]]]): the method handler
+            handler (Callable[[Dict[float, str]], Awaitable[Dict[float, str]]]): the method handler
         """
         self._DoubleMethod_handler = handler
 
     async def DoubleMethod(
         self,
-        value: Mapping[float, str],
-    ) -> Mapping[float, str]:
+        value: Dict[float, str],
+    ) -> Dict[float, str]:
         """
         a method
 
         Args:
-            value (Mapping[float, str]): the value
+            value (Dict[float, str]): the value
 
         Returns:
-            Mapping[float, str]: the return type
+            Dict[float, str]: the return type
         """
         if self._DoubleMethod_handler is None:
             raise NotImplementedError()
@@ -658,22 +658,22 @@ class DictKeysInterface():
         Set handler for StringMethod method
 
         Args:
-            handler (Callable[[Mapping[str, str]], Awaitable[Mapping[str, str]]]): the method handler
+            handler (Callable[[Dict[str, str]], Awaitable[Dict[str, str]]]): the method handler
         """
         self._StringMethod_handler = handler
 
     async def StringMethod(
         self,
-        value: Mapping[str, str],
-    ) -> Mapping[str, str]:
+        value: Dict[str, str],
+    ) -> Dict[str, str]:
         """
         a method
 
         Args:
-            value (Mapping[str, str]): the value
+            value (Dict[str, str]): the value
 
         Returns:
-            Mapping[str, str]: the return type
+            Dict[str, str]: the return type
         """
         if self._StringMethod_handler is None:
             raise NotImplementedError()

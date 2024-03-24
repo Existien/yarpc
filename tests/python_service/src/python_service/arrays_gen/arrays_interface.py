@@ -5,7 +5,7 @@
 #   Object: Arrays
 #   Template: py/service.j2
 
-from typing import Protocol, Sequence, Mapping
+from typing import Protocol, List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -21,19 +21,19 @@ class ProvidesArraysInterfaceProperties(Protocol):
     """Protocol for property providers of ArraysInterface
     """
 
-    async def get_ArrayProperty(self) -> Sequence[Sequence[str]]:
+    async def get_ArrayProperty(self) -> List[List[str]]:
         """Getter for ArrayProperty property
 
         Returns:
-            Sequence[Sequence[str]]: the current value
+            List[List[str]]: the current value
         """
         ...
 
-    async def set_ArrayProperty(self, value: Sequence[Sequence[str]]) -> dict:
+    async def set_ArrayProperty(self, value: List[List[str]]) -> dict:
         """Setter for ArrayProperty property
 
         Args:
-            value (Sequence[Sequence[str]]): the new value
+            value (List[List[str]]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -45,30 +45,30 @@ class ArraysInterfaceProperties:
     """Manages the state of the properties for ArraysInterface
 
     Args:
-        ArrayProperty (Sequence[Sequence[str]]): a simple property
+        ArrayProperty (List[List[str]]): a simple property
     """
 
     def __init__(
         self,
-        ArrayProperty: Sequence[Sequence[str]],
+        ArrayProperty: List[List[str]],
     ):
         self._properties = {
             "ArrayProperty": ArrayProperty,
         }
 
-    async def get_ArrayProperty(self) -> Sequence[Sequence[str]]:
+    async def get_ArrayProperty(self) -> List[List[str]]:
         """Getter for ArrayProperty property
 
         Returns:
-            Sequence[Sequence[str]]: the current value
+            List[List[str]]: the current value
         """
         return self._properties["ArrayProperty"]
 
-    async def set_ArrayProperty(self, value: Sequence[Sequence[str]]) -> dict:
+    async def set_ArrayProperty(self, value: List[List[str]]) -> dict:
         """Setter for ArrayProperty property
 
         Args:
-            value (Sequence[Sequence[str]]): the new value
+            value (List[List[str]]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -171,22 +171,22 @@ class ArraysInterface():
         Set handler for ArrayMethod method
 
         Args:
-            handler (Callable[[Sequence[Sequence[int]]], Awaitable[Sequence[Sequence[float]]]]): the method handler
+            handler (Callable[[List[List[int]]], Awaitable[List[List[float]]]]): the method handler
         """
         self._ArrayMethod_handler = handler
 
     async def ArrayMethod(
         self,
-        numbers: Sequence[Sequence[int]],
-    ) -> Sequence[Sequence[float]]:
+        numbers: List[List[int]],
+    ) -> List[List[float]]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Sequence[Sequence[int]]): Some numbers
+            numbers (List[List[int]]): Some numbers
 
         Returns:
-            Sequence[Sequence[float]]: normalized numbers
+            List[List[float]]: normalized numbers
         """
         if self._ArrayMethod_handler is None:
             raise NotImplementedError()
@@ -197,35 +197,35 @@ class ArraysInterface():
 
     def ArraySignal(
         self,
-        numbers: Sequence[Sequence[float]],
+        numbers: List[List[float]],
     ) -> None:
         """
         a simple signal with one argument
 
         Args:
-            numbers (Sequence[Sequence[float]]): normalized numbers
+            numbers (List[List[float]]): normalized numbers
         """
         self.interface.ArraySignal(
             [ [ x1 for x1 in x0 ] for x0 in numbers ],
         )
 
-    async def get_ArrayProperty(self) -> Sequence[Sequence[str]]:
+    async def get_ArrayProperty(self) -> List[List[str]]:
         """Getter for property ArrayProperty
 
         a simple property
 
         Returns:
-            Sequence[Sequence[str]]: the current value
+            List[List[str]]: the current value
         """
         return await self._properties.get_ArrayProperty()
 
-    async def set_ArrayProperty(self, value: Sequence[Sequence[str]]):
+    async def set_ArrayProperty(self, value: List[List[str]]):
         """Setter for property ArrayProperty
 
         a simple property
 
         Args:
-            value (Sequence[Sequence[str]]): the new value
+            value (List[List[str]]): the new value
         """
         changed_properties = await self._properties.set_ArrayProperty(value)
 

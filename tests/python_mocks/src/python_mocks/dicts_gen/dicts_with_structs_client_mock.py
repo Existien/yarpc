@@ -5,7 +5,7 @@
 #   Object: DictsWithStructs
 #   Template: py/client_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock
@@ -94,13 +94,13 @@ class DictsWithStructsClientMock():
 
     async def DictsStructMethod(
         self,
-        numbers: Mapping[str, StructDict],
-    ) -> Mapping[str, SimonsDict]:
+        numbers: Dict[str, StructDict],
+    ) -> Dict[str, SimonsDict]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Mapping[str, StructDict]): Some numbers
+            numbers (Dict[str, StructDict]): Some numbers
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -117,13 +117,13 @@ class DictsWithStructsClientMock():
             { k0: StructDict.from_dbus(v0) for k0, v0 in numbers.items() },
         )
 
-    async def get_DictStructProperty(self) -> Mapping[str, StructDict]:
+    async def get_DictStructProperty(self) -> Dict[str, StructDict]:
         """Getter for property 'DictStructProperty'
 
         a simple property
 
         Returns:
-            Mapping[str, StructDict]: the current value
+            Dict[str, StructDict]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -131,13 +131,13 @@ class DictsWithStructsClientMock():
         unmarshalled = { k0: StructDict.from_dbus(v0) for k0, v0 in raw_return.items() }
         return unmarshalled
 
-    async def set_DictStructProperty(self, value: Mapping[str, StructDict]) -> None:
+    async def set_DictStructProperty(self, value: Dict[str, StructDict]) -> None:
         """Setter for property 'DictStructProperty'
 
         a simple property
 
         Args:
-            value (Mapping[str, StructDict]): the new value
+            value (Dict[str, StructDict]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

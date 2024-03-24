@@ -3,27 +3,26 @@ from copy import deepcopy
 from .utils import find_types
 
 class SpecResolver:
-    """Accepts a list of specifications and turns it into outputs.
-
-    Args:
-        specs (list): a list of loaded specifications
+    """Responsible turning specs into outputs that contain all information needed to generate them.
     """
 
-    def __init__(self, specs):
-        self._specs = specs
+    def __init__(self):
         self._interface_name_pattern = re.compile("^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_])+")
         self._bus_name_pattern = re.compile("^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_])+")
         self._object_path_pattern = re.compile("^\/([a-zA-Z0-9_]+(\/[a-zA-Z0-9_]+)*)?")
 
-    def get_outputs(self) -> list:
+    def get_outputs(self, specs: list) -> list:
         """Returns a list of outputs that contain
         all information needed to generate them.
+
+        Args:
+            specs (list): a list of loaded specifications
 
         Returns:
             list: A list of outputs to be generated
         """
         outputs = []
-        for spec in filter(lambda x: 'outputs' in x, self._specs):
+        for spec in filter(lambda x: 'outputs' in x, specs):
             outputs.extend(spec['outputs'])
         self._check_for_duplicate_names(outputs, kind='output name')
         for output in outputs:
@@ -36,14 +35,33 @@ class SpecResolver:
             self._check_for_duplicate_names(targets, kind='class name', key='className')
 
         objects = []
-        for spec in filter(lambda x: 'objects' in x, self._specs):
+        for spec in filter(lambda x: 'objects' in x, specs):
             objects.extend(spec['objects'])
         self._check_for_duplicate_names(objects, kind='object name')
 
         for output in outputs:
-            output['objects'] = self._get_dependencies(output, objects)
+            output['objects'] = [
+                self._get_bus_connection_object(),
+                *self._get_dependencies(output, objects),
+            ]
 
         return outputs
+
+    def _get_bus_connection_object(self) -> dict:
+        """Returns the D-Bus connection object
+
+        Returns:
+            dict: the D-Bus connection object
+        """
+        return {
+            'name': 'DBusConnection',
+            'kind': None,
+            'specPath': 'None',
+            'targets': [{
+                'objectKind': 'bus',
+                'className': 'Connection'
+            }]
+        }
 
     def _check_for_duplicate_names(self, items: list, kind='name', key='name'):
         """Checks for duplicate names and raises a RuntimeError if duplicates are found.
@@ -130,10 +148,10 @@ class SpecResolver:
         Returns:
             list: The list of interfaces to generate
         """
-        def interface_list_to_dict(list_key, template):
+        def interface_list_to_dict(list_key, object_kind):
             return { x['spec']: {
             'className': x['className'],
-            'template': template,
+            'objectKind': object_kind,
             'busName': x.get('busName', output['busName']),
             'objectPath': x['objectPath'],
             'interfaceName': x['interfaceName'],
@@ -161,12 +179,7 @@ class SpecResolver:
 
         for interface in interfaces:
             name = interface['name']
-            interface['targets'] = [
-                {
-                    'template': 'bus',
-                    'className': 'Connection',
-                }
-            ]
+            interface['targets'] = []
             if name in services.keys():
                 interface['targets'].append(services[name])
             if name in clients.keys():

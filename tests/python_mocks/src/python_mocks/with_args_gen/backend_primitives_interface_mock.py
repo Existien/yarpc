@@ -5,7 +5,7 @@
 #   Object: Primitives
 #   Template: py/service_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )

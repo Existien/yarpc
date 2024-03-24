@@ -1,9 +1,9 @@
 from python_mocks import BackendArraysInterfaceMock
 from unittest.mock import AsyncMock
-from typing import Sequence
+from typing import List
 import asyncio
 
-def normalize_array(numbers: Sequence[int]) -> Sequence[float]:
+def normalize_array(numbers: List[int]) -> List[float]:
     if not numbers:
         return []
     largest = max(numbers)
@@ -17,7 +17,7 @@ def get_arrays_mock():
         ArrayProperty=[["Foo", "Bar"], ["Baz"]],
     )
 
-    async def array_method_handler(numbers: Sequence[Sequence[int]]):
+    async def array_method_handler(numbers: List[List[int]]):
         result = []
         for seq in numbers:
             result.append(normalize_array(seq))

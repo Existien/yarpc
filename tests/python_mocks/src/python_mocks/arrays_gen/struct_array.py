@@ -6,7 +6,7 @@
 #   Template: py/struct.j2
 
 from dataclasses import dataclass
-from typing import Sequence, Mapping
+from typing import List, Dict
 
 @dataclass
 class StructArray:
@@ -14,9 +14,9 @@ class StructArray:
     A struct containing arrays
 
     Args:
-        numbers (Sequence[Sequence[int]]): some numbers
+        numbers (List[List[int]]): some numbers
     """
-    numbers: Sequence[Sequence[int]]
+    numbers: List[List[int]]
 
     def to_dbus(self):
         """

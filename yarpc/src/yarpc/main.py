@@ -1,8 +1,7 @@
 from argparse import ArgumentParser
 import os
 import sys
-import json
-from yarpc.specification_loader import load_specifications
+from yarpc.spec_loader import SpecLoader
 from yarpc.spec_resolver import SpecResolver
 from yarpc.generator import Generator
 
@@ -35,10 +34,8 @@ def __parse_args():
 
 def main():
     args = __parse_args()
-
-    specs = load_specifications(args.spec_dir)
-    resolver = SpecResolver(specs)
-    outputs = resolver.get_outputs()
+    specs = SpecLoader().load(args.spec_dir)
+    outputs = SpecResolver().get_outputs(specs)
     is_up_to_date = Generator(args.output_base).generate(outputs, args.check)
     if not is_up_to_date:
         sys.exit(1)

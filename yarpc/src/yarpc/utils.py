@@ -1,5 +1,6 @@
 import re
 
+
 def find_type(type_name: str, objects: list) -> dict:
     """Fins a type by name from a list of objects
 
@@ -14,6 +15,7 @@ def find_type(type_name: str, objects: list) -> dict:
     if len(hits) == 1:
         return hits[0]
     return {}
+
 
 def extract_inner_names(type_name: str, type: dict) -> list:
     """Returns the parameters of arrays or dicts
@@ -30,6 +32,7 @@ def extract_inner_names(type_name: str, type: dict) -> list:
         return []
     else:
         return match.groups()
+
 
 def find_types(type_name: str, objects: list) -> list:
     """Returns the type objects contained in type_name
@@ -51,6 +54,7 @@ def find_types(type_name: str, objects: list) -> list:
         for inner_name in inner_names:
             found_types.extend(find_types(inner_name, objects))
     return found_types
+
 
 def extract_dependencies(type_name: str, objects: list) -> list:
     """Returns the type objects contained in the type of type_name
@@ -75,6 +79,7 @@ def extract_dependencies(type_name: str, objects: list) -> list:
         for i in in_arr:
             inner.extend(extract_dependencies(i.get('name'), objects))
     return set(inner)
+
 
 def to_snake_case(name: str) -> str:
     """Returns the snake casified version of name

@@ -5,7 +5,7 @@
 #   Object: DictsWithStructs
 #   Template: py/service_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -77,12 +77,12 @@ class BackendDictsWithStructsInterfaceMock():
     Per default, the mock is configured to just return the updated value.
 
     Args:
-        DictStructProperty (Mapping[str, StructDict]): a simple property
+        DictStructProperty (Dict[str, StructDict]): a simple property
     """
 
     def __init__(
         self,
-        DictStructProperty: Mapping[str, StructDict],
+        DictStructProperty: Dict[str, StructDict],
     ):
         self.interface = _Interface(self)
         self.name = self.interface.name
@@ -129,40 +129,40 @@ class BackendDictsWithStructsInterfaceMock():
 
     async def DictsStructMethod(
         self,
-        numbers: Mapping[str, StructDict],
-    ) -> Mapping[str, SimonsDict]:
+        numbers: Dict[str, StructDict],
+    ) -> Dict[str, SimonsDict]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Mapping[str, StructDict]): Some numbers
+            numbers (Dict[str, StructDict]): Some numbers
 
         Returns:
-            Mapping[str, SimonsDict]: more numbers
+            Dict[str, SimonsDict]: more numbers
         """
         return await self._await_mock_method("DictsStructMethod", locals())
 
     def DictStructSignal(
         self,
-        numbers: Mapping[str, StructDict],
+        numbers: Dict[str, StructDict],
     ) -> None:
         """
         a simple signal with one argument
 
         Args:
-            numbers (Mapping[str, StructDict]): numbers
+            numbers (Dict[str, StructDict]): numbers
         """
         self.interface.DictStructSignal(
             { k0: v0.to_dbus() for k0, v0 in numbers.items() },
         )
 
-    async def get_DictStructProperty(self) -> Mapping[str, StructDict]:
+    async def get_DictStructProperty(self) -> Dict[str, StructDict]:
         """Getter for property DictStructProperty
 
         a simple property
 
         Returns:
-            Mapping[str, StructDict]: the current value
+            Dict[str, StructDict]: the current value
         """
         return self._properties["DictStructProperty"]
 
@@ -174,7 +174,7 @@ class BackendDictsWithStructsInterfaceMock():
         and returns a dictionary with the current property values, or just the changed ones
 
         Args:
-            handler(Callable[[Mapping[str, StructDict], dict], Awaitable[dict]]): the properties change handler
+            handler(Callable[[Dict[str, StructDict], dict], Awaitable[dict]]): the properties change handler
 
         Returns:
             dict: the changed properties
@@ -182,16 +182,16 @@ class BackendDictsWithStructsInterfaceMock():
         self._DictStructProperty_change_handler = handler
         self.mock.on_DictStructProperty_changed = AsyncMock(wraps=self._DictStructProperty_change_handler)
 
-    async def _default_DictStructProperty_change_handler(value: Mapping[str, StructDict], _: dict) -> dict:
+    async def _default_DictStructProperty_change_handler(value: Dict[str, StructDict], _: dict) -> dict:
         return { "DictStructProperty": value }
 
-    async def set_DictStructProperty(self, value: Mapping[str, StructDict]):
+    async def set_DictStructProperty(self, value: Dict[str, StructDict]):
         """Setter for property DictStructProperty
 
         a simple property
 
         Args:
-            value (Mapping[str, StructDict]): the new value
+            value (Dict[str, StructDict]): the new value
         """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_DictStructProperty_changed(value, properties_working_copy)

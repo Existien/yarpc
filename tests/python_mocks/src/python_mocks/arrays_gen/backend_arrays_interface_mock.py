@@ -5,7 +5,7 @@
 #   Object: Arrays
 #   Template: py/service_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -77,12 +77,12 @@ class BackendArraysInterfaceMock():
     Per default, the mock is configured to just return the updated value.
 
     Args:
-        ArrayProperty (Sequence[Sequence[str]]): a simple property
+        ArrayProperty (List[List[str]]): a simple property
     """
 
     def __init__(
         self,
-        ArrayProperty: Sequence[Sequence[str]],
+        ArrayProperty: List[List[str]],
     ):
         self.interface = _Interface(self)
         self.name = self.interface.name
@@ -129,40 +129,40 @@ class BackendArraysInterfaceMock():
 
     async def ArrayMethod(
         self,
-        numbers: Sequence[Sequence[int]],
-    ) -> Sequence[Sequence[float]]:
+        numbers: List[List[int]],
+    ) -> List[List[float]]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Sequence[Sequence[int]]): Some numbers
+            numbers (List[List[int]]): Some numbers
 
         Returns:
-            Sequence[Sequence[float]]: normalized numbers
+            List[List[float]]: normalized numbers
         """
         return await self._await_mock_method("ArrayMethod", locals())
 
     def ArraySignal(
         self,
-        numbers: Sequence[Sequence[float]],
+        numbers: List[List[float]],
     ) -> None:
         """
         a simple signal with one argument
 
         Args:
-            numbers (Sequence[Sequence[float]]): normalized numbers
+            numbers (List[List[float]]): normalized numbers
         """
         self.interface.ArraySignal(
             [ [ x1 for x1 in x0 ] for x0 in numbers ],
         )
 
-    async def get_ArrayProperty(self) -> Sequence[Sequence[str]]:
+    async def get_ArrayProperty(self) -> List[List[str]]:
         """Getter for property ArrayProperty
 
         a simple property
 
         Returns:
-            Sequence[Sequence[str]]: the current value
+            List[List[str]]: the current value
         """
         return self._properties["ArrayProperty"]
 
@@ -174,7 +174,7 @@ class BackendArraysInterfaceMock():
         and returns a dictionary with the current property values, or just the changed ones
 
         Args:
-            handler(Callable[[Sequence[Sequence[str]], dict], Awaitable[dict]]): the properties change handler
+            handler(Callable[[List[List[str]], dict], Awaitable[dict]]): the properties change handler
 
         Returns:
             dict: the changed properties
@@ -182,16 +182,16 @@ class BackendArraysInterfaceMock():
         self._ArrayProperty_change_handler = handler
         self.mock.on_ArrayProperty_changed = AsyncMock(wraps=self._ArrayProperty_change_handler)
 
-    async def _default_ArrayProperty_change_handler(value: Sequence[Sequence[str]], _: dict) -> dict:
+    async def _default_ArrayProperty_change_handler(value: List[List[str]], _: dict) -> dict:
         return { "ArrayProperty": value }
 
-    async def set_ArrayProperty(self, value: Sequence[Sequence[str]]):
+    async def set_ArrayProperty(self, value: List[List[str]]):
         """Setter for property ArrayProperty
 
         a simple property
 
         Args:
-            value (Sequence[Sequence[str]]): the new value
+            value (List[List[str]]): the new value
         """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_ArrayProperty_changed(value, properties_working_copy)

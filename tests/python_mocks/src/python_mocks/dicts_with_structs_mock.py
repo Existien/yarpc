@@ -1,6 +1,6 @@
 from python_mocks import BackendDictsWithStructsInterfaceMock, SimonsDict, StructDict
 from unittest.mock import AsyncMock
-from typing import Mapping, Dict
+from typing import Dict, Dict
 
 __count = 0
 __previous: Dict[str, SimonsDict] = {}
@@ -23,7 +23,7 @@ def get_dicts_with_structs_mock():
         },
     )
 
-    async def dict_with_struct_method_handler(numbers: Mapping[str, StructDict]):
+    async def dict_with_struct_method_handler(numbers: Dict[str, StructDict]):
         global __count
         global __previous
         service.DictStructSignal(numbers)

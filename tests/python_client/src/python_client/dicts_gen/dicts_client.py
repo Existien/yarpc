@@ -5,7 +5,7 @@
 #   Object: Dicts
 #   Template: py/client.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys
@@ -101,16 +101,16 @@ class DictsClient():
 
     async def DictMethod(
         self,
-        keysNValues: 'Mapping[str, int]',
-    ) -> Mapping[str, str]:
+        keysNValues: 'Dict[str, int]',
+    ) -> Dict[str, str]:
         """
         a simple method with one argument
 
         Args:
-            keysNValues (Mapping[str, int]): a dictionary
+            keysNValues (Dict[str, int]): a dictionary
 
         Returns:
-            Mapping[str, str]: another one
+            Dict[str, str]: another one
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -132,19 +132,19 @@ class DictsClient():
         Set handler for DictSignal signal
 
         Args:
-            handler (Callable[[Mapping[str, int]], None]): the signal handler
+            handler (Callable[[Dict[str, int]], None]): the signal handler
         """
         self._DictSignal_handler = handler
         if self._interface:
             self._interface.on_dict_signal(self._DictSignal_wrapper)
 
-    async def get_DictProperty(self) -> Mapping[str, int]:
+    async def get_DictProperty(self) -> Dict[str, int]:
         """Getter for property 'DictProperty'
 
         a prop
 
         Returns:
-            Mapping[str, int]: the current value
+            Dict[str, int]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -153,13 +153,13 @@ class DictsClient():
         return unmarshalled
 
 
-    async def set_DictProperty(self, value: Mapping[str, int]) -> None:
+    async def set_DictProperty(self, value: Dict[str, int]) -> None:
         """Setter for property 'DictProperty'
 
         a prop
 
         Args:
-            value (Mapping[str, int]): the new value
+            value (Dict[str, int]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

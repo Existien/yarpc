@@ -5,7 +5,7 @@
 #   Object: DictsWithStructs
 #   Template: py/service.j2
 
-from typing import Protocol, Sequence, Mapping
+from typing import Protocol, List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -21,19 +21,19 @@ class ProvidesDictsWithStructsInterfaceProperties(Protocol):
     """Protocol for property providers of DictsWithStructsInterface
     """
 
-    async def get_DictStructProperty(self) -> Mapping[str, StructDict]:
+    async def get_DictStructProperty(self) -> Dict[str, StructDict]:
         """Getter for DictStructProperty property
 
         Returns:
-            Mapping[str, StructDict]: the current value
+            Dict[str, StructDict]: the current value
         """
         ...
 
-    async def set_DictStructProperty(self, value: Mapping[str, StructDict]) -> dict:
+    async def set_DictStructProperty(self, value: Dict[str, StructDict]) -> dict:
         """Setter for DictStructProperty property
 
         Args:
-            value (Mapping[str, StructDict]): the new value
+            value (Dict[str, StructDict]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -45,30 +45,30 @@ class DictsWithStructsInterfaceProperties:
     """Manages the state of the properties for DictsWithStructsInterface
 
     Args:
-        DictStructProperty (Mapping[str, StructDict]): a simple property
+        DictStructProperty (Dict[str, StructDict]): a simple property
     """
 
     def __init__(
         self,
-        DictStructProperty: Mapping[str, StructDict],
+        DictStructProperty: Dict[str, StructDict],
     ):
         self._properties = {
             "DictStructProperty": DictStructProperty,
         }
 
-    async def get_DictStructProperty(self) -> Mapping[str, StructDict]:
+    async def get_DictStructProperty(self) -> Dict[str, StructDict]:
         """Getter for DictStructProperty property
 
         Returns:
-            Mapping[str, StructDict]: the current value
+            Dict[str, StructDict]: the current value
         """
         return self._properties["DictStructProperty"]
 
-    async def set_DictStructProperty(self, value: Mapping[str, StructDict]) -> dict:
+    async def set_DictStructProperty(self, value: Dict[str, StructDict]) -> dict:
         """Setter for DictStructProperty property
 
         Args:
-            value (Mapping[str, StructDict]): the new value
+            value (Dict[str, StructDict]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -171,22 +171,22 @@ class DictsWithStructsInterface():
         Set handler for DictsStructMethod method
 
         Args:
-            handler (Callable[[Mapping[str, StructDict]], Awaitable[Mapping[str, SimonsDict]]]): the method handler
+            handler (Callable[[Dict[str, StructDict]], Awaitable[Dict[str, SimonsDict]]]): the method handler
         """
         self._DictsStructMethod_handler = handler
 
     async def DictsStructMethod(
         self,
-        numbers: Mapping[str, StructDict],
-    ) -> Mapping[str, SimonsDict]:
+        numbers: Dict[str, StructDict],
+    ) -> Dict[str, SimonsDict]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Mapping[str, StructDict]): Some numbers
+            numbers (Dict[str, StructDict]): Some numbers
 
         Returns:
-            Mapping[str, SimonsDict]: more numbers
+            Dict[str, SimonsDict]: more numbers
         """
         if self._DictsStructMethod_handler is None:
             raise NotImplementedError()
@@ -197,35 +197,35 @@ class DictsWithStructsInterface():
 
     def DictStructSignal(
         self,
-        numbers: Mapping[str, StructDict],
+        numbers: Dict[str, StructDict],
     ) -> None:
         """
         a simple signal with one argument
 
         Args:
-            numbers (Mapping[str, StructDict]): numbers
+            numbers (Dict[str, StructDict]): numbers
         """
         self.interface.DictStructSignal(
             { k0: v0.to_dbus() for k0, v0 in numbers.items() },
         )
 
-    async def get_DictStructProperty(self) -> Mapping[str, StructDict]:
+    async def get_DictStructProperty(self) -> Dict[str, StructDict]:
         """Getter for property DictStructProperty
 
         a simple property
 
         Returns:
-            Mapping[str, StructDict]: the current value
+            Dict[str, StructDict]: the current value
         """
         return await self._properties.get_DictStructProperty()
 
-    async def set_DictStructProperty(self, value: Mapping[str, StructDict]):
+    async def set_DictStructProperty(self, value: Dict[str, StructDict]):
         """Setter for property DictStructProperty
 
         a simple property
 
         Args:
-            value (Mapping[str, StructDict]): the new value
+            value (Dict[str, StructDict]): the new value
         """
         changed_properties = await self._properties.set_DictStructProperty(value)
 

@@ -5,7 +5,7 @@
 #   Object: ArraysWithStructs
 #   Template: py/service.j2
 
-from typing import Protocol, Sequence, Mapping
+from typing import Protocol, List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -21,19 +21,19 @@ class ProvidesArraysWithStructsInterfaceProperties(Protocol):
     """Protocol for property providers of ArraysWithStructsInterface
     """
 
-    async def get_ArrayStructProperty(self) -> Sequence[StructArray]:
+    async def get_ArrayStructProperty(self) -> List[StructArray]:
         """Getter for ArrayStructProperty property
 
         Returns:
-            Sequence[StructArray]: the current value
+            List[StructArray]: the current value
         """
         ...
 
-    async def set_ArrayStructProperty(self, value: Sequence[StructArray]) -> dict:
+    async def set_ArrayStructProperty(self, value: List[StructArray]) -> dict:
         """Setter for ArrayStructProperty property
 
         Args:
-            value (Sequence[StructArray]): the new value
+            value (List[StructArray]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -45,30 +45,30 @@ class ArraysWithStructsInterfaceProperties:
     """Manages the state of the properties for ArraysWithStructsInterface
 
     Args:
-        ArrayStructProperty (Sequence[StructArray]): a simple property
+        ArrayStructProperty (List[StructArray]): a simple property
     """
 
     def __init__(
         self,
-        ArrayStructProperty: Sequence[StructArray],
+        ArrayStructProperty: List[StructArray],
     ):
         self._properties = {
             "ArrayStructProperty": ArrayStructProperty,
         }
 
-    async def get_ArrayStructProperty(self) -> Sequence[StructArray]:
+    async def get_ArrayStructProperty(self) -> List[StructArray]:
         """Getter for ArrayStructProperty property
 
         Returns:
-            Sequence[StructArray]: the current value
+            List[StructArray]: the current value
         """
         return self._properties["ArrayStructProperty"]
 
-    async def set_ArrayStructProperty(self, value: Sequence[StructArray]) -> dict:
+    async def set_ArrayStructProperty(self, value: List[StructArray]) -> dict:
         """Setter for ArrayStructProperty property
 
         Args:
-            value (Sequence[StructArray]): the new value
+            value (List[StructArray]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -171,22 +171,22 @@ class ArraysWithStructsInterface():
         Set handler for ArrayStructMethod method
 
         Args:
-            handler (Callable[[Sequence[StructArray]], Awaitable[Sequence[SimonsArray]]]): the method handler
+            handler (Callable[[List[StructArray]], Awaitable[List[SimonsArray]]]): the method handler
         """
         self._ArrayStructMethod_handler = handler
 
     async def ArrayStructMethod(
         self,
-        numbers: Sequence[StructArray],
-    ) -> Sequence[SimonsArray]:
+        numbers: List[StructArray],
+    ) -> List[SimonsArray]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Sequence[StructArray]): Some numbers
+            numbers (List[StructArray]): Some numbers
 
         Returns:
-            Sequence[SimonsArray]: more numbers
+            List[SimonsArray]: more numbers
         """
         if self._ArrayStructMethod_handler is None:
             raise NotImplementedError()
@@ -197,35 +197,35 @@ class ArraysWithStructsInterface():
 
     def ArrayStructSignal(
         self,
-        numbers: Sequence[StructArray],
+        numbers: List[StructArray],
     ) -> None:
         """
         a simple signal with one argument
 
         Args:
-            numbers (Sequence[StructArray]): numbers
+            numbers (List[StructArray]): numbers
         """
         self.interface.ArrayStructSignal(
             [ x0.to_dbus() for x0 in numbers ],
         )
 
-    async def get_ArrayStructProperty(self) -> Sequence[StructArray]:
+    async def get_ArrayStructProperty(self) -> List[StructArray]:
         """Getter for property ArrayStructProperty
 
         a simple property
 
         Returns:
-            Sequence[StructArray]: the current value
+            List[StructArray]: the current value
         """
         return await self._properties.get_ArrayStructProperty()
 
-    async def set_ArrayStructProperty(self, value: Sequence[StructArray]):
+    async def set_ArrayStructProperty(self, value: List[StructArray]):
         """Setter for property ArrayStructProperty
 
         a simple property
 
         Args:
-            value (Sequence[StructArray]): the new value
+            value (List[StructArray]): the new value
         """
         changed_properties = await self._properties.set_ArrayStructProperty(value)
 

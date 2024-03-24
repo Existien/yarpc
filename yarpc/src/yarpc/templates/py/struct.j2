@@ -13,7 +13,7 @@ from .{{ item|snake_case }} import {{ item }}
 {% endif %}
 {% endfor %}
 from dataclasses import dataclass
-from typing import Sequence, Mapping
+from typing import List, Dict
 
 @dataclass
 class {{ object.name }}:

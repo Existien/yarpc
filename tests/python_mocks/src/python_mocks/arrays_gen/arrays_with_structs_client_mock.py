@@ -5,7 +5,7 @@
 #   Object: ArraysWithStructs
 #   Template: py/client_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock
@@ -94,13 +94,13 @@ class ArraysWithStructsClientMock():
 
     async def ArrayStructMethod(
         self,
-        numbers: Sequence[StructArray],
-    ) -> Sequence[SimonsArray]:
+        numbers: List[StructArray],
+    ) -> List[SimonsArray]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Sequence[StructArray]): Some numbers
+            numbers (List[StructArray]): Some numbers
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -117,13 +117,13 @@ class ArraysWithStructsClientMock():
             [ StructArray.from_dbus(x0) for x0 in numbers ],
         )
 
-    async def get_ArrayStructProperty(self) -> Sequence[StructArray]:
+    async def get_ArrayStructProperty(self) -> List[StructArray]:
         """Getter for property 'ArrayStructProperty'
 
         a simple property
 
         Returns:
-            Sequence[StructArray]: the current value
+            List[StructArray]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -131,13 +131,13 @@ class ArraysWithStructsClientMock():
         unmarshalled = [ StructArray.from_dbus(x0) for x0 in raw_return ]
         return unmarshalled
 
-    async def set_ArrayStructProperty(self, value: Sequence[StructArray]) -> None:
+    async def set_ArrayStructProperty(self, value: List[StructArray]) -> None:
         """Setter for property 'ArrayStructProperty'
 
         a simple property
 
         Args:
-            value (Sequence[StructArray]): the new value
+            value (List[StructArray]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

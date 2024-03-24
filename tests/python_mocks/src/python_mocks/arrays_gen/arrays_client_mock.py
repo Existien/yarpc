@@ -5,7 +5,7 @@
 #   Object: Arrays
 #   Template: py/client_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock
@@ -94,13 +94,13 @@ class ArraysClientMock():
 
     async def ArrayMethod(
         self,
-        numbers: Sequence[Sequence[int]],
-    ) -> Sequence[Sequence[float]]:
+        numbers: List[List[int]],
+    ) -> List[List[float]]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Sequence[Sequence[int]]): Some numbers
+            numbers (List[List[int]]): Some numbers
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -117,13 +117,13 @@ class ArraysClientMock():
             [ [ x1 for x1 in x0 ] for x0 in numbers ],
         )
 
-    async def get_ArrayProperty(self) -> Sequence[Sequence[str]]:
+    async def get_ArrayProperty(self) -> List[List[str]]:
         """Getter for property 'ArrayProperty'
 
         a simple property
 
         Returns:
-            Sequence[Sequence[str]]: the current value
+            List[List[str]]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -131,13 +131,13 @@ class ArraysClientMock():
         unmarshalled = [ [ x1 for x1 in x0 ] for x0 in raw_return ]
         return unmarshalled
 
-    async def set_ArrayProperty(self, value: Sequence[Sequence[str]]) -> None:
+    async def set_ArrayProperty(self, value: List[List[str]]) -> None:
         """Setter for property 'ArrayProperty'
 
         a simple property
 
         Args:
-            value (Sequence[Sequence[str]]): the new value
+            value (List[List[str]]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

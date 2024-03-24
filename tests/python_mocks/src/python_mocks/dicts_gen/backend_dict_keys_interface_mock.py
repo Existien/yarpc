@@ -5,7 +5,7 @@
 #   Object: DictKeys
 #   Template: py/service_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -268,13 +268,13 @@ class BackendDictKeysInterfaceMock():
 
     def Uint8Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Uint8Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -282,13 +282,13 @@ class BackendDictKeysInterfaceMock():
 
     def BoolSignal(
         self,
-        value: Mapping[bool, str],
+        value: Dict[bool, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[bool, str]): the value
+            value (Dict[bool, str]): the value
         """
         self.interface.BoolSignal(
             { k0: v0 for k0, v0 in value.items() },
@@ -296,13 +296,13 @@ class BackendDictKeysInterfaceMock():
 
     def Int16Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Int16Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -310,13 +310,13 @@ class BackendDictKeysInterfaceMock():
 
     def Uint16Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Uint16Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -324,13 +324,13 @@ class BackendDictKeysInterfaceMock():
 
     def Int32Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Int32Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -338,13 +338,13 @@ class BackendDictKeysInterfaceMock():
 
     def Uint32Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Uint32Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -352,13 +352,13 @@ class BackendDictKeysInterfaceMock():
 
     def Int64Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Int64Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -366,13 +366,13 @@ class BackendDictKeysInterfaceMock():
 
     def Uint64Signal(
         self,
-        value: Mapping[int, str],
+        value: Dict[int, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         self.interface.Uint64Signal(
             { k0: v0 for k0, v0 in value.items() },
@@ -380,13 +380,13 @@ class BackendDictKeysInterfaceMock():
 
     def DoubleSignal(
         self,
-        value: Mapping[float, str],
+        value: Dict[float, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[float, str]): the value
+            value (Dict[float, str]): the value
         """
         self.interface.DoubleSignal(
             { k0: v0 for k0, v0 in value.items() },
@@ -394,13 +394,13 @@ class BackendDictKeysInterfaceMock():
 
     def StringSignal(
         self,
-        value: Mapping[str, str],
+        value: Dict[str, str],
     ) -> None:
         """
         a signal
 
         Args:
-            value (Mapping[str, str]): the value
+            value (Dict[str, str]): the value
         """
         self.interface.StringSignal(
             { k0: v0 for k0, v0 in value.items() },
@@ -408,150 +408,150 @@ class BackendDictKeysInterfaceMock():
 
     async def Uint8Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         return await self._await_mock_method("Uint8Method", locals())
 
     async def BoolMethod(
         self,
-        value: Mapping[bool, str],
-    ) -> Mapping[bool, str]:
+        value: Dict[bool, str],
+    ) -> Dict[bool, str]:
         """
         a method
 
         Args:
-            value (Mapping[bool, str]): the value
+            value (Dict[bool, str]): the value
 
         Returns:
-            Mapping[bool, str]: the return type
+            Dict[bool, str]: the return type
         """
         return await self._await_mock_method("BoolMethod", locals())
 
     async def Int16Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         return await self._await_mock_method("Int16Method", locals())
 
     async def Uint16Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         return await self._await_mock_method("Uint16Method", locals())
 
     async def Int32Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         return await self._await_mock_method("Int32Method", locals())
 
     async def Uint32Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         return await self._await_mock_method("Uint32Method", locals())
 
     async def Int64Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         return await self._await_mock_method("Int64Method", locals())
 
     async def Uint64Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
 
         Returns:
-            Mapping[int, str]: the return type
+            Dict[int, str]: the return type
         """
         return await self._await_mock_method("Uint64Method", locals())
 
     async def DoubleMethod(
         self,
-        value: Mapping[float, str],
-    ) -> Mapping[float, str]:
+        value: Dict[float, str],
+    ) -> Dict[float, str]:
         """
         a method
 
         Args:
-            value (Mapping[float, str]): the value
+            value (Dict[float, str]): the value
 
         Returns:
-            Mapping[float, str]: the return type
+            Dict[float, str]: the return type
         """
         return await self._await_mock_method("DoubleMethod", locals())
 
     async def StringMethod(
         self,
-        value: Mapping[str, str],
-    ) -> Mapping[str, str]:
+        value: Dict[str, str],
+    ) -> Dict[str, str]:
         """
         a method
 
         Args:
-            value (Mapping[str, str]): the value
+            value (Dict[str, str]): the value
 
         Returns:
-            Mapping[str, str]: the return type
+            Dict[str, str]: the return type
         """
         return await self._await_mock_method("StringMethod", locals())

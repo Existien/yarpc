@@ -5,7 +5,7 @@
 #   Object: DictsWithArrays
 #   Template: py/service.j2
 
-from typing import Protocol, Sequence, Mapping
+from typing import Protocol, List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -21,19 +21,19 @@ class ProvidesDictsWithArraysInterfaceProperties(Protocol):
     """Protocol for property providers of DictsWithArraysInterface
     """
 
-    async def get_DictArrayProperty(self) -> Mapping[str, Sequence[Mapping[str, int]]]:
+    async def get_DictArrayProperty(self) -> Dict[str, List[Dict[str, int]]]:
         """Getter for DictArrayProperty property
 
         Returns:
-            Mapping[str, Sequence[Mapping[str, int]]]: the current value
+            Dict[str, List[Dict[str, int]]]: the current value
         """
         ...
 
-    async def set_DictArrayProperty(self, value: Mapping[str, Sequence[Mapping[str, int]]]) -> dict:
+    async def set_DictArrayProperty(self, value: Dict[str, List[Dict[str, int]]]) -> dict:
         """Setter for DictArrayProperty property
 
         Args:
-            value (Mapping[str, Sequence[Mapping[str, int]]]): the new value
+            value (Dict[str, List[Dict[str, int]]]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -45,30 +45,30 @@ class DictsWithArraysInterfaceProperties:
     """Manages the state of the properties for DictsWithArraysInterface
 
     Args:
-        DictArrayProperty (Mapping[str, Sequence[Mapping[str, int]]]): a simple property
+        DictArrayProperty (Dict[str, List[Dict[str, int]]]): a simple property
     """
 
     def __init__(
         self,
-        DictArrayProperty: Mapping[str, Sequence[Mapping[str, int]]],
+        DictArrayProperty: Dict[str, List[Dict[str, int]]],
     ):
         self._properties = {
             "DictArrayProperty": DictArrayProperty,
         }
 
-    async def get_DictArrayProperty(self) -> Mapping[str, Sequence[Mapping[str, int]]]:
+    async def get_DictArrayProperty(self) -> Dict[str, List[Dict[str, int]]]:
         """Getter for DictArrayProperty property
 
         Returns:
-            Mapping[str, Sequence[Mapping[str, int]]]: the current value
+            Dict[str, List[Dict[str, int]]]: the current value
         """
         return self._properties["DictArrayProperty"]
 
-    async def set_DictArrayProperty(self, value: Mapping[str, Sequence[Mapping[str, int]]]) -> dict:
+    async def set_DictArrayProperty(self, value: Dict[str, List[Dict[str, int]]]) -> dict:
         """Setter for DictArrayProperty property
 
         Args:
-            value (Mapping[str, Sequence[Mapping[str, int]]]): the new value
+            value (Dict[str, List[Dict[str, int]]]): the new value
 
         Returns:
             dict: dictionary of the changed properties, empty if None changed
@@ -171,22 +171,22 @@ class DictsWithArraysInterface():
         Set handler for DictsArrayMethod method
 
         Args:
-            handler (Callable[[Mapping[str, Sequence[Mapping[str, int]]]], Awaitable[Mapping[str, Sequence[Mapping[str, int]]]]]): the method handler
+            handler (Callable[[Dict[str, List[Dict[str, int]]]], Awaitable[Dict[str, List[Dict[str, int]]]]]): the method handler
         """
         self._DictsArrayMethod_handler = handler
 
     async def DictsArrayMethod(
         self,
-        numbers: Mapping[str, Sequence[Mapping[str, int]]],
-    ) -> Mapping[str, Sequence[Mapping[str, int]]]:
+        numbers: Dict[str, List[Dict[str, int]]],
+    ) -> Dict[str, List[Dict[str, int]]]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Mapping[str, Sequence[Mapping[str, int]]]): some numbers
+            numbers (Dict[str, List[Dict[str, int]]]): some numbers
 
         Returns:
-            Mapping[str, Sequence[Mapping[str, int]]]: some numbers
+            Dict[str, List[Dict[str, int]]]: some numbers
         """
         if self._DictsArrayMethod_handler is None:
             raise NotImplementedError()
@@ -197,35 +197,35 @@ class DictsWithArraysInterface():
 
     def DictsArraySignal(
         self,
-        numbers: Mapping[str, Sequence[Mapping[str, int]]],
+        numbers: Dict[str, List[Dict[str, int]]],
     ) -> None:
         """
         a simple signal with one argument
 
         Args:
-            numbers (Mapping[str, Sequence[Mapping[str, int]]]): some numbers
+            numbers (Dict[str, List[Dict[str, int]]]): some numbers
         """
         self.interface.DictsArraySignal(
             { k0: [ { k2: v2 for k2, v2 in x1.items() } for x1 in v0 ] for k0, v0 in numbers.items() },
         )
 
-    async def get_DictArrayProperty(self) -> Mapping[str, Sequence[Mapping[str, int]]]:
+    async def get_DictArrayProperty(self) -> Dict[str, List[Dict[str, int]]]:
         """Getter for property DictArrayProperty
 
         a simple property
 
         Returns:
-            Mapping[str, Sequence[Mapping[str, int]]]: the current value
+            Dict[str, List[Dict[str, int]]]: the current value
         """
         return await self._properties.get_DictArrayProperty()
 
-    async def set_DictArrayProperty(self, value: Mapping[str, Sequence[Mapping[str, int]]]):
+    async def set_DictArrayProperty(self, value: Dict[str, List[Dict[str, int]]]):
         """Setter for property DictArrayProperty
 
         a simple property
 
         Args:
-            value (Mapping[str, Sequence[Mapping[str, int]]]): the new value
+            value (Dict[str, List[Dict[str, int]]]): the new value
         """
         changed_properties = await self._properties.set_DictArrayProperty(value)
 

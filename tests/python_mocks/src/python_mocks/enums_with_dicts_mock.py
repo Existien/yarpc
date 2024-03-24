@@ -1,6 +1,6 @@
 from python_mocks import BackendEnumsWithDictsInterfaceMock, Color
 from unittest.mock import AsyncMock
-from typing import Mapping, Dict
+from typing import Dict, Dict
 
 def get_enums_with_dicts_mock():
     wheel = {
@@ -13,7 +13,7 @@ def get_enums_with_dicts_mock():
         EnumProperty=wheel,
     )
 
-    async def enum_method_handler(color: Mapping[Color, Color]) -> Dict[Color, Color]:
+    async def enum_method_handler(color: Dict[Color, Color]) -> Dict[Color, Color]:
 
         service.EnumSignal(color)
         return {

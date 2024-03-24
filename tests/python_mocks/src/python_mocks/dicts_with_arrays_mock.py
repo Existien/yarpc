@@ -1,6 +1,6 @@
 from python_mocks import BackendDictsWithArraysInterfaceMock
 from unittest.mock import AsyncMock
-from typing import Mapping, Dict, Sequence, List
+from typing import Dict, Dict, List, List
 
 def get_dicts_with_arrays_mock():
     service = BackendDictsWithArraysInterfaceMock(
@@ -10,7 +10,7 @@ def get_dicts_with_arrays_mock():
         }
     )
 
-    async def dict_with_arrays_method_handler(numbers: Mapping[str, Sequence[Mapping[str, int]]]) -> Dict[str, List[Dict[str, int]]]:
+    async def dict_with_arrays_method_handler(numbers: Dict[str, List[Dict[str, int]]]) -> Dict[str, List[Dict[str, int]]]:
         service.DictsArraySignal(numbers)
         return numbers
     service.mock.DictsArrayMethod = AsyncMock(wraps=dict_with_arrays_method_handler)

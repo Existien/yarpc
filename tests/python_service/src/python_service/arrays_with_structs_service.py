@@ -1,7 +1,7 @@
 from .arrays_gen.arrays_with_structs_interface import ArraysWithStructsInterface
 from .arrays_gen.backend_arrays_with_structs_client import BackendArraysWithStructsClient
 from .arrays_gen.simons_array import StructArray
-from typing import Sequence
+from typing import List
 import asyncio
 
 
@@ -23,11 +23,11 @@ def get_arrays_with_struct_service_and_backend_client():
         property_provider=ProxyProperties(backend_client)
     )
 
-    async def array_method_handler(array: Sequence[StructArray]):
+    async def array_method_handler(array: List[StructArray]):
         return await backend_client.ArrayStructMethod(array)
     service.on_ArrayStructMethod(array_method_handler)
 
-    def on_array_struct_signal(numbers: Sequence[StructArray]):
+    def on_array_struct_signal(numbers: List[StructArray]):
         service.ArrayStructSignal(numbers)
     backend_client.on_ArrayStructSignal(on_array_struct_signal)
 

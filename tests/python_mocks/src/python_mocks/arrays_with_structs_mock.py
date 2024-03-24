@@ -1,15 +1,15 @@
 from python_mocks import BackendArraysWithStructsInterfaceMock, ArraysWithStructsClientMock, SimonsArray, StructArray
 from unittest.mock import AsyncMock
-from typing import Sequence
+from typing import List
 
-__previous: Sequence[SimonsArray] = []
+__previous: List[SimonsArray] = []
 
 def get_arrays_with_structs_mock():
     service = BackendArraysWithStructsInterfaceMock(
         ArrayStructProperty=[StructArray(numbers=[[1], [2,3]]), StructArray(numbers=[[4,5],[6]])]
     )
 
-    async def array_with_struct_method_handler(numbers: Sequence[StructArray]):
+    async def array_with_struct_method_handler(numbers: List[StructArray]):
         service.ArrayStructSignal(numbers)
         __previous.append(SimonsArray(numbers=numbers))
         return __previous

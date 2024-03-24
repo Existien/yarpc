@@ -1,6 +1,6 @@
 from python_mocks import BackendEnumsWithArraysInterfaceMock, Color
 from unittest.mock import AsyncMock
-from typing import Sequence, List
+from typing import List, List
 
 def get_enums_with_arrays_mock():
     wheel = {
@@ -13,7 +13,7 @@ def get_enums_with_arrays_mock():
         EnumProperty=[Color.RED, Color.GREEN, Color.BLUE],
     )
 
-    async def enum_method_handler(color: Sequence[Color]) -> List[Color]:
+    async def enum_method_handler(color: List[Color]) -> List[Color]:
 
         service.EnumSignal(color)
         return [wheel[c] for c in color]

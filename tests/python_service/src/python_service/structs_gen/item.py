@@ -6,7 +6,7 @@
 #   Template: py/struct.j2
 
 from dataclasses import dataclass
-from typing import Sequence, Mapping
+from typing import List, Dict
 
 @dataclass
 class Item:

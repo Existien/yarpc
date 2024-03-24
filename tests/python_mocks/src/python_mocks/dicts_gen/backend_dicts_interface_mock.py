@@ -5,7 +5,7 @@
 #   Object: Dicts
 #   Template: py/service_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -77,12 +77,12 @@ class BackendDictsInterfaceMock():
     Per default, the mock is configured to just return the updated value.
 
     Args:
-        DictProperty (Mapping[str, int]): a prop
+        DictProperty (Dict[str, int]): a prop
     """
 
     def __init__(
         self,
-        DictProperty: Mapping[str, int],
+        DictProperty: Dict[str, int],
     ):
         self.interface = _Interface(self)
         self.name = self.interface.name
@@ -129,40 +129,40 @@ class BackendDictsInterfaceMock():
 
     async def DictMethod(
         self,
-        keysNValues: Mapping[str, int],
-    ) -> Mapping[str, str]:
+        keysNValues: Dict[str, int],
+    ) -> Dict[str, str]:
         """
         a simple method with one argument
 
         Args:
-            keysNValues (Mapping[str, int]): a dictionary
+            keysNValues (Dict[str, int]): a dictionary
 
         Returns:
-            Mapping[str, str]: another one
+            Dict[str, str]: another one
         """
         return await self._await_mock_method("DictMethod", locals())
 
     def DictSignal(
         self,
-        keysNValues: Mapping[str, int],
+        keysNValues: Dict[str, int],
     ) -> None:
         """
         a signal
 
         Args:
-            keysNValues (Mapping[str, int]): a dictionary
+            keysNValues (Dict[str, int]): a dictionary
         """
         self.interface.DictSignal(
             { k0: v0 for k0, v0 in keysNValues.items() },
         )
 
-    async def get_DictProperty(self) -> Mapping[str, int]:
+    async def get_DictProperty(self) -> Dict[str, int]:
         """Getter for property DictProperty
 
         a prop
 
         Returns:
-            Mapping[str, int]: the current value
+            Dict[str, int]: the current value
         """
         return self._properties["DictProperty"]
 
@@ -174,7 +174,7 @@ class BackendDictsInterfaceMock():
         and returns a dictionary with the current property values, or just the changed ones
 
         Args:
-            handler(Callable[[Mapping[str, int], dict], Awaitable[dict]]): the properties change handler
+            handler(Callable[[Dict[str, int], dict], Awaitable[dict]]): the properties change handler
 
         Returns:
             dict: the changed properties
@@ -182,16 +182,16 @@ class BackendDictsInterfaceMock():
         self._DictProperty_change_handler = handler
         self.mock.on_DictProperty_changed = AsyncMock(wraps=self._DictProperty_change_handler)
 
-    async def _default_DictProperty_change_handler(value: Mapping[str, int], _: dict) -> dict:
+    async def _default_DictProperty_change_handler(value: Dict[str, int], _: dict) -> dict:
         return { "DictProperty": value }
 
-    async def set_DictProperty(self, value: Mapping[str, int]):
+    async def set_DictProperty(self, value: Dict[str, int]):
         """Setter for property DictProperty
 
         a prop
 
         Args:
-            value (Mapping[str, int]): the new value
+            value (Dict[str, int]): the new value
         """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_DictProperty_changed(value, properties_working_copy)

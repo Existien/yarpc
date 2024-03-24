@@ -5,7 +5,7 @@
 #   Object: Dicts
 #   Template: py/client_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock
@@ -94,13 +94,13 @@ class DictsClientMock():
 
     async def DictMethod(
         self,
-        keysNValues: Mapping[str, int],
-    ) -> Mapping[str, str]:
+        keysNValues: Dict[str, int],
+    ) -> Dict[str, str]:
         """
         a simple method with one argument
 
         Args:
-            keysNValues (Mapping[str, int]): a dictionary
+            keysNValues (Dict[str, int]): a dictionary
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -117,13 +117,13 @@ class DictsClientMock():
             { k0: v0 for k0, v0 in keysNValues.items() },
         )
 
-    async def get_DictProperty(self) -> Mapping[str, int]:
+    async def get_DictProperty(self) -> Dict[str, int]:
         """Getter for property 'DictProperty'
 
         a prop
 
         Returns:
-            Mapping[str, int]: the current value
+            Dict[str, int]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -131,13 +131,13 @@ class DictsClientMock():
         unmarshalled = { k0: v0 for k0, v0 in raw_return.items() }
         return unmarshalled
 
-    async def set_DictProperty(self, value: Mapping[str, int]) -> None:
+    async def set_DictProperty(self, value: Dict[str, int]) -> None:
         """Setter for property 'DictProperty'
 
         a prop
 
         Args:
-            value (Mapping[str, int]): the new value
+            value (Dict[str, int]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

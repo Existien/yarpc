@@ -5,7 +5,7 @@
 #   Object: Arrays
 #   Template: py/client.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 import sys
@@ -101,16 +101,16 @@ class BackendArraysClient():
 
     async def ArrayMethod(
         self,
-        numbers: 'Sequence[Sequence[int]]',
-    ) -> Sequence[Sequence[float]]:
+        numbers: 'List[List[int]]',
+    ) -> List[List[float]]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Sequence[Sequence[int]]): Some numbers
+            numbers (List[List[int]]): Some numbers
 
         Returns:
-            Sequence[Sequence[float]]: normalized numbers
+            List[List[float]]: normalized numbers
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -132,19 +132,19 @@ class BackendArraysClient():
         Set handler for ArraySignal signal
 
         Args:
-            handler (Callable[[Sequence[Sequence[float]]], None]): the signal handler
+            handler (Callable[[List[List[float]]], None]): the signal handler
         """
         self._ArraySignal_handler = handler
         if self._interface:
             self._interface.on_array_signal(self._ArraySignal_wrapper)
 
-    async def get_ArrayProperty(self) -> Sequence[Sequence[str]]:
+    async def get_ArrayProperty(self) -> List[List[str]]:
         """Getter for property 'ArrayProperty'
 
         a simple property
 
         Returns:
-            Sequence[Sequence[str]]: the current value
+            List[List[str]]: the current value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -153,13 +153,13 @@ class BackendArraysClient():
         return unmarshalled
 
 
-    async def set_ArrayProperty(self, value: Sequence[Sequence[str]]) -> None:
+    async def set_ArrayProperty(self, value: List[List[str]]) -> None:
         """Setter for property 'ArrayProperty'
 
         a simple property
 
         Args:
-            value (Sequence[Sequence[str]]): the new value
+            value (List[List[str]]): the new value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

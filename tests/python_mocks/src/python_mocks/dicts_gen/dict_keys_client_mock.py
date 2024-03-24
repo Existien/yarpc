@@ -5,7 +5,7 @@
 #   Object: DictKeys
 #   Template: py/client_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from .connection import Connection
 from dbus_next import Variant, DBusError
 from unittest.mock import Mock
@@ -182,13 +182,13 @@ class DictKeysClientMock():
 
     async def Uint8Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -199,13 +199,13 @@ class DictKeysClientMock():
 
     async def BoolMethod(
         self,
-        value: Mapping[bool, str],
-    ) -> Mapping[bool, str]:
+        value: Dict[bool, str],
+    ) -> Dict[bool, str]:
         """
         a method
 
         Args:
-            value (Mapping[bool, str]): the value
+            value (Dict[bool, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -216,13 +216,13 @@ class DictKeysClientMock():
 
     async def Int16Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -233,13 +233,13 @@ class DictKeysClientMock():
 
     async def Uint16Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -250,13 +250,13 @@ class DictKeysClientMock():
 
     async def Int32Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -267,13 +267,13 @@ class DictKeysClientMock():
 
     async def Uint32Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -284,13 +284,13 @@ class DictKeysClientMock():
 
     async def Int64Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -301,13 +301,13 @@ class DictKeysClientMock():
 
     async def Uint64Method(
         self,
-        value: Mapping[int, str],
-    ) -> Mapping[int, str]:
+        value: Dict[int, str],
+    ) -> Dict[int, str]:
         """
         a method
 
         Args:
-            value (Mapping[int, str]): the value
+            value (Dict[int, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -318,13 +318,13 @@ class DictKeysClientMock():
 
     async def DoubleMethod(
         self,
-        value: Mapping[float, str],
-    ) -> Mapping[float, str]:
+        value: Dict[float, str],
+    ) -> Dict[float, str]:
         """
         a method
 
         Args:
-            value (Mapping[float, str]): the value
+            value (Dict[float, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)
@@ -335,13 +335,13 @@ class DictKeysClientMock():
 
     async def StringMethod(
         self,
-        value: Mapping[str, str],
-    ) -> Mapping[str, str]:
+        value: Dict[str, str],
+    ) -> Dict[str, str]:
         """
         a method
 
         Args:
-            value (Mapping[str, str]): the value
+            value (Dict[str, str]): the value
         """
         while not self._interface:
             await asyncio.sleep(0.1)

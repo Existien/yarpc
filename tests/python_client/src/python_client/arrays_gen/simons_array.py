@@ -7,7 +7,7 @@
 
 from .struct_array import StructArray
 from dataclasses import dataclass
-from typing import Sequence, Mapping
+from typing import List, Dict
 
 @dataclass
 class SimonsArray:
@@ -15,9 +15,9 @@ class SimonsArray:
     A struct containing arrays
 
     Args:
-        numbers (Sequence[StructArray]): some struct arrays
+        numbers (List[StructArray]): some struct arrays
     """
-    numbers: Sequence[StructArray]
+    numbers: List[StructArray]
 
     def to_dbus(self):
         """

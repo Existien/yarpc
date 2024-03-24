@@ -1,6 +1,6 @@
 from .arrays_gen.arrays_interface import ArraysInterface
 from .arrays_gen.backend_arrays_client import BackendArraysClient
-from typing import Sequence
+from typing import List
 import asyncio
 
 class ProxyProperties:
@@ -21,7 +21,7 @@ def get_arrays_service_and_backend_client():
         property_provider=ProxyProperties(backend_client)
     )
 
-    async def array_method_handler(array: Sequence[Sequence[int]]):
+    async def array_method_handler(array: List[List[int]]):
         return await backend_client.ArrayMethod(array)
     service.on_ArrayMethod(array_method_handler)
 

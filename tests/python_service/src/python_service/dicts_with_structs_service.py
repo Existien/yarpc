@@ -1,7 +1,7 @@
 from .dicts_gen.dicts_with_structs_interface import DictsWithStructsInterface
 from .dicts_gen.backend_dicts_with_structs_client import BackendDictsWithStructsClient
 from .dicts_gen.simons_dict import StructDict
-from typing import Mapping
+from typing import Dict
 import asyncio
 
 
@@ -23,11 +23,11 @@ def get_dicts_with_struct_service_and_backend_client():
         property_provider=ProxyProperties(backend_client)
     )
 
-    async def dict_method_handler(array: Mapping[str, StructDict]):
+    async def dict_method_handler(array: Dict[str, StructDict]):
         return await backend_client.DictsStructMethod(array)
     service.on_DictsStructMethod(dict_method_handler)
 
-    def on_dict_struct_signal(numbers: Mapping[str, StructDict]):
+    def on_dict_struct_signal(numbers: Dict[str, StructDict]):
         service.DictStructSignal(numbers)
     backend_client.on_DictStructSignal(on_dict_struct_signal)
 

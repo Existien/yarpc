@@ -1,5 +1,10 @@
 import jinja2
-from yarpc.utils import to_snake_case, find_type, extract_inner_names, extract_dependencies
+from yarpc.utils import (
+    to_snake_case,
+    find_type,
+    extract_inner_names,
+    extract_dependencies,
+)
 
 class TemplatingEngine:
     """A jinja2 templating engine with custom filters

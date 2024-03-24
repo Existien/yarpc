@@ -5,7 +5,7 @@
 #   Object: ArraysWithStructs
 #   Template: py/service_mock.j2
 
-from typing import Sequence, Mapping
+from typing import List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
@@ -77,12 +77,12 @@ class BackendArraysWithStructsInterfaceMock():
     Per default, the mock is configured to just return the updated value.
 
     Args:
-        ArrayStructProperty (Sequence[StructArray]): a simple property
+        ArrayStructProperty (List[StructArray]): a simple property
     """
 
     def __init__(
         self,
-        ArrayStructProperty: Sequence[StructArray],
+        ArrayStructProperty: List[StructArray],
     ):
         self.interface = _Interface(self)
         self.name = self.interface.name
@@ -129,40 +129,40 @@ class BackendArraysWithStructsInterfaceMock():
 
     async def ArrayStructMethod(
         self,
-        numbers: Sequence[StructArray],
-    ) -> Sequence[SimonsArray]:
+        numbers: List[StructArray],
+    ) -> List[SimonsArray]:
         """
         a simple method with one argument
 
         Args:
-            numbers (Sequence[StructArray]): Some numbers
+            numbers (List[StructArray]): Some numbers
 
         Returns:
-            Sequence[SimonsArray]: more numbers
+            List[SimonsArray]: more numbers
         """
         return await self._await_mock_method("ArrayStructMethod", locals())
 
     def ArrayStructSignal(
         self,
-        numbers: Sequence[StructArray],
+        numbers: List[StructArray],
     ) -> None:
         """
         a simple signal with one argument
 
         Args:
-            numbers (Sequence[StructArray]): numbers
+            numbers (List[StructArray]): numbers
         """
         self.interface.ArrayStructSignal(
             [ x0.to_dbus() for x0 in numbers ],
         )
 
-    async def get_ArrayStructProperty(self) -> Sequence[StructArray]:
+    async def get_ArrayStructProperty(self) -> List[StructArray]:
         """Getter for property ArrayStructProperty
 
         a simple property
 
         Returns:
-            Sequence[StructArray]: the current value
+            List[StructArray]: the current value
         """
         return self._properties["ArrayStructProperty"]
 
@@ -174,7 +174,7 @@ class BackendArraysWithStructsInterfaceMock():
         and returns a dictionary with the current property values, or just the changed ones
 
         Args:
-            handler(Callable[[Sequence[StructArray], dict], Awaitable[dict]]): the properties change handler
+            handler(Callable[[List[StructArray], dict], Awaitable[dict]]): the properties change handler
 
         Returns:
             dict: the changed properties
@@ -182,16 +182,16 @@ class BackendArraysWithStructsInterfaceMock():
         self._ArrayStructProperty_change_handler = handler
         self.mock.on_ArrayStructProperty_changed = AsyncMock(wraps=self._ArrayStructProperty_change_handler)
 
-    async def _default_ArrayStructProperty_change_handler(value: Sequence[StructArray], _: dict) -> dict:
+    async def _default_ArrayStructProperty_change_handler(value: List[StructArray], _: dict) -> dict:
         return { "ArrayStructProperty": value }
 
-    async def set_ArrayStructProperty(self, value: Sequence[StructArray]):
+    async def set_ArrayStructProperty(self, value: List[StructArray]):
         """Setter for property ArrayStructProperty
 
         a simple property
 
         Args:
-            value (Sequence[StructArray]): the new value
+            value (List[StructArray]): the new value
         """
         properties_working_copy = deepcopy(self._properties)
         changed_properties = await self.mock.on_ArrayStructProperty_changed(value, properties_working_copy)

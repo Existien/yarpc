@@ -1,7 +1,7 @@
 from pathlib import Path
 from yarpc.templating_engine import TemplatingEngine
 from difflib import unified_diff
-from yarpc.utils import to_snake_case
+from yarpc.languages import languages, ObjectKind, Target
 from shutil import rmtree
 import pkg_resources
 
@@ -103,40 +103,22 @@ class Generator:
         is_up_to_date = True
         for target in object.get('targets', []):
             target_context = {**context, 'target': target}
-            filename = Path(f"{self._get_location(output)}/{self._generate_filename(target['className'], target['template'], language)}")
-            is_up_to_date = (
-                is_up_to_date and
-                self._generate_file(filename, language, target['template'], target_context, check_only)
-            )
-        if object.get('kind') == 'struct':
-            filename = Path(f"{self._get_location(output)}/{self._generate_filename(object['name'], 'struct', language)}")
-            is_up_to_date = (
-                is_up_to_date and
-                self._generate_file(filename, language, 'struct', context, check_only)
-            )
-        elif object.get('kind') == 'enum':
-            filename = Path(f"{self._get_location(output)}/{self._generate_filename(object['name'], 'enum', language)}")
-            is_up_to_date = (
-                is_up_to_date and
-                self._generate_file(filename, language, 'enum', context, check_only)
-            )
+            language_targets = languages().get(language).get_targets(target['className'], ObjectKind(target['objectKind']))
+            for language_target in language_targets:
+                filename = Path(f"{self._get_location(output)}/{language_target.filename}")
+                is_up_to_date = (
+                    is_up_to_date and
+                    self._generate_file(filename, language, language_target.template, target_context, check_only)
+                )
+        if object.get('kind') == 'struct' or object.get('kind') == 'enum':
+            language_targets = languages().get(language).get_targets(object['name'], ObjectKind(object['kind']))
+            for language_target in language_targets:
+                filename = Path(f"{self._get_location(output)}/{language_target.filename}")
+                is_up_to_date = (
+                    is_up_to_date and
+                    self._generate_file(filename, language, language_target.template, context, check_only)
+                )
         return is_up_to_date
-
-    def _generate_filename(self, name: str, template: str, language: str) -> str:
-        """Generates a filename based on the object name, template and language.
-
-        Args:
-            name (str): The name of the object
-            template (str): The kind of object
-            language (str): The language the file should be in
-
-        Returns:
-            str: The filename
-        """
-        match language:
-            case 'py':
-                return f"{to_snake_case(name)}.py"
-        raise Exception(f"Filename for language {language} and template {template} could not be generated")
 
     def _generate_file(self, filename: Path, language: str, template: Path, context: dict, check_only: bool) -> bool:
         """ Generates a source file from specs and a template
