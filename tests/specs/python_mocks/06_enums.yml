@@ -1,0 +1,43 @@
+outputs:
+- name: EnumsMocks
+  language: py
+  location: python_mocks/src/python_mocks/enums_gen
+  busName: com.yarpc.backend
+  service_mocks:
+  - className: BackendEnumsInterfaceMock
+    spec: Enums
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.enums
+  - className: BackendEnumsWithStructsInterfaceMock
+    spec: EnumsWithStructs
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.enumsWithStructs
+  - className: BackendEnumsWithArraysInterfaceMock
+    spec: EnumsWithArrays
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.enumsWithArrays
+  - className: BackendEnumsWithDictsInterfaceMock
+    spec: EnumsWithDicts
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.enumsWithDicts
+  client_mocks:
+  - className: EnumsClientMock
+    spec: Enums
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.enums
+  - className: EnumsWithStructsClientMock
+    spec: EnumsWithStructs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.enumsWithStructs
+  - className: EnumsWithArraysClientMock
+    spec: EnumsWithArrays
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.enumsWithArrays
+  - className: EnumsWithDictsClientMock
+    spec: EnumsWithDicts
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.enumsWithDicts

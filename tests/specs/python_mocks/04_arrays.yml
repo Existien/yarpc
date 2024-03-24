@@ -1,0 +1,25 @@
+outputs:
+- name: ArraysMocks
+  language: py
+  location: python_mocks/src/python_mocks/arrays_gen
+  busName: com.yarpc.backend
+  service_mocks:
+  - className: BackendArraysInterfaceMock
+    spec: Arrays
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.arrays
+  - className: BackendArraysWithStructsInterfaceMock
+    spec: ArraysWithStructs
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.arraysWithStructs
+  client_mocks:
+  - className: ArraysClientMock
+    spec: Arrays
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arrays
+  - className: ArraysWithStructsClientMock
+    spec: ArraysWithStructs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arraysWithStructs

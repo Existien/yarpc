@@ -23,39 +23,3 @@ outputs:
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.primitives
-
-- name: WithArgsMocks
-  language: py
-  location: python_mocks/src/python_mocks/with_args_gen
-  busName: com.yarpc.backend
-  service_mocks:
-  - className: BackendWithArgsInterfaceMock
-    spec: WithArgs
-    objectPath: /com/yarpc/backend
-    interfaceName: com.yarpc.backend.withArgs
-  - className: BackendPrimitivesInterfaceMock
-    spec: Primitives
-    objectPath: /com/yarpc/backend
-    interfaceName: com.yarpc.backend.primitives
-  client_mocks:
-  - className: WithArgsClientMock
-    spec: WithArgs
-    busName: com.yarpc.testservice
-    objectPath: /com/yarpc/testservice
-    interfaceName: com.yarpc.testservice.withArgs
-  - className: PrimitivesClientMock
-    spec: Primitives
-    busName: com.yarpc.testservice
-    objectPath: /com/yarpc/testservice
-    interfaceName: com.yarpc.testservice.primitives
-
-- name: WithArgsClient
-  language: py
-  location: python_client/src/python_client/with_args_gen
-  busName: com.yarpc.testclient
-  clients:
-  - className: WithArgsClient
-    spec: WithArgs
-    busName: com.yarpc.testservice
-    objectPath: /com/yarpc/testservice
-    interfaceName: com.yarpc.testservice.withArgs

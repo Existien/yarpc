@@ -1,0 +1,16 @@
+outputs:
+- name: StructsMocks
+  language: py
+  location: python_mocks/src/python_mocks/structs_gen
+  busName: com.yarpc.backend
+  service_mocks:
+  - className: BackendStructsInterfaceMock
+    spec: Structs
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.structs
+  client_mocks:
+  - className: StructsClientMock
+    spec: Structs
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.structs
