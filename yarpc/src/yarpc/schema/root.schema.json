@@ -55,22 +55,6 @@
                     }
                 ]
             }
-        },
-        "outputs": {
-            "type": "array",
-            "items": {
-                "properties": {
-                    "language": {"type": "string", "enum": ["py"]}
-                },
-                "allOf": [
-                    {
-                        "if": {"properties": {"language": {"const": "py"}}},
-                        "then": {
-                            "$ref": "python.schema.json"
-                        }
-                    }
-                ]
-            }
         }
     }
 }

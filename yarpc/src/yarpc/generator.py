@@ -15,7 +15,7 @@ class Generator:
 
     def __init__(self, output_base_dir: str):
         self._output_base_dir = output_base_dir
-        self._engine = TemplatingEngine(f"{Path(__file__).parent}/templates")
+        self._engine = TemplatingEngine(f"{Path(__file__).parent}/languages")
 
     def generate(self, outputs: list, check_only: bool) -> bool:
         """Generates code based on the provided specification

@@ -3,17 +3,16 @@
 # Spec:
 #   File: {{ object.specPath }}
 #   Object: {{ object.name }}
-#   Template: py/service_mock.j2
-{% import "dbus_common.j2" as dbus %}
+#   Template: py/service.j2
+{% import "dbus/common.j2" as dbus %}
 {% import "py/common.j2" as py %}
 
-from typing import List, Dict
+from typing import Protocol, List, Dict
 from dbus_next.service import (
     ServiceInterface, method, dbus_property, signal
 )
 from dbus_next.constants import PropertyAccess
 from dbus_next import Variant, DBusError
-from unittest.mock import AsyncMock
 from copy import deepcopy
 from enum import Enum
 {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
@@ -22,6 +21,81 @@ from .{{ object.name|snake_case }} import {{ object.name }}
 {% for object in output.objects|selectattr('kind', 'equalto', 'enum') %}
 from .{{ object.name|snake_case }} import {{ object.name }}
 {% endfor %}
+
+{% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+
+class Provides{{ target.className }}Properties(Protocol):
+    """Protocol for property providers of {{ target.className }}
+    """
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+
+    async def get_{{ member.name }}(self) -> {{ py.type(member.type, output.objects) }}:
+        """Getter for {{ member.name }} property
+
+        Returns:
+            {{ py.type(member.type, output.objects) }}: the current value
+        """
+        ...
+
+    async def set_{{ member.name }}(self, value: {{ py.type(member.type, output.objects) }}) -> dict:
+        """Setter for {{ member.name }} property
+
+        Args:
+            value ({{ py.type(member.type, output.objects) }}): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        ...
+    {% endfor %}
+
+
+class {{ target.className }}Properties:
+    """Manages the state of the properties for {{ target.className }}
+
+    Args:
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        {{ member.name }} ({{ py.type(member.type, output.objects) }}): {{ member.docs|indent(12) }}
+        {% endfor %}
+    """
+
+    def __init__(
+        self,
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        {{ member.name }}: {{ py.type(member.type, output.objects) }},
+        {% endfor %}
+    ):
+        self._properties = {
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        {% set type = member.type|find_type(output.objects) %}
+            "{{ member.name }}": {{ member.name }},
+        {% endfor %}
+        }
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+
+    async def get_{{ member.name }}(self) -> {{ py.type(member.type, output.objects) }}:
+        """Getter for {{ member.name }} property
+
+        Returns:
+            {{ py.type(member.type, output.objects) }}: the current value
+        """
+        return self._properties["{{ member.name }}"]
+
+    async def set_{{ member.name }}(self, value: {{ py.type(member.type, output.objects) }}) -> dict:
+        """Setter for {{ member.name }} property
+
+        Args:
+            value ({{ py.type(member.type, output.objects) }}): the new value
+
+        Returns:
+            dict: dictionary of the changed properties, empty if None changed
+        """
+        if value == self._properties["{{ member.name }}"]:
+            return {}
+        self._properties["{{ member.name }}"] = value
+        return {"{{ member.name }}": value}
+    {% endfor %}
+{% endif %}
 
 
 class _Interface(ServiceInterface):
@@ -103,55 +177,30 @@ class _Interface(ServiceInterface):
 
 class {{ target.className }}():
     """
-    Mock service implementation of the {{ object.name }} D-Bus interface.
-
-    The AsyncMock instance can be accessed via the `mock` attribute.
-    All method calls will be forwarded to the mock using keyword arguments.
-    E.g.
-    `await service.Foo('bar')`
-    might result in the following await of the mock:
-    `await service.mock.Foo(msg='bar')`
+    {{ object.docs|indent(4) }}
     {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
 
-    Setting properties will trigger a on_<property>_changed call to the mock with
-    the new value and a dictionary with the current properties as arguments. The mock is expected to return
-    an updated dictionary of properties.
-
-    Per default, the mock is configured to just return the updated value.
-
     Args:
-        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-        {{ member.name }} ({{ py.type(member.type, output.objects) }}): {{ member.docs|indent(12) }}
-        {% endfor %}
+        property_provider (Provides{{ target.className }}Properties): provider for interface properties
     {% endif %}
     """
 
     def __init__(
         self,
-        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-        {{ member.name }}: {{ py.type(member.type, output.objects) }},
-        {% endfor %}
+        {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+        property_provider: Provides{{ target.className }}Properties,
+        {% endif %}
     ):
         self.interface = _Interface(self)
         self.name = self.interface.name
         self.object_path = self.interface.object_path
-        self.mock = AsyncMock()
 
         {% for member in object.members|selectattr('kind', 'equalto', 'method') %}
-        self.mock.{{ member.name }}.return_value = None
+        self._{{ member.name }}_handler = None
         {% endfor %}
-
-        self._properties = {}
-        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-        {% set type = member.type|find_type(output.objects) %}
-        self._properties["{{ member.name }}"] = {{ member.name }}
-        self._{{ member.name }}_change_handler = {{ target.className }}._default_{{ member.name }}_change_handler
-        self.mock.on_{{ member.name }}_changed = AsyncMock(wraps=self._{{ member.name }}_change_handler)
-        {% endfor %}
-
-    async def _await_mock_method(self, method, local_variables):
-        kwargs = dict(filter(lambda kv: kv[0] != 'self', local_variables.items()))
-        return await getattr(self.mock, method)(**kwargs)
+        {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+        self._properties = property_provider
+        {% endif %}
 
     def emit_properties_changed(self, changed_properties: dict) -> None:
         """Informs clients about changed properties
@@ -194,17 +243,40 @@ class {{ target.className }}():
 
         Args:
         {% for arg in member.args %}
-            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs|indent(12) }}
+            {{ arg.name }} ({{ py.type(arg.type, output.objects) }}): {{ arg.docs|indent(16) }}
         {% endfor %}
         {% endif %}
         """
         self.interface.{{ member.name }}(
             {% for arg in member.args %}
-            {{ py.to_dbus(arg.name, arg.type, output.objects)|indent(16) }},
+            {{ py.to_dbus(arg.name, arg.type, output.objects)|indent(12) }},
             {% endfor %}
         )
 {% endif %}
 {% if member.kind == 'method' %}
+{% set handler = 'self._'+member.name+'_handler' %}
+    def on_{{ member.name }}(self, handler) -> None:
+        """
+        Set handler for {{ member.name }} method
+
+        Args:
+            handler (Callable[[
+                {%- for i in range(0,member.args|count) -%}
+                {{ py.type(member.args[i].type, output.objects) }}
+                {%- if i < member.args|count - 1 -%}
+                {{', '}}
+                {%- endif -%}
+                {%- endfor -%}
+                ], Awaitable[
+                {%- if member.returns -%}
+                {{ py.type(member.returns.type, output.objects) }}
+                {%- else -%}
+                None
+                {%- endif -%}
+                ]]): the method handler
+        """
+        {{ handler }} = handler
+
     async def {{ member.name }}(
         self,
         {% for arg in member.args %}
@@ -227,7 +299,14 @@ class {{ target.className }}():
             {{ py.type(member.returns.type, output.objects) }}: {{ member.returns.docs|indent(16) }}
         {% endif %}
         """
-        return await self._await_mock_method("{{ member.name }}", locals())
+        if {{ handler }} is None:
+            raise NotImplementedError()
+
+        return await {{ handler }}(
+            {% for arg in member.args %}
+            {{ arg.name }},
+            {% endfor %}
+        )
 {% endif %}
 {% if member.kind == 'property' %}
 {% if member.readonly %}
@@ -243,26 +322,7 @@ class {{ target.className }}():
         Returns:
             {{ py.type(member.type, output.objects) }}: the current value
         """
-        return self._properties["{{ member.name }}"]
-
-    def on_{{ member.name }}_changed(self, handler) -> None:
-        """
-        Set handler for property changes due to {{ member.name }} changes
-
-        The handler takes the new {{ member.name}} value and a dictionary of the current properties
-        and returns a dictionary with the current property values, or just the changed ones
-
-        Args:
-            handler(Callable[[{{ py.type(member.type, output.objects) }}, dict], Awaitable[dict]]): the properties change handler
-
-        Returns:
-            dict: the changed properties
-        """
-        self._{{ member.name }}_change_handler = handler
-        self.mock.on_{{ member.name }}_changed = AsyncMock(wraps=self._{{ member.name }}_change_handler)
-
-    async def _default_{{ member.name }}_change_handler(value: {{ py.type(member.type, output.objects) }}, _: dict) -> dict:
-        return { "{{ member.name }}": value }
+        return await self._properties.get_{{ member.name }}()
 
     async def set_{{ member.name }}(self, value: {{ py.type(member.type, output.objects) }}):
         """Setter for property {{ member.name }}
@@ -272,17 +332,8 @@ class {{ target.className }}():
         Args:
             value ({{ py.type(member.type, output.objects) }}): the new value
         """
-        properties_working_copy = deepcopy(self._properties)
-        changed_properties = await self.mock.on_{{ member.name }}_changed(value, properties_working_copy)
-        properties_working_copy.update(changed_properties)
-        for key in self._properties.keys():
-            if key not in properties_working_copy:
-                continue
-            if properties_working_copy[key] == self._properties[key]:
-                del properties_working_copy[key]
-            else:
-                self._properties[key] = properties_working_copy[key]
+        changed_properties = await self._properties.set_{{ member.name }}(value)
 
-            self.emit_properties_changed(properties_working_copy)
+        self.emit_properties_changed(changed_properties)
 {% endif %}
 {% endfor %}

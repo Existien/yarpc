@@ -25,25 +25,25 @@
         "services": {
             "type": "array",
             "items": {
-                "$ref": "common.schema.json#/serviceInterface"
+                "$ref": "../../schema/common.schema.json#/serviceInterface"
             }
         },
         "clients": {
             "type": "array",
             "items": {
-                "$ref": "common.schema.json#/clientInterface"
+                "$ref": "../../schema/common.schema.json#/clientInterface"
             }
         },
         "service_mocks": {
             "type": "array",
             "items": {
-                "$ref": "common.schema.json#/serviceInterface"
+                "$ref": "../../schema/common.schema.json#/serviceInterface"
             }
         },
         "client_mocks": {
             "type": "array",
             "items": {
-                "$ref": "common.schema.json#/clientInterface"
+                "$ref": "../../schema/common.schema.json#/clientInterface"
             }
         }
     }

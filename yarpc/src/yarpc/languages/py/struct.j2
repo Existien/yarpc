@@ -4,7 +4,7 @@
 #   File: {{ object.specPath }}
 #   Object: {{ object.name }}
 #   Template: py/struct.j2
-{% import "dbus_common.j2" as dbus %}
+{% import "dbus/common.j2" as dbus %}
 {% import "py/common.j2" as py %}
 
 {% for item in object.name | extract_dependencies(output.objects) %}

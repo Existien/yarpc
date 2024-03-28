@@ -71,16 +71,48 @@ class SpecLoader:
             Draft7Validator: the validator
         """
         schema = {}
-        schema_dir =f"{Path(__file__).parent}/schema"
-        with open(f"{schema_dir}/root.schema.json", "r") as f:
+        base_dir =f"{Path(__file__).parent}/schema"
+        with open(f"{base_dir}/root.schema.json", "r") as f:
             schema = json.load(f)
+        outputs_schema = self._get_outputs_schema()
+        schema["properties"]["outputs"] = outputs_schema
         return Draft7Validator(
             schema=schema,
             resolver=RefResolver(
-                base_uri=f"file://{schema_dir}/",
+                base_uri=f"file://{base_dir}/",
                 referrer=schema,
             )
         )
+
+
+    def _get_outputs_schema(self):
+        outputs_schema = {
+            "type": "array",
+            "items": {
+                "properties": {
+                    "language": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+        outputs_schema["items"]["properties"]["language"]["enum"] = list(map(lambda x: x, languages().keys()))
+        outputs_schema["items"]["allOf"] = list(map(
+            lambda x: {
+                "if": {
+                    "properties": {
+                        "language": {
+                            "const": x
+                        }
+                    }
+                },
+                "then": {
+                    "$ref": f"../languages/{x}/schema.json"
+                }
+            },
+            languages().keys()
+        ))
+        return outputs_schema
 
 
     def _get_builtins(self) -> dict:

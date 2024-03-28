@@ -2,7 +2,7 @@ from yarpc.languages.base_language import BaseLanguage, ObjectKind, Target, DBus
 from typing import List
 from yarpc.utils import to_snake_case
 
-class Python(BaseLanguage):
+class Language(BaseLanguage):
 
     def get_targets(self, name: str, object_kind: ObjectKind) -> List[Target]:
         """Returns a list of targets for an object that need to be generated.
