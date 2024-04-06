@@ -18,6 +18,11 @@ RUN apt-get -y update && \
     && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --break-system-packages -U pip pdm
+RUN pip install --break-system-packages -U \
+    pip \
+    pdm \
+    cookiecutter \
+    sphinx \
+    sphinx_rtd_theme
 
 ENTRYPOINT ["/bin/bash", "-lc", "exec dbus-run-session -- \"$0\" \"$@\""]

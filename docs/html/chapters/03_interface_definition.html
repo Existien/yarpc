@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interface definition &mdash; YARPC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Builtin types" href="objects/builtins.html" />
+    <link rel="prev" title="Installing Yarpc" href="02_installing_yarpc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            YARPC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_installing_yarpc.html">Installing Yarpc</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interface definition</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#objects">Objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="objects/builtins.html">Builtin types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="objects/enum.html">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="objects/interface.html">Interfaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="objects/struct.html">Structs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#outputs">Outputs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="outputs/python.html">Python</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04_development.html">Development</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">YARPC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Interface definition</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/chapters/03_interface_definition.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="interface-definition">
+<h1>Interface definition<a class="headerlink" href="#interface-definition" title="Link to this heading"></a></h1>
+<p>The interfaces are defined in yaml files containing the top-level keys <code class="docutils literal notranslate"><span class="pre">objects</span></code> and <code class="docutils literal notranslate"><span class="pre">outputs</span></code>,
+each containing a list of objects and outputs, respectively.</p>
+<p>These lists can be split over multiple files and subdirectories to structure them.</p>
+<section id="objects">
+<h2>Objects<a class="headerlink" href="#objects" title="Link to this heading"></a></h2>
+<p>Objects define</p>
+<ul class="simple">
+<li><p>interfaces containing a set of methods, signals and properties</p></li>
+<li><p>structs</p></li>
+<li><p>enums</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="objects/builtins.html">Builtin types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objects/enum.html">Enums</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="objects/enum.html#keys">Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objects/enum.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="objects/interface.html">Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="objects/interface.html#keys">Keys</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="objects/struct.html">Structs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="objects/struct.html#keys">Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objects/struct.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="outputs">
+<span id="id1"></span><h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h2>
+<p>Outputs define</p>
+<ul class="simple">
+<li><p>where code should be generated</p></li>
+<li><p>for which language</p></li>
+<li><p>for which objects it should generate client or service code</p></li>
+<li><p>which D-Bus address belongs to which object</p></li>
+</ul>
+<p>The keys of output objects are language dependent:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="outputs/python.html">Python</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outputs/python.html#keys">Keys</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="02_installing_yarpc.html" class="btn btn-neutral float-left" title="Installing Yarpc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="objects/builtins.html" class="btn btn-neutral float-right" title="Builtin types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
