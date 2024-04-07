@@ -5,21 +5,21 @@ outputs:
   busName: com.yarpc.testservice
   services:
   - className: ArraysInterface
-    spec: Arrays
+    definition: Arrays
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.arrays
   - className: ArraysWithStructsInterface
-    spec: ArraysWithStructs
+    definition: ArraysWithStructs
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.arraysWithStructs
   clients:
   - className: BackendArraysClient
-    spec: Arrays
+    definition: Arrays
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.arrays
   - className: BackendArraysWithStructsClient
-    spec: ArraysWithStructs
+    definition: ArraysWithStructs
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.arraysWithStructs

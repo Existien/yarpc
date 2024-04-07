@@ -18,9 +18,9 @@ license = {text = "MIT"}
 [project.scripts]
 yarpc = "yarpc.main:main"
 
-[tool.pdm]
-package-type = "application"
 
+[tool.pdm]
+distribution = false
 [tool.pdm.dev-dependencies]
 dev = [
     "-e file:///${PROJECT_ROOT}/#egg=yarpc",

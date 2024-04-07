@@ -5,21 +5,21 @@ outputs:
   busName: com.yarpc.backend
   service_mocks:
   - className: BackendWithArgsInterfaceMock
-    spec: WithArgs
+    definition: WithArgs
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.withArgs
   - className: BackendPrimitivesInterfaceMock
-    spec: Primitives
+    definition: Primitives
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.primitives
   client_mocks:
   - className: WithArgsClientMock
-    spec: WithArgs
+    definition: WithArgs
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.withArgs
   - className: PrimitivesClientMock
-    spec: Primitives
+    definition: Primitives
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.primitives

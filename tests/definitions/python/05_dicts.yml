@@ -5,39 +5,39 @@ outputs:
   busName: com.yarpc.testservice
   services:
   - className: DictsInterface
-    spec: Dicts
+    definition: Dicts
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.dicts
   - className: DictsWithStructsInterface
-    spec: DictsWithStructs
+    definition: DictsWithStructs
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.dictsWithStructs
   - className: DictsWithArraysInterface
-    spec: DictsWithArrays
+    definition: DictsWithArrays
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.dictsWithArrays
   - className: DictKeysInterface
-    spec: DictKeys
+    definition: DictKeys
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.dictKeys
   clients:
   - className: BackendDictsClient
-    spec: Dicts
+    definition: Dicts
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.dicts
   - className: BackendDictsWithStructsClient
-    spec: DictsWithStructs
+    definition: DictsWithStructs
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.dictsWithStructs
   - className: BackendDictsWithArraysClient
-    spec: DictsWithArrays
+    definition: DictsWithArrays
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.dictsWithArrays
   - className: BackendDictKeysClient
-    spec: DictKeys
+    definition: DictKeys
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.dictKeys

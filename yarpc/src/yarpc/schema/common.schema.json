@@ -20,7 +20,7 @@
         "additionalProperties": false,
         "required": [
             "className",
-            "spec",
+            "definition",
             "busName",
             "objectPath",
             "interfaceName"
@@ -29,7 +29,7 @@
             "className": {
                 "$ref": "common.schema.json#/pascalName"
             },
-            "spec": {
+            "definition": {
                 "$ref": "common.schema.json#/pascalName"
             },
             "busName": {
@@ -47,7 +47,7 @@
         "additionalProperties": false,
         "required": [
             "className",
-            "spec",
+            "definition",
             "objectPath",
             "interfaceName"
         ],
@@ -55,7 +55,7 @@
             "className": {
                 "$ref": "common.schema.json#/pascalName"
             },
-            "spec": {
+            "definition": {
                 "$ref": "common.schema.json#/pascalName"
             },
             "objectPath": {

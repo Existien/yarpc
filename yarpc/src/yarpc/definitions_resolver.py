@@ -2,8 +2,8 @@ import re
 from copy import deepcopy
 from .utils import find_types
 
-class SpecResolver:
-    """Responsible turning specs into outputs that contain all information needed to generate them.
+class DefinitionsResolver:
+    """Responsible turning interface definitions into outputs that contain all information needed to generate them.
     """
 
     def __init__(self):
@@ -11,19 +11,19 @@ class SpecResolver:
         self._bus_name_pattern = re.compile("^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_])+")
         self._object_path_pattern = re.compile("^\/([a-zA-Z0-9_]+(\/[a-zA-Z0-9_]+)*)?")
 
-    def get_outputs(self, specs: list) -> list:
+    def get_outputs(self, definitions: list) -> list:
         """Returns a list of outputs that contain
         all information needed to generate them.
 
         Args:
-            specs (list): a list of loaded specifications
+            definitions (list): a list of loaded definitions
 
         Returns:
             list: A list of outputs to be generated
         """
         outputs = []
-        for spec in filter(lambda x: 'outputs' in x, specs):
-            outputs.extend(spec['outputs'])
+        for definition in filter(lambda x: 'outputs' in x, definitions):
+            outputs.extend(definition['outputs'])
         self._check_for_duplicate_names(outputs, kind='output name')
         for output in outputs:
             targets = []
@@ -35,8 +35,8 @@ class SpecResolver:
             self._check_for_duplicate_names(targets, kind='class name', key='className')
 
         objects = []
-        for spec in filter(lambda x: 'objects' in x, specs):
-            objects.extend(spec['objects'])
+        for definition in filter(lambda x: 'objects' in x, definitions):
+            objects.extend(definition['objects'])
         self._check_for_duplicate_names(objects, kind='object name')
 
         for output in outputs:
@@ -56,7 +56,7 @@ class SpecResolver:
         return {
             'name': 'DBusConnection',
             'kind': None,
-            'specPath': 'None',
+            'definitionPath': 'None',
             'targets': [{
                 'objectKind': 'bus',
                 'className': 'Connection'
@@ -149,7 +149,7 @@ class SpecResolver:
             list: The list of interfaces to generate
         """
         def interface_list_to_dict(list_key, object_kind):
-            return { x['spec']: {
+            return { x['definition']: {
             'className': x['className'],
             'objectKind': object_kind,
             'busName': x.get('busName', output.get('busName')),
@@ -175,7 +175,7 @@ class SpecResolver:
             for name in all_names:
                 if name not in added_names:
                     missing.append(name)
-            raise FileNotFoundError(f"Interface specs not found: {missing}")
+            raise FileNotFoundError(f"Interface definitions not found: {missing}")
 
         for interface in interfaces:
             name = interface['name']

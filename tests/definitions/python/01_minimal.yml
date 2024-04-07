@@ -5,12 +5,12 @@ outputs:
   busName: com.yarpc.testservice
   services:
   - className: MinimalInterface
-    spec: Minimal
+    definition: Minimal
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.minimal
   clients:
   - className: BackendMinimalClient
-    spec: Minimal
+    definition: Minimal
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.minimal

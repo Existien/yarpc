@@ -7,26 +7,26 @@ from jsonschema import Draft7Validator, RefResolver
 from .languages import languages, DBusTypes
 
 
-class SpecLoader:
-    """Responsible for loading and verifying specifications from yaml files in spec_dir and
+class DefinitionsLoader:
+    """Responsible for loading and verifying interface definitons from yaml files in definitions_dir and
     adding builtin objects.
     """
 
-    def load(self, spec_dir: str) -> list:
-        """Loads and verifies specifications from yaml files in spec_dir and
+    def load(self, definitions_dir: str) -> list:
+        """Loads and verifies interface definitons from yaml files in definitions_dir and
         adds builtin objects.
 
         Args:
-            spec_dir (str): The directory to look for specs in
+            definitions_dir (str): The directory to look for interface definitions in
 
         Returns:
             list: The list of loaded objects
         """
         validator = self._get_schema_validator()
-        specifications = [self._get_builtins()]
-        for filename in chain(Path(spec_dir).glob("**/*.yml"), Path(spec_dir).glob("**/*.yaml")):
-            specifications.append(self._load_yaml(filename, validator))
-        return specifications
+        definitions = [self._get_builtins()]
+        for filename in chain(Path(definitions_dir).glob("**/*.yml"), Path(definitions_dir).glob("**/*.yaml")):
+            definitions.append(self._load_yaml(filename, validator))
+        return definitions
 
 
     def _load_yaml(self, filename: Path, validator: Draft7Validator) -> dict:
@@ -58,8 +58,8 @@ class SpecLoader:
             raise RuntimeError("Spec invalid!")
 
         for obj in parsed.get('objects', []):
-            obj['specName'] = filename.stem
-            obj['specPath'] = str(filename.absolute().resolve())
+            obj['definitionName'] = filename.stem
+            obj['definitionPath'] = str(filename.absolute().resolve())
             obj['regex'] = f"^{obj['regex' if 'regex' in obj else 'name']}$"
         return parsed
 

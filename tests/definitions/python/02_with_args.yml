@@ -5,21 +5,21 @@ outputs:
   busName: com.yarpc.testservice
   services:
   - className: WithArgsInterface
-    spec: WithArgs
+    definition: WithArgs
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.withArgs
   - className: PrimitivesInterface
-    spec: Primitives
+    definition: Primitives
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.primitives
   clients:
   - className: BackendWithArgsClient
-    spec: WithArgs
+    definition: WithArgs
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.withArgs
   - className: BackendPrimitivesClient
-    spec: Primitives
+    definition: Primitives
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.primitives

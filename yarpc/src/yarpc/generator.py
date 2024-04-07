@@ -10,7 +10,7 @@ class Generator:
     """Code generator using a templating engine.
 
     Args:
-        output_base_dir (str): The directory the paths provided in the spec are relative to
+        output_base_dir (str): The directory the paths provided in the interface definitions are relative to
     """
 
     def __init__(self, output_base_dir: str):
@@ -18,7 +18,7 @@ class Generator:
         self._engine = TemplatingEngine(f"{Path(__file__).parent}/languages")
 
     def generate(self, outputs: list, check_only: bool) -> bool:
-        """Generates code based on the provided specification
+        """Generates code based on the provided definitions
 
         Args:
             outputs (list): A list of outputs to be generated
@@ -46,7 +46,7 @@ class Generator:
         configured output base dir.
 
         Args:
-            output (dict): The output specification
+            output (dict): The output definition
         Returns:
             str: The output path
         """
@@ -121,13 +121,13 @@ class Generator:
         return is_up_to_date
 
     def _generate_file(self, filename: Path, language: str, template: Path, context: dict, check_only: bool) -> bool:
-        """ Generates a source file from specs and a template
+        """ Generates a source file from interface definitions and a template
 
         Args:
             filename (Path): the file to generate
             language (str): the language to generate for
             template (Path): the template file to use
-            context (dict): data used by the template, such as the spec
+            context (dict): data used by the template, such as the interface definitions
             check_only (bool): whether to check for differences instead of generating code
         Returns:
             bool: whether the generated file is up to date

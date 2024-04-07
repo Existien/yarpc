@@ -5,12 +5,12 @@ outputs:
   busName: com.yarpc.backend
   service_mocks:
   - className: BackendStructsInterfaceMock
-    spec: Structs
+    definition: Structs
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.structs
   client_mocks:
   - className: StructsClientMock
-    spec: Structs
+    definition: Structs
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.structs

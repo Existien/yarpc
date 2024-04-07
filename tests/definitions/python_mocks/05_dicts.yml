@@ -5,39 +5,39 @@ outputs:
   busName: com.yarpc.backend
   service_mocks:
   - className: BackendDictsInterfaceMock
-    spec: Dicts
+    definition: Dicts
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.dicts
   - className: BackendDictsWithStructsInterfaceMock
-    spec: DictsWithStructs
+    definition: DictsWithStructs
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.dictsWithStructs
   - className: BackendDictsWithArraysInterfaceMock
-    spec: DictsWithArrays
+    definition: DictsWithArrays
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.dictsWithArrays
   - className: BackendDictKeysInterfaceMock
-    spec: DictKeys
+    definition: DictKeys
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.dictKeys
   client_mocks:
   - className: DictsClientMock
-    spec: Dicts
+    definition: Dicts
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.dicts
   - className: DictsWithStructsClientMock
-    spec: DictsWithStructs
+    definition: DictsWithStructs
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.dictsWithStructs
   - className: DictsWithArraysClientMock
-    spec: DictsWithArrays
+    definition: DictsWithArrays
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.dictsWithArrays
   - className: DictKeysClientMock
-    spec: DictKeys
+    definition: DictKeys
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.dictKeys

@@ -5,12 +5,12 @@ outputs:
   busName: com.yarpc.testservice
   services:
   - className: StructsInterface
-    spec: Structs
+    definition: Structs
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.structs
   clients:
   - className: BackendStructsClient
-    spec: Structs
+    definition: Structs
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.structs

@@ -5,39 +5,39 @@ outputs:
   busName: com.yarpc.backend
   service_mocks:
   - className: BackendEnumsInterfaceMock
-    spec: Enums
+    definition: Enums
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.enums
   - className: BackendEnumsWithStructsInterfaceMock
-    spec: EnumsWithStructs
+    definition: EnumsWithStructs
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.enumsWithStructs
   - className: BackendEnumsWithArraysInterfaceMock
-    spec: EnumsWithArrays
+    definition: EnumsWithArrays
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.enumsWithArrays
   - className: BackendEnumsWithDictsInterfaceMock
-    spec: EnumsWithDicts
+    definition: EnumsWithDicts
     objectPath: /com/yarpc/backend
     interfaceName: com.yarpc.backend.enumsWithDicts
   client_mocks:
   - className: EnumsClientMock
-    spec: Enums
+    definition: Enums
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.enums
   - className: EnumsWithStructsClientMock
-    spec: EnumsWithStructs
+    definition: EnumsWithStructs
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.enumsWithStructs
   - className: EnumsWithArraysClientMock
-    spec: EnumsWithArrays
+    definition: EnumsWithArrays
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.enumsWithArrays
   - className: EnumsWithDictsClientMock
-    spec: EnumsWithDicts
+    definition: EnumsWithDicts
     busName: com.yarpc.testservice
     objectPath: /com/yarpc/testservice
     interfaceName: com.yarpc.testservice.enumsWithDicts
