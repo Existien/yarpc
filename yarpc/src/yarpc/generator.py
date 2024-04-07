@@ -101,9 +101,15 @@ class Generator:
         }
         language = output['language']
         is_up_to_date = True
+        for target in languages().get(language).get_output_targets():
+            filename = Path(f"{self._get_location(output)}/{target.filename}")
+            is_up_to_date = (
+                is_up_to_date and
+                self._generate_file(filename, language, target.template, context, check_only)
+            )
         for target in object.get('targets', []):
             target_context = {**context, 'target': target}
-            language_targets = languages().get(language).get_targets(target['className'], ObjectKind(target['objectKind']))
+            language_targets = languages().get(language).get_object_targets(target['className'], ObjectKind(target['objectKind']))
             for language_target in language_targets:
                 filename = Path(f"{self._get_location(output)}/{language_target.filename}")
                 is_up_to_date = (
@@ -111,7 +117,7 @@ class Generator:
                     self._generate_file(filename, language, language_target.template, target_context, check_only)
                 )
         if object.get('kind') == 'struct' or object.get('kind') == 'enum':
-            language_targets = languages().get(language).get_targets(object['name'], ObjectKind(object['kind']))
+            language_targets = languages().get(language).get_object_targets(object['name'], ObjectKind(object['kind']))
             for language_target in language_targets:
                 filename = Path(f"{self._get_location(output)}/{language_target.filename}")
                 is_up_to_date = (

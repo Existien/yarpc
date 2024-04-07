@@ -40,28 +40,9 @@ class DefinitionsResolver:
         self._check_for_duplicate_names(objects, kind='object name')
 
         for output in outputs:
-            output['objects'] = [
-                self._get_bus_connection_object(),
-                *self._get_dependencies(output, objects),
-            ]
+            output['objects'] = self._get_dependencies(output, objects)
 
         return outputs
-
-    def _get_bus_connection_object(self) -> dict:
-        """Returns the D-Bus connection object
-
-        Returns:
-            dict: the D-Bus connection object
-        """
-        return {
-            'name': 'DBusConnection',
-            'kind': None,
-            'definitionPath': 'None',
-            'targets': [{
-                'objectKind': 'bus',
-                'className': 'Connection'
-            }]
-        }
 
     def _check_for_duplicate_names(self, items: list, kind='name', key='name'):
         """Checks for duplicate names and raises a RuntimeError if duplicates are found.

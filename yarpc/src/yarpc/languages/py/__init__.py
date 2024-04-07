@@ -4,7 +4,19 @@ from yarpc.utils import to_snake_case
 
 class Language(BaseLanguage):
 
-    def get_targets(self, name: str, object_kind: ObjectKind) -> List[Target]:
+    def get_output_targets(self) -> List[Target]:
+        """Returns a list of targets that are object-independent,
+        such as package information.
+
+        Returns:
+            List[Target]: a list of targets to be generated.
+        """
+        return [
+            Target(filename="__init__.py", template="__init__"),
+            Target(filename="connection.py", template="bus"),
+        ]
+
+    def get_object_targets(self, name: str, object_kind: ObjectKind) -> List[Target]:
         """Returns a list of targets for an object that need to be generated.
 
         Args:
