@@ -37,6 +37,7 @@ class Connection:
             cls._bus.disconnect()
             cls._bus = None
 
+    {% if output.busName is defined %}
     @classmethod
     async def run(cls, *interfaces):
         """
@@ -53,3 +54,5 @@ class Connection:
             await bus.wait_for_disconnect()
         except Exception as e:
             print(f"{type(e).__name__}: {e}", file=sys.stderr)
+
+    {% endif %}

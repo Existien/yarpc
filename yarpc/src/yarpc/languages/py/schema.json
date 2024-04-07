@@ -6,8 +6,7 @@
     "required": [
         "name",
         "language",
-        "location",
-        "busName"
+        "location"
     ],
     "properties": {
         "name": {

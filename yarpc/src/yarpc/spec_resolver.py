@@ -152,7 +152,7 @@ class SpecResolver:
             return { x['spec']: {
             'className': x['className'],
             'objectKind': object_kind,
-            'busName': x.get('busName', output['busName']),
+            'busName': x.get('busName', output.get('busName')),
             'objectPath': x['objectPath'],
             'interfaceName': x['interfaceName'],
         } for x in output.get(list_key, [])}
