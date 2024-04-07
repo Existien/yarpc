@@ -34,6 +34,7 @@ class BackendDictKeysClient():
         self._Uint64Signal_handler = None
         self._DoubleSignal_handler = None
         self._StringSignal_handler = None
+        self._close_event = asyncio.Event()
 
     async def connect(self):
         """
@@ -81,9 +82,57 @@ class BackendDictKeysClient():
             if self._properties_changed_handler:
                 self._property_interface.on_properties_changed(self._properties_changed_wrapper)
 
-            await bus.wait_for_disconnect()
+            self._close_event.clear()
+            await asyncio.wait(
+                map(
+                    lambda x: asyncio.create_task(x),
+                    [self._close_event.wait(), bus.wait_for_disconnect()]
+                ),
+                return_when=asyncio.FIRST_COMPLETED
+            )
         except Exception as e:
             print(f"{type(e).__name__}: {e}", file=sys.stderr)
+
+    def disconnect(self):
+        """
+        Closes the D-Bus connection of this client
+        """
+        self._close_event.set()
+        if self._Uint8Signal_handler:
+            self._interface.off_uint8_signal(self._Uint8Signal_wrapper)
+        if self._BoolSignal_handler:
+            self._interface.off_bool_signal(self._BoolSignal_wrapper)
+        if self._Int16Signal_handler:
+            self._interface.off_int16_signal(self._Int16Signal_wrapper)
+        if self._Uint16Signal_handler:
+            self._interface.off_uint16_signal(self._Uint16Signal_wrapper)
+        if self._Int32Signal_handler:
+            self._interface.off_int32_signal(self._Int32Signal_wrapper)
+        if self._Uint32Signal_handler:
+            self._interface.off_uint32_signal(self._Uint32Signal_wrapper)
+        if self._Int64Signal_handler:
+            self._interface.off_int64_signal(self._Int64Signal_wrapper)
+        if self._Uint64Signal_handler:
+            self._interface.off_uint64_signal(self._Uint64Signal_wrapper)
+        if self._DoubleSignal_handler:
+            self._interface.off_double_signal(self._DoubleSignal_wrapper)
+        if self._StringSignal_handler:
+            self._interface.off_string_signal(self._StringSignal_wrapper)
+        if self._properties_changed_handler:
+                self._property_interface.off_properties_changed(self._properties_changed_wrapper)
+        self._interface = None
+        self._property_interface = None
+        self._properties_changed_handler = None
+        self._Uint8Signal_handler = None
+        self._BoolSignal_handler = None
+        self._Int16Signal_handler = None
+        self._Uint16Signal_handler = None
+        self._Int32Signal_handler = None
+        self._Uint32Signal_handler = None
+        self._Int64Signal_handler = None
+        self._Uint64Signal_handler = None
+        self._DoubleSignal_handler = None
+        self._StringSignal_handler = None
 
     def _unpack_prop(self, name, variant):
         prop_map = {

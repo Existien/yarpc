@@ -27,6 +27,7 @@ class BackendWithArgsClient():
         self._properties_changed_handler = None
         self._Notified_handler = None
         self._OrderReceived_handler = None
+        self._close_event = asyncio.Event()
 
     async def connect(self):
         """
@@ -58,9 +59,33 @@ class BackendWithArgsClient():
             if self._properties_changed_handler:
                 self._property_interface.on_properties_changed(self._properties_changed_wrapper)
 
-            await bus.wait_for_disconnect()
+            self._close_event.clear()
+            await asyncio.wait(
+                map(
+                    lambda x: asyncio.create_task(x),
+                    [self._close_event.wait(), bus.wait_for_disconnect()]
+                ),
+                return_when=asyncio.FIRST_COMPLETED
+            )
         except Exception as e:
             print(f"{type(e).__name__}: {e}", file=sys.stderr)
+
+    def disconnect(self):
+        """
+        Closes the D-Bus connection of this client
+        """
+        self._close_event.set()
+        if self._Notified_handler:
+            self._interface.off_notified(self._Notified_wrapper)
+        if self._OrderReceived_handler:
+            self._interface.off_order_received(self._OrderReceived_wrapper)
+        if self._properties_changed_handler:
+                self._property_interface.off_properties_changed(self._properties_changed_wrapper)
+        self._interface = None
+        self._property_interface = None
+        self._properties_changed_handler = None
+        self._Notified_handler = None
+        self._OrderReceived_handler = None
 
     def _unpack_prop(self, name, variant):
         prop_map = {
