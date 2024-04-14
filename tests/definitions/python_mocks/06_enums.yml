@@ -1,6 +1,5 @@
 outputs:
-- name: EnumsMocks
-  language: py
+- language: py
   location: python_mocks/src/python_mocks/enums_gen
   busName: com.yarpc.backend
   service_mocks:

@@ -1,6 +1,5 @@
 outputs:
-- name: MinimalService
-  language: py
+- language: py
   location: python_service/src/python_service/minimal_gen
   busName: com.yarpc.testservice
   services:

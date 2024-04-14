@@ -1,6 +1,5 @@
 outputs:
-- name: DictsMocks
-  language: py
+- language: py
   location: python_mocks/src/python_mocks/dicts_gen
   busName: com.yarpc.backend
   service_mocks:

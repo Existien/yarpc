@@ -24,7 +24,6 @@ class DefinitionsResolver:
         outputs = []
         for definition in filter(lambda x: 'outputs' in x, definitions):
             outputs.extend(definition['outputs'])
-        self._check_for_duplicate_names(outputs, kind='output name')
         for output in outputs:
             targets = []
             for key in filter(

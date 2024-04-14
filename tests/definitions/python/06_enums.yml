@@ -1,6 +1,5 @@
 outputs:
-- name: EnumsService
-  language: py
+- language: py
   location: python_service/src/python_service/enums_gen
   busName: com.yarpc.testservice
   services:

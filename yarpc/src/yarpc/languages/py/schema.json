@@ -4,14 +4,10 @@
     "type": "object",
     "additionalProperties": false,
     "required": [
-        "name",
         "language",
         "location"
     ],
     "properties": {
-        "name": {
-            "type": "string"
-        },
         "language": {
             "const": "py"
         },

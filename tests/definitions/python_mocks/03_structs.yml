@@ -1,6 +1,5 @@
 outputs:
-- name: StructsMocks
-  language: py
+- language: py
   location: python_mocks/src/python_mocks/structs_gen
   busName: com.yarpc.backend
   service_mocks:

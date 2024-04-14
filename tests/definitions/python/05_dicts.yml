@@ -1,6 +1,5 @@
 outputs:
-- name: DictsService
-  language: py
+- language: py
   location: python_service/src/python_service/dicts_gen
   busName: com.yarpc.testservice
   services:

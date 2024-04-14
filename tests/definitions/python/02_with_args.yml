@@ -1,6 +1,5 @@
 outputs:
-- name: WithArgsService
-  language: py
+- language: py
   location: python_service/src/python_service/with_args_gen
   busName: com.yarpc.testservice
   services:

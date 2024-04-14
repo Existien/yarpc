@@ -1,6 +1,5 @@
 outputs:
-- name: MinimalMocks
-  language: py
+- language: py
   location: python_mocks/src/python_mocks/minimal_gen
   busName: com.yarpc.backend
   service_mocks:
