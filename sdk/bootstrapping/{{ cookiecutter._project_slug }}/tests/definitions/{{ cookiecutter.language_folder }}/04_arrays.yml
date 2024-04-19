@@ -1,0 +1,24 @@
+outputs:
+- language: {{ cookiecutter.language_idl_key }}
+  location: {{ cookiecutter.language_folder }}_service/gen/arrays
+  busName: com.yarpc.testservice
+  services:
+  - className: ArraysInterface
+    definition: Arrays
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arrays
+  - className: ArraysWithStructsInterface
+    definition: ArraysWithStructs
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.arraysWithStructs
+  clients:
+  - className: BackendArraysClient
+    definition: Arrays
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.arrays
+  - className: BackendArraysWithStructsClient
+    definition: ArraysWithStructs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.arraysWithStructs

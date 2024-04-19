@@ -1,0 +1,42 @@
+outputs:
+- language: {{ cookiecutter.language_idl_key }}
+  location: {{ cookiecutter.language_folder }}_service/gen/enums
+  busName: com.yarpc.testservice
+  services:
+  - className: EnumsInterface
+    definition: Enums
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.enums
+  - className: EnumsWithStructsInterface
+    definition: EnumsWithStructs
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.enumsWithStructs
+  - className: EnumsWithArraysInterface
+    definition: EnumsWithArrays
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.enumsWithArrays
+  - className: EnumsWithDictsInterface
+    definition: EnumsWithDicts
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.enumsWithDicts
+  clients:
+  - className: BackendEnumsClient
+    definition: Enums
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.enums
+  - className: BackendEnumsWithStructsClient
+    definition: EnumsWithStructs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.enumsWithStructs
+  - className: BackendEnumsWithArraysClient
+    definition: EnumsWithArrays
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.enumsWithArrays
+  - className: BackendEnumsWithDictsClient
+    definition: EnumsWithDicts
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.enumsWithDicts

@@ -1,0 +1,13 @@
+{
+    "_project_slug": "bootstrapping",
+    "language": "Python",
+    "language_suffix": "py",
+    "language_idl_key": "{{ cookiecutter.language_suffix }}",
+    "language_folder": "{{ cookiecutter.language_idl_key }}",
+    "__prompts__": {
+    "language": "The language in human-readable form",
+    "language_suffix": "The file suffix for this language",
+    "language_idl_key": "The name by which the language is used in the YAML definitions",
+    "language_folder": "The folder name used for this language"
+    }
+}
