@@ -122,7 +122,7 @@ class _Interface(ServiceInterface):
 
 class EnumsWithStructsInterface():
     """
-    A interface using enums
+    A interface using enums in structs
 
     Args:
         property_provider (ProvidesEnumsWithStructsInterfaceProperties): provider for interface properties

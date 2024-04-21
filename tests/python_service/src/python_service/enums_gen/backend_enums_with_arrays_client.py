@@ -16,7 +16,7 @@ from .color import Color
 
 class BackendEnumsWithArraysClient():
     """
-    A interface using enums
+    A interface using enums in arrays
     """
 
     def __init__(self):

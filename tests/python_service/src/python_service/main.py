@@ -46,7 +46,7 @@ async def run():
                 lambda client: client.connect(),
                 backend_clients
             ),
-            Connection.run(*services),
+            Connection.run(*services)
         ]),
         return_when=asyncio.FIRST_EXCEPTION
     )

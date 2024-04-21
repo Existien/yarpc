@@ -1,4 +1,4 @@
-Feature: Dictionary interface
+Feature: DictsWithArrays interface
 
     Background:
         Given a mocked backend service with the following interfaces
@@ -17,12 +17,14 @@ Feature: Dictionary interface
             | EnumsWithArrays   |      |
             | EnumsWithDicts    |      |
             | EnumsWithStructs  |      |
-        And a running python service
+        And a running service started with 'python_service/run.sh'
         And a mocked python client connecting to the following interfaces
             | interface       | name  |
             | DictsWithArrays | Alice |
 
-    Scenario: Method call
+    Scenario: Interface using dicts using arrays using dicts
+
+    # Scenario: Method call
         Given 'Bob' replies to a 'DictsArrayMethod' method call with the following return value
             | value                          |
             | {"x": [{"ab":12}, {"bc": 23}]} |
@@ -36,7 +38,7 @@ Feature: Dictionary interface
             | name    | value                          |
             | numbers | {"x": [{"ab":12}, {"bc": 23}]} |
 
-    Scenario: Signal
+    # Scenario: Signal
         When a 'DictsArraySignal' signal is emitted by 'Bob' with the following parameters
             | name    | value                          |
             | numbers | {"x": [{"ab":12}, {"bc": 23}]} |
@@ -44,13 +46,13 @@ Feature: Dictionary interface
             | name    | value                          |
             | numbers | {"x": [{"ab":12}, {"bc": 23}]} |
 
-    Scenario: Get all properties
+    # Scenario: Get all properties
         When all properties are queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                                                                                                                |
             | {"DictArrayProperty":{"A":[{"AA1":11,"AA2":12},{"AB1":21,"AB2":22}],"B":[{"BA1":11,"BA2":12},{"BB1":21,"BB2":22}],}} |
 
-    Scenario: Geting and setting read-write properties
+    # Scenario: Geting and setting read-write properties
         When the 'DictArrayProperty' property is queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                                                                                          |

@@ -1,4 +1,4 @@
-Feature: Dictionary interface
+Feature: DictsWithStructs interface
 
     Background:
         Given a mocked backend service with the following interfaces
@@ -17,12 +17,14 @@ Feature: Dictionary interface
             | EnumsWithArrays   |      |
             | EnumsWithDicts    |      |
             | EnumsWithStructs  |      |
-        And a running python service
+        And a running service started with 'python_service/run.sh'
         And a mocked python client connecting to the following interfaces
             | interface        | name  |
             | DictsWithStructs | Alice |
 
-    Scenario: Method call
+    Scenario: Interface using dicts using structs using dicts
+
+    # Scenario: Method call
         Given 'Bob' replies to a 'DictsStructMethod' method call with the following return value
             | value                                                |
             | {"x": SimonsDict({"1":StructDict({"a":{"ab":12}})})} |
@@ -36,7 +38,7 @@ Feature: Dictionary interface
             | name    | value                             |
             | numbers | {"1":StructDict({"a":{"ab":12}})} |
 
-    Scenario: Signal
+    # Scenario: Signal
         When a 'DictStructSignal' signal is emitted by 'Bob' with the following parameters
             | name    | value                             |
             | numbers | {"1":StructDict({"a":{"ab":12}})} |
@@ -44,13 +46,13 @@ Feature: Dictionary interface
             | name    | value                             |
             | numbers | {"1":StructDict({"a":{"ab":12}})} |
 
-    Scenario: Get all properties
+    # Scenario: Get all properties
         When all properties are queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                                                                                                                                                                                       |
             | {"DictStructProperty":{"first":StructDict({"1":{"Fizz":3,"Buzz":5},"2":{"One":1,"Two":2},}),"second":StructDict({"Legs":{"Fish":0,"Dog":4,"Ant":6},"Wings":{"Fish":0,"Dog":0,"Ant":2},}),}} |
 
-    Scenario: Geting and setting read-write properties
+    # Scenario: Geting and setting read-write properties
         When the 'DictStructProperty' property is queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                                                                                                                                                                |

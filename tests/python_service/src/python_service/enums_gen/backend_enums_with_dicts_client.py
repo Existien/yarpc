@@ -16,7 +16,7 @@ from .color import Color
 
 class BackendEnumsWithDictsClient():
     """
-    A interface using enums
+    A interface using enums in dictionaries
     """
 
     def __init__(self):

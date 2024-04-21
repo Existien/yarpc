@@ -1,7 +1,7 @@
 objects:
 - name: EnumsWithArrays
   kind: interface
-  docs: A interface using enums
+  docs: A interface using enums in arrays
   members:
   - name: EnumMethod
     kind: method

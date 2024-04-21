@@ -16,7 +16,7 @@ from .color import Color
 
 class BackendEnumsWithStructsClient():
     """
-    A interface using enums
+    A interface using enums in structs
     """
 
     def __init__(self):

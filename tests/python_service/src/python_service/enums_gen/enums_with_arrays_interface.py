@@ -122,7 +122,7 @@ class _Interface(ServiceInterface):
 
 class EnumsWithArraysInterface():
     """
-    A interface using enums
+    A interface using enums in arrays
 
     Args:
         property_provider (ProvidesEnumsWithArraysInterfaceProperties): provider for interface properties

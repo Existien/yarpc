@@ -17,12 +17,14 @@ Feature: Structs interface
             | EnumsWithArrays   |      |
             | EnumsWithDicts    |      |
             | EnumsWithStructs  |      |
-        And a running python service
+        And a running service started with 'python_service/run.sh'
         And a mocked python client connecting to the following interfaces
             | interface | name  |
             | Structs   | Alice |
 
-    Scenario: Method call with a non-nested struct
+    Scenario: Interface with structures
+
+    # Scenario: Method call with a non-nested struct
         Given 'Bob' replies to a 'SendStruct' method call with the following return value
             | value                             |
             | SimpleStruct(Item("Bar",3.50),12) |
@@ -36,7 +38,7 @@ Feature: Structs interface
             | name         | value                             |
             | simpleStruct | SimpleStruct(Item("Foo",0.98),42) |
 
-    Scenario: Emit a signal with a non-nested struct
+    # Scenario: Emit a signal with a non-nested struct
         When a 'StructReceived' signal is emitted by 'Bob' with the following parameters
             | name         | value                             |
             | simpleStruct | SimpleStruct(Item("Foo",0.98),42) |
@@ -46,7 +48,13 @@ Feature: Structs interface
             | simpleStruct | SimpleStruct(Item("Foo",0.98),42) |
             | totalCosts   | 99.99                             |
 
-    Scenario: Geting and setting read-write properties
+    # Scenario: Get all properties
+        When all properties are queried from 'Alice'
+        Then 'Alice' receives a return value of
+            | value                                        |
+            | {"Simple":SimpleStruct(Item("Foo",0.98),42)} |
+
+    # Scenario: Geting and setting read-write properties
         When the 'Simple' property is queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                             |
@@ -61,9 +69,3 @@ Feature: Structs interface
         Then 'Alice' receives a return value of
             | value                             |
             | SimpleStruct(Item("Bar",3.50),12) |
-
-    Scenario: Get all properties
-        When all properties are queried from 'Alice'
-        Then 'Alice' receives a return value of
-            | value                                        |
-            | {"Simple":SimpleStruct(Item("Foo",0.98),42)} |

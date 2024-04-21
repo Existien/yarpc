@@ -1,7 +1,7 @@
 objects:
 - name: EnumsWithDicts
   kind: interface
-  docs: A interface using enums
+  docs: A interface using enums in dictionaries
   members:
   - name: EnumMethod
     kind: method

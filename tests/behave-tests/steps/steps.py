@@ -1,9 +1,9 @@
 from behave import given, when, then
 from behave.api.async_step import async_run_until_complete
 import subprocess
-import os
 import asyncio
-import json
+import psutil
+import textwrap
 from python_mocks import (
     Connection,
     MinimalClientMock, BackendMinimalInterfaceMock,
@@ -25,16 +25,51 @@ from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
 
 
-@given("a running python service")
+def __process_name(process):
+    return '"'+' '.join(process.args)+'"'
+
+
+def __print_process_output(process):
+    stdout = process.stdout.read()
+    stdout = stdout.decode('unicode_escape') if stdout is not None else ''
+    print(textwrap.indent(f"Stdout for {__process_name(process)}:\n{textwrap.indent(stdout, 2*' ')}", 2*' '))
+    stderr = process.stderr.read()
+    stderr = stderr.decode('unicode_escape') if stderr is not None else ''
+    print(textwrap.indent(f"Stderr for {__process_name(process)}:\n{textwrap.indent(stderr, 2*' ')}", 2*' '))
+
+def shutdown_process(process, timeout_in_s=3):
+    proc_name = __process_name(process)
+    print(f"\n{'='*len(proc_name)}")
+    print(f"{proc_name}")
+    print(f"{'='*len(proc_name)}\n")
+
+    if process.poll() is None:
+        parent = psutil.Process(process.pid)
+        children = parent.children(recursive=True)
+        alive = [parent, *children]
+        for survivor in alive:
+            survivor.terminate()
+        _, alive = psutil.wait_procs(alive, timeout=timeout_in_s)
+        for survivor in alive:
+            survivor.kill()
+        _, alive = psutil.wait_procs(alive, timeout=timeout_in_s)
+        if alive:
+            raise RuntimeError(f"Unkillable processes: {alive}")
+
+    __print_process_output(process)
+
+
+@given("a running service started with '{start_cmd}'")
 @async_run_until_complete
-async def step_impl(context):
+async def step_impl(context, start_cmd):
+    start_args = start_cmd.split(' ')
     process = subprocess.Popen(
-        args=["pdm", "run", "-p", "python_service", "service"],
+        args=start_args,
         cwd="/workspace/tests",
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     )
-    context.processes.append(process)
+    context.cleanup_actions.append(lambda: shutdown_process(process))
     await wait_for_dbus(
         bus_name="com.yarpc.testservice",
         object_path="/com/yarpc/testservice",
@@ -42,17 +77,22 @@ async def step_impl(context):
     )
 
 
-async def wait_for_dbus(bus_name, object_path, interface_name):
+async def wait_for_dbus(bus_name, object_path, interface_name, timeout_in_s=5):
     bus = await MessageBus().connect()
     interface = None
+    time_taken = 0
     while not interface:
-        await asyncio.sleep(0.1)
         try:
             introspection = await bus.introspect(bus_name, object_path)
             proxy_object = bus.get_proxy_object(bus_name, object_path, introspection)
             interface = proxy_object.get_interface(interface_name)
         except DBusError:
             pass
+        if not interface:
+            if time_taken > timeout_in_s:
+                raise RuntimeError(f"Could not find D-Bus interface with bus name '{bus_name}', object path '{object_path}' and interface '{interface_name}'")
+            await asyncio.sleep(0.1)
+            time_taken += 0.1
 
 
 def table_to_args(table):
@@ -213,6 +253,7 @@ async def step_impl(context):
                 assert False, f"Unknown interface '{interface}'"
         client_task = asyncio.create_task(client.connect())
         context.mocks[name] = client
+        context.cleanup_actions.append(client.disconnect)
         context.tasks.append(client_task)
         await asyncio.sleep(0.1)
     for row in context.table:

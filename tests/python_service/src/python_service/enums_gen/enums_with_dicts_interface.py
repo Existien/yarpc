@@ -122,7 +122,7 @@ class _Interface(ServiceInterface):
 
 class EnumsWithDictsInterface():
     """
-    A interface using enums
+    A interface using enums in dictionaries
 
     Args:
         property_provider (ProvidesEnumsWithDictsInterfaceProperties): provider for interface properties

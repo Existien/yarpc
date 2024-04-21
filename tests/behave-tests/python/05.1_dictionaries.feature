@@ -17,12 +17,14 @@ Feature: Dictionary interface
             | EnumsWithArrays   |      |
             | EnumsWithDicts    |      |
             | EnumsWithStructs  |      |
-        And a running python service
+        And a running service started with 'python_service/run.sh'
         And a mocked python client connecting to the following interfaces
             | interface    | name  |
             | Dictionaries | Alice |
 
-    Scenario: Method call
+    Scenario: Interface using dictionaries
+
+    # Scenario: Method call
         Given 'Bob' replies to a 'DictMethod' method call with the following return value
             | value             |
             | {"1":"a","2":"b"} |
@@ -36,7 +38,7 @@ Feature: Dictionary interface
             | name        | value         |
             | keysNValues | {"a":1,"b":2} |
 
-    Scenario: Signal
+    # Scenario: Signal
         When a 'DictSignal' signal is emitted by 'Bob' with the following parameters
             | name        | value         |
             | keysNValues | {"a":1,"b":2} |
@@ -44,13 +46,13 @@ Feature: Dictionary interface
             | name        | value         |
             | keysNValues | {"a":1,"b":2} |
 
-    Scenario: Get all properties
+    # Scenario: Get all properties
         When all properties are queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                                |
             | {"DictProperty":{"Fizz":3,"Buzz":5}} |
 
-    Scenario: Geting and setting read-write properties
+    # Scenario: Geting and setting read-write properties
         When the 'DictProperty' property is queried from 'Alice'
         Then 'Alice' receives a return value of
             | value               |

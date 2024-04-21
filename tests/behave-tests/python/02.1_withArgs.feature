@@ -17,12 +17,14 @@ Feature: WithArgs interface
             | EnumsWithArrays   |      |
             | EnumsWithDicts    |      |
             | EnumsWithStructs  |      |
-        And a running python service
+        And a running service started with 'python_service/run.sh'
         And a mocked python client connecting to the following interfaces
             | interface | name  |
             | WithArgs  | Alice |
 
-    Scenario: Method call with a single argument, without a return value
+    Scenario: Interface using only primitive types
+
+    # Scenario: Method call with a single argument, without a return value
         When the 'Notify' method is called by 'Alice' with the following parameters
             | name    | value |
             | message | "Foo" |
@@ -30,7 +32,7 @@ Feature: WithArgs interface
             | name    | value |
             | message | "Foo" |
 
-    Scenario: Emit a signal with a single parameter
+    # Scenario: Emit a signal with a single parameter
         When a 'Notified' signal is emitted by 'Bob' with the following parameters
             | name    | value |
             | message | "Foo" |
@@ -38,7 +40,7 @@ Feature: WithArgs interface
             | name    | value |
             | message | "Foo" |
 
-    Scenario: Method call with multiple arguments and a return value
+    # Scenario: Method call with multiple arguments and a return value
         Given 'Bob' replies to a 'Order' method call with the following return value
             | value |
             | 6.022 |
@@ -56,7 +58,7 @@ Feature: WithArgs interface
             | amount       | 33        |
             | pricePerItem | 0.33      |
 
-    Scenario: Emit a signal with multiple parameters
+    # Scenario: Emit a signal with multiple parameters
         When a 'OrderReceived' signal is emitted by 'Bob' with the following parameters
             | name         | value     |
             | item         | "Marbles" |
@@ -68,35 +70,44 @@ Feature: WithArgs interface
             | amount       | 33        |
             | pricePerItem | 0.33      |
 
-    Scenario: Get all properties
+    # Scenario: Get all properties
         When all properties are queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                                         |
             | {"Speed":10.0,"Distance":200,"Duration":20.0} |
 
-    Scenario: Getting read-only properties
+    # Scenario: Getting read-only properties
         When the 'Duration' property is queried from 'Alice'
         Then 'Alice' receives a return value of
             | value |
             | 20.0  |
 
-    Scenario Outline: Geting and setting read-write properties
-        When the '<prop>' property is queried from 'Alice'
+    # Scenario: Geting and setting read-write properties
+        When the 'Distance' property is queried from 'Alice'
         Then 'Alice' receives a return value of
             | value |
-            | <old> |
-        When the '<prop>' property is set by 'Alice' to a value of
+            | 200 |
+        When the 'Distance' property is set by 'Alice' to a value of
             | value |
-            | <new> |
+            | 50 |
         Then 'Alice' receives a property change signal with the following parameters
             | name   | value |
-            | <prop> | <new> |
-        When the '<prop>' property is queried from 'Alice'
+            | Distance | 50 |
+        When the 'Distance' property is queried from 'Alice'
         Then 'Alice' receives a return value of
             | value |
-            | <new> |
-
-        Examples: Properties
-            | prop     | old  | new  |
-            | Distance | 200  | 50   |
-            | Speed    | 10.0 | 5    |
+            | 50 |
+        When the 'Speed' property is queried from 'Alice'
+        Then 'Alice' receives a return value of
+            | value |
+            | 10.0 |
+        When the 'Speed' property is set by 'Alice' to a value of
+            | value |
+            | 5 |
+        Then 'Alice' receives a property change signal with the following parameters
+            | name   | value |
+            | Speed | 5 |
+        When the 'Speed' property is queried from 'Alice'
+        Then 'Alice' receives a return value of
+            | value |
+            | 5 |

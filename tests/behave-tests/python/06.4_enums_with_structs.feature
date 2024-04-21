@@ -1,4 +1,4 @@
-Feature: WithArgs interface
+Feature: EnumsWithStructs interface
 
     Background:
         Given a mocked backend service with the following interfaces
@@ -17,12 +17,14 @@ Feature: WithArgs interface
             | EnumsWithArrays   |      |
             | EnumsWithDicts    |      |
             | EnumsWithStructs  | Bob  |
-        And a running python service
+        And a running service started with 'python_service/run.sh'
         And a mocked python client connecting to the following interfaces
             | interface        | name  |
             | EnumsWithStructs | Alice |
 
-    Scenario: Emit a signal with a single parameter
+    Scenario: Interface using enums in structs
+
+    # Scenario: Emit a signal with a single parameter
         When a 'EnumSignal' signal is emitted by 'Bob' with the following parameters
             | name  | value                                                                                                   |
             | color | EnumStruct(color=Color.ORANGE,colorArray=[Color.RED, Color.GREEN],colorDict={Color.BLUE: Color.ORANGE}) |
@@ -30,7 +32,7 @@ Feature: WithArgs interface
             | name  | value                                                                                                   |
             | color | EnumStruct(color=Color.ORANGE,colorArray=[Color.RED, Color.GREEN],colorDict={Color.BLUE: Color.ORANGE}) |
 
-    Scenario: Method call with multiple arguments and a return value
+    # Scenario: Method call with multiple arguments and a return value
         Given 'Bob' replies to a 'EnumMethod' method call with the following return value
             | value                                                                                                   |
             | EnumStruct(color=Color.ORANGE,colorArray=[Color.RED, Color.GREEN],colorDict={Color.BLUE: Color.ORANGE}) |
@@ -44,13 +46,13 @@ Feature: WithArgs interface
             | name  | value                                                                                                   |
             | color | EnumStruct(color=Color.ORANGE,colorArray=[Color.RED, Color.GREEN],colorDict={Color.BLUE: Color.ORANGE}) |
 
-    Scenario: Get all properties
+    # Scenario: Get all properties
         When all properties are queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                                                                                                                                                                             |
             | {"EnumProperty":EnumStruct(color=Color.GREEN,colorArray=[Color.RED, Color.GREEN, Color.BLUE],colorDict={Color.RED: Color.GREEN,Color.GREEN: Color.RED,Color.BLUE: Color.ORANGE})} |
 
-    Scenario: Geting and setting read-write properties
+    # Scenario: Geting and setting read-write properties
         When the 'EnumProperty' property is queried from 'Alice'
         Then 'Alice' receives a return value of
             | value                                                                                                                                                            |
