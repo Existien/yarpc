@@ -1,0 +1,15 @@
+outputs:
+- language: qt6
+  location: qt6_service/gen/structs
+  busName: com.yarpc.testservice
+  services:
+  - className: StructsInterface
+    definition: Structs
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.structs
+  clients:
+  - className: BackendStructsClient
+    definition: Structs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.structs
