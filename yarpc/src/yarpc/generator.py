@@ -34,6 +34,10 @@ class Generator:
             if not check_only and Path(output_location).exists():
                 print(f"Cleaning {output_location}")
                 rmtree(output_location)
+            is_up_to_date = (
+                is_up_to_date and
+                self._generate_non_object(output, check_only)
+            )
             for object in output['objects']:
                 is_up_to_date = (
                     is_up_to_date and
@@ -82,8 +86,33 @@ class Generator:
             return False
         return True
 
+    def _generate_non_object(self, output: dict, check_only: bool) -> bool:
+        """Generates object-independent code for a specific output
+
+        Args:
+            output (dict): The output to generate it for
+            check_only (bool): If True, the object will not be persisted,
+                but just used to compare the existing file with the generate.
+        Returns:
+            bool: Whether the existing file is in sync with the generate.
+                Always True if check_only is False.
+        """
+        context = {
+            "output": output,
+            "version": pkg_resources.get_distribution('yarpc').version
+        }
+        language = output['language']
+        is_up_to_date = True
+        for target in languages().get(language).get_output_targets():
+            filename = Path(f"{self._get_location(output)}/{target.filename}")
+            is_up_to_date = (
+                is_up_to_date and
+                self._generate_file(filename, language, target.template, context, check_only)
+            )
+        return is_up_to_date
+
     def _generate_object(self, object: dict, output: dict, check_only: bool) -> bool:
-        """Generates an object for a specific output
+        """Generates code for an object for a specific output
 
         Args:
             object (dict): The object to generate
@@ -101,12 +130,6 @@ class Generator:
         }
         language = output['language']
         is_up_to_date = True
-        for target in languages().get(language).get_output_targets():
-            filename = Path(f"{self._get_location(output)}/{target.filename}")
-            is_up_to_date = (
-                is_up_to_date and
-                self._generate_file(filename, language, target.template, context, check_only)
-            )
         for target in object.get('targets', []):
             target_context = {**context, 'target': target}
             language_targets = languages().get(language).get_object_targets(target['className'], ObjectKind(target['objectKind']))
