@@ -34,6 +34,7 @@ passwd="$(mktemp --suffix=.docker.passwd)"
 cleanup_cmds+=("rm -f $passwd")
 echo "$user_name:x:$user_id:$group_id::$user_home:/bin/bash" > "$passwd"
 docker_args+=("--volume" "$passwd:/etc/passwd")
+docker_args+=("--volume" "${user_home}/.gitconfig:${user_home}/.gitconfig:ro")
 
 # forward x11
 if [ -n "${DISPLAY:-}" ]; then

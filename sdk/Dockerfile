@@ -8,6 +8,7 @@ RUN apt-get -y update && \
         dbus \
         d-feet \
         git \
+        less \
         ninja-build \
         python3 \
         python3-pip \
