@@ -1,0 +1,15 @@
+outputs:
+- language: qt6
+  location: qt6_service/gen/minimal
+  busName: com.yarpc.testservice
+  services:
+  - className: MinimalInterface
+    definition: Minimal
+    objectPath: /com/yarpc/testservice
+    interfaceName: com.yarpc.testservice.minimal
+  clients:
+  - className: BackendMinimalClient
+    definition: Minimal
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend
+    interfaceName: com.yarpc.backend.minimal
