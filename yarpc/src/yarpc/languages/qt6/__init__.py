@@ -11,6 +11,10 @@ class Language(BaseLanguage):
             List[Target]: a list of targets to be generated.
         """
         return [
+            Target(
+                filename="CMakeLists.txt",
+                template="CMakeLists"
+            )
         ]
 
     def get_object_targets(self, name: str, object_kind: ObjectKind) -> List[Target]:
@@ -23,10 +27,16 @@ class Language(BaseLanguage):
             List[Target]: a list of targets to be generated.
                 Empty for non-supported ObjectKinds.
         """
-        return [Target(
-            filename=f"{name}.cpp",
-            template=object_kind.value
-        )]
+        return [
+            Target(
+                filename=f"{name}.hpp",
+                template=f"{object_kind.value}_header"
+            ),
+            Target(
+                filename=f"{name}.cpp",
+                template=f"{object_kind.value}_source"
+            ),
+        ]
 
     def get_dbus_types(self) -> DBusTypes:
         """Returns the mapping from D-Bus types to types of this language.
@@ -45,8 +55,8 @@ class Language(BaseLanguage):
             uint64='uint64',
             double='double',
             string='string',
-            array='array<$1>',
-            dict='dict<$1, $2>',
+            array='QList<$1>',
+            dict='QMap<$1, $2>',
         )
 
     def get_jinja_filters(self) -> Dict[str, Callable[... ,object]]:

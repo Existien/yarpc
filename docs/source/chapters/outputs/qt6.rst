@@ -4,7 +4,8 @@ Qt6
 Dependencies
 ^^^^^^^^^^^^
 
-- ???
+- CMake 3.19 or newer
+- Qt6.5 (or newer) with QDBus module
 
 Keys
 ^^^^
