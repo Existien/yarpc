@@ -47,3 +47,25 @@ Manual Testing
 For manual testing, the BackendServiceMock can also be started manually via ``pdm run -p tests/python_mocks mock``.
 
 The SDK contains ``d-feet`` to call D-Bus methods and interact with properties and ``bustle`` to monitor signals.
+
+Adding support for a new language
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Add language support to the SDK
+
+   If the new language needs additional libraries,
+   compilers or other tools, install them in the
+   ``sdk/Dockerfile``.
+
+2. Run bootstrapping script
+
+   Start the SDK and run the ``sdk/add_language.sh`` script
+   and answer the questions.
+
+   This will create skeleton entries for the new language in
+
+   - ``yarpc/languages`` for the generation of the language
+   - ``tests`` for the service used in the behave tests
+   - ``tests/definitions`` for the output to be generated
+   - ``tests/behave-tests`` for the behave tests of this language
+   - ``docs/source/chapters/outputs`` for the documentation of this language
