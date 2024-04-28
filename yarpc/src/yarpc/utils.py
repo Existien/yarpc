@@ -82,7 +82,7 @@ def extract_dependencies(type_name: str, objects: list) -> list:
 
 
 def to_snake_case(name: str) -> str:
-    """Returns the snake casified version of name
+    """Returns the snake casified version of name in PascalCase
 
     Args:
         name (str): a name
@@ -101,3 +101,14 @@ def to_snake_case(name: str) -> str:
             was_lower = letter.islower()
         new_name += (letter.lower())
     return new_name
+
+
+def to_camel_case(name: str) -> str:
+    """Returns the camel casified version of name in PascalCase
+
+    Args:
+        name (str): a name
+    Return:
+        str: The name in snake case
+    """
+    return name[0].lower()+name[1:]

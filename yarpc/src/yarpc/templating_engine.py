@@ -1,6 +1,7 @@
 import jinja2
 from yarpc.utils import (
     to_snake_case,
+    to_camel_case,
     find_type,
     extract_inner_names,
     extract_dependencies,
@@ -25,6 +26,7 @@ class TemplatingEngine:
         """Registers custom filters
         """
         self._env.filters['snake_case'] = to_snake_case
+        self._env.filters['camel_case'] = to_camel_case
         self._env.filters['find_type'] = find_type
         self._env.filters['extract_inner'] = extract_inner_names
         self._env.filters['extract_dependencies'] = extract_dependencies
