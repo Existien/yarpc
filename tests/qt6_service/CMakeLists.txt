@@ -23,4 +23,8 @@ qt_add_qml_module(service
 
 target_link_libraries(service PRIVATE
     Qt6::Quick
+    Qt6::DBus
+    Minimal
 )
+
+add_subdirectory(gen/minimal)

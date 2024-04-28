@@ -3,3 +3,17 @@
 # Definition:
 #   File: /workspace/tests/definitions/qt6/02_with_args.yml
 #   Template: qt6/CMakeLists.j2
+
+
+file(GLOB sources ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
+
+qt_add_qml_module(WithArgs
+    STATIC
+    PLUGIN_TARGET WithArgs
+    URI "gen.withArgs"
+    VERSION 1.0
+    SOURCES
+        ${sources}
+)
+
+target_link_libraries(WithArgs PRIVATE Qt6::DBus)

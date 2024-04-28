@@ -2,6 +2,7 @@ outputs:
 - language: qt6
   location: qt6_service/gen/structs
   busName: com.yarpc.testservice
+  qmlUri: gen.structs
   services:
   - className: StructsInterface
     definition: Structs

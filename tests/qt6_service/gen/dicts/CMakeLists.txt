@@ -3,3 +3,17 @@
 # Definition:
 #   File: /workspace/tests/definitions/qt6/05_dicts.yml
 #   Template: qt6/CMakeLists.j2
+
+
+file(GLOB sources ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
+
+qt_add_qml_module(Dicts
+    STATIC
+    PLUGIN_TARGET Dicts
+    URI "gen.dicts"
+    VERSION 1.0
+    SOURCES
+        ${sources}
+)
+
+target_link_libraries(Dicts PRIVATE Qt6::DBus)

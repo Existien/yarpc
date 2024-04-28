@@ -19,6 +19,11 @@ location
     Relative paths will be resolved relative to the current working
     directory or the location provided by ``--output-base``.
 
+qmlUri
+   The QML URI the generated code will be found under.
+   Also determines the namespace.
+   The URI ``gen.minimal`` will result in the namespace ``gen::minimal``.
+
 busName
    The busName used for D-Bus services.
    Can be omitted when generating only client code.

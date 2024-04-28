@@ -3,3 +3,17 @@
 # Definition:
 #   File: /workspace/tests/definitions/qt6/06_enums.yml
 #   Template: qt6/CMakeLists.j2
+
+
+file(GLOB sources ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
+
+qt_add_qml_module(Enums
+    STATIC
+    PLUGIN_TARGET Enums
+    URI "gen.enums"
+    VERSION 1.0
+    SOURCES
+        ${sources}
+)
+
+target_link_libraries(Enums PRIVATE Qt6::DBus)
