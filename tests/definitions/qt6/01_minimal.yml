@@ -2,6 +2,7 @@ outputs:
 - language: qt6
   location: qt6_service/gen/minimal
   busName: com.yarpc.testservice
+  qmlUri: gen.minimal
   services:
   - className: MinimalInterface
     definition: Minimal

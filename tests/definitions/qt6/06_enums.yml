@@ -2,6 +2,7 @@ outputs:
 - language: qt6
   location: qt6_service/gen/enums
   busName: com.yarpc.testservice
+  qmlUri: gen.enums
   services:
   - className: EnumsInterface
     definition: Enums

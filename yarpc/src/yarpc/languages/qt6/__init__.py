@@ -14,6 +14,14 @@ class Language(BaseLanguage):
             Target(
                 filename="CMakeLists.txt",
                 template="CMakeLists"
+            ),
+            Target(
+                filename="DBusError.hpp",
+                template="error_header"
+            ),
+            Target(
+                filename="DBusError.cpp",
+                template="error_source"
             )
         ]
 

@@ -2,6 +2,7 @@ outputs:
 - language: qt6
   location: qt6_service/gen/with_args
   busName: com.yarpc.testservice
+  qmlUri: gen.withArgs
   services:
   - className: WithArgsInterface
     definition: WithArgs

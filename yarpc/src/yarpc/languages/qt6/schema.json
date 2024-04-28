@@ -5,13 +5,17 @@
     "additionalProperties": false,
     "required": [
         "language",
-        "location"
+        "location",
+        "qmlUri"
     ],
     "properties": {
         "language": {
             "const": "qt6"
         },
         "location": {
+            "type": "string"
+        },
+        "qmlUri": {
             "type": "string"
         },
         "busName": {

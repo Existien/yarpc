@@ -3,3 +3,17 @@
 # Definition:
 #   File: /workspace/tests/definitions/qt6/01_minimal.yml
 #   Template: qt6/CMakeLists.j2
+
+
+file(GLOB sources ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
+
+qt_add_qml_module(Minimal
+    STATIC
+    PLUGIN_TARGET Minimal
+    URI "gen.minimal"
+    VERSION 1.0
+    SOURCES
+        ${sources}
+)
+
+target_link_libraries(Minimal PRIVATE Qt6::DBus)

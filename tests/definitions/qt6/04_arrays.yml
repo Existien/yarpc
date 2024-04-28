@@ -2,6 +2,7 @@ outputs:
 - language: qt6
   location: qt6_service/gen/arrays
   busName: com.yarpc.testservice
+  qmlUri: gen.arrays
   services:
   - className: ArraysInterface
     definition: Arrays

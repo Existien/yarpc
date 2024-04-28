@@ -2,6 +2,7 @@ outputs:
 - language: qt6
   location: qt6_service/gen/dicts
   busName: com.yarpc.testservice
+  qmlUri: gen.dicts
   services:
   - className: DictsInterface
     definition: Dicts
