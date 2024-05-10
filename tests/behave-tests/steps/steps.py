@@ -270,12 +270,25 @@ async def step_impl(context, name, method):
     mock.return_value = return_value
 
 
+@given("'{name}' replies to a '{method}' method call by raising the following error")
+@async_run_until_complete
+async def step_impl(context, name, method):
+    kwargs = table_to_kwargs(context.table)
+    assert name in context.mocks.keys(), f"Service {name} not found"
+    service = context.mocks[name]
+    mock = getattr(service.mock, method)
+    mock.side_effect = DBusError(kwargs['type'], kwargs['message'])
+
+
 @when("the '{method}' method is called by '{name}'")
 @async_run_until_complete
 async def step_impl(context, method, name):
     assert name in context.mocks.keys(), f"Client {name} not found"
-    return_value = await getattr(context.mocks[name], method)()
-    context.last_return_values[name] = return_value
+    try:
+        return_value = await getattr(context.mocks[name], method)()
+        context.last_return_values[name] = return_value
+    except DBusError as e:
+        context.last_returned_errors[name] = e
 
 
 @then("'{name}' receives a return value of")
@@ -285,6 +298,17 @@ async def step_impl(context, name):
     actual = context.last_return_values[name]
     assert expected == actual, f"Expected return value {expected}, but got {actual}"
     context.last_return_values[name]= None
+
+
+@then("'{name}' receives an error of")
+@async_run_until_complete
+async def step_impl(context, name):
+    kwargs = table_to_kwargs(context.table)
+    expected = DBusError(kwargs['type'], kwargs['message'])
+    actual = context.last_returned_errors[name]
+    assert expected.type == actual.type, f"Expected error type {expected.type}, but got {actual.type}"
+    assert expected.text == actual.text, f"Expected error message {expected.text}, but got {actual.text}"
+    context.last_returned_errors[name]= None
 
 
 @when("a '{signal}' signal is emitted by '{name}'")
@@ -321,8 +345,11 @@ async def step_impl(context, name, signal):
 async def step_impl(context, method, name):
     kwargs = table_to_kwargs(context.table)
     assert name in context.mocks.keys(), f"Client {name} not found"
-    return_value = await getattr(context.mocks[name], method)(**kwargs)
-    context.last_return_values[name] = return_value
+    try:
+        return_value = await getattr(context.mocks[name], method)(**kwargs)
+        context.last_return_values[name] = return_value
+    except DBusError as e:
+        context.last_returned_errors[name] = e
 
 
 @then("'{name}' receives a '{method}' method call with the following parameters")

@@ -7,6 +7,7 @@ def before_scenario(context, _scenario):
     context.tasks = []
     context.mocks = {}
     context.last_return_values = {}
+    context.last_returned_errors = {}
 
 
 def after_scenario(context, _scenario):

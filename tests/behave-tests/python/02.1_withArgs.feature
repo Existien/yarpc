@@ -58,6 +58,21 @@ Feature: WithArgs interface
             | amount       | 33        |
             | pricePerItem | 0.33      |
 
+    # Scenario: Method call that raises an error
+        Given 'Bob' replies to a 'Order' method call by raising the following error
+            | name    | value                              |
+            | type    | "com.yarpc.backend.withArgs.error" |
+            | message | "out of marbles"                   |
+        When the 'Order' method is called by 'Alice' with the following parameters
+            | name         | value     |
+            | item         | "Marbles" |
+            | amount       | 33        |
+            | pricePerItem | 0.33      |
+        Then 'Alice' receives an error of
+            | name    | value                              |
+            | type    | "com.yarpc.backend.withArgs.error" |
+            | message | "out of marbles"                   |
+
     # Scenario: Emit a signal with multiple parameters
         When a 'OrderReceived' signal is emitted by 'Bob' with the following parameters
             | name         | value     |
