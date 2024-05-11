@@ -16,7 +16,7 @@
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -52,6 +52,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#sdk-setup">SDK setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#manual-testing">Manual Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-support-for-a-new-language">Adding support for a new language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#language-folder">Language folder</a></li>
 </ul>
 </li>
 </ul>
@@ -118,6 +120,64 @@ The behave tests can be run via <code class="docutils literal notranslate"><span
 <h3>Manual Testing<a class="headerlink" href="#manual-testing" title="Link to this heading"></a></h3>
 <p>For manual testing, the BackendServiceMock can also be started manually via <code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">run</span> <span class="pre">-p</span> <span class="pre">tests/python_mocks</span> <span class="pre">mock</span></code>.</p>
 <p>The SDK contains <code class="docutils literal notranslate"><span class="pre">d-feet</span></code> to call D-Bus methods and interact with properties and <code class="docutils literal notranslate"><span class="pre">bustle</span></code> to monitor signals.</p>
+</section>
+<section id="adding-support-for-a-new-language">
+<h3>Adding support for a new language<a class="headerlink" href="#adding-support-for-a-new-language" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Add language support to the SDK</p>
+<p>If the new language needs additional libraries,
+compilers or other tools, install them in the
+<code class="docutils literal notranslate"><span class="pre">sdk/Dockerfile</span></code>.</p>
+</li>
+<li><p>Run bootstrapping script</p>
+<p>Start the SDK and run the <code class="docutils literal notranslate"><span class="pre">sdk/add_language.sh</span></code> script
+and answer the questions.</p>
+<p>This will create skeleton entries for the new language in</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">yarpc/languages</span></code> for the generation of the language</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests</span></code> for the service used in the behave tests</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/definitions</span></code> for the output to be generated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tests/behave-tests</span></code> for the behave tests of this language</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/source/chapters/outputs</span></code> for the documentation of this language</p></li>
+</ul>
+</li>
+<li><p>Adjust the skeleton entries</p>
+<ul class="simple">
+<li><p>Document dependencies (such as the library used for D-Bus) and additional options
+for the output of your language</p></li>
+<li><p>Adjust the templates, json schema and <code class="docutils literal notranslate"><span class="pre">Language</span></code> class for your language (see <a class="reference internal" href="#language-folder"><span class="std std-ref">Language folder</span></a>)</p></li>
+<li><p>Flesh out the app in <code class="docutils literal notranslate"><span class="pre">tests/&lt;language&gt;_service</span></code>, so it can be compiled and started using the <code class="docutils literal notranslate"><span class="pre">run.sh</span></code> script</p></li>
+</ul>
+</li>
+<li><p>Implement the generator</p>
+<ol class="loweralpha simple">
+<li><p>Look at the first not-yet implemented interface in <code class="docutils literal notranslate"><span class="pre">tests/definitions</span></code></p></li>
+<li><p>Implement the functionality in the templates of your language</p></li>
+<li><p>Run the <code class="docutils literal notranslate"><span class="pre">tests/generate.sh</span></code> script</p></li>
+<li><p>Implement the D-Bus interface in your service using the generated code,
+so that the interface of your service mirrors the backend interface it
+connects to</p></li>
+<li><p>Run the behave test for the respective interface to check whether it works</p></li>
+<li><p>Repeat from (a) until all interfaces are implemented</p></li>
+</ol>
+</li>
+</ol>
+</section>
+<section id="language-folder">
+<span id="id2"></span><h3>Language folder<a class="headerlink" href="#language-folder" title="Link to this heading"></a></h3>
+<p>Yarpc will automatically load all languages found in the <code class="docutils literal notranslate"><span class="pre">languages</span></code> folder of its package.
+These languages consist of a folder with the same name as the key used for them in the YAML interface
+definitions.
+The folder contains</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> containing the <code class="docutils literal notranslate"><span class="pre">Language</span></code> class
+The <code class="docutils literal notranslate"><span class="pre">Language</span></code> class determines which templates are used for which objects and how
+the resulting output should be named and the mapping of D-Bus types to types of this language.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">schema.json</span></code> jsonschema for this language. This determines the format of the output for this
+language. Modify it to add additional keys (e.g. for namespaces or mocks)</p></li>
+<li><p>The templates referenced in the <code class="docutils literal notranslate"><span class="pre">Language</span></code> class</p></li>
+</ul>
+<p>T.B.D</p>
 </section>
 </section>
 </section>

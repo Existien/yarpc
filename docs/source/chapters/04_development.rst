@@ -83,8 +83,8 @@ Adding support for a new language
    b. Implement the functionality in the templates of your language
    c. Run the ``tests/generate.sh`` script
    d. Implement the D-Bus interface in your service using the generated code,
-     so that the interface of your service mirrors the backend interface it
-     connects to
+      so that the interface of your service mirrors the backend interface it
+      connects to
    e. Run the behave test for the respective interface to check whether it works
    f. Repeat from (a) until all interfaces are implemented
 
