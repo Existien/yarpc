@@ -42,11 +42,11 @@ class ArraysClientMock():
             bus = await Connection.bus()
             introspection = await bus.introspect(
                 "com.yarpc.testservice",
-                "/com/yarpc/testservice",
+                "/com/yarpc/testservice/arrays",
             )
             proxy_object = bus.get_proxy_object(
                 "com.yarpc.testservice",
-                "/com/yarpc/testservice",
+                "/com/yarpc/testservice/arrays",
                 introspection
             )
             self._interface = proxy_object.get_interface(

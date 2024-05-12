@@ -72,7 +72,7 @@ async def step_impl(context, start_cmd):
     context.cleanup_actions.append(lambda: shutdown_process(process))
     await wait_for_dbus(
         bus_name="com.yarpc.testservice",
-        object_path="/com/yarpc/testservice",
+        object_path="/com/yarpc/testservice/minimal",
         interface_name="com.yarpc.testservice.minimal"
     )
 
@@ -207,7 +207,7 @@ async def step_impl(context):
         context.cleanup_actions.append(Connection.close)
         await wait_for_dbus(
             bus_name="com.yarpc.backend",
-            object_path="/com/yarpc/backend",
+            object_path=service.object_path,
             interface_name=service.name
         )
     for row in context.table:

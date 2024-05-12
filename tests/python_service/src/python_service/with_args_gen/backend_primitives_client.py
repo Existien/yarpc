@@ -42,11 +42,11 @@ class BackendPrimitivesClient():
             bus = await Connection.bus()
             introspection = await bus.introspect(
                 "com.yarpc.backend",
-                "/com/yarpc/backend",
+                "/com/yarpc/backend/withArgs",
             )
             proxy_object = bus.get_proxy_object(
                 "com.yarpc.backend",
-                "/com/yarpc/backend",
+                "/com/yarpc/backend/withArgs",
                 introspection
             )
             self._interface = proxy_object.get_interface(

@@ -177,7 +177,7 @@ class _Interface(ServiceInterface):
 
     def __init__(self, wrapper):
         super().__init__("com.yarpc.testservice.withArgs")
-        self.object_path = "/com/yarpc/testservice"
+        self.object_path = "/com/yarpc/testservice/withArgs"
         self._wrapper = wrapper
 
     @signal()

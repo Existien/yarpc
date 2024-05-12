@@ -35,11 +35,11 @@ class BackendStructsClient():
             bus = await Connection.bus()
             introspection = await bus.introspect(
                 "com.yarpc.backend",
-                "/com/yarpc/backend",
+                "/com/yarpc/backend/structs",
             )
             proxy_object = bus.get_proxy_object(
                 "com.yarpc.backend",
-                "/com/yarpc/backend",
+                "/com/yarpc/backend/structs",
                 introspection
             )
             self._interface = proxy_object.get_interface(

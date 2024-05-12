@@ -5,11 +5,11 @@ outputs:
   service_mocks:
   - className: BackendMinimalInterfaceMock
     definition: Minimal
-    objectPath: /com/yarpc/backend
+    objectPath: /com/yarpc/backend/minimal
     interfaceName: com.yarpc.backend.minimal
   client_mocks:
   - className: MinimalClientMock
     definition: Minimal
     busName: com.yarpc.testservice
-    objectPath: /com/yarpc/testservice
+    objectPath: /com/yarpc/testservice/minimal
     interfaceName: com.yarpc.testservice.minimal

@@ -42,11 +42,11 @@ class DictKeysClientMock():
             bus = await Connection.bus()
             introspection = await bus.introspect(
                 "com.yarpc.testservice",
-                "/com/yarpc/testservice",
+                "/com/yarpc/testservice/dicts",
             )
             proxy_object = bus.get_proxy_object(
                 "com.yarpc.testservice",
-                "/com/yarpc/testservice",
+                "/com/yarpc/testservice/dicts",
                 introspection
             )
             self._interface = proxy_object.get_interface(

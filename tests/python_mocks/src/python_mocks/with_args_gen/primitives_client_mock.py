@@ -40,11 +40,11 @@ class PrimitivesClientMock():
             bus = await Connection.bus()
             introspection = await bus.introspect(
                 "com.yarpc.testservice",
-                "/com/yarpc/testservice",
+                "/com/yarpc/testservice/withArgs",
             )
             proxy_object = bus.get_proxy_object(
                 "com.yarpc.testservice",
-                "/com/yarpc/testservice",
+                "/com/yarpc/testservice/withArgs",
                 introspection
             )
             self._interface = proxy_object.get_interface(

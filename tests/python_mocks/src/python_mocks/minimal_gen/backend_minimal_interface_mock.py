@@ -26,7 +26,7 @@ class _Interface(ServiceInterface):
 
     def __init__(self, wrapper):
         super().__init__("com.yarpc.backend.minimal")
-        self.object_path = "/com/yarpc/backend"
+        self.object_path = "/com/yarpc/backend/minimal"
         self._wrapper = wrapper
 
     @signal()
