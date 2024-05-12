@@ -26,8 +26,10 @@ public:
 signals:
     /**
      * @brief Emitted when an DictsArrayMethod call returns.
+     *
+     * @param some numbers
      */
-    void finished();
+    void finished(const QMap<$1, $2> &reply);
 
     /**
      * @brief Emitted when an error ocurred during an DictsArrayMethod call.
@@ -47,24 +49,61 @@ private:
 class BackendDictsWithArraysClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    /**
+     * @brief a simple property
+     */
+    Q_PROPERTY(QMap<$1, $2> dictArrayProperty READ getDictArrayProperty WRITE setDictArrayProperty NOTIFY dictArrayPropertyChanged)
+
 public:
     BackendDictsWithArraysClient(QObject* parent = nullptr);
 
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
      *
+     * @param numbers some numbers
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DictsArrayMethodPendingCall* DictsArrayMethod();
+    DictsArrayMethodPendingCall* DictsArrayMethod(
+        QMap<$1, $2> numbers
+    );
+
+    /**
+     * @brief Getter for the DictArrayProperty property.
+     *
+     * @returns the current value of the property
+     *
+     * a simple property
+     */
+    QMap<$1, $2> getDictArrayProperty() const;
+
+    /**
+     * @brief Setter for the DictArrayProperty property.
+     *
+     * @param newValue the new value of the property
+     *
+     * a simple property
+     */
+    void setDictArrayProperty(const QMap<$1, $2> &newValue);
 
 signals:
     /**
@@ -74,12 +113,24 @@ signals:
 
     /**
      * @brief a simple signal with one argument
+     *
+     * @param numbers some numbers
      */
-    void dictsArraySignalReceived();
+    void dictsArraySignalReceived(
+        QMap<$1, $2> numbers
+    );
+
+    /**
+     * @brief Changed signal for the DictArrayProperty property.
+     *
+     * a simple property
+     */
+    void dictArrayPropertyChanged();
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void DictsArraySignalDBusHandler(QDBusMessage content);
 private:
     bool m_connected = false;

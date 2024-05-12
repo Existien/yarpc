@@ -1,3 +1,56 @@
+{#
+    Convert QML URIs into C++ namespaces
+#}
 {% macro namespace(output) %}
 {{- output.qmlUri|replace('.', '::') -}}
+{% endmacro %}
+{#
+    Find *type_as_str* in *objects*
+    and return the respective C++ type
+#}
+{% macro type(type_as_str, objects) %}
+{%- set object = type_as_str|find_type(objects) -%}
+{{ object.qt6 }}
+{%- endmacro %}
+{#
+    Render generic doxygen tags
+#}
+{% macro doctag(member, tag) -%}
+{%- set lines = member.docs.strip().split('\n') -%}
+* @{{tag}} {{ lines[0] }}
+{%- if lines|count > 1 %}
+{% for line in lines[1:] %}
+
+*   {{ line.rstrip() }}
+{%- endfor %}
+{% endif %}
+{% endmacro %}
+{#
+    Render doxygen @param tags
+#}
+{%- macro docparams(args) %}
+{% for i in range(0,args|count) %}
+{% if i > 0 %}{{'\n'}}{% endif %}
+{% set arg = args[i] %}
+{% set lines = arg.docs.strip().split('\n') %}
+* @param {{ arg.name }} {{ lines[0] }}
+{%- if lines|count > 1 %}
+{% for line in lines[1:] %}
+
+*   {{ line.rstrip() }}
+{%- endfor %}
+{% endif %}
+{%- endfor %}
+{% endmacro %}
+{#
+    Render function parameters
+#}
+{% macro funcparams(member, objects) %}
+{% for i in range(0, member.args|count) %}
+{% set arg = member.args[i] %}
+{{ type(arg.type, objects) }} {{ arg.name }}
+{%- if i < member.args|count - 1 -%}
+,
+{% endif %}
+{% endfor %}
 {% endmacro %}

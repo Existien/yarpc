@@ -6,4 +6,4 @@
  */
 #include "DBusError.hpp"
 
-gen::withArgs::DBusError::DBusError(QDBusError error) : QDBusError(error) {}
+gen::with_args::DBusError::DBusError(QDBusError error) : QDBusError(error) {}

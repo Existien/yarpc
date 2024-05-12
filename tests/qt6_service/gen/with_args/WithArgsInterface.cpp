@@ -6,81 +6,88 @@
  *   Template: qt6/service_source.j2
  */
 #include "WithArgsInterface.hpp"
+#include "WithArgsInterfaceAdaptor.hpp"
+#include "Connection.hpp"
 
-using namespace gen::withArgs;
+using namespace gen::with_args;
 
 WithArgsInterface::WithArgsInterface(QObject* parent)
 : QObject(parent) {
-    m_adaptor = new WithArgsInterfaceAdaptor(this);
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::connectedChanged,
+        this,
+        &WithArgsInterface::connectedChanged
+    );
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::registrationChanged,
+        this,
+        &WithArgsInterface::connectedChanged
+    );
 }
 
-WithArgsInterfaceAdaptor::WithArgsInterfaceAdaptor(QObject* parent) : QDBusAbstractAdaptor(parent) {
-
+void WithArgsInterface::connect() {
+    Connection::instance().registerWithArgs(this);
 }
 
-void WithArgsInterface::connect(){
-    if (m_connection != nullptr) {
-        return;
-    }
-    m_connection = std::make_unique<QDBusConnection>(QDBusConnection::connectToBus(QDBusConnection::SessionBus, "com.yarpc.testservice"));
-    bool success = m_connection->isConnected();
-    if (success) {
-        success = success && m_connection->registerService("com.yarpc.testservice");
-        success = success && m_connection->registerObject(
-            "/com/yarpc/testservice",
-            "com.yarpc.testservice.withArgs",
-            this
-        );
-        if (!success) {
-            m_connection->disconnectFromBus("com.yarpc.testservice");
-        }
-    }
-    if (!success) {
-        m_connection = nullptr;
-    }
-    emit connectedChanged();
+void WithArgsInterface::disconnect() {
+    Connection::instance().unregisterWithArgs();
 }
-void WithArgsInterface::disconnect(){
-    if (m_connection == nullptr) {
-        return;
-    }
-    m_connection->disconnectFromBus("com.yarpc.testservice");
-    m_connection = nullptr;
-    emit connectedChanged();
+
+void WithArgsInterface::finishCall(const QDBusMessage &reply)
+{
+    Connection::instance().send(reply);
 }
 
 bool WithArgsInterface::getConnected() const {
-    return m_connection != nullptr;
+    return (
+        Connection::instance().getConnected()
+        && Connection::instance().isWithArgsRegistered()
+    );
 }
 
-void WithArgsInterface::EmitNotified(){
-    emit m_adaptor->Notified();
+void WithArgsInterface::EmitNotified(
+    QString message
+) {
+    if (Connection::instance().WithArgs() != nullptr ) {
+        emit Connection::instance().WithArgs()->Notified(
+            message
+        );
+    }
 }
-void WithArgsInterface::EmitOrderReceived(){
-    emit m_adaptor->OrderReceived();
-}
-void WithArgsInterfaceAdaptor::Notify(const QDBusMessage &message){
-    auto iface = dynamic_cast<WithArgsInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleNotifyCalled(message);
+
+void WithArgsInterface::EmitOrderReceived(
+    QString item,
+    uint amount,
+    double pricePerItem
+) {
+    if (Connection::instance().WithArgs() != nullptr ) {
+        emit Connection::instance().WithArgs()->OrderReceived(
+            item,
+            amount,
+            pricePerItem
+        );
     }
 }
 
 NotifyPendingReply::NotifyPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = NotifyArgs{};
+    m_args = NotifyArgs{
+        .message = m_call.arguments()[0].value<QString>(),
+    };
 }
 
-NotifyArgs* NotifyPendingReply::args() {
-    return &m_args;
+NotifyArgs NotifyPendingReply::args() {
+    return m_args;
 }
 
-void NotifyPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void NotifyPendingReply::sendReply(
+) {
+    auto dbusReply = m_call.createReply();
     auto iface = dynamic_cast<WithArgsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -89,7 +96,7 @@ void NotifyPendingReply::sendError(const QString& name, const QString& message) 
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<WithArgsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -98,7 +105,7 @@ void NotifyPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<WithArgsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -107,28 +114,28 @@ void WithArgsInterface::handleNotifyCalled(QDBusMessage call) {
     auto reply = new NotifyPendingReply(call, this);
     emit notifyCalled(reply);
 }
-void WithArgsInterfaceAdaptor::Order(const QDBusMessage &message){
-    auto iface = dynamic_cast<WithArgsInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleOrderCalled(message);
-    }
-}
 
 OrderPendingReply::OrderPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = OrderArgs{};
+    m_args = OrderArgs{
+        .item = m_call.arguments()[0].value<QString>(),
+        .amount = m_call.arguments()[1].value<uint>(),
+        .pricePerItem = m_call.arguments()[2].value<double>(),
+    };
 }
 
-OrderArgs* OrderPendingReply::args() {
-    return &m_args;
+OrderArgs OrderPendingReply::args() {
+    return m_args;
 }
 
-void OrderPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void OrderPendingReply::sendReply(
+    const double &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<WithArgsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -137,7 +144,7 @@ void OrderPendingReply::sendError(const QString& name, const QString& message) {
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<WithArgsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -146,7 +153,7 @@ void OrderPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<WithArgsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -156,7 +163,57 @@ void WithArgsInterface::handleOrderCalled(QDBusMessage call) {
     emit orderCalled(reply);
 }
 
-void WithArgsInterface::callFinished(const QDBusMessage &reply)
-{
-    m_connection->send(reply);
+double WithArgsInterface::getSpeed() const {
+    return m_Speed;
+}
+
+void WithArgsInterface::setSpeed(const double &value ) {
+    m_Speed = value;
+    emit speedChanged();
+    if (Connection::instance().WithArgs() != nullptr ) {
+        QVariantMap changedProps;
+        changedProps.insert("Speed", value);
+        emitPropertiesChangedSignal(changedProps);
+    }
+}
+
+uint WithArgsInterface::getDistance() const {
+    return m_Distance;
+}
+
+void WithArgsInterface::setDistance(const uint &value ) {
+    m_Distance = value;
+    emit distanceChanged();
+    if (Connection::instance().WithArgs() != nullptr ) {
+        QVariantMap changedProps;
+        changedProps.insert("Distance", value);
+        emitPropertiesChangedSignal(changedProps);
+    }
+}
+
+double WithArgsInterface::getDuration() const {
+    return m_Duration;
+}
+
+void WithArgsInterface::setDuration(const double &value ) {
+    m_Duration = value;
+    emit durationChanged();
+    if (Connection::instance().WithArgs() != nullptr ) {
+        QVariantMap changedProps;
+        changedProps.insert("Duration", value);
+        emitPropertiesChangedSignal(changedProps);
+    }
+}
+
+
+void WithArgsInterface::emitPropertiesChangedSignal(const QVariantMap &changedProps) {
+    auto signal = QDBusMessage::createSignal(
+        "/com/yarpc/testservice/withArgs",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged"
+    );
+    signal << "com.yarpc.testservice.withArgs";
+    signal << changedProps;
+    signal << QStringList{};
+    Connection::instance().send(signal);
 }

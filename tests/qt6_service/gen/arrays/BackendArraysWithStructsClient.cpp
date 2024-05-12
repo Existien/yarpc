@@ -26,7 +26,7 @@ BackendArraysWithStructsClient::BackendArraysWithStructsClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/arrays",
         "com.yarpc.backend.arraysWithStructs",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendArraysWithStructsClient::BackendArraysWithStructsClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/arrays",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/arrays",
         "com.yarpc.backend.arraysWithStructs",
         "ArrayStructSignal",
         this,
@@ -56,6 +64,24 @@ bool BackendArraysWithStructsClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendArraysWithStructsClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/arrays",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.arraysWithStructs"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendArraysWithStructsClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -66,15 +92,29 @@ void BackendArraysWithStructsClient::disconnectedHandler(const QString& service)
     emit connectedChanged();
 }
 
-ArrayStructMethodPendingCall* BackendArraysWithStructsClient::ArrayStructMethod() {
+void BackendArraysWithStructsClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.arraysWithStructs") {
+        return;
+    }
+    if (changes.contains("ArrayStructProperty")) {
+        emit arrayStructPropertyChanged();
+    }
+}
+
+ArrayStructMethodPendingCall* BackendArraysWithStructsClient::ArrayStructMethod(
+    QList<$1> numbers
+) {
+    QDBusArgument dbusnumbers;
+    dbusnumbers << numbers;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/arrays",
         "com.yarpc.backend.arraysWithStructs",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "ArrayStructMethod"
+        "ArrayStructMethod",
+        QVariant::fromValue(dbusnumbers)
     )};
     return new ArrayStructMethodPendingCall(pendingCall, this);
 }
@@ -89,17 +129,39 @@ ArrayStructMethodPendingCall::ArrayStructMethodPendingCall(QDBusPendingCall pend
 
 void ArrayStructMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QList<$1>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
 
 void BackendArraysWithStructsClient::ArrayStructSignalDBusHandler(QDBusMessage content) {
-    emit arrayStructSignalReceived();
+    emit arrayStructSignalReceived(
+        content.arguments()[0].value<QList<$1>>()
+    );
 }
 
+
+QList<$1> BackendArraysWithStructsClient::getArrayStructProperty() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/arrays",
+        "com.yarpc.backend.arraysWithStructs",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("ArrayStructProperty").value<QList<$1>>();
+}
+
+void BackendArraysWithStructsClient::setArrayStructProperty(const QList<$1> &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/arrays",
+        "com.yarpc.backend.arraysWithStructs",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("ArrayStructProperty", newValue);
+}

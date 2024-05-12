@@ -26,8 +26,10 @@ public:
 signals:
     /**
      * @brief Emitted when an SendStruct call returns.
+     *
+     * @param the SimpleStruct
      */
-    void finished();
+    void finished(const  &reply);
 
     /**
      * @brief Emitted when an error ocurred during an SendStruct call.
@@ -47,24 +49,61 @@ private:
 class BackendStructsClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    /**
+     * @brief a property for a simple struct
+     */
+    Q_PROPERTY( simple READ getSimple WRITE setSimple NOTIFY simpleChanged)
+
 public:
     BackendStructsClient(QObject* parent = nullptr);
 
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a method with a struct as args
      *
+     * @param simpleStruct the SimpleStruct to send
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    SendStructPendingCall* SendStruct();
+    SendStructPendingCall* SendStruct(
+         simpleStruct
+    );
+
+    /**
+     * @brief Getter for the Simple property.
+     *
+     * @returns the current value of the property
+     *
+     * a property for a simple struct
+     */
+     getSimple() const;
+
+    /**
+     * @brief Setter for the Simple property.
+     *
+     * @param newValue the new value of the property
+     *
+     * a property for a simple struct
+     */
+    void setSimple(const  &newValue);
 
 signals:
     /**
@@ -74,12 +113,26 @@ signals:
 
     /**
      * @brief a signal with a struct as args
+     *
+     * @param simpleStruct the SimpleStruct
+     * @param totalCosts the total costs
      */
-    void structReceivedReceived();
+    void structReceivedReceived(
+         simpleStruct,
+        double totalCosts
+    );
+
+    /**
+     * @brief Changed signal for the Simple property.
+     *
+     * a property for a simple struct
+     */
+    void simpleChanged();
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void StructReceivedDBusHandler(QDBusMessage content);
 private:
     bool m_connected = false;

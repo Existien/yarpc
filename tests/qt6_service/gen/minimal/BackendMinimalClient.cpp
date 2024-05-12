@@ -26,7 +26,7 @@ BackendMinimalClient::BackendMinimalClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/minimal",
         "com.yarpc.backend.minimal",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendMinimalClient::BackendMinimalClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/minimal",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/minimal",
         "com.yarpc.backend.minimal",
         "Bumped",
         this,
@@ -56,6 +64,24 @@ bool BackendMinimalClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendMinimalClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/minimal",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.minimal"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendMinimalClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -66,14 +92,24 @@ void BackendMinimalClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
+void BackendMinimalClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.minimal") {
+        return;
+    }
+}
+
 
 void BackendMinimalClient::BumpedDBusHandler(QDBusMessage content) {
-    emit bumpedReceived();
+    emit bumpedReceived(
+
+    );
 }
-BumpPendingCall* BackendMinimalClient::Bump() {
+BumpPendingCall* BackendMinimalClient::Bump(
+    
+) {
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/minimal",
         "com.yarpc.backend.minimal",
         QDBusConnection::sessionBus()
     );

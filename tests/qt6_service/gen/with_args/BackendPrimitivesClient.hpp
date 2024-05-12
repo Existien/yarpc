@@ -12,7 +12,7 @@
 #include "DBusError.hpp"
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
-namespace gen::withArgs {
+namespace gen::with_args {
 
 /**
  * @brief Pending call object for the Bump method calls.
@@ -26,8 +26,10 @@ public:
 signals:
     /**
      * @brief Emitted when an Uint8Method call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const uchar &reply);
 
     /**
      * @brief Emitted when an error ocurred during an Uint8Method call.
@@ -40,6 +42,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -52,8 +55,10 @@ public:
 signals:
     /**
      * @brief Emitted when an BoolMethod call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const bool &reply);
 
     /**
      * @brief Emitted when an error ocurred during an BoolMethod call.
@@ -66,6 +71,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -78,8 +84,10 @@ public:
 signals:
     /**
      * @brief Emitted when an Int16Method call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const short &reply);
 
     /**
      * @brief Emitted when an error ocurred during an Int16Method call.
@@ -92,6 +100,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -104,8 +113,10 @@ public:
 signals:
     /**
      * @brief Emitted when an Uint16Method call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const ushort &reply);
 
     /**
      * @brief Emitted when an error ocurred during an Uint16Method call.
@@ -118,6 +129,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -130,8 +142,10 @@ public:
 signals:
     /**
      * @brief Emitted when an Int32Method call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const int &reply);
 
     /**
      * @brief Emitted when an error ocurred during an Int32Method call.
@@ -144,6 +158,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -156,8 +171,10 @@ public:
 signals:
     /**
      * @brief Emitted when an Uint32Method call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const uint &reply);
 
     /**
      * @brief Emitted when an error ocurred during an Uint32Method call.
@@ -170,6 +187,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -182,8 +200,10 @@ public:
 signals:
     /**
      * @brief Emitted when an Int64Method call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const qlonglong &reply);
 
     /**
      * @brief Emitted when an error ocurred during an Int64Method call.
@@ -196,6 +216,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -208,8 +229,10 @@ public:
 signals:
     /**
      * @brief Emitted when an Uint64Method call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const qulonglong &reply);
 
     /**
      * @brief Emitted when an error ocurred during an Uint64Method call.
@@ -222,6 +245,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -234,8 +258,10 @@ public:
 signals:
     /**
      * @brief Emitted when an DoubleMethod call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const double &reply);
 
     /**
      * @brief Emitted when an error ocurred during an DoubleMethod call.
@@ -248,6 +274,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -260,8 +287,10 @@ public:
 signals:
     /**
      * @brief Emitted when an StringMethod call returns.
+     *
+     * @param the return type
      */
-    void finished();
+    void finished(const QString &reply);
 
     /**
      * @brief Emitted when an error ocurred during an StringMethod call.
@@ -281,6 +310,9 @@ private:
 class BackendPrimitivesClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
 public:
     BackendPrimitivesClient(QObject* parent = nullptr);
@@ -288,80 +320,127 @@ public:
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint8MethodPendingCall* Uint8Method();
+    Uint8MethodPendingCall* Uint8Method(
+        uchar value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    BoolMethodPendingCall* BoolMethod();
+    BoolMethodPendingCall* BoolMethod(
+        bool value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int16MethodPendingCall* Int16Method();
+    Int16MethodPendingCall* Int16Method(
+        short value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint16MethodPendingCall* Uint16Method();
+    Uint16MethodPendingCall* Uint16Method(
+        ushort value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int32MethodPendingCall* Int32Method();
+    Int32MethodPendingCall* Int32Method(
+        int value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint32MethodPendingCall* Uint32Method();
+    Uint32MethodPendingCall* Uint32Method(
+        uint value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int64MethodPendingCall* Int64Method();
+    Int64MethodPendingCall* Int64Method(
+        qlonglong value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint64MethodPendingCall* Uint64Method();
+    Uint64MethodPendingCall* Uint64Method(
+        qulonglong value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DoubleMethodPendingCall* DoubleMethod();
+    DoubleMethodPendingCall* DoubleMethod(
+        double value
+    );
 
     /**
      * @brief a method
      *
+     * @param value the value
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    StringMethodPendingCall* StringMethod();
+    StringMethodPendingCall* StringMethod(
+        QString value
+    );
 
 signals:
     /**
@@ -371,48 +450,98 @@ signals:
 
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void uint8SignalReceived();
+    void uint8SignalReceived(
+        uchar value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void boolSignalReceived();
+    void boolSignalReceived(
+        bool value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void int16SignalReceived();
+    void int16SignalReceived(
+        short value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void uint16SignalReceived();
+    void uint16SignalReceived(
+        ushort value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void int32SignalReceived();
+    void int32SignalReceived(
+        int value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void uint32SignalReceived();
+    void uint32SignalReceived(
+        uint value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void int64SignalReceived();
+    void int64SignalReceived(
+        qlonglong value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void uint64SignalReceived();
+    void uint64SignalReceived(
+        qulonglong value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void doubleSignalReceived();
+    void doubleSignalReceived(
+        double value
+    );
+
     /**
      * @brief a signal
+     *
+     * @param value the value
      */
-    void stringSignalReceived();
+    void stringSignalReceived(
+        QString value
+    );
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void Uint8SignalDBusHandler(QDBusMessage content);
     void BoolSignalDBusHandler(QDBusMessage content);
     void Int16SignalDBusHandler(QDBusMessage content);

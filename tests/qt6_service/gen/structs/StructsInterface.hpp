@@ -8,37 +8,28 @@
 #pragma once
 #include <QObject>
 #include <qqmlintegration.h>
-#include <QDBusAbstractAdaptor>
-#include <QDBusConnection>
 #include <QDBusMessage>
-#include <memory>
 #include "DBusError.hpp"
 namespace gen::structs {
 
 /**
- * @brief D-Bus adaptor for the Structs interface.
+ * @brief The arguments passed during a SendStruct call.
  */
-class StructsInterfaceAdaptor : public QDBusAbstractAdaptor {
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.yarpc.testservice.structs")
-public:
-    StructsInterfaceAdaptor(QObject* parent = nullptr);
-public slots:
-    /**
-     * @brief a method with a struct as args
-     */
-    void SendStruct(const QDBusMessage &message);
-signals:
-    /**
-     * @brief a signal with a struct as args
-     */
-    void StructReceived();
-};
-
 class SendStructArgs {
     Q_GADGET
+    /**
+     * @brief the SimpleStruct to send
+     */
+    Q_PROPERTY( simpleStruct MEMBER simpleStruct)
+public:
+     simpleStruct;
 };
 
+/**
+ * @brief A pending reply to a SendStruct call.
+ *
+ * Use the sendReply or sendError methods to send the pending reply.
+ */
 class SendStructPendingReply : public QObject {
     Q_OBJECT
     QML_UNCREATABLE("")
@@ -46,9 +37,36 @@ class SendStructPendingReply : public QObject {
 public:
     SendStructPendingReply(QDBusMessage call, QObject *parent);
 public slots:
-    SendStructArgs* args();
-    void sendReply();
+    /**
+     * @brief Returns the arguments passed during a SendStruct call.
+     *
+     * @returns the arguments of the call
+     */
+    SendStructArgs args();
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const  &reply
+    );
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param name the name of the error
+     *   (needs to be in the form of a D-Bus URI, e.g. "com.yarpc.testservice.structs.OutOfCheeseError")
+     * @param message the error message
+     */
     void sendError(const QString &name, const QString &message);
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param error the D-Bus error to send
+     */
     void sendError(const DBusError &error);
 private:
     QDBusMessage m_call;
@@ -56,29 +74,108 @@ private:
 };
 
 
+/**
+ * @brief A interface with structures
+ */
 class StructsInterface : public QObject {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    QML_SINGLETON
+
+    /** @brief Whether the interface is registered and connected */
+    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged )
+
+    /**
+     * @brief a property for a simple struct
+     */
+    Q_PROPERTY( simple READ getSimple WRITE setSimple NOTIFY simpleChanged)
+
 public:
     StructsInterface(QObject* parent = nullptr);
+
+    /**
+     * @brief Finishes a pending call by sending a reply.
+     *
+     * @param reply the reply to send
+     */
+    void finishCall(const QDBusMessage &reply);
+
+    /**
+     * @brief Returns whether the interface is registered and connected
+     *
+     * @returns whether the interface is registered and connected
+     */
     bool getConnected() const;
-    void callFinished(const QDBusMessage &reply);
+
+    /**
+     * @brief Handler for SendStruct D-Bus calls.
+     *
+     * @param call the D-Bus call object
+     */
     void handleSendStructCalled(QDBusMessage call);
 
+
 public slots:
+    /** @brief Registeres and connects the interface. */
     void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
     void disconnect();
 
-    void EmitStructReceived();
+    /**
+     * @brief a signal with a struct as args
+     *
+     * @param simpleStruct the SimpleStruct
+     * @param totalCosts the total costs
+     */
+    void EmitStructReceived(
+         simpleStruct,
+        double totalCosts
+    );
+
+    /**
+     * @brief Getter for the Simple property.
+     *
+     * @returns the current value of the property
+     */
+     getSimple() const;
+
+    /**
+     * @brief Setter for the Simple property.
+     *
+     * @param value the new value of the property
+     */
+    void setSimple(const  &value );
+
 
 signals:
+    /**
+     * @brief Emitted when the connection status changes.
+     */
     void connectedChanged();
-    void sendStructCalled(BumpPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client calls the SendStruct method.
+     *
+     * @param reply the reply object containing the call arguments and means to reply
+     */
+    void sendStructCalled(SendStructPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client tries to set the Simple property.
+     *
+     * @param value the new value of the property
+     */
+    void propertySimpleSet( value);
+
+    /**
+     * @brief Emitted when the value of the Simple property changes.
+     */
+    void simpleChanged();
 
 private:
-    StructsInterfaceAdaptor *m_adaptor;
-    std::unique_ptr<QDBusConnection> m_connection = nullptr;
+    void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
+     m_Simple = {};
 };
 
 }

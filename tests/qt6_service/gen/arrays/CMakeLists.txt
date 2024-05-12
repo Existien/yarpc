@@ -4,16 +4,20 @@
 #   File: /workspace/tests/definitions/qt6/04_arrays.yml
 #   Template: qt6/CMakeLists.j2
 
-
-file(GLOB sources ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
-
 qt_add_qml_module(Arrays
     STATIC
     PLUGIN_TARGET Arrays
     URI "gen.arrays"
     VERSION 1.0
     SOURCES
-        ${sources}
+        Connection.cpp
+        DBusError.cpp
+        ArraysInterface.cpp
+        ArraysInterfaceAdaptor.cpp
+        ArraysWithStructsInterface.cpp
+        ArraysWithStructsInterfaceAdaptor.cpp
+        BackendArraysClient.cpp
+        BackendArraysWithStructsClient.cpp
 )
 
 target_link_libraries(Arrays PRIVATE Qt6::DBus)

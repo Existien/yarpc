@@ -10,47 +10,34 @@
 #pragma once
 #include <QObject>
 #include <qqmlintegration.h>
-#include <QDBusAbstractAdaptor>
-#include <QDBusConnection>
 #include <QDBusMessage>
-#include <memory>
 #include "DBusError.hpp"
 namespace {{ qt6.namespace(output) }} {
 
-/**
- * @brief D-Bus adaptor for the {{ object.name }} interface.
- */
-class {{ target.className }}Adaptor : public QDBusAbstractAdaptor {
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "{{ target.interfaceName }}")
-public:
-    {{ target.className }}Adaptor(QObject* parent = nullptr);
-public slots:
-    {% for member in object.members %}
-    {% if member.kind == 'method' %}
-    /**
-     * @brief {{ member.docs }}
-     */
-    void {{ member.name }}(const QDBusMessage &message);
-    {% endif %}
-    {% endfor %}
-signals:
-    {% for member in object.members %}
-    {% if member.kind == 'signal' %}
-    /**
-     * @brief {{ member.docs }}
-     */
-    void {{ member.name }}();
-    {% endif %}
-    {% endfor %}
-};
-
 {% for member in object.members %}
 {% if member.kind == 'method' %}
+/**
+ * @brief The arguments passed during a {{ member.name }} call.
+ */
 class {{ member.name }}Args {
     Q_GADGET
+    {% for arg in member.args %}
+    /**
+     {{ qt6.doctag(arg, "brief")|indent(5) }}
+     */
+    Q_PROPERTY({{ qt6.type(arg.type, output.objects) }} {{ arg.name }} MEMBER {{arg.name }})
+    {% endfor %}
+public:
+    {% for arg in member.args %}
+    {{ qt6.type(arg.type, output.objects) }} {{arg.name }};
+    {% endfor %}
 };
 
+/**
+ * @brief A pending reply to a {{ member.name }} call.
+ *
+ * Use the sendReply or sendError methods to send the pending reply.
+ */
 class {{ member.name }}PendingReply : public QObject {
     Q_OBJECT
     QML_UNCREATABLE("")
@@ -58,9 +45,38 @@ class {{ member.name }}PendingReply : public QObject {
 public:
     {{ member.name }}PendingReply(QDBusMessage call, QObject *parent);
 public slots:
-    {{ member.name }}Args* args();
-    void sendReply();
+    /**
+     * @brief Returns the arguments passed during a {{ member.name }} call.
+     *
+     * @returns the arguments of the call
+     */
+    {{ member.name }}Args args();
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        {% if member.returns is defined %}
+        const {{ qt6.type(member.returns.type, output.objects) }} &reply
+        {% endif %}
+    );
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param name the name of the error
+     *   (needs to be in the form of a D-Bus URI, e.g. "{{ target.interfaceName }}.OutOfCheeseError")
+     * @param message the error message
+     */
     void sendError(const QString &name, const QString &message);
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param error the D-Bus error to send
+     */
     void sendError(const DBusError &error);
 private:
     QDBusMessage m_call;
@@ -70,41 +86,134 @@ private:
 {% endif %}
 {% endfor %}
 
+/**
+ {{ qt6.doctag(object, "brief")|indent(1) }}
+ */
 class {{ target.className }} : public QObject {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    QML_SINGLETON
+
+    /** @brief Whether the interface is registered and connected */
+    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged )
+
+    {% for member in object.members %}
+    {% if member.kind == "property" %}
+    /**
+     {{ qt6.doctag(member, "brief")|indent(5) }}
+     */
+    Q_PROPERTY({{ qt6.type(member.type, output.objects) }} {{ member.name|camel_case }} READ get{{ member.name }} WRITE set{{ member.name }} NOTIFY {{ member.name|camel_case }}Changed)
+
+    {% endif %}
+    {% endfor %}
 public:
     {{ target.className }}(QObject* parent = nullptr);
+
+    /**
+     * @brief Finishes a pending call by sending a reply.
+     *
+     * @param reply the reply to send
+     */
+    void finishCall(const QDBusMessage &reply);
+
+    /**
+     * @brief Returns whether the interface is registered and connected
+     *
+     * @returns whether the interface is registered and connected
+     */
     bool getConnected() const;
-    void callFinished(const QDBusMessage &reply);
+
     {% for member in object. members %}
     {% if member.kind == 'method' %}
+    /**
+     * @brief Handler for {{ member.name }} D-Bus calls.
+     *
+     * @param call the D-Bus call object
+     */
     void handle{{ member.name }}Called(QDBusMessage call);
+
     {% endif %}
     {% endfor %}
 
 public slots:
+    /** @brief Registeres and connects the interface. */
     void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
     void disconnect();
 
     {% for member in object.members %}
     {% if member.kind == 'signal' %}
-    void Emit{{ member.name }}();
+    /**
+     {{ qt6.doctag(member, "brief")|indent(5) }}
+     {% if member.args|count > 0 %}
+     *
+     {{ qt6.docparams(member.args)|indent(5) }}
+     {% endif %}
+     */
+    void Emit{{ member.name }}(
+    {% if member.args|count > 0 %}
+        {{ qt6.funcparams(member, output.objects)|indent(8) }}
+    {% endif %}
+    );
+
+    {% endif %}
+    {% if member.kind == 'property' %}
+    /**
+     * @brief Getter for the {{ member.name }} property.
+     *
+     * @returns the current value of the property
+     */
+    {{ qt6.type(member.type, output.objects)}} get{{ member.name }}() const;
+
+    /**
+     * @brief Setter for the {{ member.name }} property.
+     *
+     * @param value the new value of the property
+     */
+    void set{{ member.name }}(const {{ qt6.type(member.type, output.objects) }} &value );
+
     {% endif %}
     {% endfor %}
 
 signals:
+    /**
+     * @brief Emitted when the connection status changes.
+     */
     void connectedChanged();
+
     {% for member in object.members %}
     {% if member.kind == 'method' %}
+    /**
+     * @brief Emitted when a client calls the {{ member.name }} method.
+     *
+     * @param reply the reply object containing the call arguments and means to reply
+     */
     void {{ member.name|camel_case }}Called({{ member.name }}PendingReply* reply);
+
+    {% endif %}
+    {% if member.kind == 'property' %}
+    /**
+     * @brief Emitted when a client tries to set the {{ member.name }} property.
+     *
+     * @param value the new value of the property
+     */
+    void property{{ member.name }}Set({{ qt6.type(member.type, output.objects) }} value);
+
+    /**
+     * @brief Emitted when the value of the {{ member.name }} property changes.
+     */
+    void {{ member.name|camel_case }}Changed();
     {% endif %}
     {% endfor %}
 
 private:
-    {{ target.className }}Adaptor *m_adaptor;
-    std::unique_ptr<QDBusConnection> m_connection = nullptr;
+    void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
+    {% for member in object.members %}
+    {% if member.kind == 'property' %}
+    {{ qt6.type(member.type, output.objects) }} m_{{ member.name }} = {};
+    {% endif %}
+    {% endfor %}
 };
 
 }

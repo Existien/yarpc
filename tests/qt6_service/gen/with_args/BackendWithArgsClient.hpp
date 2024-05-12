@@ -12,7 +12,7 @@
 #include "DBusError.hpp"
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
-namespace gen::withArgs {
+namespace gen::with_args {
 
 /**
  * @brief Pending call object for the Bump method calls.
@@ -40,6 +40,7 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -52,8 +53,11 @@ public:
 signals:
     /**
      * @brief Emitted when an Order call returns.
+     *
+     * @param the
+     *   total price
      */
-    void finished();
+    void finished(const double &reply);
 
     /**
      * @brief Emitted when an error ocurred during an Order call.
@@ -73,33 +77,118 @@ private:
 class BackendWithArgsClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    /**
+     * @brief the speed
+     *   in m/s
+     */
+    Q_PROPERTY(double speed READ getSpeed WRITE setSpeed NOTIFY speedChanged)
+
+    /**
+     * @brief the distance to travel in m
+     */
+    Q_PROPERTY(uint distance READ getDistance WRITE setDistance NOTIFY distanceChanged)
+
+    /**
+     * @brief the time until the distance is covered at the current speed
+     */
+    Q_PROPERTY(double duration READ getDuration NOTIFY durationChanged)
+
 public:
     BackendWithArgsClient(QObject* parent = nullptr);
 
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
      *
-     * @returns Pending call object with finished signal containing the reply.
-     */
-    NotifyPendingCall* Notify();
-
-    /**
-     * @brief a simple method
-with args and return value
-
+     * @param message The message
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    OrderPendingCall* Order();
+    NotifyPendingCall* Notify(
+        QString message
+    );
+
+    /**
+     * @brief a simple method
+     *   with args and return value
+     *
+     * @param item The
+     *   item
+     * @param amount a amount ordered
+     * @param pricePerItem the price per item
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    OrderPendingCall* Order(
+        QString item,
+        uint amount,
+        double pricePerItem
+    );
+
+    /**
+     * @brief Getter for the Speed property.
+     *
+     * @returns the current value of the property
+     *
+     * the speed
+     * in m/s
+     */
+    double getSpeed() const;
+
+    /**
+     * @brief Setter for the Speed property.
+     *
+     * @param newValue the new value of the property
+     *
+     * the speed
+     * in m/s
+     */
+    void setSpeed(const double &newValue);
+
+    /**
+     * @brief Getter for the Distance property.
+     *
+     * @returns the current value of the property
+     *
+     * the distance to travel in m
+     */
+    uint getDistance() const;
+
+    /**
+     * @brief Setter for the Distance property.
+     *
+     * @param newValue the new value of the property
+     *
+     * the distance to travel in m
+     */
+    void setDistance(const uint &newValue);
+
+    /**
+     * @brief Getter for the Duration property.
+     *
+     * @returns the current value of the property
+     *
+     * the time until the distance is covered at the current speed
+     */
+    double getDuration() const;
 
 signals:
     /**
@@ -109,18 +198,54 @@ signals:
 
     /**
      * @brief a simple signal with one argument
+     *
+     * @param message The message
      */
-    void notifiedReceived();
+    void notifiedReceived(
+        QString message
+    );
+
     /**
      * @brief a simple signal with
-multiple arguments
-
+     *   multiple arguments
+     *
+     * @param item The item
+     * @param amount a amount
+     *   ordered
+     * @param pricePerItem the price per item
      */
-    void orderReceivedReceived();
+    void orderReceivedReceived(
+        QString item,
+        uint amount,
+        double pricePerItem
+    );
+
+    /**
+     * @brief Changed signal for the Speed property.
+     *
+     * the speed
+     * in m/s
+     */
+    void speedChanged();
+
+    /**
+     * @brief Changed signal for the Distance property.
+     *
+     * the distance to travel in m
+     */
+    void distanceChanged();
+
+    /**
+     * @brief Changed signal for the Duration property.
+     *
+     * the time until the distance is covered at the current speed
+     */
+    void durationChanged();
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void NotifiedDBusHandler(QDBusMessage content);
     void OrderReceivedDBusHandler(QDBusMessage content);
 private:

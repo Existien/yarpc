@@ -12,7 +12,7 @@
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
 
-using namespace gen::withArgs;
+using namespace gen::with_args;
 
 BackendWithArgsClient::BackendWithArgsClient(QObject* parent)
  : QObject(parent),
@@ -26,7 +26,7 @@ BackendWithArgsClient::BackendWithArgsClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.withArgs",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendWithArgsClient::BackendWithArgsClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.withArgs",
         "Notified",
         this,
@@ -51,7 +59,7 @@ BackendWithArgsClient::BackendWithArgsClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.withArgs",
         "OrderReceived",
         this,
@@ -64,6 +72,24 @@ bool BackendWithArgsClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendWithArgsClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.withArgs"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendWithArgsClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -74,23 +100,49 @@ void BackendWithArgsClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
+void BackendWithArgsClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.withArgs") {
+        return;
+    }
+    if (changes.contains("Speed")) {
+        emit speedChanged();
+    }
+    if (changes.contains("Distance")) {
+        emit distanceChanged();
+    }
+    if (changes.contains("Duration")) {
+        emit durationChanged();
+    }
+}
+
 
 void BackendWithArgsClient::NotifiedDBusHandler(QDBusMessage content) {
-    emit notifiedReceived();
+    emit notifiedReceived(
+        content.arguments()[0].value<QString>()
+    );
 }
 
 void BackendWithArgsClient::OrderReceivedDBusHandler(QDBusMessage content) {
-    emit orderReceivedReceived();
+    emit orderReceivedReceived(
+        content.arguments()[0].value<QString>(),
+        content.arguments()[1].value<uint>(),
+        content.arguments()[2].value<double>()
+    );
 }
-NotifyPendingCall* BackendWithArgsClient::Notify() {
+NotifyPendingCall* BackendWithArgsClient::Notify(
+    QString message
+) {
+    QDBusArgument dbusmessage;
+    dbusmessage << message;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.withArgs",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Notify"
+        "Notify",
+        QVariant::fromValue(dbusmessage)
     )};
     return new NotifyPendingCall(pendingCall, this);
 }
@@ -114,15 +166,28 @@ void NotifyPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
-OrderPendingCall* BackendWithArgsClient::Order() {
+OrderPendingCall* BackendWithArgsClient::Order(
+    QString item,
+    uint amount,
+    double pricePerItem
+) {
+    QDBusArgument dbusitem;
+    dbusitem << item;
+    QDBusArgument dbusamount;
+    dbusamount << amount;
+    QDBusArgument dbuspricePerItem;
+    dbuspricePerItem << pricePerItem;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.withArgs",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Order"
+        "Order",
+        QVariant::fromValue(dbusitem),
+        QVariant::fromValue(dbusamount),
+        QVariant::fromValue(dbuspricePerItem)
     )};
     return new OrderPendingCall(pendingCall, this);
 }
@@ -137,15 +202,65 @@ OrderPendingCall::OrderPendingCall(QDBusPendingCall pendingCall, QObject *parent
 
 void OrderPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<double> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
 
 
+double BackendWithArgsClient::getSpeed() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
+        "com.yarpc.backend.withArgs",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("Speed").value<double>();
+}
 
+void BackendWithArgsClient::setSpeed(const double &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
+        "com.yarpc.backend.withArgs",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("Speed", newValue);
+}
+
+
+uint BackendWithArgsClient::getDistance() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
+        "com.yarpc.backend.withArgs",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("Distance").value<uint>();
+}
+
+void BackendWithArgsClient::setDistance(const uint &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
+        "com.yarpc.backend.withArgs",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("Distance", newValue);
+}
+
+
+double BackendWithArgsClient::getDuration() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
+        "com.yarpc.backend.withArgs",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("Duration").value<double>();
+}

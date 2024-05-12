@@ -6,78 +6,72 @@
  *   Template: qt6/service_source.j2
  */
 #include "MinimalInterface.hpp"
+#include "MinimalInterfaceAdaptor.hpp"
+#include "Connection.hpp"
 
 using namespace gen::minimal;
 
 MinimalInterface::MinimalInterface(QObject* parent)
 : QObject(parent) {
-    m_adaptor = new MinimalInterfaceAdaptor(this);
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::connectedChanged,
+        this,
+        &MinimalInterface::connectedChanged
+    );
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::registrationChanged,
+        this,
+        &MinimalInterface::connectedChanged
+    );
 }
 
-MinimalInterfaceAdaptor::MinimalInterfaceAdaptor(QObject* parent) : QDBusAbstractAdaptor(parent) {
-
+void MinimalInterface::connect() {
+    Connection::instance().registerMinimal(this);
 }
 
-void MinimalInterface::connect(){
-    if (m_connection != nullptr) {
-        return;
-    }
-    m_connection = std::make_unique<QDBusConnection>(QDBusConnection::connectToBus(QDBusConnection::SessionBus, "com.yarpc.testservice"));
-    bool success = m_connection->isConnected();
-    if (success) {
-        success = success && m_connection->registerService("com.yarpc.testservice");
-        success = success && m_connection->registerObject(
-            "/com/yarpc/testservice",
-            "com.yarpc.testservice.minimal",
-            this
-        );
-        if (!success) {
-            m_connection->disconnectFromBus("com.yarpc.testservice");
-        }
-    }
-    if (!success) {
-        m_connection = nullptr;
-    }
-    emit connectedChanged();
+void MinimalInterface::disconnect() {
+    Connection::instance().unregisterMinimal();
 }
-void MinimalInterface::disconnect(){
-    if (m_connection == nullptr) {
-        return;
-    }
-    m_connection->disconnectFromBus("com.yarpc.testservice");
-    m_connection = nullptr;
-    emit connectedChanged();
+
+void MinimalInterface::finishCall(const QDBusMessage &reply)
+{
+    Connection::instance().send(reply);
 }
 
 bool MinimalInterface::getConnected() const {
-    return m_connection != nullptr;
+    return (
+        Connection::instance().getConnected()
+        && Connection::instance().isMinimalRegistered()
+    );
 }
 
-void MinimalInterface::EmitBumped(){
-    emit m_adaptor->Bumped();
-}
-void MinimalInterfaceAdaptor::Bump(const QDBusMessage &message){
-    auto iface = dynamic_cast<MinimalInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleBumpCalled(message);
+void MinimalInterface::EmitBumped(
+) {
+    if (Connection::instance().Minimal() != nullptr ) {
+        emit Connection::instance().Minimal()->Bumped(
+
+        );
     }
 }
 
 BumpPendingReply::BumpPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = BumpArgs{};
+    m_args = BumpArgs{
+    };
 }
 
-BumpArgs* BumpPendingReply::args() {
-    return &m_args;
+BumpArgs BumpPendingReply::args() {
+    return m_args;
 }
 
-void BumpPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void BumpPendingReply::sendReply(
+) {
+    auto dbusReply = m_call.createReply();
     auto iface = dynamic_cast<MinimalInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -86,7 +80,7 @@ void BumpPendingReply::sendError(const QString& name, const QString& message) {
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<MinimalInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -95,7 +89,7 @@ void BumpPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<MinimalInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -105,7 +99,15 @@ void MinimalInterface::handleBumpCalled(QDBusMessage call) {
     emit bumpCalled(reply);
 }
 
-void MinimalInterface::callFinished(const QDBusMessage &reply)
-{
-    m_connection->send(reply);
+
+void MinimalInterface::emitPropertiesChangedSignal(const QVariantMap &changedProps) {
+    auto signal = QDBusMessage::createSignal(
+        "/com/yarpc/testservice/minimal",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged"
+    );
+    signal << "com.yarpc.testservice.minimal";
+    signal << changedProps;
+    signal << QStringList{};
+    Connection::instance().send(signal);
 }

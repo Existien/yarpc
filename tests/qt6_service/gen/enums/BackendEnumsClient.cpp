@@ -26,7 +26,7 @@ BackendEnumsClient::BackendEnumsClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/enums",
         "com.yarpc.backend.enums",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendEnumsClient::BackendEnumsClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/enums",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/enums",
         "com.yarpc.backend.enums",
         "EnumSignal",
         this,
@@ -56,6 +64,24 @@ bool BackendEnumsClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendEnumsClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/enums",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.enums"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendEnumsClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -66,15 +92,29 @@ void BackendEnumsClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
-EnumMethodPendingCall* BackendEnumsClient::EnumMethod() {
+void BackendEnumsClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.enums") {
+        return;
+    }
+    if (changes.contains("EnumProperty")) {
+        emit enumPropertyChanged();
+    }
+}
+
+EnumMethodPendingCall* BackendEnumsClient::EnumMethod(
+     color
+) {
+    QDBusArgument dbuscolor;
+    dbuscolor << color;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/enums",
         "com.yarpc.backend.enums",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "EnumMethod"
+        "EnumMethod",
+        QVariant::fromValue(dbuscolor)
     )};
     return new EnumMethodPendingCall(pendingCall, this);
 }
@@ -89,17 +129,39 @@ EnumMethodPendingCall::EnumMethodPendingCall(QDBusPendingCall pendingCall, QObje
 
 void EnumMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
 
 void BackendEnumsClient::EnumSignalDBusHandler(QDBusMessage content) {
-    emit enumSignalReceived();
+    emit enumSignalReceived(
+        content.arguments()[0].value<>()
+    );
 }
 
+
+ BackendEnumsClient::getEnumProperty() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/enums",
+        "com.yarpc.backend.enums",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("EnumProperty").value<>();
+}
+
+void BackendEnumsClient::setEnumProperty(const  &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/enums",
+        "com.yarpc.backend.enums",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("EnumProperty", newValue);
+}

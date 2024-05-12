@@ -8,37 +8,28 @@
 #pragma once
 #include <QObject>
 #include <qqmlintegration.h>
-#include <QDBusAbstractAdaptor>
-#include <QDBusConnection>
 #include <QDBusMessage>
-#include <memory>
 #include "DBusError.hpp"
 namespace gen::dicts {
 
 /**
- * @brief D-Bus adaptor for the DictsWithStructs interface.
+ * @brief The arguments passed during a DictsStructMethod call.
  */
-class DictsWithStructsInterfaceAdaptor : public QDBusAbstractAdaptor {
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.yarpc.testservice.dictsWithStructs")
-public:
-    DictsWithStructsInterfaceAdaptor(QObject* parent = nullptr);
-public slots:
-    /**
-     * @brief a simple method with one argument
-     */
-    void DictsStructMethod(const QDBusMessage &message);
-signals:
-    /**
-     * @brief a simple signal with one argument
-     */
-    void DictStructSignal();
-};
-
 class DictsStructMethodArgs {
     Q_GADGET
+    /**
+     * @brief Some numbers
+     */
+    Q_PROPERTY(QMap<$1, $2> numbers MEMBER numbers)
+public:
+    QMap<$1, $2> numbers;
 };
 
+/**
+ * @brief A pending reply to a DictsStructMethod call.
+ *
+ * Use the sendReply or sendError methods to send the pending reply.
+ */
 class DictsStructMethodPendingReply : public QObject {
     Q_OBJECT
     QML_UNCREATABLE("")
@@ -46,9 +37,36 @@ class DictsStructMethodPendingReply : public QObject {
 public:
     DictsStructMethodPendingReply(QDBusMessage call, QObject *parent);
 public slots:
-    DictsStructMethodArgs* args();
-    void sendReply();
+    /**
+     * @brief Returns the arguments passed during a DictsStructMethod call.
+     *
+     * @returns the arguments of the call
+     */
+    DictsStructMethodArgs args();
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QMap<$1, $2> &reply
+    );
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param name the name of the error
+     *   (needs to be in the form of a D-Bus URI, e.g. "com.yarpc.testservice.dictsWithStructs.OutOfCheeseError")
+     * @param message the error message
+     */
     void sendError(const QString &name, const QString &message);
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param error the D-Bus error to send
+     */
     void sendError(const DBusError &error);
 private:
     QDBusMessage m_call;
@@ -56,29 +74,106 @@ private:
 };
 
 
+/**
+ * @brief A interface using dicts using structs using dicts
+ */
 class DictsWithStructsInterface : public QObject {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    QML_SINGLETON
+
+    /** @brief Whether the interface is registered and connected */
+    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged )
+
+    /**
+     * @brief a simple property
+     */
+    Q_PROPERTY(QMap<$1, $2> dictStructProperty READ getDictStructProperty WRITE setDictStructProperty NOTIFY dictStructPropertyChanged)
+
 public:
     DictsWithStructsInterface(QObject* parent = nullptr);
+
+    /**
+     * @brief Finishes a pending call by sending a reply.
+     *
+     * @param reply the reply to send
+     */
+    void finishCall(const QDBusMessage &reply);
+
+    /**
+     * @brief Returns whether the interface is registered and connected
+     *
+     * @returns whether the interface is registered and connected
+     */
     bool getConnected() const;
-    void callFinished(const QDBusMessage &reply);
+
+    /**
+     * @brief Handler for DictsStructMethod D-Bus calls.
+     *
+     * @param call the D-Bus call object
+     */
     void handleDictsStructMethodCalled(QDBusMessage call);
 
+
 public slots:
+    /** @brief Registeres and connects the interface. */
     void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
     void disconnect();
 
-    void EmitDictStructSignal();
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param numbers numbers
+     */
+    void EmitDictStructSignal(
+        QMap<$1, $2> numbers
+    );
+
+    /**
+     * @brief Getter for the DictStructProperty property.
+     *
+     * @returns the current value of the property
+     */
+    QMap<$1, $2> getDictStructProperty() const;
+
+    /**
+     * @brief Setter for the DictStructProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void setDictStructProperty(const QMap<$1, $2> &value );
+
 
 signals:
+    /**
+     * @brief Emitted when the connection status changes.
+     */
     void connectedChanged();
-    void dictsStructMethodCalled(BumpPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client calls the DictsStructMethod method.
+     *
+     * @param reply the reply object containing the call arguments and means to reply
+     */
+    void dictsStructMethodCalled(DictsStructMethodPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client tries to set the DictStructProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void propertyDictStructPropertySet(QMap<$1, $2> value);
+
+    /**
+     * @brief Emitted when the value of the DictStructProperty property changes.
+     */
+    void dictStructPropertyChanged();
 
 private:
-    DictsWithStructsInterfaceAdaptor *m_adaptor;
-    std::unique_ptr<QDBusConnection> m_connection = nullptr;
+    void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
+    QMap<$1, $2> m_DictStructProperty = {};
 };
 
 }

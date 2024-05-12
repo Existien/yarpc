@@ -6,75 +6,66 @@
  *   Template: qt6/service_source.j2
  */
 #include "ArraysInterface.hpp"
+#include "ArraysInterfaceAdaptor.hpp"
+#include "Connection.hpp"
 
 using namespace gen::arrays;
 
 ArraysInterface::ArraysInterface(QObject* parent)
 : QObject(parent) {
-    m_adaptor = new ArraysInterfaceAdaptor(this);
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::connectedChanged,
+        this,
+        &ArraysInterface::connectedChanged
+    );
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::registrationChanged,
+        this,
+        &ArraysInterface::connectedChanged
+    );
 }
 
-ArraysInterfaceAdaptor::ArraysInterfaceAdaptor(QObject* parent) : QDBusAbstractAdaptor(parent) {
-
+void ArraysInterface::connect() {
+    Connection::instance().registerArrays(this);
 }
 
-void ArraysInterface::connect(){
-    if (m_connection != nullptr) {
-        return;
-    }
-    m_connection = std::make_unique<QDBusConnection>(QDBusConnection::connectToBus(QDBusConnection::SessionBus, "com.yarpc.testservice"));
-    bool success = m_connection->isConnected();
-    if (success) {
-        success = success && m_connection->registerService("com.yarpc.testservice");
-        success = success && m_connection->registerObject(
-            "/com/yarpc/testservice",
-            "com.yarpc.testservice.arrays",
-            this
-        );
-        if (!success) {
-            m_connection->disconnectFromBus("com.yarpc.testservice");
-        }
-    }
-    if (!success) {
-        m_connection = nullptr;
-    }
-    emit connectedChanged();
+void ArraysInterface::disconnect() {
+    Connection::instance().unregisterArrays();
 }
-void ArraysInterface::disconnect(){
-    if (m_connection == nullptr) {
-        return;
-    }
-    m_connection->disconnectFromBus("com.yarpc.testservice");
-    m_connection = nullptr;
-    emit connectedChanged();
+
+void ArraysInterface::finishCall(const QDBusMessage &reply)
+{
+    Connection::instance().send(reply);
 }
 
 bool ArraysInterface::getConnected() const {
-    return m_connection != nullptr;
-}
-
-void ArraysInterfaceAdaptor::ArrayMethod(const QDBusMessage &message){
-    auto iface = dynamic_cast<ArraysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleArrayMethodCalled(message);
-    }
+    return (
+        Connection::instance().getConnected()
+        && Connection::instance().isArraysRegistered()
+    );
 }
 
 ArrayMethodPendingReply::ArrayMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = ArrayMethodArgs{};
+    m_args = ArrayMethodArgs{
+        .numbers = m_call.arguments()[0].value<QList<$1>>(),
+    };
 }
 
-ArrayMethodArgs* ArrayMethodPendingReply::args() {
-    return &m_args;
+ArrayMethodArgs ArrayMethodPendingReply::args() {
+    return m_args;
 }
 
-void ArrayMethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void ArrayMethodPendingReply::sendReply(
+    const QList<$1> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<ArraysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -83,7 +74,7 @@ void ArrayMethodPendingReply::sendError(const QString& name, const QString& mess
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<ArraysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -92,7 +83,7 @@ void ArrayMethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<ArraysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -101,11 +92,40 @@ void ArraysInterface::handleArrayMethodCalled(QDBusMessage call) {
     auto reply = new ArrayMethodPendingReply(call, this);
     emit arrayMethodCalled(reply);
 }
-void ArraysInterface::EmitArraySignal(){
-    emit m_adaptor->ArraySignal();
+
+void ArraysInterface::EmitArraySignal(
+    QList<$1> numbers
+) {
+    if (Connection::instance().Arrays() != nullptr ) {
+        emit Connection::instance().Arrays()->ArraySignal(
+            numbers
+        );
+    }
 }
 
-void ArraysInterface::callFinished(const QDBusMessage &reply)
-{
-    m_connection->send(reply);
+QList<$1> ArraysInterface::getArrayProperty() const {
+    return m_ArrayProperty;
+}
+
+void ArraysInterface::setArrayProperty(const QList<$1> &value ) {
+    m_ArrayProperty = value;
+    emit arrayPropertyChanged();
+    if (Connection::instance().Arrays() != nullptr ) {
+        QVariantMap changedProps;
+        changedProps.insert("ArrayProperty", value);
+        emitPropertiesChangedSignal(changedProps);
+    }
+}
+
+
+void ArraysInterface::emitPropertiesChangedSignal(const QVariantMap &changedProps) {
+    auto signal = QDBusMessage::createSignal(
+        "/com/yarpc/testservice/arrays",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged"
+    );
+    signal << "com.yarpc.testservice.arrays";
+    signal << changedProps;
+    signal << QStringList{};
+    Connection::instance().send(signal);
 }

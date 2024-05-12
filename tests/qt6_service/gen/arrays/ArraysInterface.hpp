@@ -8,37 +8,28 @@
 #pragma once
 #include <QObject>
 #include <qqmlintegration.h>
-#include <QDBusAbstractAdaptor>
-#include <QDBusConnection>
 #include <QDBusMessage>
-#include <memory>
 #include "DBusError.hpp"
 namespace gen::arrays {
 
 /**
- * @brief D-Bus adaptor for the Arrays interface.
+ * @brief The arguments passed during a ArrayMethod call.
  */
-class ArraysInterfaceAdaptor : public QDBusAbstractAdaptor {
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.yarpc.testservice.arrays")
-public:
-    ArraysInterfaceAdaptor(QObject* parent = nullptr);
-public slots:
-    /**
-     * @brief a simple method with one argument
-     */
-    void ArrayMethod(const QDBusMessage &message);
-signals:
-    /**
-     * @brief a simple signal with one argument
-     */
-    void ArraySignal();
-};
-
 class ArrayMethodArgs {
     Q_GADGET
+    /**
+     * @brief Some numbers
+     */
+    Q_PROPERTY(QList<$1> numbers MEMBER numbers)
+public:
+    QList<$1> numbers;
 };
 
+/**
+ * @brief A pending reply to a ArrayMethod call.
+ *
+ * Use the sendReply or sendError methods to send the pending reply.
+ */
 class ArrayMethodPendingReply : public QObject {
     Q_OBJECT
     QML_UNCREATABLE("")
@@ -46,9 +37,36 @@ class ArrayMethodPendingReply : public QObject {
 public:
     ArrayMethodPendingReply(QDBusMessage call, QObject *parent);
 public slots:
-    ArrayMethodArgs* args();
-    void sendReply();
+    /**
+     * @brief Returns the arguments passed during a ArrayMethod call.
+     *
+     * @returns the arguments of the call
+     */
+    ArrayMethodArgs args();
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QList<$1> &reply
+    );
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param name the name of the error
+     *   (needs to be in the form of a D-Bus URI, e.g. "com.yarpc.testservice.arrays.OutOfCheeseError")
+     * @param message the error message
+     */
     void sendError(const QString &name, const QString &message);
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param error the D-Bus error to send
+     */
     void sendError(const DBusError &error);
 private:
     QDBusMessage m_call;
@@ -56,29 +74,106 @@ private:
 };
 
 
+/**
+ * @brief A interface using arrays
+ */
 class ArraysInterface : public QObject {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    QML_SINGLETON
+
+    /** @brief Whether the interface is registered and connected */
+    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged )
+
+    /**
+     * @brief a simple property
+     */
+    Q_PROPERTY(QList<$1> arrayProperty READ getArrayProperty WRITE setArrayProperty NOTIFY arrayPropertyChanged)
+
 public:
     ArraysInterface(QObject* parent = nullptr);
+
+    /**
+     * @brief Finishes a pending call by sending a reply.
+     *
+     * @param reply the reply to send
+     */
+    void finishCall(const QDBusMessage &reply);
+
+    /**
+     * @brief Returns whether the interface is registered and connected
+     *
+     * @returns whether the interface is registered and connected
+     */
     bool getConnected() const;
-    void callFinished(const QDBusMessage &reply);
+
+    /**
+     * @brief Handler for ArrayMethod D-Bus calls.
+     *
+     * @param call the D-Bus call object
+     */
     void handleArrayMethodCalled(QDBusMessage call);
 
+
 public slots:
+    /** @brief Registeres and connects the interface. */
     void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
     void disconnect();
 
-    void EmitArraySignal();
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param numbers normalized numbers
+     */
+    void EmitArraySignal(
+        QList<$1> numbers
+    );
+
+    /**
+     * @brief Getter for the ArrayProperty property.
+     *
+     * @returns the current value of the property
+     */
+    QList<$1> getArrayProperty() const;
+
+    /**
+     * @brief Setter for the ArrayProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void setArrayProperty(const QList<$1> &value );
+
 
 signals:
+    /**
+     * @brief Emitted when the connection status changes.
+     */
     void connectedChanged();
-    void arrayMethodCalled(BumpPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client calls the ArrayMethod method.
+     *
+     * @param reply the reply object containing the call arguments and means to reply
+     */
+    void arrayMethodCalled(ArrayMethodPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client tries to set the ArrayProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void propertyArrayPropertySet(QList<$1> value);
+
+    /**
+     * @brief Emitted when the value of the ArrayProperty property changes.
+     */
+    void arrayPropertyChanged();
 
 private:
-    ArraysInterfaceAdaptor *m_adaptor;
-    std::unique_ptr<QDBusConnection> m_connection = nullptr;
+    void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
+    QList<$1> m_ArrayProperty = {};
 };
 
 }

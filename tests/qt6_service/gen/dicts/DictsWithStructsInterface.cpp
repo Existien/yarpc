@@ -6,75 +6,66 @@
  *   Template: qt6/service_source.j2
  */
 #include "DictsWithStructsInterface.hpp"
+#include "DictsWithStructsInterfaceAdaptor.hpp"
+#include "Connection.hpp"
 
 using namespace gen::dicts;
 
 DictsWithStructsInterface::DictsWithStructsInterface(QObject* parent)
 : QObject(parent) {
-    m_adaptor = new DictsWithStructsInterfaceAdaptor(this);
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::connectedChanged,
+        this,
+        &DictsWithStructsInterface::connectedChanged
+    );
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::registrationChanged,
+        this,
+        &DictsWithStructsInterface::connectedChanged
+    );
 }
 
-DictsWithStructsInterfaceAdaptor::DictsWithStructsInterfaceAdaptor(QObject* parent) : QDBusAbstractAdaptor(parent) {
-
+void DictsWithStructsInterface::connect() {
+    Connection::instance().registerDictsWithStructs(this);
 }
 
-void DictsWithStructsInterface::connect(){
-    if (m_connection != nullptr) {
-        return;
-    }
-    m_connection = std::make_unique<QDBusConnection>(QDBusConnection::connectToBus(QDBusConnection::SessionBus, "com.yarpc.testservice"));
-    bool success = m_connection->isConnected();
-    if (success) {
-        success = success && m_connection->registerService("com.yarpc.testservice");
-        success = success && m_connection->registerObject(
-            "/com/yarpc/testservice",
-            "com.yarpc.testservice.dictsWithStructs",
-            this
-        );
-        if (!success) {
-            m_connection->disconnectFromBus("com.yarpc.testservice");
-        }
-    }
-    if (!success) {
-        m_connection = nullptr;
-    }
-    emit connectedChanged();
+void DictsWithStructsInterface::disconnect() {
+    Connection::instance().unregisterDictsWithStructs();
 }
-void DictsWithStructsInterface::disconnect(){
-    if (m_connection == nullptr) {
-        return;
-    }
-    m_connection->disconnectFromBus("com.yarpc.testservice");
-    m_connection = nullptr;
-    emit connectedChanged();
+
+void DictsWithStructsInterface::finishCall(const QDBusMessage &reply)
+{
+    Connection::instance().send(reply);
 }
 
 bool DictsWithStructsInterface::getConnected() const {
-    return m_connection != nullptr;
-}
-
-void DictsWithStructsInterfaceAdaptor::DictsStructMethod(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictsWithStructsInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleDictsStructMethodCalled(message);
-    }
+    return (
+        Connection::instance().getConnected()
+        && Connection::instance().isDictsWithStructsRegistered()
+    );
 }
 
 DictsStructMethodPendingReply::DictsStructMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = DictsStructMethodArgs{};
+    m_args = DictsStructMethodArgs{
+        .numbers = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-DictsStructMethodArgs* DictsStructMethodPendingReply::args() {
-    return &m_args;
+DictsStructMethodArgs DictsStructMethodPendingReply::args() {
+    return m_args;
 }
 
-void DictsStructMethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void DictsStructMethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictsWithStructsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -83,7 +74,7 @@ void DictsStructMethodPendingReply::sendError(const QString& name, const QString
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictsWithStructsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -92,7 +83,7 @@ void DictsStructMethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictsWithStructsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -101,11 +92,40 @@ void DictsWithStructsInterface::handleDictsStructMethodCalled(QDBusMessage call)
     auto reply = new DictsStructMethodPendingReply(call, this);
     emit dictsStructMethodCalled(reply);
 }
-void DictsWithStructsInterface::EmitDictStructSignal(){
-    emit m_adaptor->DictStructSignal();
+
+void DictsWithStructsInterface::EmitDictStructSignal(
+    QMap<$1, $2> numbers
+) {
+    if (Connection::instance().DictsWithStructs() != nullptr ) {
+        emit Connection::instance().DictsWithStructs()->DictStructSignal(
+            numbers
+        );
+    }
 }
 
-void DictsWithStructsInterface::callFinished(const QDBusMessage &reply)
-{
-    m_connection->send(reply);
+QMap<$1, $2> DictsWithStructsInterface::getDictStructProperty() const {
+    return m_DictStructProperty;
+}
+
+void DictsWithStructsInterface::setDictStructProperty(const QMap<$1, $2> &value ) {
+    m_DictStructProperty = value;
+    emit dictStructPropertyChanged();
+    if (Connection::instance().DictsWithStructs() != nullptr ) {
+        QVariantMap changedProps;
+        changedProps.insert("DictStructProperty", value);
+        emitPropertiesChangedSignal(changedProps);
+    }
+}
+
+
+void DictsWithStructsInterface::emitPropertiesChangedSignal(const QVariantMap &changedProps) {
+    auto signal = QDBusMessage::createSignal(
+        "/com/yarpc/testservice/dicts",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged"
+    );
+    signal << "com.yarpc.testservice.dictsWithStructs";
+    signal << changedProps;
+    signal << QStringList{};
+    Connection::instance().send(signal);
 }

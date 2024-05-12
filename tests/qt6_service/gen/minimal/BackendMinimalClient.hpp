@@ -47,6 +47,9 @@ private:
 class BackendMinimalClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
 public:
     BackendMinimalClient(QObject* parent = nullptr);
@@ -54,17 +57,25 @@ public:
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method without args
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    BumpPendingCall* Bump();
+    BumpPendingCall* Bump(
+    );
 
 signals:
     /**
@@ -75,11 +86,13 @@ signals:
     /**
      * @brief a simple signal without arguments
      */
-    void bumpedReceived();
+    void bumpedReceived(
+    );
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void BumpedDBusHandler(QDBusMessage content);
 private:
     bool m_connected = false;

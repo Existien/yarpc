@@ -6,105 +6,166 @@
  *   Template: qt6/service_source.j2
  */
 #include "DictKeysInterface.hpp"
+#include "DictKeysInterfaceAdaptor.hpp"
+#include "Connection.hpp"
 
 using namespace gen::dicts;
 
 DictKeysInterface::DictKeysInterface(QObject* parent)
 : QObject(parent) {
-    m_adaptor = new DictKeysInterfaceAdaptor(this);
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::connectedChanged,
+        this,
+        &DictKeysInterface::connectedChanged
+    );
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::registrationChanged,
+        this,
+        &DictKeysInterface::connectedChanged
+    );
 }
 
-DictKeysInterfaceAdaptor::DictKeysInterfaceAdaptor(QObject* parent) : QDBusAbstractAdaptor(parent) {
-
+void DictKeysInterface::connect() {
+    Connection::instance().registerDictKeys(this);
 }
 
-void DictKeysInterface::connect(){
-    if (m_connection != nullptr) {
-        return;
-    }
-    m_connection = std::make_unique<QDBusConnection>(QDBusConnection::connectToBus(QDBusConnection::SessionBus, "com.yarpc.testservice"));
-    bool success = m_connection->isConnected();
-    if (success) {
-        success = success && m_connection->registerService("com.yarpc.testservice");
-        success = success && m_connection->registerObject(
-            "/com/yarpc/testservice",
-            "com.yarpc.testservice.dictKeys",
-            this
-        );
-        if (!success) {
-            m_connection->disconnectFromBus("com.yarpc.testservice");
-        }
-    }
-    if (!success) {
-        m_connection = nullptr;
-    }
-    emit connectedChanged();
+void DictKeysInterface::disconnect() {
+    Connection::instance().unregisterDictKeys();
 }
-void DictKeysInterface::disconnect(){
-    if (m_connection == nullptr) {
-        return;
-    }
-    m_connection->disconnectFromBus("com.yarpc.testservice");
-    m_connection = nullptr;
-    emit connectedChanged();
+
+void DictKeysInterface::finishCall(const QDBusMessage &reply)
+{
+    Connection::instance().send(reply);
 }
 
 bool DictKeysInterface::getConnected() const {
-    return m_connection != nullptr;
+    return (
+        Connection::instance().getConnected()
+        && Connection::instance().isDictKeysRegistered()
+    );
 }
 
-void DictKeysInterface::EmitUint8Signal(){
-    emit m_adaptor->Uint8Signal();
+void DictKeysInterface::EmitUint8Signal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->Uint8Signal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitBoolSignal(){
-    emit m_adaptor->BoolSignal();
+
+void DictKeysInterface::EmitBoolSignal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->BoolSignal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitInt16Signal(){
-    emit m_adaptor->Int16Signal();
+
+void DictKeysInterface::EmitInt16Signal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->Int16Signal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitUint16Signal(){
-    emit m_adaptor->Uint16Signal();
+
+void DictKeysInterface::EmitUint16Signal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->Uint16Signal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitInt32Signal(){
-    emit m_adaptor->Int32Signal();
+
+void DictKeysInterface::EmitInt32Signal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->Int32Signal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitUint32Signal(){
-    emit m_adaptor->Uint32Signal();
+
+void DictKeysInterface::EmitUint32Signal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->Uint32Signal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitInt64Signal(){
-    emit m_adaptor->Int64Signal();
+
+void DictKeysInterface::EmitInt64Signal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->Int64Signal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitUint64Signal(){
-    emit m_adaptor->Uint64Signal();
+
+void DictKeysInterface::EmitUint64Signal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->Uint64Signal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitDoubleSignal(){
-    emit m_adaptor->DoubleSignal();
+
+void DictKeysInterface::EmitDoubleSignal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->DoubleSignal(
+            value
+        );
+    }
 }
-void DictKeysInterface::EmitStringSignal(){
-    emit m_adaptor->StringSignal();
-}
-void DictKeysInterfaceAdaptor::Uint8Method(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleUint8MethodCalled(message);
+
+void DictKeysInterface::EmitStringSignal(
+    QMap<$1, $2> value
+) {
+    if (Connection::instance().DictKeys() != nullptr ) {
+        emit Connection::instance().DictKeys()->StringSignal(
+            value
+        );
     }
 }
 
 Uint8MethodPendingReply::Uint8MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = Uint8MethodArgs{};
+    m_args = Uint8MethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-Uint8MethodArgs* Uint8MethodPendingReply::args() {
-    return &m_args;
+Uint8MethodArgs Uint8MethodPendingReply::args() {
+    return m_args;
 }
 
-void Uint8MethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void Uint8MethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -113,7 +174,7 @@ void Uint8MethodPendingReply::sendError(const QString& name, const QString& mess
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -122,7 +183,7 @@ void Uint8MethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -131,28 +192,26 @@ void DictKeysInterface::handleUint8MethodCalled(QDBusMessage call) {
     auto reply = new Uint8MethodPendingReply(call, this);
     emit uint8MethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::BoolMethod(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleBoolMethodCalled(message);
-    }
-}
 
 BoolMethodPendingReply::BoolMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = BoolMethodArgs{};
+    m_args = BoolMethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-BoolMethodArgs* BoolMethodPendingReply::args() {
-    return &m_args;
+BoolMethodArgs BoolMethodPendingReply::args() {
+    return m_args;
 }
 
-void BoolMethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void BoolMethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -161,7 +220,7 @@ void BoolMethodPendingReply::sendError(const QString& name, const QString& messa
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -170,7 +229,7 @@ void BoolMethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -179,28 +238,26 @@ void DictKeysInterface::handleBoolMethodCalled(QDBusMessage call) {
     auto reply = new BoolMethodPendingReply(call, this);
     emit boolMethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::Int16Method(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleInt16MethodCalled(message);
-    }
-}
 
 Int16MethodPendingReply::Int16MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = Int16MethodArgs{};
+    m_args = Int16MethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-Int16MethodArgs* Int16MethodPendingReply::args() {
-    return &m_args;
+Int16MethodArgs Int16MethodPendingReply::args() {
+    return m_args;
 }
 
-void Int16MethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void Int16MethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -209,7 +266,7 @@ void Int16MethodPendingReply::sendError(const QString& name, const QString& mess
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -218,7 +275,7 @@ void Int16MethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -227,28 +284,26 @@ void DictKeysInterface::handleInt16MethodCalled(QDBusMessage call) {
     auto reply = new Int16MethodPendingReply(call, this);
     emit int16MethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::Uint16Method(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleUint16MethodCalled(message);
-    }
-}
 
 Uint16MethodPendingReply::Uint16MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = Uint16MethodArgs{};
+    m_args = Uint16MethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-Uint16MethodArgs* Uint16MethodPendingReply::args() {
-    return &m_args;
+Uint16MethodArgs Uint16MethodPendingReply::args() {
+    return m_args;
 }
 
-void Uint16MethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void Uint16MethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -257,7 +312,7 @@ void Uint16MethodPendingReply::sendError(const QString& name, const QString& mes
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -266,7 +321,7 @@ void Uint16MethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -275,28 +330,26 @@ void DictKeysInterface::handleUint16MethodCalled(QDBusMessage call) {
     auto reply = new Uint16MethodPendingReply(call, this);
     emit uint16MethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::Int32Method(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleInt32MethodCalled(message);
-    }
-}
 
 Int32MethodPendingReply::Int32MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = Int32MethodArgs{};
+    m_args = Int32MethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-Int32MethodArgs* Int32MethodPendingReply::args() {
-    return &m_args;
+Int32MethodArgs Int32MethodPendingReply::args() {
+    return m_args;
 }
 
-void Int32MethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void Int32MethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -305,7 +358,7 @@ void Int32MethodPendingReply::sendError(const QString& name, const QString& mess
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -314,7 +367,7 @@ void Int32MethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -323,28 +376,26 @@ void DictKeysInterface::handleInt32MethodCalled(QDBusMessage call) {
     auto reply = new Int32MethodPendingReply(call, this);
     emit int32MethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::Uint32Method(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleUint32MethodCalled(message);
-    }
-}
 
 Uint32MethodPendingReply::Uint32MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = Uint32MethodArgs{};
+    m_args = Uint32MethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-Uint32MethodArgs* Uint32MethodPendingReply::args() {
-    return &m_args;
+Uint32MethodArgs Uint32MethodPendingReply::args() {
+    return m_args;
 }
 
-void Uint32MethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void Uint32MethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -353,7 +404,7 @@ void Uint32MethodPendingReply::sendError(const QString& name, const QString& mes
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -362,7 +413,7 @@ void Uint32MethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -371,28 +422,26 @@ void DictKeysInterface::handleUint32MethodCalled(QDBusMessage call) {
     auto reply = new Uint32MethodPendingReply(call, this);
     emit uint32MethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::Int64Method(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleInt64MethodCalled(message);
-    }
-}
 
 Int64MethodPendingReply::Int64MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = Int64MethodArgs{};
+    m_args = Int64MethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-Int64MethodArgs* Int64MethodPendingReply::args() {
-    return &m_args;
+Int64MethodArgs Int64MethodPendingReply::args() {
+    return m_args;
 }
 
-void Int64MethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void Int64MethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -401,7 +450,7 @@ void Int64MethodPendingReply::sendError(const QString& name, const QString& mess
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -410,7 +459,7 @@ void Int64MethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -419,28 +468,26 @@ void DictKeysInterface::handleInt64MethodCalled(QDBusMessage call) {
     auto reply = new Int64MethodPendingReply(call, this);
     emit int64MethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::Uint64Method(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleUint64MethodCalled(message);
-    }
-}
 
 Uint64MethodPendingReply::Uint64MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = Uint64MethodArgs{};
+    m_args = Uint64MethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-Uint64MethodArgs* Uint64MethodPendingReply::args() {
-    return &m_args;
+Uint64MethodArgs Uint64MethodPendingReply::args() {
+    return m_args;
 }
 
-void Uint64MethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void Uint64MethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -449,7 +496,7 @@ void Uint64MethodPendingReply::sendError(const QString& name, const QString& mes
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -458,7 +505,7 @@ void Uint64MethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -467,28 +514,26 @@ void DictKeysInterface::handleUint64MethodCalled(QDBusMessage call) {
     auto reply = new Uint64MethodPendingReply(call, this);
     emit uint64MethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::DoubleMethod(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleDoubleMethodCalled(message);
-    }
-}
 
 DoubleMethodPendingReply::DoubleMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = DoubleMethodArgs{};
+    m_args = DoubleMethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-DoubleMethodArgs* DoubleMethodPendingReply::args() {
-    return &m_args;
+DoubleMethodArgs DoubleMethodPendingReply::args() {
+    return m_args;
 }
 
-void DoubleMethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void DoubleMethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -497,7 +542,7 @@ void DoubleMethodPendingReply::sendError(const QString& name, const QString& mes
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -506,7 +551,7 @@ void DoubleMethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -515,28 +560,26 @@ void DictKeysInterface::handleDoubleMethodCalled(QDBusMessage call) {
     auto reply = new DoubleMethodPendingReply(call, this);
     emit doubleMethodCalled(reply);
 }
-void DictKeysInterfaceAdaptor::StringMethod(const QDBusMessage &message){
-    auto iface = dynamic_cast<DictKeysInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleStringMethodCalled(message);
-    }
-}
 
 StringMethodPendingReply::StringMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = StringMethodArgs{};
+    m_args = StringMethodArgs{
+        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+    };
 }
 
-StringMethodArgs* StringMethodPendingReply::args() {
-    return &m_args;
+StringMethodArgs StringMethodPendingReply::args() {
+    return m_args;
 }
 
-void StringMethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void StringMethodPendingReply::sendReply(
+    const QMap<$1, $2> &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -545,7 +588,7 @@ void StringMethodPendingReply::sendError(const QString& name, const QString& mes
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -554,7 +597,7 @@ void StringMethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -564,7 +607,15 @@ void DictKeysInterface::handleStringMethodCalled(QDBusMessage call) {
     emit stringMethodCalled(reply);
 }
 
-void DictKeysInterface::callFinished(const QDBusMessage &reply)
-{
-    m_connection->send(reply);
+
+void DictKeysInterface::emitPropertiesChangedSignal(const QVariantMap &changedProps) {
+    auto signal = QDBusMessage::createSignal(
+        "/com/yarpc/testservice/dicts",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged"
+    );
+    signal << "com.yarpc.testservice.dictKeys";
+    signal << changedProps;
+    signal << QStringList{};
+    Connection::instance().send(signal);
 }

@@ -26,7 +26,7 @@ BackendDictsClient::BackendDictsClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dicts",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendDictsClient::BackendDictsClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dicts",
         "DictSignal",
         this,
@@ -56,6 +64,24 @@ bool BackendDictsClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendDictsClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.dicts"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendDictsClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -66,15 +92,29 @@ void BackendDictsClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
-DictMethodPendingCall* BackendDictsClient::DictMethod() {
+void BackendDictsClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.dicts") {
+        return;
+    }
+    if (changes.contains("DictProperty")) {
+        emit dictPropertyChanged();
+    }
+}
+
+DictMethodPendingCall* BackendDictsClient::DictMethod(
+    QMap<$1, $2> keysNValues
+) {
+    QDBusArgument dbuskeysNValues;
+    dbuskeysNValues << keysNValues;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dicts",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "DictMethod"
+        "DictMethod",
+        QVariant::fromValue(dbuskeysNValues)
     )};
     return new DictMethodPendingCall(pendingCall, this);
 }
@@ -89,17 +129,39 @@ DictMethodPendingCall::DictMethodPendingCall(QDBusPendingCall pendingCall, QObje
 
 void DictMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
 
 void BackendDictsClient::DictSignalDBusHandler(QDBusMessage content) {
-    emit dictSignalReceived();
+    emit dictSignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
+
+QMap<$1, $2> BackendDictsClient::getDictProperty() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "com.yarpc.backend.dicts",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("DictProperty").value<QMap<$1, $2>>();
+}
+
+void BackendDictsClient::setDictProperty(const QMap<$1, $2> &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "com.yarpc.backend.dicts",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("DictProperty", newValue);
+}

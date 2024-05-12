@@ -26,8 +26,10 @@ public:
 signals:
     /**
      * @brief Emitted when an ArrayStructMethod call returns.
+     *
+     * @param more numbers
      */
-    void finished();
+    void finished(const QList<$1> &reply);
 
     /**
      * @brief Emitted when an error ocurred during an ArrayStructMethod call.
@@ -47,24 +49,61 @@ private:
 class BackendArraysWithStructsClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    /**
+     * @brief a simple property
+     */
+    Q_PROPERTY(QList<$1> arrayStructProperty READ getArrayStructProperty WRITE setArrayStructProperty NOTIFY arrayStructPropertyChanged)
+
 public:
     BackendArraysWithStructsClient(QObject* parent = nullptr);
 
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
      *
+     * @param numbers Some numbers
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    ArrayStructMethodPendingCall* ArrayStructMethod();
+    ArrayStructMethodPendingCall* ArrayStructMethod(
+        QList<$1> numbers
+    );
+
+    /**
+     * @brief Getter for the ArrayStructProperty property.
+     *
+     * @returns the current value of the property
+     *
+     * a simple property
+     */
+    QList<$1> getArrayStructProperty() const;
+
+    /**
+     * @brief Setter for the ArrayStructProperty property.
+     *
+     * @param newValue the new value of the property
+     *
+     * a simple property
+     */
+    void setArrayStructProperty(const QList<$1> &newValue);
 
 signals:
     /**
@@ -74,12 +113,24 @@ signals:
 
     /**
      * @brief a simple signal with one argument
+     *
+     * @param numbers numbers
      */
-    void arrayStructSignalReceived();
+    void arrayStructSignalReceived(
+        QList<$1> numbers
+    );
+
+    /**
+     * @brief Changed signal for the ArrayStructProperty property.
+     *
+     * a simple property
+     */
+    void arrayStructPropertyChanged();
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void ArrayStructSignalDBusHandler(QDBusMessage content);
 private:
     bool m_connected = false;

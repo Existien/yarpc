@@ -43,6 +43,14 @@ using namespace {{ qt6.namespace(output) }};
         this, &{{ target.className }}::disconnectedHandler
     );
 
+    QDBusConnection::sessionBus().connect(
+        "{{ target.busName }}",
+        "{{ target.objectPath }}",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
 {% for member in object.members %}
 {% if member.kind == 'signal' %}
     QDBusConnection::sessionBus().connect(
@@ -62,6 +70,24 @@ bool {{ target.className }}::getConnected() const {
     return m_connected;
 }
 
+QVariantMap {{ target.className }}::getAllProperties() const {
+    QDBusInterface iface(
+        "{{ target.busName }}",
+        "{{ target.objectPath }}",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "{{ target.interfaceName }}"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void {{ target.className }}::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -72,9 +98,28 @@ void {{ target.className }}::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
+void {{ target.className }}::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "{{ target.interfaceName }}") {
+        return;
+    }
+    {% for member in object.members %}
+    {% if member.kind == 'property' %}
+    if (changes.contains("{{ member.name }}")) {
+        emit {{ member.name|camel_case }}Changed();
+    }
+    {% endif %}
+    {% endfor %}
+}
+
 {% for member in object.members %}
 {% if member.kind == 'method'%}
-{{ member.name }}PendingCall* {{ target.className }}::{{ member.name }}() {
+{{ member.name }}PendingCall* {{ target.className }}::{{ member.name }}(
+    {{ qt6.funcparams(member, output.objects)|indent(4) }}
+) {
+    {% for arg in member.args %}
+    QDBusArgument dbus{{ arg.name }};
+    dbus{{ arg.name }} << {{ arg.name }};
+    {% endfor %}
     QDBusInterface iface(
         "{{ target.busName }}",
         "{{ target.objectPath }}",
@@ -83,6 +128,17 @@ void {{ target.className }}::disconnectedHandler(const QString& service) {
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
         "{{ member.name }}"
+        {%- if member.args|count > 0 -%}
+        ,
+        {% endif %}
+        {% for i in range(0, member.args|count) %}
+        {% set arg = member.args[i] %}
+        QVariant::fromValue(dbus{{ arg.name }})
+        {%- if i < member.args|count - 1 -%}
+        ,
+        {% endif %}
+        {% endfor %}
+
     )};
     return new {{ member.name }}PendingCall(pendingCall, this);
 }
@@ -97,11 +153,20 @@ void {{ target.className }}::disconnectedHandler(const QString& service) {
 
 void {{ member.name }}PendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    {% if member.returns is defined %}
+    {% set reply_type = qt6.type(member.returns.type, output.objects) %}
+    {% else %}
+    {% set reply_type = "void" %}
+    {% endif %}
+    QDBusPendingReply<{{ reply_type }}> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
+        {% if member.returns is defined %}
+        emit finished(reply);
+        {% else %}
         emit finished();
+        {% endif %}
     }
     deleteLater();
 }
@@ -109,7 +174,41 @@ void {{ member.name }}PendingCall::callFinished(QDBusPendingCallWatcher *watcher
 
 {% if member.kind == 'signal' %}
 void {{ target.className }}::{{ member.name }}DBusHandler(QDBusMessage content) {
-    emit {{ member.name|camel_case }}Received();
+    emit {{ member.name|camel_case }}Received(
+        {% for i in range(0, member.args|count) %}
+        {% set arg = member.args[i] %}
+        {% set argument = "content.arguments()[" + i|string + "].value<" + qt6.type(arg.type, output.objects) + ">()" %}
+        {{ argument }}
+        {%- if i < member.args|count - 1 -%}
+        ,
+        {% endif %}
+        {% endfor %}
+
+    );
 }
+{% endif %}
+{% if member.kind == 'property' %}
+
+{{ qt6.type(member.type, output.objects) }} {{ target.className }}::get{{ member.name }}() const {
+    QDBusInterface iface(
+        "{{ target.busName }}",
+        "{{ target.objectPath }}",
+        "{{ target.interfaceName }}",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("{{ member.name }}").value<{{ qt6.type(member.type, output.objects) }}>();
+}
+{% if member.readonly != true %}
+
+void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type, output.objects) }} &newValue) {
+    QDBusInterface iface(
+        "{{ target.busName }}",
+        "{{ target.objectPath }}",
+        "{{ target.interfaceName }}",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("{{ member.name }}", newValue);
+}
+{% endif %}
 {% endif %}
 {% endfor %}

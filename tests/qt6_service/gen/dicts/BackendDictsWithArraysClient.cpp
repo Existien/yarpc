@@ -26,7 +26,7 @@ BackendDictsWithArraysClient::BackendDictsWithArraysClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictsWithArrays",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendDictsWithArraysClient::BackendDictsWithArraysClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictsWithArrays",
         "DictsArraySignal",
         this,
@@ -56,6 +64,24 @@ bool BackendDictsWithArraysClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendDictsWithArraysClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.dictsWithArrays"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendDictsWithArraysClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -66,15 +92,29 @@ void BackendDictsWithArraysClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
-DictsArrayMethodPendingCall* BackendDictsWithArraysClient::DictsArrayMethod() {
+void BackendDictsWithArraysClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.dictsWithArrays") {
+        return;
+    }
+    if (changes.contains("DictArrayProperty")) {
+        emit dictArrayPropertyChanged();
+    }
+}
+
+DictsArrayMethodPendingCall* BackendDictsWithArraysClient::DictsArrayMethod(
+    QMap<$1, $2> numbers
+) {
+    QDBusArgument dbusnumbers;
+    dbusnumbers << numbers;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictsWithArrays",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "DictsArrayMethod"
+        "DictsArrayMethod",
+        QVariant::fromValue(dbusnumbers)
     )};
     return new DictsArrayMethodPendingCall(pendingCall, this);
 }
@@ -89,17 +129,39 @@ DictsArrayMethodPendingCall::DictsArrayMethodPendingCall(QDBusPendingCall pendin
 
 void DictsArrayMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
 
 void BackendDictsWithArraysClient::DictsArraySignalDBusHandler(QDBusMessage content) {
-    emit dictsArraySignalReceived();
+    emit dictsArraySignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
+
+QMap<$1, $2> BackendDictsWithArraysClient::getDictArrayProperty() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "com.yarpc.backend.dictsWithArrays",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("DictArrayProperty").value<QMap<$1, $2>>();
+}
+
+void BackendDictsWithArraysClient::setDictArrayProperty(const QMap<$1, $2> &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "com.yarpc.backend.dictsWithArrays",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("DictArrayProperty", newValue);
+}

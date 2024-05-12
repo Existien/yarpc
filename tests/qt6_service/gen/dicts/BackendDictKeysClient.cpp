@@ -26,7 +26,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "Uint8Signal",
         this,
@@ -51,7 +59,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "BoolSignal",
         this,
@@ -59,7 +67,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "Int16Signal",
         this,
@@ -67,7 +75,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "Uint16Signal",
         this,
@@ -75,7 +83,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "Int32Signal",
         this,
@@ -83,7 +91,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "Uint32Signal",
         this,
@@ -91,7 +99,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "Int64Signal",
         this,
@@ -99,7 +107,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "Uint64Signal",
         this,
@@ -107,7 +115,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "DoubleSignal",
         this,
@@ -115,7 +123,7 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         "StringSignal",
         this,
@@ -128,6 +136,24 @@ bool BackendDictKeysClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendDictKeysClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.dictKeys"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendDictKeysClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -138,55 +164,86 @@ void BackendDictKeysClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
+void BackendDictKeysClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.dictKeys") {
+        return;
+    }
+}
+
 
 void BackendDictKeysClient::Uint8SignalDBusHandler(QDBusMessage content) {
-    emit uint8SignalReceived();
+    emit uint8SignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::BoolSignalDBusHandler(QDBusMessage content) {
-    emit boolSignalReceived();
+    emit boolSignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::Int16SignalDBusHandler(QDBusMessage content) {
-    emit int16SignalReceived();
+    emit int16SignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::Uint16SignalDBusHandler(QDBusMessage content) {
-    emit uint16SignalReceived();
+    emit uint16SignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::Int32SignalDBusHandler(QDBusMessage content) {
-    emit int32SignalReceived();
+    emit int32SignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::Uint32SignalDBusHandler(QDBusMessage content) {
-    emit uint32SignalReceived();
+    emit uint32SignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::Int64SignalDBusHandler(QDBusMessage content) {
-    emit int64SignalReceived();
+    emit int64SignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::Uint64SignalDBusHandler(QDBusMessage content) {
-    emit uint64SignalReceived();
+    emit uint64SignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::DoubleSignalDBusHandler(QDBusMessage content) {
-    emit doubleSignalReceived();
+    emit doubleSignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
 void BackendDictKeysClient::StringSignalDBusHandler(QDBusMessage content) {
-    emit stringSignalReceived();
+    emit stringSignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
-Uint8MethodPendingCall* BackendDictKeysClient::Uint8Method() {
+Uint8MethodPendingCall* BackendDictKeysClient::Uint8Method(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Uint8Method"
+        "Uint8Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Uint8MethodPendingCall(pendingCall, this);
 }
@@ -201,24 +258,29 @@ Uint8MethodPendingCall::Uint8MethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void Uint8MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-BoolMethodPendingCall* BackendDictKeysClient::BoolMethod() {
+BoolMethodPendingCall* BackendDictKeysClient::BoolMethod(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "BoolMethod"
+        "BoolMethod",
+        QVariant::fromValue(dbusvalue)
     )};
     return new BoolMethodPendingCall(pendingCall, this);
 }
@@ -233,24 +295,29 @@ BoolMethodPendingCall::BoolMethodPendingCall(QDBusPendingCall pendingCall, QObje
 
 void BoolMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Int16MethodPendingCall* BackendDictKeysClient::Int16Method() {
+Int16MethodPendingCall* BackendDictKeysClient::Int16Method(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Int16Method"
+        "Int16Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Int16MethodPendingCall(pendingCall, this);
 }
@@ -265,24 +332,29 @@ Int16MethodPendingCall::Int16MethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void Int16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Uint16MethodPendingCall* BackendDictKeysClient::Uint16Method() {
+Uint16MethodPendingCall* BackendDictKeysClient::Uint16Method(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Uint16Method"
+        "Uint16Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Uint16MethodPendingCall(pendingCall, this);
 }
@@ -297,24 +369,29 @@ Uint16MethodPendingCall::Uint16MethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void Uint16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Int32MethodPendingCall* BackendDictKeysClient::Int32Method() {
+Int32MethodPendingCall* BackendDictKeysClient::Int32Method(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Int32Method"
+        "Int32Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Int32MethodPendingCall(pendingCall, this);
 }
@@ -329,24 +406,29 @@ Int32MethodPendingCall::Int32MethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void Int32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Uint32MethodPendingCall* BackendDictKeysClient::Uint32Method() {
+Uint32MethodPendingCall* BackendDictKeysClient::Uint32Method(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Uint32Method"
+        "Uint32Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Uint32MethodPendingCall(pendingCall, this);
 }
@@ -361,24 +443,29 @@ Uint32MethodPendingCall::Uint32MethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void Uint32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Int64MethodPendingCall* BackendDictKeysClient::Int64Method() {
+Int64MethodPendingCall* BackendDictKeysClient::Int64Method(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Int64Method"
+        "Int64Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Int64MethodPendingCall(pendingCall, this);
 }
@@ -393,24 +480,29 @@ Int64MethodPendingCall::Int64MethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void Int64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Uint64MethodPendingCall* BackendDictKeysClient::Uint64Method() {
+Uint64MethodPendingCall* BackendDictKeysClient::Uint64Method(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Uint64Method"
+        "Uint64Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Uint64MethodPendingCall(pendingCall, this);
 }
@@ -425,24 +517,29 @@ Uint64MethodPendingCall::Uint64MethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void Uint64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-DoubleMethodPendingCall* BackendDictKeysClient::DoubleMethod() {
+DoubleMethodPendingCall* BackendDictKeysClient::DoubleMethod(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "DoubleMethod"
+        "DoubleMethod",
+        QVariant::fromValue(dbusvalue)
     )};
     return new DoubleMethodPendingCall(pendingCall, this);
 }
@@ -457,24 +554,29 @@ DoubleMethodPendingCall::DoubleMethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void DoubleMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-StringMethodPendingCall* BackendDictKeysClient::StringMethod() {
+StringMethodPendingCall* BackendDictKeysClient::StringMethod(
+    QMap<$1, $2> value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictKeys",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "StringMethod"
+        "StringMethod",
+        QVariant::fromValue(dbusvalue)
     )};
     return new StringMethodPendingCall(pendingCall, this);
 }
@@ -489,11 +591,11 @@ StringMethodPendingCall::StringMethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void StringMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }

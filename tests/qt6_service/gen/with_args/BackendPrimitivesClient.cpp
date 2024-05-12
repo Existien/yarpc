@@ -12,7 +12,7 @@
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
 
-using namespace gen::withArgs;
+using namespace gen::with_args;
 
 BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
  : QObject(parent),
@@ -26,7 +26,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "Uint8Signal",
         this,
@@ -51,7 +59,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "BoolSignal",
         this,
@@ -59,7 +67,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "Int16Signal",
         this,
@@ -67,7 +75,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "Uint16Signal",
         this,
@@ -75,7 +83,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "Int32Signal",
         this,
@@ -83,7 +91,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "Uint32Signal",
         this,
@@ -91,7 +99,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "Int64Signal",
         this,
@@ -99,7 +107,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "Uint64Signal",
         this,
@@ -107,7 +115,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "DoubleSignal",
         this,
@@ -115,7 +123,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     );
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         "StringSignal",
         this,
@@ -128,6 +136,24 @@ bool BackendPrimitivesClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendPrimitivesClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/withArgs",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.primitives"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendPrimitivesClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -138,55 +164,86 @@ void BackendPrimitivesClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
+void BackendPrimitivesClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.primitives") {
+        return;
+    }
+}
+
 
 void BackendPrimitivesClient::Uint8SignalDBusHandler(QDBusMessage content) {
-    emit uint8SignalReceived();
+    emit uint8SignalReceived(
+        content.arguments()[0].value<uchar>()
+    );
 }
 
 void BackendPrimitivesClient::BoolSignalDBusHandler(QDBusMessage content) {
-    emit boolSignalReceived();
+    emit boolSignalReceived(
+        content.arguments()[0].value<bool>()
+    );
 }
 
 void BackendPrimitivesClient::Int16SignalDBusHandler(QDBusMessage content) {
-    emit int16SignalReceived();
+    emit int16SignalReceived(
+        content.arguments()[0].value<short>()
+    );
 }
 
 void BackendPrimitivesClient::Uint16SignalDBusHandler(QDBusMessage content) {
-    emit uint16SignalReceived();
+    emit uint16SignalReceived(
+        content.arguments()[0].value<ushort>()
+    );
 }
 
 void BackendPrimitivesClient::Int32SignalDBusHandler(QDBusMessage content) {
-    emit int32SignalReceived();
+    emit int32SignalReceived(
+        content.arguments()[0].value<int>()
+    );
 }
 
 void BackendPrimitivesClient::Uint32SignalDBusHandler(QDBusMessage content) {
-    emit uint32SignalReceived();
+    emit uint32SignalReceived(
+        content.arguments()[0].value<uint>()
+    );
 }
 
 void BackendPrimitivesClient::Int64SignalDBusHandler(QDBusMessage content) {
-    emit int64SignalReceived();
+    emit int64SignalReceived(
+        content.arguments()[0].value<qlonglong>()
+    );
 }
 
 void BackendPrimitivesClient::Uint64SignalDBusHandler(QDBusMessage content) {
-    emit uint64SignalReceived();
+    emit uint64SignalReceived(
+        content.arguments()[0].value<qulonglong>()
+    );
 }
 
 void BackendPrimitivesClient::DoubleSignalDBusHandler(QDBusMessage content) {
-    emit doubleSignalReceived();
+    emit doubleSignalReceived(
+        content.arguments()[0].value<double>()
+    );
 }
 
 void BackendPrimitivesClient::StringSignalDBusHandler(QDBusMessage content) {
-    emit stringSignalReceived();
+    emit stringSignalReceived(
+        content.arguments()[0].value<QString>()
+    );
 }
-Uint8MethodPendingCall* BackendPrimitivesClient::Uint8Method() {
+Uint8MethodPendingCall* BackendPrimitivesClient::Uint8Method(
+    uchar value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Uint8Method"
+        "Uint8Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Uint8MethodPendingCall(pendingCall, this);
 }
@@ -201,24 +258,29 @@ Uint8MethodPendingCall::Uint8MethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void Uint8MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<uchar> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-BoolMethodPendingCall* BackendPrimitivesClient::BoolMethod() {
+BoolMethodPendingCall* BackendPrimitivesClient::BoolMethod(
+    bool value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "BoolMethod"
+        "BoolMethod",
+        QVariant::fromValue(dbusvalue)
     )};
     return new BoolMethodPendingCall(pendingCall, this);
 }
@@ -233,24 +295,29 @@ BoolMethodPendingCall::BoolMethodPendingCall(QDBusPendingCall pendingCall, QObje
 
 void BoolMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<bool> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Int16MethodPendingCall* BackendPrimitivesClient::Int16Method() {
+Int16MethodPendingCall* BackendPrimitivesClient::Int16Method(
+    short value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Int16Method"
+        "Int16Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Int16MethodPendingCall(pendingCall, this);
 }
@@ -265,24 +332,29 @@ Int16MethodPendingCall::Int16MethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void Int16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<short> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Uint16MethodPendingCall* BackendPrimitivesClient::Uint16Method() {
+Uint16MethodPendingCall* BackendPrimitivesClient::Uint16Method(
+    ushort value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Uint16Method"
+        "Uint16Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Uint16MethodPendingCall(pendingCall, this);
 }
@@ -297,24 +369,29 @@ Uint16MethodPendingCall::Uint16MethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void Uint16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<ushort> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Int32MethodPendingCall* BackendPrimitivesClient::Int32Method() {
+Int32MethodPendingCall* BackendPrimitivesClient::Int32Method(
+    int value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Int32Method"
+        "Int32Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Int32MethodPendingCall(pendingCall, this);
 }
@@ -329,24 +406,29 @@ Int32MethodPendingCall::Int32MethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void Int32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<int> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Uint32MethodPendingCall* BackendPrimitivesClient::Uint32Method() {
+Uint32MethodPendingCall* BackendPrimitivesClient::Uint32Method(
+    uint value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Uint32Method"
+        "Uint32Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Uint32MethodPendingCall(pendingCall, this);
 }
@@ -361,24 +443,29 @@ Uint32MethodPendingCall::Uint32MethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void Uint32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<uint> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Int64MethodPendingCall* BackendPrimitivesClient::Int64Method() {
+Int64MethodPendingCall* BackendPrimitivesClient::Int64Method(
+    qlonglong value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Int64Method"
+        "Int64Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Int64MethodPendingCall(pendingCall, this);
 }
@@ -393,24 +480,29 @@ Int64MethodPendingCall::Int64MethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void Int64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<qlonglong> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-Uint64MethodPendingCall* BackendPrimitivesClient::Uint64Method() {
+Uint64MethodPendingCall* BackendPrimitivesClient::Uint64Method(
+    qulonglong value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "Uint64Method"
+        "Uint64Method",
+        QVariant::fromValue(dbusvalue)
     )};
     return new Uint64MethodPendingCall(pendingCall, this);
 }
@@ -425,24 +517,29 @@ Uint64MethodPendingCall::Uint64MethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void Uint64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<qulonglong> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-DoubleMethodPendingCall* BackendPrimitivesClient::DoubleMethod() {
+DoubleMethodPendingCall* BackendPrimitivesClient::DoubleMethod(
+    double value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "DoubleMethod"
+        "DoubleMethod",
+        QVariant::fromValue(dbusvalue)
     )};
     return new DoubleMethodPendingCall(pendingCall, this);
 }
@@ -457,24 +554,29 @@ DoubleMethodPendingCall::DoubleMethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void DoubleMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<double> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
-StringMethodPendingCall* BackendPrimitivesClient::StringMethod() {
+StringMethodPendingCall* BackendPrimitivesClient::StringMethod(
+    QString value
+) {
+    QDBusArgument dbusvalue;
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/withArgs",
         "com.yarpc.backend.primitives",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "StringMethod"
+        "StringMethod",
+        QVariant::fromValue(dbusvalue)
     )};
     return new StringMethodPendingCall(pendingCall, this);
 }
@@ -489,11 +591,11 @@ StringMethodPendingCall::StringMethodPendingCall(QDBusPendingCall pendingCall, Q
 
 void StringMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QString> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }

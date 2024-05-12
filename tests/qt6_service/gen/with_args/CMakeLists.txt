@@ -4,16 +4,20 @@
 #   File: /workspace/tests/definitions/qt6/02_with_args.yml
 #   Template: qt6/CMakeLists.j2
 
-
-file(GLOB sources ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
-
 qt_add_qml_module(WithArgs
     STATIC
     PLUGIN_TARGET WithArgs
-    URI "gen.withArgs"
+    URI "gen.with_args"
     VERSION 1.0
     SOURCES
-        ${sources}
+        Connection.cpp
+        DBusError.cpp
+        WithArgsInterface.cpp
+        WithArgsInterfaceAdaptor.cpp
+        PrimitivesInterface.cpp
+        PrimitivesInterfaceAdaptor.cpp
+        BackendWithArgsClient.cpp
+        BackendPrimitivesClient.cpp
 )
 
 target_link_libraries(WithArgs PRIVATE Qt6::DBus)
