@@ -26,7 +26,7 @@ BackendDictsWithStructsClient::BackendDictsWithStructsClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictsWithStructs",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendDictsWithStructsClient::BackendDictsWithStructsClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictsWithStructs",
         "DictStructSignal",
         this,
@@ -56,6 +64,24 @@ bool BackendDictsWithStructsClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendDictsWithStructsClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.dictsWithStructs"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendDictsWithStructsClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -66,15 +92,29 @@ void BackendDictsWithStructsClient::disconnectedHandler(const QString& service) 
     emit connectedChanged();
 }
 
-DictsStructMethodPendingCall* BackendDictsWithStructsClient::DictsStructMethod() {
+void BackendDictsWithStructsClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.dictsWithStructs") {
+        return;
+    }
+    if (changes.contains("DictStructProperty")) {
+        emit dictStructPropertyChanged();
+    }
+}
+
+DictsStructMethodPendingCall* BackendDictsWithStructsClient::DictsStructMethod(
+    QMap<$1, $2> numbers
+) {
+    QDBusArgument dbusnumbers;
+    dbusnumbers << numbers;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/dicts",
         "com.yarpc.backend.dictsWithStructs",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "DictsStructMethod"
+        "DictsStructMethod",
+        QVariant::fromValue(dbusnumbers)
     )};
     return new DictsStructMethodPendingCall(pendingCall, this);
 }
@@ -89,17 +129,39 @@ DictsStructMethodPendingCall::DictsStructMethodPendingCall(QDBusPendingCall pend
 
 void DictsStructMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
 
 void BackendDictsWithStructsClient::DictStructSignalDBusHandler(QDBusMessage content) {
-    emit dictStructSignalReceived();
+    emit dictStructSignalReceived(
+        content.arguments()[0].value<QMap<$1, $2>>()
+    );
 }
 
+
+QMap<$1, $2> BackendDictsWithStructsClient::getDictStructProperty() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "com.yarpc.backend.dictsWithStructs",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("DictStructProperty").value<QMap<$1, $2>>();
+}
+
+void BackendDictsWithStructsClient::setDictStructProperty(const QMap<$1, $2> &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/dicts",
+        "com.yarpc.backend.dictsWithStructs",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("DictStructProperty", newValue);
+}

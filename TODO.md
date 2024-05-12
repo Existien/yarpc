@@ -1,0 +1,3 @@
+- document qt6 restriction in docs!
+  - reserved names (by us)
+  - PropertiesChanged signal currently only sets properties one at a time

@@ -26,7 +26,7 @@ BackendStructsClient::BackendStructsClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/structs",
         "com.yarpc.backend.structs",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendStructsClient::BackendStructsClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/structs",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/structs",
         "com.yarpc.backend.structs",
         "StructReceived",
         this,
@@ -56,6 +64,24 @@ bool BackendStructsClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendStructsClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/structs",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.structs"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendStructsClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -66,15 +92,29 @@ void BackendStructsClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
-SendStructPendingCall* BackendStructsClient::SendStruct() {
+void BackendStructsClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.structs") {
+        return;
+    }
+    if (changes.contains("Simple")) {
+        emit simpleChanged();
+    }
+}
+
+SendStructPendingCall* BackendStructsClient::SendStruct(
+     simpleStruct
+) {
+    QDBusArgument dbussimpleStruct;
+    dbussimpleStruct << simpleStruct;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/structs",
         "com.yarpc.backend.structs",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "SendStruct"
+        "SendStruct",
+        QVariant::fromValue(dbussimpleStruct)
     )};
     return new SendStructPendingCall(pendingCall, this);
 }
@@ -89,17 +129,40 @@ SendStructPendingCall::SendStructPendingCall(QDBusPendingCall pendingCall, QObje
 
 void SendStructPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
 
 void BackendStructsClient::StructReceivedDBusHandler(QDBusMessage content) {
-    emit structReceivedReceived();
+    emit structReceivedReceived(
+        content.arguments()[0].value<>(),
+        content.arguments()[1].value<double>()
+    );
 }
 
+
+ BackendStructsClient::getSimple() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/structs",
+        "com.yarpc.backend.structs",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("Simple").value<>();
+}
+
+void BackendStructsClient::setSimple(const  &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/structs",
+        "com.yarpc.backend.structs",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("Simple", newValue);
+}

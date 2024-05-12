@@ -4,16 +4,17 @@
 #   File: /workspace/tests/definitions/qt6/03_structs.yml
 #   Template: qt6/CMakeLists.j2
 
-
-file(GLOB sources ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
-
 qt_add_qml_module(Structs
     STATIC
     PLUGIN_TARGET Structs
     URI "gen.structs"
     VERSION 1.0
     SOURCES
-        ${sources}
+        Connection.cpp
+        DBusError.cpp
+        StructsInterface.cpp
+        StructsInterfaceAdaptor.cpp
+        BackendStructsClient.cpp
 )
 
 target_link_libraries(Structs PRIVATE Qt6::DBus)

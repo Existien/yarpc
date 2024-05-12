@@ -26,8 +26,10 @@ public:
 signals:
     /**
      * @brief Emitted when an ArrayMethod call returns.
+     *
+     * @param normalized numbers
      */
-    void finished();
+    void finished(const QList<$1> &reply);
 
     /**
      * @brief Emitted when an error ocurred during an ArrayMethod call.
@@ -47,24 +49,61 @@ private:
 class BackendArraysClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    /**
+     * @brief a simple property
+     */
+    Q_PROPERTY(QList<$1> arrayProperty READ getArrayProperty WRITE setArrayProperty NOTIFY arrayPropertyChanged)
+
 public:
     BackendArraysClient(QObject* parent = nullptr);
 
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
      *
+     * @param numbers Some numbers
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    ArrayMethodPendingCall* ArrayMethod();
+    ArrayMethodPendingCall* ArrayMethod(
+        QList<$1> numbers
+    );
+
+    /**
+     * @brief Getter for the ArrayProperty property.
+     *
+     * @returns the current value of the property
+     *
+     * a simple property
+     */
+    QList<$1> getArrayProperty() const;
+
+    /**
+     * @brief Setter for the ArrayProperty property.
+     *
+     * @param newValue the new value of the property
+     *
+     * a simple property
+     */
+    void setArrayProperty(const QList<$1> &newValue);
 
 signals:
     /**
@@ -74,12 +113,24 @@ signals:
 
     /**
      * @brief a simple signal with one argument
+     *
+     * @param numbers normalized numbers
      */
-    void arraySignalReceived();
+    void arraySignalReceived(
+        QList<$1> numbers
+    );
+
+    /**
+     * @brief Changed signal for the ArrayProperty property.
+     *
+     * a simple property
+     */
+    void arrayPropertyChanged();
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void ArraySignalDBusHandler(QDBusMessage content);
 private:
     bool m_connected = false;

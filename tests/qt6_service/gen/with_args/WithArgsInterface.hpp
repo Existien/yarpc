@@ -8,49 +8,28 @@
 #pragma once
 #include <QObject>
 #include <qqmlintegration.h>
-#include <QDBusAbstractAdaptor>
-#include <QDBusConnection>
 #include <QDBusMessage>
-#include <memory>
 #include "DBusError.hpp"
-namespace gen::withArgs {
+namespace gen::with_args {
 
 /**
- * @brief D-Bus adaptor for the WithArgs interface.
+ * @brief The arguments passed during a Notify call.
  */
-class WithArgsInterfaceAdaptor : public QDBusAbstractAdaptor {
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.yarpc.testservice.withArgs")
-public:
-    WithArgsInterfaceAdaptor(QObject* parent = nullptr);
-public slots:
-    /**
-     * @brief a simple method with one argument
-     */
-    void Notify(const QDBusMessage &message);
-    /**
-     * @brief a simple method
-with args and return value
-
-     */
-    void Order(const QDBusMessage &message);
-signals:
-    /**
-     * @brief a simple signal with one argument
-     */
-    void Notified();
-    /**
-     * @brief a simple signal with
-multiple arguments
-
-     */
-    void OrderReceived();
-};
-
 class NotifyArgs {
     Q_GADGET
+    /**
+     * @brief The message
+     */
+    Q_PROPERTY(QString message MEMBER message)
+public:
+    QString message;
 };
 
+/**
+ * @brief A pending reply to a Notify call.
+ *
+ * Use the sendReply or sendError methods to send the pending reply.
+ */
 class NotifyPendingReply : public QObject {
     Q_OBJECT
     QML_UNCREATABLE("")
@@ -58,19 +37,70 @@ class NotifyPendingReply : public QObject {
 public:
     NotifyPendingReply(QDBusMessage call, QObject *parent);
 public slots:
-    NotifyArgs* args();
-    void sendReply();
+    /**
+     * @brief Returns the arguments passed during a Notify call.
+     *
+     * @returns the arguments of the call
+     */
+    NotifyArgs args();
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+    );
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param name the name of the error
+     *   (needs to be in the form of a D-Bus URI, e.g. "com.yarpc.testservice.withArgs.OutOfCheeseError")
+     * @param message the error message
+     */
     void sendError(const QString &name, const QString &message);
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param error the D-Bus error to send
+     */
     void sendError(const DBusError &error);
 private:
     QDBusMessage m_call;
     NotifyArgs m_args;
 };
 
+/**
+ * @brief The arguments passed during a Order call.
+ */
 class OrderArgs {
     Q_GADGET
+    /**
+     * @brief The
+     *   item
+     */
+    Q_PROPERTY(QString item MEMBER item)
+    /**
+     * @brief a amount ordered
+     */
+    Q_PROPERTY(uint amount MEMBER amount)
+    /**
+     * @brief the price per item
+     */
+    Q_PROPERTY(double pricePerItem MEMBER pricePerItem)
+public:
+    QString item;
+    uint amount;
+    double pricePerItem;
 };
 
+/**
+ * @brief A pending reply to a Order call.
+ *
+ * Use the sendReply or sendError methods to send the pending reply.
+ */
 class OrderPendingReply : public QObject {
     Q_OBJECT
     QML_UNCREATABLE("")
@@ -78,9 +108,36 @@ class OrderPendingReply : public QObject {
 public:
     OrderPendingReply(QDBusMessage call, QObject *parent);
 public slots:
-    OrderArgs* args();
-    void sendReply();
+    /**
+     * @brief Returns the arguments passed during a Order call.
+     *
+     * @returns the arguments of the call
+     */
+    OrderArgs args();
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const double &reply
+    );
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param name the name of the error
+     *   (needs to be in the form of a D-Bus URI, e.g. "com.yarpc.testservice.withArgs.OutOfCheeseError")
+     * @param message the error message
+     */
     void sendError(const QString &name, const QString &message);
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param error the D-Bus error to send
+     */
     void sendError(const DBusError &error);
 private:
     QDBusMessage m_call;
@@ -88,32 +145,200 @@ private:
 };
 
 
+/**
+ * @brief A interface using only primitive types
+ *   
+ *   And some elaborate docstring
+ */
 class WithArgsInterface : public QObject {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    QML_SINGLETON
+
+    /** @brief Whether the interface is registered and connected */
+    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged )
+
+    /**
+     * @brief the speed
+     *   in m/s
+     */
+    Q_PROPERTY(double speed READ getSpeed WRITE setSpeed NOTIFY speedChanged)
+
+    /**
+     * @brief the distance to travel in m
+     */
+    Q_PROPERTY(uint distance READ getDistance WRITE setDistance NOTIFY distanceChanged)
+
+    /**
+     * @brief the time until the distance is covered at the current speed
+     */
+    Q_PROPERTY(double duration READ getDuration WRITE setDuration NOTIFY durationChanged)
+
 public:
     WithArgsInterface(QObject* parent = nullptr);
+
+    /**
+     * @brief Finishes a pending call by sending a reply.
+     *
+     * @param reply the reply to send
+     */
+    void finishCall(const QDBusMessage &reply);
+
+    /**
+     * @brief Returns whether the interface is registered and connected
+     *
+     * @returns whether the interface is registered and connected
+     */
     bool getConnected() const;
-    void callFinished(const QDBusMessage &reply);
+
+    /**
+     * @brief Handler for Notify D-Bus calls.
+     *
+     * @param call the D-Bus call object
+     */
     void handleNotifyCalled(QDBusMessage call);
+
+    /**
+     * @brief Handler for Order D-Bus calls.
+     *
+     * @param call the D-Bus call object
+     */
     void handleOrderCalled(QDBusMessage call);
 
+
 public slots:
+    /** @brief Registeres and connects the interface. */
     void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
     void disconnect();
 
-    void EmitNotified();
-    void EmitOrderReceived();
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param message The message
+     */
+    void EmitNotified(
+        QString message
+    );
+
+    /**
+     * @brief a simple signal with
+     *   multiple arguments
+     *
+     * @param item The item
+     * @param amount a amount
+     *   ordered
+     * @param pricePerItem the price per item
+     */
+    void EmitOrderReceived(
+        QString item,
+        uint amount,
+        double pricePerItem
+    );
+
+    /**
+     * @brief Getter for the Speed property.
+     *
+     * @returns the current value of the property
+     */
+    double getSpeed() const;
+
+    /**
+     * @brief Setter for the Speed property.
+     *
+     * @param value the new value of the property
+     */
+    void setSpeed(const double &value );
+
+    /**
+     * @brief Getter for the Distance property.
+     *
+     * @returns the current value of the property
+     */
+    uint getDistance() const;
+
+    /**
+     * @brief Setter for the Distance property.
+     *
+     * @param value the new value of the property
+     */
+    void setDistance(const uint &value );
+
+    /**
+     * @brief Getter for the Duration property.
+     *
+     * @returns the current value of the property
+     */
+    double getDuration() const;
+
+    /**
+     * @brief Setter for the Duration property.
+     *
+     * @param value the new value of the property
+     */
+    void setDuration(const double &value );
+
 
 signals:
+    /**
+     * @brief Emitted when the connection status changes.
+     */
     void connectedChanged();
-    void notifyCalled(BumpPendingReply* reply);
-    void orderCalled(BumpPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client calls the Notify method.
+     *
+     * @param reply the reply object containing the call arguments and means to reply
+     */
+    void notifyCalled(NotifyPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client calls the Order method.
+     *
+     * @param reply the reply object containing the call arguments and means to reply
+     */
+    void orderCalled(OrderPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client tries to set the Speed property.
+     *
+     * @param value the new value of the property
+     */
+    void propertySpeedSet(double value);
+
+    /**
+     * @brief Emitted when the value of the Speed property changes.
+     */
+    void speedChanged();
+    /**
+     * @brief Emitted when a client tries to set the Distance property.
+     *
+     * @param value the new value of the property
+     */
+    void propertyDistanceSet(uint value);
+
+    /**
+     * @brief Emitted when the value of the Distance property changes.
+     */
+    void distanceChanged();
+    /**
+     * @brief Emitted when a client tries to set the Duration property.
+     *
+     * @param value the new value of the property
+     */
+    void propertyDurationSet(double value);
+
+    /**
+     * @brief Emitted when the value of the Duration property changes.
+     */
+    void durationChanged();
 
 private:
-    WithArgsInterfaceAdaptor *m_adaptor;
-    std::unique_ptr<QDBusConnection> m_connection = nullptr;
+    void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
+    double m_Speed = {};
+    uint m_Distance = {};
+    double m_Duration = {};
 };
 
 }

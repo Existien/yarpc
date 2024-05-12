@@ -8,7 +8,7 @@
 #include <QDBusError>
 #include <qqmlintegration.h>
 
-namespace gen::withArgs {
+namespace gen::with_args {
 
 /**
  * @brief Wrapper for the QDBusError class to make it accessible in QML.

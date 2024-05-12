@@ -28,10 +28,19 @@ class {{ member.name }}PendingCall : public QObject {
 public:
     {{ member.name }}PendingCall(QDBusPendingCall pendingCall, QObject *parent);
 signals:
+    {% if member.returns is defined %}
+    /**
+     * @brief Emitted when an {{ member.name }} call returns.
+     *
+     {{ qt6.doctag(member.returns, "param")|indent(5) }}
+     */
+    void finished(const {{ qt6.type(member.returns.type, output.objects) }} &reply);
+    {% else %}
     /**
      * @brief Emitted when an {{ member.name }} call returns.
      */
     void finished();
+    {% endif %}
 
     /**
      * @brief Emitted when an error ocurred during an {{ member.name }} call.
@@ -44,35 +53,88 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
 {% endif %}
 {% endfor %}
-
 /**
  * D-Bus client for the {{ target.interfaceName}} D-Bus interface
  */
 class {{ target.className }} : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    {% for member in object.members %}
+    {% if member.kind == "property" %}
+    /**
+     {{ qt6.doctag(member, "brief")|indent(5) }}
+     */
+    Q_PROPERTY({{ qt6.type(member.type, output.objects) }} {{ member.name|camel_case }} READ get{{ member.name }} {% if member.readonly != True %}WRITE set{{ member.name }} {% endif %}NOTIFY {{ member.name|camel_case }}Changed)
+
+    {% endif %}
+    {% endfor %}
 public:
     {{ target.className }}(QObject* parent = nullptr);
 
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
     {% for member in object.members %}
+    {% if member.kind == "property" %}
+
+    /**
+     * @brief Getter for the {{ member.name }} property.
+     *
+     * @returns the current value of the property
+     *
+    {% for line in member.docs.strip().split('\n') %}
+     * {{ line }}
+    {% endfor %}
+     */
+    {{ qt6.type(member.type, output.objects) }} get{{ member.name }}() const;
+    {% if member.readonly != true %}
+
+    /**
+     * @brief Setter for the {{ member.name }} property.
+     *
+     * @param newValue the new value of the property
+     *
+    {% for line in member.docs.strip().split('\n') %}
+     * {{ line }}
+    {% endfor %}
+     */
+    void set{{ member.name }}(const {{ qt6.type(member.type, output.objects) }} &newValue);
+    {% endif %}
+    {% endif %}
     {% if member.kind == 'method' %}
 
     /**
-     * @brief {{ member.docs }}
+     {{ qt6.doctag(member, "brief")|indent(5) }}
+     {% if member.args|count > 0 %}
+     *
+     {{ qt6.docparams(member.args)|indent(5) }}
+     {% endif %}
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    {{ member.name }}PendingCall* {{ member.name }}();
+    {{ member.name }}PendingCall* {{ member.name }}(
+    {% if member.args|count > 0 %}
+        {{ qt6.funcparams(member, output.objects)|indent(8) }}
+    {% endif %}
+    );
     {% endif %}
     {% endfor %}
 
@@ -81,19 +143,39 @@ signals:
      * @brief Emitted when the connected property changes.
      */
     void connectedChanged();
-
     {% for member in object.members %}
-    {% if member.kind == 'signal' %}
+    {% if member.kind == 'property'%}
+
     /**
-     * @brief {{ member.docs }}
+     * @brief Changed signal for the {{ member.name }} property.
+     *
+    {% for line in member.docs.strip().split('\n') %}
+     * {{ line }}
+    {% endfor %}
      */
-    void {{ member.name|camel_case }}Received();
+    void {{ member.name|camel_case }}Changed();
+    {% endif %}
+    {% if member.kind == 'signal' %}
+
+    /**
+     {{ qt6.doctag(member, "brief")|indent(5) }}
+     {% if member.args|count > 0 %}
+     *
+     {{ qt6.docparams(member.args)|indent(5) }}
+     {% endif %}
+     */
+    void {{ member.name|camel_case }}Received(
+    {% if member.args|count > 0 %}
+        {{ qt6.funcparams(member, output.objects)|indent(8) }}
+    {% endif %}
+    );
     {% endif %}
     {% endfor %}
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     {% for member in object.members %}
     {% if member.kind == 'signal' %}
     void {{ member.name }}DBusHandler(QDBusMessage content);

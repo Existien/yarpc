@@ -6,75 +6,66 @@
  *   Template: qt6/service_source.j2
  */
 #include "EnumsInterface.hpp"
+#include "EnumsInterfaceAdaptor.hpp"
+#include "Connection.hpp"
 
 using namespace gen::enums;
 
 EnumsInterface::EnumsInterface(QObject* parent)
 : QObject(parent) {
-    m_adaptor = new EnumsInterfaceAdaptor(this);
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::connectedChanged,
+        this,
+        &EnumsInterface::connectedChanged
+    );
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::registrationChanged,
+        this,
+        &EnumsInterface::connectedChanged
+    );
 }
 
-EnumsInterfaceAdaptor::EnumsInterfaceAdaptor(QObject* parent) : QDBusAbstractAdaptor(parent) {
-
+void EnumsInterface::connect() {
+    Connection::instance().registerEnums(this);
 }
 
-void EnumsInterface::connect(){
-    if (m_connection != nullptr) {
-        return;
-    }
-    m_connection = std::make_unique<QDBusConnection>(QDBusConnection::connectToBus(QDBusConnection::SessionBus, "com.yarpc.testservice"));
-    bool success = m_connection->isConnected();
-    if (success) {
-        success = success && m_connection->registerService("com.yarpc.testservice");
-        success = success && m_connection->registerObject(
-            "/com/yarpc/testservice",
-            "com.yarpc.testservice.enums",
-            this
-        );
-        if (!success) {
-            m_connection->disconnectFromBus("com.yarpc.testservice");
-        }
-    }
-    if (!success) {
-        m_connection = nullptr;
-    }
-    emit connectedChanged();
+void EnumsInterface::disconnect() {
+    Connection::instance().unregisterEnums();
 }
-void EnumsInterface::disconnect(){
-    if (m_connection == nullptr) {
-        return;
-    }
-    m_connection->disconnectFromBus("com.yarpc.testservice");
-    m_connection = nullptr;
-    emit connectedChanged();
+
+void EnumsInterface::finishCall(const QDBusMessage &reply)
+{
+    Connection::instance().send(reply);
 }
 
 bool EnumsInterface::getConnected() const {
-    return m_connection != nullptr;
-}
-
-void EnumsInterfaceAdaptor::EnumMethod(const QDBusMessage &message){
-    auto iface = dynamic_cast<EnumsInterface*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handleEnumMethodCalled(message);
-    }
+    return (
+        Connection::instance().getConnected()
+        && Connection::instance().isEnumsRegistered()
+    );
 }
 
 EnumMethodPendingReply::EnumMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = EnumMethodArgs{};
+    m_args = EnumMethodArgs{
+        .color = m_call.arguments()[0].value<>(),
+    };
 }
 
-EnumMethodArgs* EnumMethodPendingReply::args() {
-    return &m_args;
+EnumMethodArgs EnumMethodPendingReply::args() {
+    return m_args;
 }
 
-void EnumMethodPendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void EnumMethodPendingReply::sendReply(
+    const  &reply
+) {
+    auto dbusReply = m_call.createReply();
+    dbusReply << reply;
     auto iface = dynamic_cast<EnumsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -83,7 +74,7 @@ void EnumMethodPendingReply::sendError(const QString& name, const QString& messa
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<EnumsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -92,7 +83,7 @@ void EnumMethodPendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<EnumsInterface*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -101,11 +92,40 @@ void EnumsInterface::handleEnumMethodCalled(QDBusMessage call) {
     auto reply = new EnumMethodPendingReply(call, this);
     emit enumMethodCalled(reply);
 }
-void EnumsInterface::EmitEnumSignal(){
-    emit m_adaptor->EnumSignal();
+
+void EnumsInterface::EmitEnumSignal(
+     color
+) {
+    if (Connection::instance().Enums() != nullptr ) {
+        emit Connection::instance().Enums()->EnumSignal(
+            color
+        );
+    }
 }
 
-void EnumsInterface::callFinished(const QDBusMessage &reply)
-{
-    m_connection->send(reply);
+ EnumsInterface::getEnumProperty() const {
+    return m_EnumProperty;
+}
+
+void EnumsInterface::setEnumProperty(const  &value ) {
+    m_EnumProperty = value;
+    emit enumPropertyChanged();
+    if (Connection::instance().Enums() != nullptr ) {
+        QVariantMap changedProps;
+        changedProps.insert("EnumProperty", value);
+        emitPropertiesChangedSignal(changedProps);
+    }
+}
+
+
+void EnumsInterface::emitPropertiesChangedSignal(const QVariantMap &changedProps) {
+    auto signal = QDBusMessage::createSignal(
+        "/com/yarpc/testservice/enums",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged"
+    );
+    signal << "com.yarpc.testservice.enums";
+    signal << changedProps;
+    signal << QStringList{};
+    Connection::instance().send(signal);
 }

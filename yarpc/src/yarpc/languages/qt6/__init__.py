@@ -22,7 +22,15 @@ class Language(BaseLanguage):
             Target(
                 filename="DBusError.cpp",
                 template="error_source"
-            )
+            ),
+            Target(
+                filename="Connection.hpp",
+                template="connection_header"
+            ),
+            Target(
+                filename="Connection.cpp",
+                template="connection_source"
+            ),
         ]
 
     def get_object_targets(self, name: str, object_kind: ObjectKind) -> List[Target]:
@@ -35,16 +43,36 @@ class Language(BaseLanguage):
             List[Target]: a list of targets to be generated.
                 Empty for non-supported ObjectKinds.
         """
-        return [
-            Target(
-                filename=f"{name}.hpp",
-                template=f"{object_kind.value}_header"
-            ),
-            Target(
-                filename=f"{name}.cpp",
-                template=f"{object_kind.value}_source"
-            ),
-        ]
+        if object_kind == ObjectKind.Service:
+            return [
+                Target(
+                    filename=f"{name}Adaptor.hpp",
+                    template=f"adaptor_header"
+                ),
+                Target(
+                    filename=f"{name}Adaptor.cpp",
+                    template=f"adaptor_source"
+                ),
+                Target(
+                    filename=f"{name}.hpp",
+                    template=f"{object_kind.value}_header"
+                ),
+                Target(
+                    filename=f"{name}.cpp",
+                    template=f"{object_kind.value}_source"
+                ),
+            ]
+        else:
+            return [
+                Target(
+                    filename=f"{name}.hpp",
+                    template=f"{object_kind.value}_header"
+                ),
+                Target(
+                    filename=f"{name}.cpp",
+                    template=f"{object_kind.value}_source"
+                ),
+            ]
 
     def get_dbus_types(self) -> DBusTypes:
         """Returns the mapping from D-Bus types to types of this language.
@@ -53,16 +81,16 @@ class Language(BaseLanguage):
             DBusTypes: the mapping between D-Bus types and types of this language
         """
         return DBusTypes(
-            uint8='uint8',
+            uint8='uchar',
             bool='bool',
-            int16='int16',
-            uint16='uint16',
-            int32='int32',
-            uint32='uint32',
-            int64='int64',
-            uint64='uint64',
+            int16='short',
+            uint16='ushort',
+            int32='int',
+            uint32='uint',
+            int64='qlonglong',
+            uint64='qulonglong',
             double='double',
-            string='string',
+            string='QString',
             array='QList<$1>',
             dict='QMap<$1, $2>',
         )

@@ -26,8 +26,10 @@ public:
 signals:
     /**
      * @brief Emitted when an EnumMethod call returns.
+     *
+     * @param another color
      */
-    void finished();
+    void finished(const QList<$1> &reply);
 
     /**
      * @brief Emitted when an error ocurred during an EnumMethod call.
@@ -47,24 +49,61 @@ private:
 class BackendEnumsWithArraysClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    /**
+     * @brief a property
+     */
+    Q_PROPERTY(QList<$1> enumProperty READ getEnumProperty WRITE setEnumProperty NOTIFY enumPropertyChanged)
+
 public:
     BackendEnumsWithArraysClient(QObject* parent = nullptr);
 
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
      *
+     * @param color a color
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    EnumMethodPendingCall* EnumMethod();
+    EnumMethodPendingCall* EnumMethod(
+        QList<$1> color
+    );
+
+    /**
+     * @brief Getter for the EnumProperty property.
+     *
+     * @returns the current value of the property
+     *
+     * a property
+     */
+    QList<$1> getEnumProperty() const;
+
+    /**
+     * @brief Setter for the EnumProperty property.
+     *
+     * @param newValue the new value of the property
+     *
+     * a property
+     */
+    void setEnumProperty(const QList<$1> &newValue);
 
 signals:
     /**
@@ -74,12 +113,24 @@ signals:
 
     /**
      * @brief a simple signal with one argument
+     *
+     * @param color a color
      */
-    void enumSignalReceived();
+    void enumSignalReceived(
+        QList<$1> color
+    );
+
+    /**
+     * @brief Changed signal for the EnumProperty property.
+     *
+     * a property
+     */
+    void enumPropertyChanged();
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void EnumSignalDBusHandler(QDBusMessage content);
 private:
     bool m_connected = false;

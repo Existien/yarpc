@@ -26,7 +26,7 @@ BackendArraysClient::BackendArraysClient(QObject* parent)
 
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/arrays",
         "com.yarpc.backend.arrays",
         QDBusConnection::sessionBus()
     );
@@ -43,7 +43,15 @@ BackendArraysClient::BackendArraysClient(QObject* parent)
 
     QDBusConnection::sessionBus().connect(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/arrays",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged",
+        this,
+        SLOT(propertiesChangedHandler(QString, QVariantMap, QStringList))
+    );
+    QDBusConnection::sessionBus().connect(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/arrays",
         "com.yarpc.backend.arrays",
         "ArraySignal",
         this,
@@ -56,6 +64,24 @@ bool BackendArraysClient::getConnected() const {
     return m_connected;
 }
 
+QVariantMap BackendArraysClient::getAllProperties() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/arrays",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusReply<QVariantMap> reply = iface.call(
+        "GetAll",
+        "com.yarpc.backend.arrays"
+    );
+    if (!reply.isValid()) {
+        return QVariantMap();
+    } else {
+        return reply.value();
+    }
+}
+
 void BackendArraysClient::connectedHandler(const QString& service) {
     m_connected = true;
     emit connectedChanged();
@@ -66,15 +92,29 @@ void BackendArraysClient::disconnectedHandler(const QString& service) {
     emit connectedChanged();
 }
 
-ArrayMethodPendingCall* BackendArraysClient::ArrayMethod() {
+void BackendArraysClient::propertiesChangedHandler(QString iface, QVariantMap changes, QStringList) {
+    if (iface != "com.yarpc.backend.arrays") {
+        return;
+    }
+    if (changes.contains("ArrayProperty")) {
+        emit arrayPropertyChanged();
+    }
+}
+
+ArrayMethodPendingCall* BackendArraysClient::ArrayMethod(
+    QList<$1> numbers
+) {
+    QDBusArgument dbusnumbers;
+    dbusnumbers << numbers;
     QDBusInterface iface(
         "com.yarpc.backend",
-        "/com/yarpc/backend",
+        "/com/yarpc/backend/arrays",
         "com.yarpc.backend.arrays",
         QDBusConnection::sessionBus()
     );
     QDBusPendingCall pendingCall {iface.asyncCall(
-        "ArrayMethod"
+        "ArrayMethod",
+        QVariant::fromValue(dbusnumbers)
     )};
     return new ArrayMethodPendingCall(pendingCall, this);
 }
@@ -89,17 +129,39 @@ ArrayMethodPendingCall::ArrayMethodPendingCall(QDBusPendingCall pendingCall, QOb
 
 void ArrayMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<void> reply {*watcher};
+    QDBusPendingReply<QList<$1>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished();
+        emit finished(reply);
     }
     deleteLater();
 }
 
 
 void BackendArraysClient::ArraySignalDBusHandler(QDBusMessage content) {
-    emit arraySignalReceived();
+    emit arraySignalReceived(
+        content.arguments()[0].value<QList<$1>>()
+    );
 }
 
+
+QList<$1> BackendArraysClient::getArrayProperty() const {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/arrays",
+        "com.yarpc.backend.arrays",
+        QDBusConnection::sessionBus()
+    );
+    return iface.property("ArrayProperty").value<QList<$1>>();
+}
+
+void BackendArraysClient::setArrayProperty(const QList<$1> &newValue) {
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/arrays",
+        "com.yarpc.backend.arrays",
+        QDBusConnection::sessionBus()
+    );
+    iface.setProperty("ArrayProperty", newValue);
+}

@@ -24,7 +24,9 @@ qt_add_qml_module(service
 target_link_libraries(service PRIVATE
     Qt6::Quick
     Qt6::DBus
-    Minimal
+    Interfaces
 )
 
 add_subdirectory(gen/minimal)
+add_subdirectory(gen/with_args)
+add_subdirectory(interfaces)

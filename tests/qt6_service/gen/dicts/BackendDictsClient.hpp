@@ -26,8 +26,10 @@ public:
 signals:
     /**
      * @brief Emitted when an DictMethod call returns.
+     *
+     * @param another one
      */
-    void finished();
+    void finished(const QMap<$1, $2> &reply);
 
     /**
      * @brief Emitted when an error ocurred during an DictMethod call.
@@ -47,24 +49,61 @@ private:
 class BackendDictsClient : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    /**
+     * @brief Whether the client is connected.
+     */
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    /**
+     * @brief a prop
+     */
+    Q_PROPERTY(QMap<$1, $2> dictProperty READ getDictProperty WRITE setDictProperty NOTIFY dictPropertyChanged)
+
 public:
     BackendDictsClient(QObject* parent = nullptr);
 
 public slots:
     /**
      * @brief Returns whether the target service is available.
+     *
      * @returns Whether the target service is available.
      */
     bool getConnected() const;
 
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
      *
+     * @param keysNValues a dictionary
+     *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DictMethodPendingCall* DictMethod();
+    DictMethodPendingCall* DictMethod(
+        QMap<$1, $2> keysNValues
+    );
+
+    /**
+     * @brief Getter for the DictProperty property.
+     *
+     * @returns the current value of the property
+     *
+     * a prop
+     */
+    QMap<$1, $2> getDictProperty() const;
+
+    /**
+     * @brief Setter for the DictProperty property.
+     *
+     * @param newValue the new value of the property
+     *
+     * a prop
+     */
+    void setDictProperty(const QMap<$1, $2> &newValue);
 
 signals:
     /**
@@ -74,12 +113,24 @@ signals:
 
     /**
      * @brief a signal
+     *
+     * @param keysNValues a dictionary
      */
-    void dictSignalReceived();
+    void dictSignalReceived(
+        QMap<$1, $2> keysNValues
+    );
+
+    /**
+     * @brief Changed signal for the DictProperty property.
+     *
+     * a prop
+     */
+    void dictPropertyChanged();
 
 private slots:
     void connectedHandler(const QString& service);
     void disconnectedHandler(const QString& service);
+    void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void DictSignalDBusHandler(QDBusMessage content);
 private:
     bool m_connected = false;

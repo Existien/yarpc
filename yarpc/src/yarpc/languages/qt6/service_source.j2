@@ -8,82 +8,96 @@
 {% import "dbus/common.j2" as dbus %}
 {% import "qt6/common.j2" as qt6 %}
 #include "{{ target.className }}.hpp"
+#include "{{ target.className }}Adaptor.hpp"
+#include "Connection.hpp"
 
 using namespace {{ qt6.namespace(output) }};
 
 {{ target.className }}::{{ target.className }}(QObject* parent)
 : QObject(parent) {
-    m_adaptor = new {{ target.className }}Adaptor(this);
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::connectedChanged,
+        this,
+        &{{ target.className }}::connectedChanged
+    );
+    QObject::connect(
+        &Connection::instance(),
+        &Connection::registrationChanged,
+        this,
+        &{{ target.className }}::connectedChanged
+    );
 }
 
-{{ target.className }}Adaptor::{{ target.className }}Adaptor(QObject* parent) : QDBusAbstractAdaptor(parent) {
-
+void {{ target.className }}::connect() {
+    Connection::instance().register{{ object.name }}(this);
 }
 
-void {{ target.className }}::connect(){
-    if (m_connection != nullptr) {
-        return;
-    }
-    m_connection = std::make_unique<QDBusConnection>(QDBusConnection::connectToBus(QDBusConnection::SessionBus, "{{ target.busName }}"));
-    bool success = m_connection->isConnected();
-    if (success) {
-        success = success && m_connection->registerService("{{ target.busName }}");
-        success = success && m_connection->registerObject(
-            "{{ target.objectPath }}",
-            "{{ target.interfaceName }}",
-            this
-        );
-        if (!success) {
-            m_connection->disconnectFromBus("{{ target.busName }}");
-        }
-    }
-    if (!success) {
-        m_connection = nullptr;
-    }
-    emit connectedChanged();
+void {{ target.className }}::disconnect() {
+    Connection::instance().unregister{{ object.name }}();
 }
-void {{ target.className }}::disconnect(){
-    if (m_connection == nullptr) {
-        return;
-    }
-    m_connection->disconnectFromBus("{{ target.busName }}");
-    m_connection = nullptr;
-    emit connectedChanged();
+
+void {{ target.className }}::finishCall(const QDBusMessage &reply)
+{
+    Connection::instance().send(reply);
 }
 
 bool {{ target.className }}::getConnected() const {
-    return m_connection != nullptr;
+    return (
+        Connection::instance().getConnected()
+        && Connection::instance().is{{ object.name }}Registered()
+    );
 }
 
 {% for member in object.members %}
 {% if member.kind == 'signal' %}
-void {{ target.className }}::Emit{{ member.name }}(){
-    emit m_adaptor->{{ member.name }}();
-}
+void {{ target.className }}::Emit{{ member.name }}(
+{% if member.args|count > 0 %}
+    {{ qt6.funcparams(member, output.objects)|indent(4) }}
 {% endif %}
-{% if member.kind == 'method' %}
-void {{ target.className }}Adaptor::{{ member.name }}(const QDBusMessage &message){
-    auto iface = dynamic_cast<{{ target.className }}*>(parent());
-    if (iface != nullptr) {
-        message.setDelayedReply(true);
-        iface->handle{{ member.name }}Called(message);
+) {
+    if (Connection::instance().{{ object.name }}() != nullptr ) {
+        emit Connection::instance().{{ object.name }}()->{{ member.name }}(
+            {% for i in range(0, member.args|count) %}
+            {% set arg = member.args[i] %}
+            {{ arg.name }}
+            {%- if i < member.args|count - 1 -%}
+            ,
+            {% endif %}
+            {% endfor %}
+
+        );
     }
 }
 
+{% endif %}
+{% if member.kind == 'method' %}
 {{ member.name }}PendingReply::{{ member.name }}PendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    m_args = {{ member.name }}Args{};
+    m_args = {{ member.name }}Args{
+        {% for i in range(0, member.args|count) %}
+        {% set arg = member.args[i] %}
+        .{{ arg.name }} = m_call.arguments()[{{i}}].value<{{ qt6.type(arg.type, output.objects) }}>(),
+        {% endfor %}
+    };
 }
 
-{{ member.name }}Args* {{ member.name }}PendingReply::args() {
-    return &m_args;
+{{ member.name }}Args {{ member.name }}PendingReply::args() {
+    return m_args;
 }
 
-void {{ member.name }}PendingReply::sendReply() {
-    auto reply = m_call.createReply();
+void {{ member.name }}PendingReply::sendReply(
+    {% if member.returns is defined %}
+    const {{ qt6.type(member.returns.type, output.objects) }} &reply
+    {% endif %}
+) {
+    auto dbusReply = m_call.createReply();
+    {% if member.returns is defined %}
+    dbusReply << reply;
+    {% endif %}
     auto iface = dynamic_cast<{{ target.className }}*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(reply);
+        iface->finishCall(dbusReply);
     }
     deleteLater();
 }
@@ -92,7 +106,7 @@ void {{ member.name }}PendingReply::sendError(const QString& name, const QString
     auto error_reply = m_call.createErrorReply(name, message);
     auto iface = dynamic_cast<{{ target.className }}*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -101,7 +115,7 @@ void {{ member.name }}PendingReply::sendError(const DBusError &error) {
     auto error_reply = m_call.createErrorReply(error);
     auto iface = dynamic_cast<{{ target.className }}*>(parent());
     if (iface != nullptr) {
-        iface->callFinished(error_reply);
+        iface->finishCall(error_reply);
     }
     deleteLater();
 }
@@ -110,10 +124,34 @@ void {{ target.className }}::handle{{ member.name }}Called(QDBusMessage call) {
     auto reply = new {{ member.name }}PendingReply(call, this);
     emit {{ member.name|camel_case }}Called(reply);
 }
+
+{% endif %}
+{% if member.kind == 'property' %}
+{{ qt6.type(member.type, output.objects)}} {{ target.className }}::get{{ member.name }}() const {
+    return m_{{ member.name }};
+}
+
+void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type, output.objects) }} &value ) {
+    m_{{ member.name }} = value;
+    emit {{ member.name|camel_case }}Changed();
+    if (Connection::instance().{{ object.name }}() != nullptr ) {
+        QVariantMap changedProps;
+        changedProps.insert("{{ member.name }}", value);
+        emitPropertiesChangedSignal(changedProps);
+    }
+}
+
 {% endif %}
 {% endfor %}
 
-void {{ target.className }}::callFinished(const QDBusMessage &reply)
-{
-    m_connection->send(reply);
+void {{ target.className }}::emitPropertiesChangedSignal(const QVariantMap &changedProps) {
+    auto signal = QDBusMessage::createSignal(
+        "{{ target.objectPath }}",
+        "org.freedesktop.DBus.Properties",
+        "PropertiesChanged"
+    );
+    signal << "{{ target.interfaceName }}";
+    signal << changedProps;
+    signal << QStringList{};
+    Connection::instance().send(signal);
 }

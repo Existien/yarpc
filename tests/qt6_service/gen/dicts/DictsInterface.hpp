@@ -8,37 +8,28 @@
 #pragma once
 #include <QObject>
 #include <qqmlintegration.h>
-#include <QDBusAbstractAdaptor>
-#include <QDBusConnection>
 #include <QDBusMessage>
-#include <memory>
 #include "DBusError.hpp"
 namespace gen::dicts {
 
 /**
- * @brief D-Bus adaptor for the Dicts interface.
+ * @brief The arguments passed during a DictMethod call.
  */
-class DictsInterfaceAdaptor : public QDBusAbstractAdaptor {
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.yarpc.testservice.dicts")
-public:
-    DictsInterfaceAdaptor(QObject* parent = nullptr);
-public slots:
-    /**
-     * @brief a simple method with one argument
-     */
-    void DictMethod(const QDBusMessage &message);
-signals:
-    /**
-     * @brief a signal
-     */
-    void DictSignal();
-};
-
 class DictMethodArgs {
     Q_GADGET
+    /**
+     * @brief a dictionary
+     */
+    Q_PROPERTY(QMap<$1, $2> keysNValues MEMBER keysNValues)
+public:
+    QMap<$1, $2> keysNValues;
 };
 
+/**
+ * @brief A pending reply to a DictMethod call.
+ *
+ * Use the sendReply or sendError methods to send the pending reply.
+ */
 class DictMethodPendingReply : public QObject {
     Q_OBJECT
     QML_UNCREATABLE("")
@@ -46,9 +37,36 @@ class DictMethodPendingReply : public QObject {
 public:
     DictMethodPendingReply(QDBusMessage call, QObject *parent);
 public slots:
-    DictMethodArgs* args();
-    void sendReply();
+    /**
+     * @brief Returns the arguments passed during a DictMethod call.
+     *
+     * @returns the arguments of the call
+     */
+    DictMethodArgs args();
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QMap<$1, $2> &reply
+    );
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param name the name of the error
+     *   (needs to be in the form of a D-Bus URI, e.g. "com.yarpc.testservice.dicts.OutOfCheeseError")
+     * @param message the error message
+     */
     void sendError(const QString &name, const QString &message);
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param error the D-Bus error to send
+     */
     void sendError(const DBusError &error);
 private:
     QDBusMessage m_call;
@@ -56,29 +74,106 @@ private:
 };
 
 
+/**
+ * @brief A interface using dictionaries
+ */
 class DictsInterface : public QObject {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
+    QML_SINGLETON
+
+    /** @brief Whether the interface is registered and connected */
+    Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged )
+
+    /**
+     * @brief a prop
+     */
+    Q_PROPERTY(QMap<$1, $2> dictProperty READ getDictProperty WRITE setDictProperty NOTIFY dictPropertyChanged)
+
 public:
     DictsInterface(QObject* parent = nullptr);
+
+    /**
+     * @brief Finishes a pending call by sending a reply.
+     *
+     * @param reply the reply to send
+     */
+    void finishCall(const QDBusMessage &reply);
+
+    /**
+     * @brief Returns whether the interface is registered and connected
+     *
+     * @returns whether the interface is registered and connected
+     */
     bool getConnected() const;
-    void callFinished(const QDBusMessage &reply);
+
+    /**
+     * @brief Handler for DictMethod D-Bus calls.
+     *
+     * @param call the D-Bus call object
+     */
     void handleDictMethodCalled(QDBusMessage call);
 
+
 public slots:
+    /** @brief Registeres and connects the interface. */
     void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
     void disconnect();
 
-    void EmitDictSignal();
+    /**
+     * @brief a signal
+     *
+     * @param keysNValues a dictionary
+     */
+    void EmitDictSignal(
+        QMap<$1, $2> keysNValues
+    );
+
+    /**
+     * @brief Getter for the DictProperty property.
+     *
+     * @returns the current value of the property
+     */
+    QMap<$1, $2> getDictProperty() const;
+
+    /**
+     * @brief Setter for the DictProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void setDictProperty(const QMap<$1, $2> &value );
+
 
 signals:
+    /**
+     * @brief Emitted when the connection status changes.
+     */
     void connectedChanged();
-    void dictMethodCalled(BumpPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client calls the DictMethod method.
+     *
+     * @param reply the reply object containing the call arguments and means to reply
+     */
+    void dictMethodCalled(DictMethodPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client tries to set the DictProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void propertyDictPropertySet(QMap<$1, $2> value);
+
+    /**
+     * @brief Emitted when the value of the DictProperty property changes.
+     */
+    void dictPropertyChanged();
 
 private:
-    DictsInterfaceAdaptor *m_adaptor;
-    std::unique_ptr<QDBusConnection> m_connection = nullptr;
+    void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
+    QMap<$1, $2> m_DictProperty = {};
 };
 
 }
