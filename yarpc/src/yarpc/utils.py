@@ -109,6 +109,32 @@ def to_camel_case(name: str) -> str:
     Args:
         name (str): a name
     Return:
-        str: The name in snake case
+        str: The name in camel case
     """
-    return name[0].lower()+name[1:]
+    new_name = name[0]
+    for i in range(1,len(name)-1):
+        letter = name[i]
+        if name[i-1] == '_':
+            new_name = new_name[:-1] + letter.upper()
+        elif (
+            (name[i-1].isupper() or name[i-1].isdigit())
+            and letter.isupper()
+            and (name[i+1].isupper() or name[i+1].isdigit())
+        ):
+            new_name += letter.lower()
+        else:
+            new_name += letter
+    new_name = new_name[0].lower() + new_name[1:] + name[-1].lower()
+    return new_name
+
+
+def to_pascal_case(name: str) -> str:
+    """Returns the pascal casified version of name in PascalCase
+
+    Args:
+        name (str): a name
+    Return:
+        str: The name in pascal case
+    """
+    new_name = to_camel_case(name)
+    return new_name[0].upper() + new_name[1:]
