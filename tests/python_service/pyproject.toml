@@ -13,7 +13,7 @@ readme = "README.md"
 license = {text = "MIT"}
 
 [project.scripts]
-service = "python_service.main:main"
+py_service = "python_service.main:main"
 
 
 [tool.pdm]

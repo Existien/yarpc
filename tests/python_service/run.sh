@@ -5,4 +5,4 @@ thisdir="$(realpath "$(dirname "$(readlink -f "$0")")")"
 pushd $thisdir
 
 pdm install
-pdm run service
+pdm run py_service
