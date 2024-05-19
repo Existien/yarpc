@@ -15,5 +15,5 @@ yarpc generates D-Bus services and clients from interface definitions written in
 ## Manual testing
 - use `d-feet` to call D-Bus methods
 - use `bustle` to monitor D-Bus signals
-- `python_service` can be started via `tests/python_service service/run.sh`
+- `python_service` can be started via `tests/python_service/run.sh`
 - `python_mocks` dummy backend can be started via `tests/python_mocks/run.sh`
