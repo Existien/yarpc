@@ -8,11 +8,17 @@
 #include "ArraysWithStructsInterface.hpp"
 #include "ArraysWithStructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::arrays;
 
 ArraysWithStructsInterface::ArraysWithStructsInterface(QObject* parent)
 : QObject(parent) {
+    qRegisterMetaType<StructArray>("StructArray");
+    qDBusRegisterMetaType<StructArray>();
+    qRegisterMetaType<SimonsArray>("SimonsArray");
+    qDBusRegisterMetaType<SimonsArray>();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -61,8 +67,7 @@ ArrayStructMethodArgs ArrayStructMethodPendingReply::args() {
 void ArrayStructMethodPendingReply::sendReply(
     const QList<$1> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<ArraysWithStructsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -112,7 +117,7 @@ void ArraysWithStructsInterface::setArrayStructProperty(const QList<$1> &value )
     emit arrayStructPropertyChanged();
     if (Connection::instance().ArraysWithStructs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("ArrayStructProperty", value);
+        changedProps.insert("ArrayStructProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

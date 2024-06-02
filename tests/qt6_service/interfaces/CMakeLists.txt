@@ -7,9 +7,11 @@ qt_add_qml_module(Interfaces
         Minimal.qml
         WithArgs.qml
         Primitives.qml
+        Structs.qml
 )
 
 target_link_libraries(Interfaces PRIVATE
   Minimal
   WithArgs
+  Structs
 )

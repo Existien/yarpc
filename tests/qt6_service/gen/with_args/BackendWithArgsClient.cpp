@@ -11,6 +11,8 @@
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::with_args;
 
@@ -23,7 +25,6 @@ BackendWithArgsClient::BackendWithArgsClient(QObject* parent)
     parent
    ))
 {
-
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -217,20 +218,39 @@ double BackendWithArgsClient::getSpeed() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
-        "com.yarpc.backend.withArgs",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    return iface.property("Speed").value<double>();
+    QDBusReply<QDBusVariant> reply = iface.call(
+        "Get",
+        "com.yarpc.backend.withArgs",
+        "Speed"
+    );
+    double unmarshalled{};
+    if (reply.isValid()) {
+        unmarshalled = reply.value().variant().value<double>();
+    }
+    return unmarshalled;
 }
 
 void BackendWithArgsClient::setSpeed(const double &newValue) {
+
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
-        "com.yarpc.backend.withArgs",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    iface.setProperty("Speed", newValue);
+    QDBusArgument marshalled;
+    QDBusVariant v;
+    v.setVariant(QVariant::fromValue(newValue));
+    marshalled << v;
+    iface.call(
+        "Set",
+        "com.yarpc.backend.withArgs",
+        "Speed",
+        QVariant::fromValue<QDBusArgument>(marshalled)
+    );
 }
 
 
@@ -238,20 +258,39 @@ uint BackendWithArgsClient::getDistance() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
-        "com.yarpc.backend.withArgs",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    return iface.property("Distance").value<uint>();
+    QDBusReply<QDBusVariant> reply = iface.call(
+        "Get",
+        "com.yarpc.backend.withArgs",
+        "Distance"
+    );
+    uint unmarshalled{};
+    if (reply.isValid()) {
+        unmarshalled = reply.value().variant().value<uint>();
+    }
+    return unmarshalled;
 }
 
 void BackendWithArgsClient::setDistance(const uint &newValue) {
+
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
-        "com.yarpc.backend.withArgs",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    iface.setProperty("Distance", newValue);
+    QDBusArgument marshalled;
+    QDBusVariant v;
+    v.setVariant(QVariant::fromValue(newValue));
+    marshalled << v;
+    iface.call(
+        "Set",
+        "com.yarpc.backend.withArgs",
+        "Distance",
+        QVariant::fromValue<QDBusArgument>(marshalled)
+    );
 }
 
 
@@ -259,8 +298,17 @@ double BackendWithArgsClient::getDuration() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
-        "com.yarpc.backend.withArgs",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    return iface.property("Duration").value<double>();
+    QDBusReply<QDBusVariant> reply = iface.call(
+        "Get",
+        "com.yarpc.backend.withArgs",
+        "Duration"
+    );
+    double unmarshalled{};
+    if (reply.isValid()) {
+        unmarshalled = reply.value().variant().value<double>();
+    }
+    return unmarshalled;
 }

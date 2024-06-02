@@ -24,7 +24,7 @@ using namespace {{ qt6.namespace(output) }};
 {% endif %}
 {{ return_type }} {{ target.className }}Adaptor::{{ member.name }}(
     {% if member.args|count > 0 %}
-    {{ qt6.funcparams(member, output.objects)|indent(4) }},
+    {{ qt6.funcparams(member.args, output.objects)|indent(4) }},
     {% endif %}
     const QDBusMessage &_message
 ){

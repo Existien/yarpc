@@ -9,5 +9,5 @@ Window {
     Minimal{}
     WithArgs{}
     Primitives{}
-
+    Structs{}
 }

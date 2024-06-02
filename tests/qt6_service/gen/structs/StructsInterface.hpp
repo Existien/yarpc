@@ -10,6 +10,8 @@
 #include <qqmlintegration.h>
 #include <QDBusMessage>
 #include "DBusError.hpp"
+#include "SimpleStruct.hpp"
+#include "Item.hpp"
 namespace gen::structs {
 
 /**
@@ -20,9 +22,9 @@ class SendStructArgs {
     /**
      * @brief the SimpleStruct to send
      */
-    Q_PROPERTY( simpleStruct MEMBER simpleStruct)
+    Q_PROPERTY(SimpleStruct simpleStruct MEMBER simpleStruct)
 public:
-     simpleStruct;
+    SimpleStruct simpleStruct;
 };
 
 /**
@@ -50,7 +52,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const  &reply
+        const SimpleStruct &reply
     );
 
     /**
@@ -88,7 +90,7 @@ class StructsInterface : public QObject {
     /**
      * @brief a property for a simple struct
      */
-    Q_PROPERTY( simple READ getSimple WRITE setSimple NOTIFY simpleChanged)
+    Q_PROPERTY(SimpleStruct simple READ getSimple WRITE setSimple NOTIFY simpleChanged)
 
 public:
     StructsInterface(QObject* parent = nullptr);
@@ -129,7 +131,7 @@ public slots:
      * @param totalCosts the total costs
      */
     void EmitStructReceived(
-         simpleStruct,
+        SimpleStruct simpleStruct,
         double totalCosts
     );
 
@@ -138,14 +140,14 @@ public slots:
      *
      * @returns the current value of the property
      */
-     getSimple() const;
+    SimpleStruct getSimple() const;
 
     /**
      * @brief Setter for the Simple property.
      *
      * @param value the new value of the property
      */
-    void setSimple(const  &value );
+    void setSimple(const SimpleStruct &value );
 
 
 signals:
@@ -166,7 +168,7 @@ signals:
      *
      * @param value the new value of the property
      */
-    void propertySimpleSet( value);
+    void propertySimpleSet(SimpleStruct value);
 
     /**
      * @brief Emitted when the value of the Simple property changes.
@@ -175,7 +177,7 @@ signals:
 
 private:
     void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
-     m_Simple = {};
+    SimpleStruct m_Simple = {};
 };
 
 }

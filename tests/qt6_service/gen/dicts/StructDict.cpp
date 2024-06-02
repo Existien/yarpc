@@ -5,3 +5,36 @@
  *   Object: StructDict
  *   Template: qt6/struct_source.j2
  */
+
+#include "StructDict.hpp"
+
+using namespace gen::dicts;
+
+QDBusArgument &gen::dicts::operator<<(QDBusArgument &argument, const StructDict &object) {
+    argument.beginStructure();
+    argument << object.numbers;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &gen::dicts::operator>>(const QDBusArgument &argument, StructDict &object) {
+    argument.beginStructure();
+    argument >> object.numbers;
+    argument.endStructure();
+    return argument;
+}
+
+bool gen::dicts::operator!=(const StructDict &lhs, const StructDict &rhs) {
+    return (false
+        || lhs.numbers != rhs.numbers
+    );
+}
+
+StructDict StructDictFactory::create (
+    QMap<$1, $2> numbers
+) const {
+return StructDict {
+    .numbers = numbers,
+};
+
+}

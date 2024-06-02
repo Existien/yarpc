@@ -5,3 +5,36 @@
  *   Object: SimonsDict
  *   Template: qt6/struct_source.j2
  */
+
+#include "SimonsDict.hpp"
+
+using namespace gen::dicts;
+
+QDBusArgument &gen::dicts::operator<<(QDBusArgument &argument, const SimonsDict &object) {
+    argument.beginStructure();
+    argument << object.numbers;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &gen::dicts::operator>>(const QDBusArgument &argument, SimonsDict &object) {
+    argument.beginStructure();
+    argument >> object.numbers;
+    argument.endStructure();
+    return argument;
+}
+
+bool gen::dicts::operator!=(const SimonsDict &lhs, const SimonsDict &rhs) {
+    return (false
+        || lhs.numbers != rhs.numbers
+    );
+}
+
+SimonsDict SimonsDictFactory::create (
+    QMap<$1, $2> numbers
+) const {
+return SimonsDict {
+    .numbers = numbers,
+};
+
+}

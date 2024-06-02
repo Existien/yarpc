@@ -9,9 +9,10 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
-#include "DBusError.hpp"
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include "DBusError.hpp"
+#include "EnumStruct.hpp"
 namespace gen::enums {
 
 /**
@@ -29,7 +30,7 @@ signals:
      *
      * @param another color
      */
-    void finished(const  &reply);
+    void finished(const EnumStruct &reply);
 
     /**
      * @brief Emitted when an error ocurred during an EnumMethod call.
@@ -56,7 +57,7 @@ class BackendEnumsWithStructsClient : public QObject {
     /**
      * @brief a property
      */
-    Q_PROPERTY( enumProperty READ getEnumProperty WRITE setEnumProperty NOTIFY enumPropertyChanged)
+    Q_PROPERTY(EnumStruct enumProperty READ getEnumProperty WRITE setEnumProperty NOTIFY enumPropertyChanged)
 
 public:
     BackendEnumsWithStructsClient(QObject* parent = nullptr);
@@ -84,7 +85,7 @@ public slots:
      * @returns Pending call object with finished signal containing the reply.
      */
     EnumMethodPendingCall* EnumMethod(
-         color
+        EnumStruct color
     );
 
     /**
@@ -94,7 +95,7 @@ public slots:
      *
      * a property
      */
-     getEnumProperty() const;
+    EnumStruct getEnumProperty() const;
 
     /**
      * @brief Setter for the EnumProperty property.
@@ -103,7 +104,7 @@ public slots:
      *
      * a property
      */
-    void setEnumProperty(const  &newValue);
+    void setEnumProperty(const EnumStruct &newValue);
 
 signals:
     /**
@@ -117,7 +118,7 @@ signals:
      * @param color a color
      */
     void enumSignalReceived(
-         color
+        EnumStruct color
     );
 
     /**

@@ -10,6 +10,8 @@
 #include <qqmlintegration.h>
 #include <QDBusMessage>
 #include "DBusError.hpp"
+#include "StructDict.hpp"
+#include "SimonsDict.hpp"
 namespace gen::dicts {
 
 /**

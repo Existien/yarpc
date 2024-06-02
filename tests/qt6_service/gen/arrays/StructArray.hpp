@@ -5,3 +5,76 @@
  *   Object: StructArray
  *   Template: qt6/struct_header.j2
  */
+
+#pragma once
+#include <QObject>
+#include <QDBusArgument>
+#include <QDBusMessage>
+#include <qqmlintegration.h>
+
+namespace gen::arrays {
+
+/**
+ * @brief A struct containing arrays
+ */
+struct StructArray {
+    Q_GADGET
+    /**
+     * @brief some numbers
+     */
+    Q_PROPERTY(QList<$1> numbers MEMBER numbers)
+public:
+    /**
+     * @brief some numbers
+     */
+    QList<$1> numbers;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
+};
+
+/**
+ * @brief Marshalls a StructArray into a QDBusArgument.
+ *
+ * @param argument the argument to marshall into
+ * @param object the object to marshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const StructArray &object);
+
+/**
+ * @brief Demarshalls a StructArray from a QDBusArgument.
+ *
+ * @param argument the argument to demarshall from
+ * @param object the object to demarshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, StructArray &object);
+
+bool operator!=(const StructArray &lhs, const StructArray &rhs);
+
+/**
+ * @brief Factory to create StructArray objects in QML.
+ */
+class StructArrayFactory : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    /**
+     * @brief Create a StructArray object.
+     *
+     * @param numbers some numbers
+     */
+    Q_INVOKABLE StructArray create (
+        QList<$1> numbers
+    ) const;
+};
+
+}
+
+Q_DECLARE_METATYPE(gen::arrays::StructArray)

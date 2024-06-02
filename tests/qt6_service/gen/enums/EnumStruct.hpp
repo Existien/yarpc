@@ -5,3 +5,97 @@
  *   Object: EnumStruct
  *   Template: qt6/struct_header.j2
  */
+
+#pragma once
+#include "Color.hpp"
+#include <QObject>
+#include <QDBusArgument>
+#include <QDBusMessage>
+#include <qqmlintegration.h>
+
+namespace gen::enums {
+
+/**
+ * @brief a struct
+ */
+struct EnumStruct {
+    Q_GADGET
+    /**
+     * @brief a color
+     */
+    Q_PROPERTY( color MEMBER color)
+    /**
+     * @brief colors
+     */
+    Q_PROPERTY(QList<$1> colorArray MEMBER colorArray)
+    /**
+     * @brief color map
+     */
+    Q_PROPERTY(QMap<$1, $2> colorDict MEMBER colorDict)
+public:
+    /**
+     * @brief a color
+     */
+     color;
+    /**
+     * @brief colors
+     */
+    QList<$1> colorArray;
+    /**
+     * @brief color map
+     */
+    QMap<$1, $2> colorDict;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
+};
+
+/**
+ * @brief Marshalls a EnumStruct into a QDBusArgument.
+ *
+ * @param argument the argument to marshall into
+ * @param object the object to marshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const EnumStruct &object);
+
+/**
+ * @brief Demarshalls a EnumStruct from a QDBusArgument.
+ *
+ * @param argument the argument to demarshall from
+ * @param object the object to demarshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, EnumStruct &object);
+
+bool operator!=(const EnumStruct &lhs, const EnumStruct &rhs);
+
+/**
+ * @brief Factory to create EnumStruct objects in QML.
+ */
+class EnumStructFactory : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    /**
+     * @brief Create a EnumStruct object.
+     *
+     * @param color a color
+     * @param colorArray colors
+     * @param colorDict color map
+     */
+    Q_INVOKABLE EnumStruct create (
+         color,
+        QList<$1> colorArray,
+        QMap<$1, $2> colorDict
+    ) const;
+};
+
+}
+
+Q_DECLARE_METATYPE(gen::enums::EnumStruct)

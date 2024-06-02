@@ -8,11 +8,17 @@
 #include "StructsInterface.hpp"
 #include "StructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::structs;
 
 StructsInterface::StructsInterface(QObject* parent)
 : QObject(parent) {
+    qRegisterMetaType<SimpleStruct>("SimpleStruct");
+    qDBusRegisterMetaType<SimpleStruct>();
+    qRegisterMetaType<Item>("Item");
+    qDBusRegisterMetaType<Item>();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -49,8 +55,13 @@ bool StructsInterface::getConnected() const {
 
 SendStructPendingReply::SendStructPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    SimpleStruct arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = SendStructArgs{
-        .simpleStruct = m_call.arguments()[0].value<>(),
+        .simpleStruct = arg_0,
     };
 }
 
@@ -59,10 +70,9 @@ SendStructArgs SendStructPendingReply::args() {
 }
 
 void SendStructPendingReply::sendReply(
-    const  &reply
+    const SimpleStruct &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<StructsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -94,7 +104,7 @@ void StructsInterface::handleSendStructCalled(QDBusMessage call) {
 }
 
 void StructsInterface::EmitStructReceived(
-     simpleStruct,
+    SimpleStruct simpleStruct,
     double totalCosts
 ) {
     if (Connection::instance().Structs() != nullptr ) {
@@ -105,16 +115,16 @@ void StructsInterface::EmitStructReceived(
     }
 }
 
- StructsInterface::getSimple() const {
+SimpleStruct StructsInterface::getSimple() const {
     return m_Simple;
 }
 
-void StructsInterface::setSimple(const  &value ) {
+void StructsInterface::setSimple(const SimpleStruct &value ) {
     m_Simple = value;
     emit simpleChanged();
     if (Connection::instance().Structs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("Simple", value);
+        changedProps.insert("Simple", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

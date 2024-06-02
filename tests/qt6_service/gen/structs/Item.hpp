@@ -5,3 +5,86 @@
  *   Object: Item
  *   Template: qt6/struct_header.j2
  */
+
+#pragma once
+#include <QObject>
+#include <QDBusArgument>
+#include <QDBusMessage>
+#include <qqmlintegration.h>
+
+namespace gen::structs {
+
+/**
+ * @brief an item
+ */
+struct Item {
+    Q_GADGET
+    /**
+     * @brief the name
+     */
+    Q_PROPERTY(QString name MEMBER name)
+    /**
+     * @brief the price
+     */
+    Q_PROPERTY(double price MEMBER price)
+public:
+    /**
+     * @brief the name
+     */
+    QString name;
+    /**
+     * @brief the price
+     */
+    double price;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
+};
+
+/**
+ * @brief Marshalls a Item into a QDBusArgument.
+ *
+ * @param argument the argument to marshall into
+ * @param object the object to marshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const Item &object);
+
+/**
+ * @brief Demarshalls a Item from a QDBusArgument.
+ *
+ * @param argument the argument to demarshall from
+ * @param object the object to demarshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, Item &object);
+
+bool operator!=(const Item &lhs, const Item &rhs);
+
+/**
+ * @brief Factory to create Item objects in QML.
+ */
+class ItemFactory : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    /**
+     * @brief Create a Item object.
+     *
+     * @param name the name
+     * @param price the price
+     */
+    Q_INVOKABLE Item create (
+        QString name,
+        double price
+    ) const;
+};
+
+}
+
+Q_DECLARE_METATYPE(gen::structs::Item)

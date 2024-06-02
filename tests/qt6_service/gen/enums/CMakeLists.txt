@@ -24,6 +24,7 @@ qt_add_qml_module(Enums
         BackendEnumsWithStructsClient.cpp
         BackendEnumsWithArraysClient.cpp
         BackendEnumsWithDictsClient.cpp
+        EnumStruct.cpp
 )
 
 target_link_libraries(Enums PRIVATE Qt6::DBus)

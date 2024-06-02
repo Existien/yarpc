@@ -8,6 +8,8 @@
 #include "WithArgsInterface.hpp"
 #include "WithArgsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::with_args;
 
@@ -131,8 +133,7 @@ OrderArgs OrderPendingReply::args() {
 void OrderPendingReply::sendReply(
     const double &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<WithArgsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -172,7 +173,7 @@ void WithArgsInterface::setSpeed(const double &value ) {
     emit speedChanged();
     if (Connection::instance().WithArgs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("Speed", value);
+        changedProps.insert("Speed", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }
@@ -186,7 +187,7 @@ void WithArgsInterface::setDistance(const uint &value ) {
     emit distanceChanged();
     if (Connection::instance().WithArgs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("Distance", value);
+        changedProps.insert("Distance", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }
@@ -200,7 +201,7 @@ void WithArgsInterface::setDuration(const double &value ) {
     emit durationChanged();
     if (Connection::instance().WithArgs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("Duration", value);
+        changedProps.insert("Duration", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

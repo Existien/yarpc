@@ -6,3 +6,90 @@
  *   Template: qt6/struct_header.j2
  */
 {% import "dbus/common.j2" as dbus %}
+{% import "qt6/common.j2" as qt6 %}
+
+#pragma once
+{% for item in object.name | extract_dependencies(output.objects) %}
+{% if item != object.name %}
+#include "{{ item }}.hpp"
+{% endif %}
+{% endfor %}
+#include <QObject>
+#include <QDBusArgument>
+#include <QDBusMessage>
+#include <qqmlintegration.h>
+
+namespace {{ qt6.namespace(output) }} {
+
+/**
+ {{ qt6.doctag(object, "brief")|indent(1) }}
+ */
+struct {{ object.name }} {
+    Q_GADGET
+    {% for member in object.members %}
+    /**
+     {{ qt6.doctag(member, 'brief')|indent(5) }}
+     */
+    Q_PROPERTY({{ qt6.type(member.type, output.objects) }} {{ member.name }} MEMBER {{ member.name }})
+    {% endfor %}
+public:
+    {% for member in object.members %}
+    /**
+     {{ qt6.doctag(member, 'brief')|indent(5) }}
+     */
+    {{ qt6.type(member.type, output.objects) }} {{member.name }};
+    {% endfor %}
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
+};
+
+/**
+ * @brief Marshalls a {{ object.name }} into a QDBusArgument.
+ *
+ * @param argument the argument to marshall into
+ * @param object the object to marshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const {{ object.name }} &object);
+
+/**
+ * @brief Demarshalls a {{ object.name }} from a QDBusArgument.
+ *
+ * @param argument the argument to demarshall from
+ * @param object the object to demarshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, {{ object.name }} &object);
+
+bool operator!=(const {{ object.name }} &lhs, const {{ object.name }} &rhs);
+
+/**
+ * @brief Factory to create {{ object.name }} objects in QML.
+ */
+class {{ object.name }}Factory : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    /**
+     * @brief Create a {{ object.name }} object.
+    {% if object.members|count > 0 %}
+     *
+     {{ qt6.docparams(object.members)|indent(5) }}
+     {% endif %}
+     */
+    Q_INVOKABLE {{ object.name }} create (
+        {% if object.members|count > 0 %}
+        {{ qt6.funcparams(object.members, output.objects)|indent(8) }}
+        {% endif %}
+    ) const;
+};
+
+}
+
+Q_DECLARE_METATYPE({{ qt6.namespace(output) }}::{{ object.name }})

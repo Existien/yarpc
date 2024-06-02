@@ -15,6 +15,8 @@ qt_add_qml_module(Structs
         StructsInterface.cpp
         StructsInterfaceAdaptor.cpp
         BackendStructsClient.cpp
+        SimpleStruct.cpp
+        Item.cpp
 )
 
 target_link_libraries(Structs PRIVATE Qt6::DBus)

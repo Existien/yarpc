@@ -9,9 +9,11 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
-#include "DBusError.hpp"
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include "DBusError.hpp"
+#include "SimpleStruct.hpp"
+#include "Item.hpp"
 namespace gen::structs {
 
 /**
@@ -29,7 +31,7 @@ signals:
      *
      * @param the SimpleStruct
      */
-    void finished(const  &reply);
+    void finished(const SimpleStruct &reply);
 
     /**
      * @brief Emitted when an error ocurred during an SendStruct call.
@@ -56,7 +58,7 @@ class BackendStructsClient : public QObject {
     /**
      * @brief a property for a simple struct
      */
-    Q_PROPERTY( simple READ getSimple WRITE setSimple NOTIFY simpleChanged)
+    Q_PROPERTY(SimpleStruct simple READ getSimple WRITE setSimple NOTIFY simpleChanged)
 
 public:
     BackendStructsClient(QObject* parent = nullptr);
@@ -84,7 +86,7 @@ public slots:
      * @returns Pending call object with finished signal containing the reply.
      */
     SendStructPendingCall* SendStruct(
-         simpleStruct
+        SimpleStruct simpleStruct
     );
 
     /**
@@ -94,7 +96,7 @@ public slots:
      *
      * a property for a simple struct
      */
-     getSimple() const;
+    SimpleStruct getSimple() const;
 
     /**
      * @brief Setter for the Simple property.
@@ -103,7 +105,7 @@ public slots:
      *
      * a property for a simple struct
      */
-    void setSimple(const  &newValue);
+    void setSimple(const SimpleStruct &newValue);
 
 signals:
     /**
@@ -118,7 +120,7 @@ signals:
      * @param totalCosts the total costs
      */
     void structReceivedReceived(
-         simpleStruct,
+        SimpleStruct simpleStruct,
         double totalCosts
     );
 

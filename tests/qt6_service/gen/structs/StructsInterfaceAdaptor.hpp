@@ -23,7 +23,7 @@ class StructsInterfaceAdaptor : public QDBusAbstractAdaptor {
     /**
      * @brief a property for a simple struct
      */
-    Q_PROPERTY( Simple READ getSimple WRITE setSimple )
+    Q_PROPERTY(SimpleStruct Simple READ getSimple WRITE setSimple )
 
 public:
     StructsInterfaceAdaptor(StructsInterface* iface, QObject* parent = nullptr);
@@ -36,8 +36,8 @@ public slots:
      *
      * @returns the SimpleStruct
      */
-     SendStruct(
-         simpleStruct,
+    SimpleStruct SendStruct(
+        SimpleStruct simpleStruct,
         const QDBusMessage &_message
     );
 signals:
@@ -49,12 +49,12 @@ signals:
      *
      */
     void StructReceived(
-         simpleStruct,
+        SimpleStruct simpleStruct,
         double totalCosts
     );
 private:
-     getSimple() const;
-    void setSimple(const  &value );
+    SimpleStruct getSimple() const;
+    void setSimple(const SimpleStruct &value );
     StructsInterface* m_iface;
 };
 

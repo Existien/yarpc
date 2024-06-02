@@ -5,3 +5,76 @@
  *   Object: StructDict
  *   Template: qt6/struct_header.j2
  */
+
+#pragma once
+#include <QObject>
+#include <QDBusArgument>
+#include <QDBusMessage>
+#include <qqmlintegration.h>
+
+namespace gen::dicts {
+
+/**
+ * @brief A struct containing dicts
+ */
+struct StructDict {
+    Q_GADGET
+    /**
+     * @brief some numbers
+     */
+    Q_PROPERTY(QMap<$1, $2> numbers MEMBER numbers)
+public:
+    /**
+     * @brief some numbers
+     */
+    QMap<$1, $2> numbers;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
+};
+
+/**
+ * @brief Marshalls a StructDict into a QDBusArgument.
+ *
+ * @param argument the argument to marshall into
+ * @param object the object to marshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const StructDict &object);
+
+/**
+ * @brief Demarshalls a StructDict from a QDBusArgument.
+ *
+ * @param argument the argument to demarshall from
+ * @param object the object to demarshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, StructDict &object);
+
+bool operator!=(const StructDict &lhs, const StructDict &rhs);
+
+/**
+ * @brief Factory to create StructDict objects in QML.
+ */
+class StructDictFactory : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    /**
+     * @brief Create a StructDict object.
+     *
+     * @param numbers some numbers
+     */
+    Q_INVOKABLE StructDict create (
+        QMap<$1, $2> numbers
+    ) const;
+};
+
+}
+
+Q_DECLARE_METATYPE(gen::dicts::StructDict)

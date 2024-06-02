@@ -55,7 +55,7 @@ public slots:
     {% endif %}
     {{ return_type }} {{ member.name }}(
     {% if member.args|count > 0 %}
-        {{ qt6.funcparams(member, output.objects)|indent(8) }},
+        {{ qt6.funcparams(member.args, output.objects)|indent(8) }},
     {% endif %}
         const QDBusMessage &_message
     );
@@ -74,7 +74,7 @@ signals:
      */
     void {{ member.name }}(
     {% if member.args|count > 0 %}
-        {{ qt6.funcparams(member, output.objects)|indent(8) }}
+        {{ qt6.funcparams(member.args, output.objects)|indent(8) }}
     {% endif %}
     );
     {% endif %}

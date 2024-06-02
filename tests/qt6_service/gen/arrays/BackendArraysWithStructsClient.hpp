@@ -9,9 +9,11 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
-#include "DBusError.hpp"
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include "DBusError.hpp"
+#include "StructArray.hpp"
+#include "SimonsArray.hpp"
 namespace gen::arrays {
 
 /**

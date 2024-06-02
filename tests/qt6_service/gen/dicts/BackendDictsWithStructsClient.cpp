@@ -11,6 +11,8 @@
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::dicts;
 
@@ -23,7 +25,10 @@ BackendDictsWithStructsClient::BackendDictsWithStructsClient(QObject* parent)
     parent
    ))
 {
-
+    qRegisterMetaType<StructDict>("StructDict");
+    qDBusRegisterMetaType<StructDict>();
+    qRegisterMetaType<SimonsDict>("SimonsDict");
+    qDBusRegisterMetaType<SimonsDict>();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -150,18 +155,37 @@ QMap<$1, $2> BackendDictsWithStructsClient::getDictStructProperty() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
-        "com.yarpc.backend.dictsWithStructs",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    return iface.property("DictStructProperty").value<QMap<$1, $2>>();
+    QDBusReply<QDBusVariant> reply = iface.call(
+        "Get",
+        "com.yarpc.backend.dictsWithStructs",
+        "DictStructProperty"
+    );
+    QMap<$1, $2> unmarshalled{};
+    if (reply.isValid()) {
+        unmarshalled = reply.value().variant().value<QMap<$1, $2>>();
+    }
+    return unmarshalled;
 }
 
 void BackendDictsWithStructsClient::setDictStructProperty(const QMap<$1, $2> &newValue) {
+
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
-        "com.yarpc.backend.dictsWithStructs",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    iface.setProperty("DictStructProperty", newValue);
+    QDBusArgument marshalled;
+    QDBusVariant v;
+    v.setVariant(QVariant::fromValue(newValue));
+    marshalled << v;
+    iface.call(
+        "Set",
+        "com.yarpc.backend.dictsWithStructs",
+        "DictStructProperty",
+        QVariant::fromValue<QDBusArgument>(marshalled)
+    );
 }

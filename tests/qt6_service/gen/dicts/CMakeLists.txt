@@ -24,6 +24,8 @@ qt_add_qml_module(Dicts
         BackendDictsWithStructsClient.cpp
         BackendDictsWithArraysClient.cpp
         BackendDictKeysClient.cpp
+        StructDict.cpp
+        SimonsDict.cpp
 )
 
 target_link_libraries(Dicts PRIVATE Qt6::DBus)

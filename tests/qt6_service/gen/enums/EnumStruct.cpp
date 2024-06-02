@@ -5,3 +5,46 @@
  *   Object: EnumStruct
  *   Template: qt6/struct_source.j2
  */
+
+#include "EnumStruct.hpp"
+
+using namespace gen::enums;
+
+QDBusArgument &gen::enums::operator<<(QDBusArgument &argument, const EnumStruct &object) {
+    argument.beginStructure();
+    argument << object.color;
+    argument << object.colorArray;
+    argument << object.colorDict;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &gen::enums::operator>>(const QDBusArgument &argument, EnumStruct &object) {
+    argument.beginStructure();
+    argument >> object.color;
+    argument >> object.colorArray;
+    argument >> object.colorDict;
+    argument.endStructure();
+    return argument;
+}
+
+bool gen::enums::operator!=(const EnumStruct &lhs, const EnumStruct &rhs) {
+    return (false
+        || lhs.color != rhs.color
+        || lhs.colorArray != rhs.colorArray
+        || lhs.colorDict != rhs.colorDict
+    );
+}
+
+EnumStruct EnumStructFactory::create (
+     color,
+    QList<$1> colorArray,
+    QMap<$1, $2> colorDict
+) const {
+return EnumStruct {
+    .color = color,
+    .colorArray = colorArray,
+    .colorDict = colorDict,
+};
+
+}

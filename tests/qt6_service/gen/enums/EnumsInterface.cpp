@@ -8,11 +8,15 @@
 #include "EnumsInterface.hpp"
 #include "EnumsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::enums;
 
 EnumsInterface::EnumsInterface(QObject* parent)
 : QObject(parent) {
+    qRegisterMetaType<EnumStruct>("EnumStruct");
+    qDBusRegisterMetaType<EnumStruct>();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -61,8 +65,7 @@ EnumMethodArgs EnumMethodPendingReply::args() {
 void EnumMethodPendingReply::sendReply(
     const  &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<EnumsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -112,7 +115,7 @@ void EnumsInterface::setEnumProperty(const  &value ) {
     emit enumPropertyChanged();
     if (Connection::instance().Enums() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("EnumProperty", value);
+        changedProps.insert("EnumProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

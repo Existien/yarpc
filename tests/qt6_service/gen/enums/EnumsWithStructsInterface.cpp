@@ -8,11 +8,15 @@
 #include "EnumsWithStructsInterface.hpp"
 #include "EnumsWithStructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::enums;
 
 EnumsWithStructsInterface::EnumsWithStructsInterface(QObject* parent)
 : QObject(parent) {
+    qRegisterMetaType<EnumStruct>("EnumStruct");
+    qDBusRegisterMetaType<EnumStruct>();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -49,8 +53,13 @@ bool EnumsWithStructsInterface::getConnected() const {
 
 EnumMethodPendingReply::EnumMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    EnumStruct arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = EnumMethodArgs{
-        .color = m_call.arguments()[0].value<>(),
+        .color = arg_0,
     };
 }
 
@@ -59,10 +68,9 @@ EnumMethodArgs EnumMethodPendingReply::args() {
 }
 
 void EnumMethodPendingReply::sendReply(
-    const  &reply
+    const EnumStruct &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<EnumsWithStructsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -94,7 +102,7 @@ void EnumsWithStructsInterface::handleEnumMethodCalled(QDBusMessage call) {
 }
 
 void EnumsWithStructsInterface::EmitEnumSignal(
-     color
+    EnumStruct color
 ) {
     if (Connection::instance().EnumsWithStructs() != nullptr ) {
         emit Connection::instance().EnumsWithStructs()->EnumSignal(
@@ -103,16 +111,16 @@ void EnumsWithStructsInterface::EmitEnumSignal(
     }
 }
 
- EnumsWithStructsInterface::getEnumProperty() const {
+EnumStruct EnumsWithStructsInterface::getEnumProperty() const {
     return m_EnumProperty;
 }
 
-void EnumsWithStructsInterface::setEnumProperty(const  &value ) {
+void EnumsWithStructsInterface::setEnumProperty(const EnumStruct &value ) {
     m_EnumProperty = value;
     emit enumPropertyChanged();
     if (Connection::instance().EnumsWithStructs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("EnumProperty", value);
+        changedProps.insert("EnumProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

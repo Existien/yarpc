@@ -5,3 +5,41 @@
  *   Object: Item
  *   Template: qt6/struct_source.j2
  */
+
+#include "Item.hpp"
+
+using namespace gen::structs;
+
+QDBusArgument &gen::structs::operator<<(QDBusArgument &argument, const Item &object) {
+    argument.beginStructure();
+    argument << object.name;
+    argument << object.price;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &gen::structs::operator>>(const QDBusArgument &argument, Item &object) {
+    argument.beginStructure();
+    argument >> object.name;
+    argument >> object.price;
+    argument.endStructure();
+    return argument;
+}
+
+bool gen::structs::operator!=(const Item &lhs, const Item &rhs) {
+    return (false
+        || lhs.name != rhs.name
+        || lhs.price != rhs.price
+    );
+}
+
+Item ItemFactory::create (
+    QString name,
+    double price
+) const {
+return Item {
+    .name = name,
+    .price = price,
+};
+
+}

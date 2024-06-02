@@ -11,6 +11,8 @@
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::with_args;
 
@@ -23,7 +25,6 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     parent
    ))
 {
-
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",

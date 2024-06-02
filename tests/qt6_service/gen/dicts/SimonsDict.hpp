@@ -5,3 +5,77 @@
  *   Object: SimonsDict
  *   Template: qt6/struct_header.j2
  */
+
+#pragma once
+#include "StructDict.hpp"
+#include <QObject>
+#include <QDBusArgument>
+#include <QDBusMessage>
+#include <qqmlintegration.h>
+
+namespace gen::dicts {
+
+/**
+ * @brief A struct containing dicts
+ */
+struct SimonsDict {
+    Q_GADGET
+    /**
+     * @brief some struct dicts
+     */
+    Q_PROPERTY(QMap<$1, $2> numbers MEMBER numbers)
+public:
+    /**
+     * @brief some struct dicts
+     */
+    QMap<$1, $2> numbers;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
+};
+
+/**
+ * @brief Marshalls a SimonsDict into a QDBusArgument.
+ *
+ * @param argument the argument to marshall into
+ * @param object the object to marshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const SimonsDict &object);
+
+/**
+ * @brief Demarshalls a SimonsDict from a QDBusArgument.
+ *
+ * @param argument the argument to demarshall from
+ * @param object the object to demarshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, SimonsDict &object);
+
+bool operator!=(const SimonsDict &lhs, const SimonsDict &rhs);
+
+/**
+ * @brief Factory to create SimonsDict objects in QML.
+ */
+class SimonsDictFactory : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    /**
+     * @brief Create a SimonsDict object.
+     *
+     * @param numbers some struct dicts
+     */
+    Q_INVOKABLE SimonsDict create (
+        QMap<$1, $2> numbers
+    ) const;
+};
+
+}
+
+Q_DECLARE_METATYPE(gen::dicts::SimonsDict)
