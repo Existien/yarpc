@@ -11,6 +11,8 @@
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::arrays;
 
@@ -23,7 +25,10 @@ BackendArraysClient::BackendArraysClient(QObject* parent)
     parent
    ))
 {
-
+    qRegisterMetaType<StructArray>("StructArray");
+    qDBusRegisterMetaType<StructArray>();
+    qRegisterMetaType<SimonsArray>("SimonsArray");
+    qDBusRegisterMetaType<SimonsArray>();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",
@@ -150,18 +155,37 @@ QList<$1> BackendArraysClient::getArrayProperty() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",
-        "com.yarpc.backend.arrays",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    return iface.property("ArrayProperty").value<QList<$1>>();
+    QDBusReply<QDBusVariant> reply = iface.call(
+        "Get",
+        "com.yarpc.backend.arrays",
+        "ArrayProperty"
+    );
+    QList<$1> unmarshalled{};
+    if (reply.isValid()) {
+        unmarshalled = reply.value().variant().value<QList<$1>>();
+    }
+    return unmarshalled;
 }
 
 void BackendArraysClient::setArrayProperty(const QList<$1> &newValue) {
+
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",
-        "com.yarpc.backend.arrays",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    iface.setProperty("ArrayProperty", newValue);
+    QDBusArgument marshalled;
+    QDBusVariant v;
+    v.setVariant(QVariant::fromValue(newValue));
+    marshalled << v;
+    iface.call(
+        "Set",
+        "com.yarpc.backend.arrays",
+        "ArrayProperty",
+        QVariant::fromValue<QDBusArgument>(marshalled)
+    );
 }

@@ -12,6 +12,9 @@
 #include <qqmlintegration.h>
 #include <QDBusMessage>
 #include "DBusError.hpp"
+{% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
+#include "{{ object.name }}.hpp"
+{% endfor %}
 namespace {{ qt6.namespace(output) }} {
 
 {% for member in object.members %}
@@ -153,7 +156,7 @@ public slots:
      */
     void Emit{{ member.name }}(
     {% if member.args|count > 0 %}
-        {{ qt6.funcparams(member, output.objects)|indent(8) }}
+        {{ qt6.funcparams(member.args, output.objects)|indent(8) }}
     {% endif %}
     );
 

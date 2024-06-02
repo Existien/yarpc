@@ -5,3 +5,36 @@
  *   Object: StructArray
  *   Template: qt6/struct_source.j2
  */
+
+#include "StructArray.hpp"
+
+using namespace gen::arrays;
+
+QDBusArgument &gen::arrays::operator<<(QDBusArgument &argument, const StructArray &object) {
+    argument.beginStructure();
+    argument << object.numbers;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &gen::arrays::operator>>(const QDBusArgument &argument, StructArray &object) {
+    argument.beginStructure();
+    argument >> object.numbers;
+    argument.endStructure();
+    return argument;
+}
+
+bool gen::arrays::operator!=(const StructArray &lhs, const StructArray &rhs) {
+    return (false
+        || lhs.numbers != rhs.numbers
+    );
+}
+
+StructArray StructArrayFactory::create (
+    QList<$1> numbers
+) const {
+return StructArray {
+    .numbers = numbers,
+};
+
+}

@@ -8,11 +8,17 @@
 #include "DictsWithArraysInterface.hpp"
 #include "DictsWithArraysInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::dicts;
 
 DictsWithArraysInterface::DictsWithArraysInterface(QObject* parent)
 : QObject(parent) {
+    qRegisterMetaType<StructDict>("StructDict");
+    qDBusRegisterMetaType<StructDict>();
+    qRegisterMetaType<SimonsDict>("SimonsDict");
+    qDBusRegisterMetaType<SimonsDict>();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -61,8 +67,7 @@ DictsArrayMethodArgs DictsArrayMethodPendingReply::args() {
 void DictsArrayMethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictsWithArraysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -112,7 +117,7 @@ void DictsWithArraysInterface::setDictArrayProperty(const QMap<$1, $2> &value ) 
     emit dictArrayPropertyChanged();
     if (Connection::instance().DictsWithArrays() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("DictArrayProperty", value);
+        changedProps.insert("DictArrayProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

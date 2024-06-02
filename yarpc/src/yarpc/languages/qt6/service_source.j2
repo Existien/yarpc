@@ -10,11 +10,17 @@
 #include "{{ target.className }}.hpp"
 #include "{{ target.className }}Adaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace {{ qt6.namespace(output) }};
 
 {{ target.className }}::{{ target.className }}(QObject* parent)
 : QObject(parent) {
+    {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
+    qRegisterMetaType<{{ object.name }}>("{{ object.name }}");
+    qDBusRegisterMetaType<{{ object.name }}>();
+    {% endfor %}
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -53,7 +59,7 @@ bool {{ target.className }}::getConnected() const {
 {% if member.kind == 'signal' %}
 void {{ target.className }}::Emit{{ member.name }}(
 {% if member.args|count > 0 %}
-    {{ qt6.funcparams(member, output.objects)|indent(4) }}
+    {{ qt6.funcparams(member.args, output.objects)|indent(4) }}
 {% endif %}
 ) {
     if (Connection::instance().{{ object.name }}() != nullptr ) {
@@ -74,10 +80,24 @@ void {{ target.className }}::Emit{{ member.name }}(
 {% if member.kind == 'method' %}
 {{ member.name }}PendingReply::{{ member.name }}PendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    {% for i in range(0, member.args|count) %}
+    {% set arg = member.args[i] %}
+    {% if ((arg.type|find_type(output.objects)).kind == 'struct') %}
+    {{ arg.type }} arg_{{i}};
+    {
+        auto marshalled = m_call.arguments()[{{i}}].value<QDBusArgument>();
+        marshalled >> arg_{{i}};
+    }
+    {% endif %}
+    {% endfor %}
     m_args = {{ member.name }}Args{
         {% for i in range(0, member.args|count) %}
         {% set arg = member.args[i] %}
+        {% if ((arg.type|find_type(output.objects)).kind == 'struct') %}
+        .{{ arg.name }} = arg_{{i}},
+        {% else %}
         .{{ arg.name }} = m_call.arguments()[{{i}}].value<{{ qt6.type(arg.type, output.objects) }}>(),
+        {% endif %}
         {% endfor %}
     };
 }
@@ -91,9 +111,10 @@ void {{ member.name }}PendingReply::sendReply(
     const {{ qt6.type(member.returns.type, output.objects) }} &reply
     {% endif %}
 ) {
-    auto dbusReply = m_call.createReply();
     {% if member.returns is defined %}
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    {% else %}
+    auto dbusReply = m_call.createReply();
     {% endif %}
     auto iface = dynamic_cast<{{ target.className }}*>(parent());
     if (iface != nullptr) {
@@ -136,7 +157,7 @@ void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type,
     emit {{ member.name|camel_case }}Changed();
     if (Connection::instance().{{ object.name }}() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("{{ member.name }}", value);
+        changedProps.insert("{{ member.name }}", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

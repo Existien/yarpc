@@ -11,6 +11,8 @@
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::enums;
 
@@ -23,7 +25,8 @@ BackendEnumsWithDictsClient::BackendEnumsWithDictsClient(QObject* parent)
     parent
    ))
 {
-
+    qRegisterMetaType<EnumStruct>("EnumStruct");
+    qDBusRegisterMetaType<EnumStruct>();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -150,18 +153,37 @@ QMap<$1, $2> BackendEnumsWithDictsClient::getEnumProperty() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
-        "com.yarpc.backend.enumsWithDicts",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    return iface.property("EnumProperty").value<QMap<$1, $2>>();
+    QDBusReply<QDBusVariant> reply = iface.call(
+        "Get",
+        "com.yarpc.backend.enumsWithDicts",
+        "EnumProperty"
+    );
+    QMap<$1, $2> unmarshalled{};
+    if (reply.isValid()) {
+        unmarshalled = reply.value().variant().value<QMap<$1, $2>>();
+    }
+    return unmarshalled;
 }
 
 void BackendEnumsWithDictsClient::setEnumProperty(const QMap<$1, $2> &newValue) {
+
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
-        "com.yarpc.backend.enumsWithDicts",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    iface.setProperty("EnumProperty", newValue);
+    QDBusArgument marshalled;
+    QDBusVariant v;
+    v.setVariant(QVariant::fromValue(newValue));
+    marshalled << v;
+    iface.call(
+        "Set",
+        "com.yarpc.backend.enumsWithDicts",
+        "EnumProperty",
+        QVariant::fromValue<QDBusArgument>(marshalled)
+    );
 }

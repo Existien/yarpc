@@ -5,3 +5,41 @@
  *   Object: SimpleStruct
  *   Template: qt6/struct_source.j2
  */
+
+#include "SimpleStruct.hpp"
+
+using namespace gen::structs;
+
+QDBusArgument &gen::structs::operator<<(QDBusArgument &argument, const SimpleStruct &object) {
+    argument.beginStructure();
+    argument << object.item;
+    argument << object.amount;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &gen::structs::operator>>(const QDBusArgument &argument, SimpleStruct &object) {
+    argument.beginStructure();
+    argument >> object.item;
+    argument >> object.amount;
+    argument.endStructure();
+    return argument;
+}
+
+bool gen::structs::operator!=(const SimpleStruct &lhs, const SimpleStruct &rhs) {
+    return (false
+        || lhs.item != rhs.item
+        || lhs.amount != rhs.amount
+    );
+}
+
+SimpleStruct SimpleStructFactory::create (
+    Item item,
+    uint amount
+) const {
+return SimpleStruct {
+    .item = item,
+    .amount = amount,
+};
+
+}

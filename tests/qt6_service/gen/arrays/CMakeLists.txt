@@ -18,6 +18,8 @@ qt_add_qml_module(Arrays
         ArraysWithStructsInterfaceAdaptor.cpp
         BackendArraysClient.cpp
         BackendArraysWithStructsClient.cpp
+        StructArray.cpp
+        SimonsArray.cpp
 )
 
 target_link_libraries(Arrays PRIVATE Qt6::DBus)

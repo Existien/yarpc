@@ -23,7 +23,7 @@ class EnumsWithStructsInterfaceAdaptor : public QDBusAbstractAdaptor {
     /**
      * @brief a property
      */
-    Q_PROPERTY( EnumProperty READ getEnumProperty WRITE setEnumProperty )
+    Q_PROPERTY(EnumStruct EnumProperty READ getEnumProperty WRITE setEnumProperty )
 
 public:
     EnumsWithStructsInterfaceAdaptor(EnumsWithStructsInterface* iface, QObject* parent = nullptr);
@@ -36,8 +36,8 @@ public slots:
      *
      * @returns another color
      */
-     EnumMethod(
-         color,
+    EnumStruct EnumMethod(
+        EnumStruct color,
         const QDBusMessage &_message
     );
 signals:
@@ -48,11 +48,11 @@ signals:
      *
      */
     void EnumSignal(
-         color
+        EnumStruct color
     );
 private:
-     getEnumProperty() const;
-    void setEnumProperty(const  &value );
+    EnumStruct getEnumProperty() const;
+    void setEnumProperty(const EnumStruct &value );
     EnumsWithStructsInterface* m_iface;
 };
 

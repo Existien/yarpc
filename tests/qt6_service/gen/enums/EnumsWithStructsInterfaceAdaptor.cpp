@@ -13,8 +13,8 @@ EnumsWithStructsInterfaceAdaptor::EnumsWithStructsInterfaceAdaptor(EnumsWithStru
 
 }
 
- EnumsWithStructsInterfaceAdaptor::EnumMethod(
-     color,
+EnumStruct EnumsWithStructsInterfaceAdaptor::EnumMethod(
+    EnumStruct color,
     const QDBusMessage &_message
 ){
     _message.setDelayedReply(true);
@@ -22,11 +22,11 @@ EnumsWithStructsInterfaceAdaptor::EnumsWithStructsInterfaceAdaptor(EnumsWithStru
     return {};
 }
 
- EnumsWithStructsInterfaceAdaptor::getEnumProperty() const {
+EnumStruct EnumsWithStructsInterfaceAdaptor::getEnumProperty() const {
     return m_iface->getEnumProperty();
 }
 
-void EnumsWithStructsInterfaceAdaptor::setEnumProperty(const  &value ) {
+void EnumsWithStructsInterfaceAdaptor::setEnumProperty(const EnumStruct &value ) {
     emit m_iface->propertyEnumPropertySet(value);
 }
 

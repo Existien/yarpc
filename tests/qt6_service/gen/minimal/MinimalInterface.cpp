@@ -8,6 +8,8 @@
 #include "MinimalInterface.hpp"
 #include "MinimalInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::minimal;
 

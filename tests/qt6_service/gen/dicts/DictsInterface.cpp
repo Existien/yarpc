@@ -8,11 +8,17 @@
 #include "DictsInterface.hpp"
 #include "DictsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::dicts;
 
 DictsInterface::DictsInterface(QObject* parent)
 : QObject(parent) {
+    qRegisterMetaType<StructDict>("StructDict");
+    qDBusRegisterMetaType<StructDict>();
+    qRegisterMetaType<SimonsDict>("SimonsDict");
+    qDBusRegisterMetaType<SimonsDict>();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -61,8 +67,7 @@ DictMethodArgs DictMethodPendingReply::args() {
 void DictMethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -112,7 +117,7 @@ void DictsInterface::setDictProperty(const QMap<$1, $2> &value ) {
     emit dictPropertyChanged();
     if (Connection::instance().Dicts() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("DictProperty", value);
+        changedProps.insert("DictProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

@@ -13,8 +13,8 @@ StructsInterfaceAdaptor::StructsInterfaceAdaptor(StructsInterface* iface, QObjec
 
 }
 
- StructsInterfaceAdaptor::SendStruct(
-     simpleStruct,
+SimpleStruct StructsInterfaceAdaptor::SendStruct(
+    SimpleStruct simpleStruct,
     const QDBusMessage &_message
 ){
     _message.setDelayedReply(true);
@@ -22,11 +22,11 @@ StructsInterfaceAdaptor::StructsInterfaceAdaptor(StructsInterface* iface, QObjec
     return {};
 }
 
- StructsInterfaceAdaptor::getSimple() const {
+SimpleStruct StructsInterfaceAdaptor::getSimple() const {
     return m_iface->getSimple();
 }
 
-void StructsInterfaceAdaptor::setSimple(const  &value ) {
+void StructsInterfaceAdaptor::setSimple(const SimpleStruct &value ) {
     emit m_iface->propertySimpleSet(value);
 }
 

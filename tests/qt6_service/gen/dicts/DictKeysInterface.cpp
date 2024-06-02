@@ -8,11 +8,17 @@
 #include "DictKeysInterface.hpp"
 #include "DictKeysInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::dicts;
 
 DictKeysInterface::DictKeysInterface(QObject* parent)
 : QObject(parent) {
+    qRegisterMetaType<StructDict>("StructDict");
+    qDBusRegisterMetaType<StructDict>();
+    qRegisterMetaType<SimonsDict>("SimonsDict");
+    qDBusRegisterMetaType<SimonsDict>();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -161,8 +167,7 @@ Uint8MethodArgs Uint8MethodPendingReply::args() {
 void Uint8MethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -207,8 +212,7 @@ BoolMethodArgs BoolMethodPendingReply::args() {
 void BoolMethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -253,8 +257,7 @@ Int16MethodArgs Int16MethodPendingReply::args() {
 void Int16MethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -299,8 +302,7 @@ Uint16MethodArgs Uint16MethodPendingReply::args() {
 void Uint16MethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -345,8 +347,7 @@ Int32MethodArgs Int32MethodPendingReply::args() {
 void Int32MethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -391,8 +392,7 @@ Uint32MethodArgs Uint32MethodPendingReply::args() {
 void Uint32MethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -437,8 +437,7 @@ Int64MethodArgs Int64MethodPendingReply::args() {
 void Int64MethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -483,8 +482,7 @@ Uint64MethodArgs Uint64MethodPendingReply::args() {
 void Uint64MethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -529,8 +527,7 @@ DoubleMethodArgs DoubleMethodPendingReply::args() {
 void DoubleMethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -575,8 +572,7 @@ StringMethodArgs StringMethodPendingReply::args() {
 void StringMethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);

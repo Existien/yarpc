@@ -6,3 +6,48 @@
  *   Template: qt6/struct_source.j2
  */
 {% import "dbus/common.j2" as dbus %}
+{% import "qt6/common.j2" as qt6 %}
+
+#include "{{ object.name }}.hpp"
+
+using namespace {{ qt6.namespace(output) }};
+
+QDBusArgument &{{ qt6.namespace(output) }}::operator<<(QDBusArgument &argument, const {{ object.name }} &object) {
+    argument.beginStructure();
+    {% for member in object.members %}
+    argument << object.{{ member.name|camel_case }};
+    {% endfor %}
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &{{ qt6.namespace(output) }}::operator>>(const QDBusArgument &argument, {{ object.name }} &object) {
+    argument.beginStructure();
+    {% for member in object.members %}
+    argument >> object.{{ member.name|camel_case }};
+    {% endfor %}
+    argument.endStructure();
+    return argument;
+}
+
+bool {{ qt6.namespace(output) }}::operator!=(const {{ object.name }} &lhs, const {{ object.name }} &rhs) {
+    return (false
+        {% for member in object.members %}
+        || lhs.{{ member.name|camel_case }} != rhs.{{ member.name|camel_case }}
+        {% endfor %}
+    );
+}
+
+{{ object.name }} {{object.name}}Factory::create (
+    {% if object.members|count > 0 %}
+    {{ qt6.funcparams(object.members, output.objects)|indent(4) }}
+    {% endif %}
+) const {
+return {{ object.name }} {
+    {% for member in object.members %}
+    .{{ member.name|camel_case }} = {{ member.name | camel_case }},
+    {% endfor %}
+};
+
+}
+

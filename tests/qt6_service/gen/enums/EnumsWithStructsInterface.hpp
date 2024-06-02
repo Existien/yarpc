@@ -10,6 +10,7 @@
 #include <qqmlintegration.h>
 #include <QDBusMessage>
 #include "DBusError.hpp"
+#include "EnumStruct.hpp"
 namespace gen::enums {
 
 /**
@@ -20,9 +21,9 @@ class EnumMethodArgs {
     /**
      * @brief a color
      */
-    Q_PROPERTY( color MEMBER color)
+    Q_PROPERTY(EnumStruct color MEMBER color)
 public:
-     color;
+    EnumStruct color;
 };
 
 /**
@@ -50,7 +51,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const  &reply
+        const EnumStruct &reply
     );
 
     /**
@@ -88,7 +89,7 @@ class EnumsWithStructsInterface : public QObject {
     /**
      * @brief a property
      */
-    Q_PROPERTY( enumProperty READ getEnumProperty WRITE setEnumProperty NOTIFY enumPropertyChanged)
+    Q_PROPERTY(EnumStruct enumProperty READ getEnumProperty WRITE setEnumProperty NOTIFY enumPropertyChanged)
 
 public:
     EnumsWithStructsInterface(QObject* parent = nullptr);
@@ -128,7 +129,7 @@ public slots:
      * @param color a color
      */
     void EmitEnumSignal(
-         color
+        EnumStruct color
     );
 
     /**
@@ -136,14 +137,14 @@ public slots:
      *
      * @returns the current value of the property
      */
-     getEnumProperty() const;
+    EnumStruct getEnumProperty() const;
 
     /**
      * @brief Setter for the EnumProperty property.
      *
      * @param value the new value of the property
      */
-    void setEnumProperty(const  &value );
+    void setEnumProperty(const EnumStruct &value );
 
 
 signals:
@@ -164,7 +165,7 @@ signals:
      *
      * @param value the new value of the property
      */
-    void propertyEnumPropertySet( value);
+    void propertyEnumPropertySet(EnumStruct value);
 
     /**
      * @brief Emitted when the value of the EnumProperty property changes.
@@ -173,7 +174,7 @@ signals:
 
 private:
     void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
-     m_EnumProperty = {};
+    EnumStruct m_EnumProperty = {};
 };
 
 }

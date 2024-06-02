@@ -11,6 +11,8 @@
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::minimal;
 
@@ -23,7 +25,6 @@ BackendMinimalClient::BackendMinimalClient(QObject* parent)
     parent
    ))
 {
-
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/minimal",

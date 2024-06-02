@@ -8,11 +8,15 @@
 #include "EnumsWithDictsInterface.hpp"
 #include "EnumsWithDictsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace gen::enums;
 
 EnumsWithDictsInterface::EnumsWithDictsInterface(QObject* parent)
 : QObject(parent) {
+    qRegisterMetaType<EnumStruct>("EnumStruct");
+    qDBusRegisterMetaType<EnumStruct>();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -61,8 +65,7 @@ EnumMethodArgs EnumMethodPendingReply::args() {
 void EnumMethodPendingReply::sendReply(
     const QMap<$1, $2> &reply
 ) {
-    auto dbusReply = m_call.createReply();
-    dbusReply << reply;
+    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<EnumsWithDictsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -112,7 +115,7 @@ void EnumsWithDictsInterface::setEnumProperty(const QMap<$1, $2> &value ) {
     emit enumPropertyChanged();
     if (Connection::instance().EnumsWithDicts() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("EnumProperty", value);
+        changedProps.insert("EnumProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

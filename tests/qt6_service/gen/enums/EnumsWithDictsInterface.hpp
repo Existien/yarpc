@@ -10,6 +10,7 @@
 #include <qqmlintegration.h>
 #include <QDBusMessage>
 #include "DBusError.hpp"
+#include "EnumStruct.hpp"
 namespace gen::enums {
 
 /**

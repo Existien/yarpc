@@ -13,6 +13,8 @@
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
+#include <QMetaType>
+#include <QDBusMetaType>
 
 using namespace {{ qt6.namespace(output) }};
 
@@ -25,7 +27,10 @@ using namespace {{ qt6.namespace(output) }};
     parent
    ))
 {
-
+    {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
+    qRegisterMetaType<{{ object.name }}>("{{ object.name }}");
+    qDBusRegisterMetaType<{{ object.name }}>();
+    {% endfor %}
     QDBusInterface iface(
         "{{ target.busName }}",
         "{{ target.objectPath }}",
@@ -114,7 +119,7 @@ void {{ target.className }}::propertiesChangedHandler(QString iface, QVariantMap
 {% for member in object.members %}
 {% if member.kind == 'method'%}
 {{ member.name }}PendingCall* {{ target.className }}::{{ member.name }}(
-    {{ qt6.funcparams(member, output.objects)|indent(4) }}
+    {{ qt6.funcparams(member.args, output.objects)|indent(4) }}
 ) {
     {% for arg in member.args %}
     QDBusArgument dbus{{ arg.name }};
@@ -193,21 +198,52 @@ void {{ target.className }}::{{ member.name }}DBusHandler(QDBusMessage content) 
     QDBusInterface iface(
         "{{ target.busName }}",
         "{{ target.objectPath }}",
-        "{{ target.interfaceName }}",
+        "org.freedesktop.DBus.Properties",
         QDBusConnection::sessionBus()
     );
-    return iface.property("{{ member.name }}").value<{{ qt6.type(member.type, output.objects) }}>();
+    QDBusReply<QDBusVariant> reply = iface.call(
+        "Get",
+        "{{ target.interfaceName }}",
+        "{{ member.name }}"
+    );
+    {{ qt6.type(member.type, output.objects) }} unmarshalled{};
+    if (reply.isValid()) {
+        {% if (member.type|find_type(output.objects)).kind == 'struct' %}
+        auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
+        marshalled >> unmarshalled;
+        {% else %}
+        unmarshalled = reply.value().variant().value<{{ qt6.type(member.type, output.objects) }}>();
+        {% endif %}
+    }
+    return unmarshalled;
 }
 {% if member.readonly != true %}
 
 void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type, output.objects) }} &newValue) {
-    QDBusInterface iface(
+    {# QDBusInterface iface(
         "{{ target.busName }}",
         "{{ target.objectPath }}",
         "{{ target.interfaceName }}",
         QDBusConnection::sessionBus()
     );
-    iface.setProperty("{{ member.name }}", newValue);
+    iface.setProperty("{{ member.name }}", QVariant::fromValue(newValue)); #}
+
+    QDBusInterface iface(
+        "{{ target.busName }}",
+        "{{ target.objectPath }}",
+        "org.freedesktop.DBus.Properties",
+        QDBusConnection::sessionBus()
+    );
+    QDBusArgument marshalled;
+    QDBusVariant v;
+    v.setVariant(QVariant::fromValue(newValue));
+    marshalled << v;
+    iface.call(
+        "Set",
+        "{{ target.interfaceName }}",
+        "{{ member.name }}",
+        QVariant::fromValue<QDBusArgument>(marshalled)
+    );
 }
 {% endif %}
 {% endif %}

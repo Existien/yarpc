@@ -9,9 +9,9 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
-#include "DBusError.hpp"
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include "DBusError.hpp"
 namespace gen::minimal {
 
 /**
