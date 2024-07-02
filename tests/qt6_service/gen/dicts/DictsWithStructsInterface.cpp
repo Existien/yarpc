@@ -8,17 +8,15 @@
 #include "DictsWithStructsInterface.hpp"
 #include "DictsWithStructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::dicts;
 
 DictsWithStructsInterface::DictsWithStructsInterface(QObject* parent)
 : QObject(parent) {
-    qRegisterMetaType<StructDict>("StructDict");
-    qDBusRegisterMetaType<StructDict>();
-    qRegisterMetaType<SimonsDict>("SimonsDict");
-    qDBusRegisterMetaType<SimonsDict>();
+    registerMetaTypes();
+    StructDict::registerMetaTypes();
+    SimonsDict::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -55,13 +53,27 @@ bool DictsWithStructsInterface::getConnected() const {
 
 DictsStructMethodPendingReply::DictsStructMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = DictsStructMethodArgs{
-        .numbers = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .numbers = arg_0,
     };
 }
 
 DictsStructMethodArgs DictsStructMethodPendingReply::args() {
     return m_args;
+}
+
+void DictsStructMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void DictsStructMethodPendingReply::sendReply(
@@ -108,6 +120,17 @@ void DictsWithStructsInterface::EmitDictStructSignal(
     }
 }
 
+void DictsWithStructsInterface::EmitDictStructSignal(
+    QVariant numbers
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = numbers.value<QMap<$1, $2>>();
+
+    EmitDictStructSignal(
+        arg_0
+    );
+}
+
 QMap<$1, $2> DictsWithStructsInterface::getDictStructProperty() const {
     return m_DictStructProperty;
 }
@@ -120,6 +143,21 @@ void DictsWithStructsInterface::setDictStructProperty(const QMap<$1, $2> &value 
         changedProps.insert("DictStructProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant DictsWithStructsInterface::getVariantDictStructProperty() const {
+    auto unmarshalled = getDictStructProperty();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+void DictsWithStructsInterface::setVariantDictStructProperty(QVariant value ) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = value.value<QMap<$1, $2>>();
+
+    setDictStructProperty(unmarshalled);
 }
 
 

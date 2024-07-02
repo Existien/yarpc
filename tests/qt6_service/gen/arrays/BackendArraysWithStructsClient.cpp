@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendArraysWithStructsClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::arrays;
 
@@ -25,10 +25,9 @@ BackendArraysWithStructsClient::BackendArraysWithStructsClient(QObject* parent)
     parent
    ))
 {
-    qRegisterMetaType<StructArray>("StructArray");
-    qDBusRegisterMetaType<StructArray>();
-    qRegisterMetaType<SimonsArray>("SimonsArray");
-    qDBusRegisterMetaType<SimonsArray>();
+    registerMetaTypes();
+    StructArray::registerMetaTypes();
+    SimonsArray::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",
@@ -107,7 +106,22 @@ void BackendArraysWithStructsClient::propertiesChangedHandler(QString iface, QVa
 }
 
 ArrayStructMethodPendingCall* BackendArraysWithStructsClient::ArrayStructMethod(
-    QList<$1> numbers
+    QVariant numbers
+) {
+    QList<StructArray> arg_0;
+    for (auto& item_0 : numbers.value<QVariantList>()) {
+        StructArray o_0;
+        o_0 = item_0.value<StructArray>();
+
+        arg_0.push_back(o_0);
+    }
+
+    return ArrayStructMethod(
+        arg_0
+    );
+}
+ArrayStructMethodPendingCall* BackendArraysWithStructsClient::ArrayStructMethod(
+    QList<StructArray> numbers
 ) {
     QDBusArgument dbusnumbers;
     dbusnumbers << numbers;
@@ -134,7 +148,7 @@ ArrayStructMethodPendingCall::ArrayStructMethodPendingCall(QDBusPendingCall pend
 
 void ArrayStructMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<QList<$1>> reply {*watcher};
+    QDBusPendingReply<QList<SimonsArray>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
@@ -146,12 +160,12 @@ void ArrayStructMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher
 
 void BackendArraysWithStructsClient::ArrayStructSignalDBusHandler(QDBusMessage content) {
     emit arrayStructSignalReceived(
-        content.arguments()[0].value<QList<$1>>()
+        content.arguments()[0].value<QList<StructArray>>()
     );
 }
 
 
-QList<$1> BackendArraysWithStructsClient::getArrayStructProperty() const {
+QList<StructArray> BackendArraysWithStructsClient::getArrayStructProperty() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",
@@ -163,15 +177,32 @@ QList<$1> BackendArraysWithStructsClient::getArrayStructProperty() const {
         "com.yarpc.backend.arraysWithStructs",
         "ArrayStructProperty"
     );
-    QList<$1> unmarshalled{};
+    QList<StructArray> unmarshalled{};
     if (reply.isValid()) {
-        unmarshalled = reply.value().variant().value<QList<$1>>();
+        auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
+        marshalled >> unmarshalled;
     }
     return unmarshalled;
 }
 
-void BackendArraysWithStructsClient::setArrayStructProperty(const QList<$1> &newValue) {
 
+QVariant BackendArraysWithStructsClient::getVariantArrayStructProperty() const {
+    auto unmarshalled = getArrayStructProperty();
+    QVariant marshalled;
+    QList<QVariant> list_0;
+    for (auto& item_0 : unmarshalled) {
+        QVariant o_0;
+        o_0 = QVariant::fromValue(item_0);
+
+        list_0.push_back(o_0);
+    }
+    marshalled = QVariant::fromValue(list_0);
+
+    return marshalled;
+}
+
+
+void BackendArraysWithStructsClient::setArrayStructProperty(const QList<StructArray> &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",
@@ -188,4 +219,16 @@ void BackendArraysWithStructsClient::setArrayStructProperty(const QList<$1> &new
         "ArrayStructProperty",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void BackendArraysWithStructsClient::setVariantArrayStructProperty(QVariant value ) {
+    QList<StructArray> unmarshalled;
+    for (auto& item_0 : value.value<QVariantList>()) {
+        StructArray o_0;
+        o_0 = item_0.value<StructArray>();
+
+        unmarshalled.push_back(o_0);
+    }
+
+    setArrayStructProperty(unmarshalled);
 }

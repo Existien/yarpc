@@ -11,13 +11,14 @@
 #include <QDBusMessage>
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "StructArray.hpp"
 #include "SimonsArray.hpp"
 namespace gen::arrays {
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the ArrayStructMethod method calls.
  */
 class ArrayStructMethodPendingCall : public QObject {
     Q_OBJECT
@@ -31,7 +32,7 @@ signals:
      *
      * @param more numbers
      */
-    void finished(const QList<$1> &reply);
+    void finished(const QList<SimonsArray> &reply);
 
     /**
      * @brief Emitted when an error ocurred during an ArrayStructMethod call.
@@ -58,10 +59,39 @@ class BackendArraysWithStructsClient : public QObject {
     /**
      * @brief a simple property
      */
-    Q_PROPERTY(QList<$1> arrayStructProperty READ getArrayStructProperty WRITE setArrayStructProperty NOTIFY arrayStructPropertyChanged)
+    Q_PROPERTY(QVariant arrayStructProperty READ getVariantArrayStructProperty WRITE setVariantArrayStructProperty NOTIFY arrayStructPropertyChanged)
 
 public:
     BackendArraysWithStructsClient(QObject* parent = nullptr);
+
+    /**
+     * @brief a simple method with one argument
+     *
+     * @param numbers Some numbers
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    ArrayStructMethodPendingCall* ArrayStructMethod(
+        QList<StructArray> numbers
+    );
+
+    /**
+     * @brief Getter for the ArrayStructProperty property.
+     *
+     * @returns the current value of the property
+     *
+     * a simple property
+     */
+    QList<StructArray> getArrayStructProperty() const;
+
+    /**
+     * @brief Setter for the ArrayStructProperty property.
+     *
+     * @param newValue the new value of the property
+     *
+     * a simple property
+     */
+    void setArrayStructProperty(const QList<StructArray> &newValue);
 
 public slots:
     /**
@@ -86,26 +116,8 @@ public slots:
      * @returns Pending call object with finished signal containing the reply.
      */
     ArrayStructMethodPendingCall* ArrayStructMethod(
-        QList<$1> numbers
+        QVariant numbers
     );
-
-    /**
-     * @brief Getter for the ArrayStructProperty property.
-     *
-     * @returns the current value of the property
-     *
-     * a simple property
-     */
-    QList<$1> getArrayStructProperty() const;
-
-    /**
-     * @brief Setter for the ArrayStructProperty property.
-     *
-     * @param newValue the new value of the property
-     *
-     * a simple property
-     */
-    void setArrayStructProperty(const QList<$1> &newValue);
 
 signals:
     /**
@@ -119,7 +131,7 @@ signals:
      * @param numbers numbers
      */
     void arrayStructSignalReceived(
-        QList<$1> numbers
+        QList<StructArray> numbers
     );
 
     /**
@@ -134,6 +146,24 @@ private slots:
     void disconnectedHandler(const QString& service);
     void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void ArrayStructSignalDBusHandler(QDBusMessage content);
+
+    /**
+     * @brief Getter for the ArrayStructProperty property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+     * a simple property
+     */
+    QVariant getVariantArrayStructProperty() const;
+
+    /**
+     * @brief Setter for the ArrayStructProperty property as variant.
+     *
+     * @param newValue the new value of the property wrapped in a variant
+     *
+     * a simple property
+     */
+    void setVariantArrayStructProperty(QVariant newValue);
 private:
     bool m_connected = false;
     QDBusServiceWatcher m_watcher;

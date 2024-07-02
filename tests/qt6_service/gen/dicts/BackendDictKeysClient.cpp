@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendDictKeysClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::dicts;
 
@@ -25,10 +25,9 @@ BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
     parent
    ))
 {
-    qRegisterMetaType<StructDict>("StructDict");
-    qDBusRegisterMetaType<StructDict>();
-    qRegisterMetaType<SimonsDict>("SimonsDict");
-    qDBusRegisterMetaType<SimonsDict>();
+    registerMetaTypes();
+    StructDict::registerMetaTypes();
+    SimonsDict::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -236,6 +235,16 @@ void BackendDictKeysClient::StringSignalDBusHandler(QDBusMessage content) {
     );
 }
 Uint8MethodPendingCall* BackendDictKeysClient::Uint8Method(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return Uint8Method(
+        arg_0
+    );
+}
+Uint8MethodPendingCall* BackendDictKeysClient::Uint8Method(
     QMap<$1, $2> value
 ) {
     QDBusArgument dbusvalue;
@@ -272,6 +281,16 @@ void Uint8MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+BoolMethodPendingCall* BackendDictKeysClient::BoolMethod(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return BoolMethod(
+        arg_0
+    );
+}
 BoolMethodPendingCall* BackendDictKeysClient::BoolMethod(
     QMap<$1, $2> value
 ) {
@@ -310,6 +329,16 @@ void BoolMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 }
 
 Int16MethodPendingCall* BackendDictKeysClient::Int16Method(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return Int16Method(
+        arg_0
+    );
+}
+Int16MethodPendingCall* BackendDictKeysClient::Int16Method(
     QMap<$1, $2> value
 ) {
     QDBusArgument dbusvalue;
@@ -346,6 +375,16 @@ void Int16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+Uint16MethodPendingCall* BackendDictKeysClient::Uint16Method(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return Uint16Method(
+        arg_0
+    );
+}
 Uint16MethodPendingCall* BackendDictKeysClient::Uint16Method(
     QMap<$1, $2> value
 ) {
@@ -384,6 +423,16 @@ void Uint16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 }
 
 Int32MethodPendingCall* BackendDictKeysClient::Int32Method(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return Int32Method(
+        arg_0
+    );
+}
+Int32MethodPendingCall* BackendDictKeysClient::Int32Method(
     QMap<$1, $2> value
 ) {
     QDBusArgument dbusvalue;
@@ -420,6 +469,16 @@ void Int32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+Uint32MethodPendingCall* BackendDictKeysClient::Uint32Method(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return Uint32Method(
+        arg_0
+    );
+}
 Uint32MethodPendingCall* BackendDictKeysClient::Uint32Method(
     QMap<$1, $2> value
 ) {
@@ -458,6 +517,16 @@ void Uint32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 }
 
 Int64MethodPendingCall* BackendDictKeysClient::Int64Method(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return Int64Method(
+        arg_0
+    );
+}
+Int64MethodPendingCall* BackendDictKeysClient::Int64Method(
     QMap<$1, $2> value
 ) {
     QDBusArgument dbusvalue;
@@ -494,6 +563,16 @@ void Int64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+Uint64MethodPendingCall* BackendDictKeysClient::Uint64Method(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return Uint64Method(
+        arg_0
+    );
+}
 Uint64MethodPendingCall* BackendDictKeysClient::Uint64Method(
     QMap<$1, $2> value
 ) {
@@ -532,6 +611,16 @@ void Uint64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 }
 
 DoubleMethodPendingCall* BackendDictKeysClient::DoubleMethod(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return DoubleMethod(
+        arg_0
+    );
+}
+DoubleMethodPendingCall* BackendDictKeysClient::DoubleMethod(
     QMap<$1, $2> value
 ) {
     QDBusArgument dbusvalue;
@@ -568,6 +657,16 @@ void DoubleMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+StringMethodPendingCall* BackendDictKeysClient::StringMethod(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    return StringMethod(
+        arg_0
+    );
+}
 StringMethodPendingCall* BackendDictKeysClient::StringMethod(
     QMap<$1, $2> value
 ) {

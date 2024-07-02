@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 namespace gen::minimal {
 
@@ -31,6 +32,7 @@ class BumpPendingReply : public QObject {
     QML_ELEMENT
 public:
     BumpPendingReply(QDBusMessage call, QObject *parent);
+
 public slots:
     /**
      * @brief Returns the arguments passed during a Bump call.
@@ -96,12 +98,15 @@ public:
      */
     bool getConnected() const;
 
+
     /**
      * @brief Handler for Bump D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleBumpCalled(QDBusMessage call);
+
+
 
 
 public slots:
@@ -116,6 +121,9 @@ public slots:
      */
     void EmitBumped(
     );
+
+
+private:
 
 
 signals:

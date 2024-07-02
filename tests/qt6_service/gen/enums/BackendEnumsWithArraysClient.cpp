@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendEnumsWithArraysClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::enums;
 
@@ -25,8 +25,8 @@ BackendEnumsWithArraysClient::BackendEnumsWithArraysClient(QObject* parent)
     parent
    ))
 {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
+    registerMetaTypes();
+    EnumStruct::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -105,7 +105,22 @@ void BackendEnumsWithArraysClient::propertiesChangedHandler(QString iface, QVari
 }
 
 EnumMethodPendingCall* BackendEnumsWithArraysClient::EnumMethod(
-    QList<$1> color
+    QVariant color
+) {
+    QList<> arg_0;
+    for (auto& item_0 : color.value<QVariantList>()) {
+         o_0;
+        o_0 = item_0.value<>();
+
+        arg_0.push_back(o_0);
+    }
+
+    return EnumMethod(
+        arg_0
+    );
+}
+EnumMethodPendingCall* BackendEnumsWithArraysClient::EnumMethod(
+    QList<> color
 ) {
     QDBusArgument dbuscolor;
     dbuscolor << color;
@@ -132,7 +147,7 @@ EnumMethodPendingCall::EnumMethodPendingCall(QDBusPendingCall pendingCall, QObje
 
 void EnumMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<QList<$1>> reply {*watcher};
+    QDBusPendingReply<QList<>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
@@ -144,12 +159,12 @@ void EnumMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 
 void BackendEnumsWithArraysClient::EnumSignalDBusHandler(QDBusMessage content) {
     emit enumSignalReceived(
-        content.arguments()[0].value<QList<$1>>()
+        content.arguments()[0].value<QList<>>()
     );
 }
 
 
-QList<$1> BackendEnumsWithArraysClient::getEnumProperty() const {
+QList<> BackendEnumsWithArraysClient::getEnumProperty() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -161,15 +176,32 @@ QList<$1> BackendEnumsWithArraysClient::getEnumProperty() const {
         "com.yarpc.backend.enumsWithArrays",
         "EnumProperty"
     );
-    QList<$1> unmarshalled{};
+    QList<> unmarshalled{};
     if (reply.isValid()) {
-        unmarshalled = reply.value().variant().value<QList<$1>>();
+        auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
+        marshalled >> unmarshalled;
     }
     return unmarshalled;
 }
 
-void BackendEnumsWithArraysClient::setEnumProperty(const QList<$1> &newValue) {
 
+QVariant BackendEnumsWithArraysClient::getVariantEnumProperty() const {
+    auto unmarshalled = getEnumProperty();
+    QVariant marshalled;
+    QList<QVariant> list_0;
+    for (auto& item_0 : unmarshalled) {
+        QVariant o_0;
+        o_0 = QVariant::fromValue(item_0);
+
+        list_0.push_back(o_0);
+    }
+    marshalled = QVariant::fromValue(list_0);
+
+    return marshalled;
+}
+
+
+void BackendEnumsWithArraysClient::setEnumProperty(const QList<> &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -186,4 +218,16 @@ void BackendEnumsWithArraysClient::setEnumProperty(const QList<$1> &newValue) {
         "EnumProperty",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void BackendEnumsWithArraysClient::setVariantEnumProperty(QVariant value ) {
+    QList<> unmarshalled;
+    for (auto& item_0 : value.value<QVariantList>()) {
+         o_0;
+        o_0 = item_0.value<>();
+
+        unmarshalled.push_back(o_0);
+    }
+
+    setEnumProperty(unmarshalled);
 }

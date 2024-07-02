@@ -5,7 +5,8 @@
  *   Object: StructArray
  *   Template: qt6/struct_source.j2
  */
-
+#include <QMetaType>
+#include <QDBusMetaType>
 #include "StructArray.hpp"
 
 using namespace gen::arrays;
@@ -30,11 +31,49 @@ bool gen::arrays::operator!=(const StructArray &lhs, const StructArray &rhs) {
     );
 }
 
-StructArray StructArrayFactory::create (
-    QList<$1> numbers
-) const {
-return StructArray {
-    .numbers = numbers,
-};
+bool gen::arrays::operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        return true;
+    }
+    for (auto i=0; i<lhs.size(); ++i) {
+        if (lhs[i] != rhs[i]) {
+            return true;
+        }
+    }
+    return false;
+}
 
+StructArray StructArrayFactory::create (
+    QList<QList<uint>> numbers
+) const {
+    return StructArray {
+        .numbers = numbers,
+    };
+}
+
+StructArray StructArrayFactory::create (
+    QVariant numbers
+) const {
+    QList<QList<uint>> member_0;
+    for (auto& item_0 : numbers.value<QVariantList>()) {
+        QList<uint> o_0;
+        for (auto& item_1 : item_0.value<QVariantList>()) {
+            uint o_1;
+            o_1 = item_1.value<uint>();
+
+            o_0.push_back(o_1);
+        }
+
+        member_0.push_back(o_0);
+    }
+
+    return StructArray {
+        .numbers = member_0,
+    };
+}
+
+void StructArray::registerMetaTypes() {
+    qRegisterMetaType<StructArray>("StructArray");
+    qDBusRegisterMetaType<StructArray>();
+    qDBusRegisterMetaType<QList<StructArray>>();
 }

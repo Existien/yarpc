@@ -11,13 +11,14 @@
 #include <QDBusMessage>
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "StructArray.hpp"
 #include "SimonsArray.hpp"
 namespace gen::arrays {
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the ArrayMethod method calls.
  */
 class ArrayMethodPendingCall : public QObject {
     Q_OBJECT
@@ -31,7 +32,7 @@ signals:
      *
      * @param normalized numbers
      */
-    void finished(const QList<$1> &reply);
+    void finished(const QList<QList<double>> &reply);
 
     /**
      * @brief Emitted when an error ocurred during an ArrayMethod call.
@@ -58,10 +59,39 @@ class BackendArraysClient : public QObject {
     /**
      * @brief a simple property
      */
-    Q_PROPERTY(QList<$1> arrayProperty READ getArrayProperty WRITE setArrayProperty NOTIFY arrayPropertyChanged)
+    Q_PROPERTY(QVariant arrayProperty READ getVariantArrayProperty WRITE setVariantArrayProperty NOTIFY arrayPropertyChanged)
 
 public:
     BackendArraysClient(QObject* parent = nullptr);
+
+    /**
+     * @brief a simple method with one argument
+     *
+     * @param numbers Some numbers
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    ArrayMethodPendingCall* ArrayMethod(
+        QList<QList<uint>> numbers
+    );
+
+    /**
+     * @brief Getter for the ArrayProperty property.
+     *
+     * @returns the current value of the property
+     *
+     * a simple property
+     */
+    QList<QList<QString>> getArrayProperty() const;
+
+    /**
+     * @brief Setter for the ArrayProperty property.
+     *
+     * @param newValue the new value of the property
+     *
+     * a simple property
+     */
+    void setArrayProperty(const QList<QList<QString>> &newValue);
 
 public slots:
     /**
@@ -86,26 +116,8 @@ public slots:
      * @returns Pending call object with finished signal containing the reply.
      */
     ArrayMethodPendingCall* ArrayMethod(
-        QList<$1> numbers
+        QVariant numbers
     );
-
-    /**
-     * @brief Getter for the ArrayProperty property.
-     *
-     * @returns the current value of the property
-     *
-     * a simple property
-     */
-    QList<$1> getArrayProperty() const;
-
-    /**
-     * @brief Setter for the ArrayProperty property.
-     *
-     * @param newValue the new value of the property
-     *
-     * a simple property
-     */
-    void setArrayProperty(const QList<$1> &newValue);
 
 signals:
     /**
@@ -119,7 +131,7 @@ signals:
      * @param numbers normalized numbers
      */
     void arraySignalReceived(
-        QList<$1> numbers
+        QList<QList<double>> numbers
     );
 
     /**
@@ -134,6 +146,24 @@ private slots:
     void disconnectedHandler(const QString& service);
     void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void ArraySignalDBusHandler(QDBusMessage content);
+
+    /**
+     * @brief Getter for the ArrayProperty property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+     * a simple property
+     */
+    QVariant getVariantArrayProperty() const;
+
+    /**
+     * @brief Setter for the ArrayProperty property as variant.
+     *
+     * @param newValue the new value of the property wrapped in a variant
+     *
+     * a simple property
+     */
+    void setVariantArrayProperty(QVariant newValue);
 private:
     bool m_connected = false;
     QDBusServiceWatcher m_watcher;

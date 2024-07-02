@@ -22,12 +22,12 @@ struct StructArray {
     /**
      * @brief some numbers
      */
-    Q_PROPERTY(QList<$1> numbers MEMBER numbers)
+    Q_PROPERTY(QList<QList<uint>> numbers MEMBER numbers)
 public:
     /**
      * @brief some numbers
      */
-    QList<$1> numbers;
+    QList<QList<uint>> numbers;
 
     /**
      * @brief Registers MetaTypes used by this struct.
@@ -57,6 +57,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, StructArray &obje
 
 bool operator!=(const StructArray &lhs, const StructArray &rhs);
 
+bool operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs);
+
 /**
  * @brief Factory to create StructArray objects in QML.
  */
@@ -70,9 +72,23 @@ public:
      *
      * @param numbers some numbers
      */
-    Q_INVOKABLE StructArray create (
-        QList<$1> numbers
+    StructArray create (
+        QList<QList<uint>> numbers
     ) const;
+
+    /**
+     * @brief Create a StructArray object.
+     *
+     * @param numbers some numbers
+     */
+    Q_INVOKABLE StructArray create (
+        QVariant numbers
+    ) const;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
 };
 
 }

@@ -13,6 +13,7 @@
 #include <QDBusMessage>
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include <QVariant>
 #include "DBusError.hpp"
 {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
 #include "{{ object.name }}.hpp"
@@ -22,7 +23,7 @@ namespace {{ qt6.namespace(output) }} {
 {% for member in object.members %}
 {% if member.kind == 'method' %}
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the {{ member.name }} method calls.
  */
 class {{ member.name }}PendingCall : public QObject {
     Q_OBJECT
@@ -74,27 +75,12 @@ class {{ target.className }} : public QObject {
     /**
      {{ qt6.doctag(member, "brief")|indent(5) }}
      */
-    Q_PROPERTY({{ qt6.type(member.type, output.objects) }} {{ member.name|camel_case }} READ get{{ member.name }} {% if member.readonly != True %}WRITE set{{ member.name }} {% endif %}NOTIFY {{ member.name|camel_case }}Changed)
+    Q_PROPERTY(QVariant {{ member.name|camel_case }} READ getVariant{{ member.name }} {% if member.readonly != True %}WRITE setVariant{{ member.name }} {% endif %}NOTIFY {{ member.name|camel_case }}Changed)
 
     {% endif %}
     {% endfor %}
 public:
     {{ target.className }}(QObject* parent = nullptr);
-
-public slots:
-    /**
-     * @brief Returns whether the target service is available.
-     *
-     * @returns Whether the target service is available.
-     */
-    bool getConnected() const;
-
-    /**
-     * @brief Returns a map containing the current values of all properties.
-     *
-     * @returns a map containing the current values of all properties
-     */
-    QVariantMap getAllProperties() const;
     {% for member in object.members %}
     {% if member.kind == "property" %}
 
@@ -123,6 +109,7 @@ public slots:
     {% endif %}
     {% endif %}
     {% if member.kind == 'method' %}
+    {% if member.args|count > 0 %}
 
     /**
      {{ qt6.doctag(member, "brief")|indent(5) }}
@@ -136,6 +123,41 @@ public slots:
     {{ member.name }}PendingCall* {{ member.name }}(
     {% if member.args|count > 0 %}
         {{ qt6.funcparams(member.args, output.objects)|indent(8) }}
+    {% endif %}
+    );
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+
+public slots:
+    /**
+     * @brief Returns whether the target service is available.
+     *
+     * @returns Whether the target service is available.
+     */
+    bool getConnected() const;
+
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
+    {% for member in object.members %}
+    {% if member.kind == 'method' %}
+
+    /**
+     {{ qt6.doctag(member, "brief")|indent(5) }}
+     {% if member.args|count > 0 %}
+     *
+     {{ qt6.docparams(member.args)|indent(5) }}
+     {% endif %}
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    {{ member.name }}PendingCall* {{ member.name }}(
+    {% if member.args|count > 0 %}
+        {{ qt6.funcparams(member.args, output.objects, true)|indent(8) }}
     {% endif %}
     );
     {% endif %}
@@ -182,6 +204,32 @@ private slots:
     {% for member in object.members %}
     {% if member.kind == 'signal' %}
     void {{ member.name }}DBusHandler(QDBusMessage content);
+    {% endif %}
+    {% if member.kind == "property" %}
+
+    /**
+     * @brief Getter for the {{ member.name }} property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+    {% for line in member.docs.strip().split('\n') %}
+     * {{ line }}
+    {% endfor %}
+     */
+    QVariant getVariant{{ member.name }}() const;
+    {% if member.readonly != true %}
+
+    /**
+     * @brief Setter for the {{ member.name }} property as variant.
+     *
+     * @param newValue the new value of the property wrapped in a variant
+     *
+    {% for line in member.docs.strip().split('\n') %}
+     * {{ line }}
+    {% endfor %}
+     */
+    void setVariant{{ member.name }}(QVariant newValue);
+    {% endif %}
     {% endif %}
     {% endfor %}
 private:

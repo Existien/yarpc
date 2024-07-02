@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendPrimitivesClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::with_args;
 
@@ -25,6 +25,7 @@ BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
     parent
    ))
 {
+    registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -232,6 +233,16 @@ void BackendPrimitivesClient::StringSignalDBusHandler(QDBusMessage content) {
     );
 }
 Uint8MethodPendingCall* BackendPrimitivesClient::Uint8Method(
+    QVariant value
+) {
+    uchar arg_0;
+    arg_0 = value.value<uchar>();
+
+    return Uint8Method(
+        arg_0
+    );
+}
+Uint8MethodPendingCall* BackendPrimitivesClient::Uint8Method(
     uchar value
 ) {
     QDBusArgument dbusvalue;
@@ -268,6 +279,16 @@ void Uint8MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+BoolMethodPendingCall* BackendPrimitivesClient::BoolMethod(
+    QVariant value
+) {
+    bool arg_0;
+    arg_0 = value.value<bool>();
+
+    return BoolMethod(
+        arg_0
+    );
+}
 BoolMethodPendingCall* BackendPrimitivesClient::BoolMethod(
     bool value
 ) {
@@ -306,6 +327,16 @@ void BoolMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 }
 
 Int16MethodPendingCall* BackendPrimitivesClient::Int16Method(
+    QVariant value
+) {
+    short arg_0;
+    arg_0 = value.value<short>();
+
+    return Int16Method(
+        arg_0
+    );
+}
+Int16MethodPendingCall* BackendPrimitivesClient::Int16Method(
     short value
 ) {
     QDBusArgument dbusvalue;
@@ -342,6 +373,16 @@ void Int16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+Uint16MethodPendingCall* BackendPrimitivesClient::Uint16Method(
+    QVariant value
+) {
+    ushort arg_0;
+    arg_0 = value.value<ushort>();
+
+    return Uint16Method(
+        arg_0
+    );
+}
 Uint16MethodPendingCall* BackendPrimitivesClient::Uint16Method(
     ushort value
 ) {
@@ -380,6 +421,16 @@ void Uint16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 }
 
 Int32MethodPendingCall* BackendPrimitivesClient::Int32Method(
+    QVariant value
+) {
+    int arg_0;
+    arg_0 = value.value<int>();
+
+    return Int32Method(
+        arg_0
+    );
+}
+Int32MethodPendingCall* BackendPrimitivesClient::Int32Method(
     int value
 ) {
     QDBusArgument dbusvalue;
@@ -416,6 +467,16 @@ void Int32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+Uint32MethodPendingCall* BackendPrimitivesClient::Uint32Method(
+    QVariant value
+) {
+    uint arg_0;
+    arg_0 = value.value<uint>();
+
+    return Uint32Method(
+        arg_0
+    );
+}
 Uint32MethodPendingCall* BackendPrimitivesClient::Uint32Method(
     uint value
 ) {
@@ -454,6 +515,16 @@ void Uint32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 }
 
 Int64MethodPendingCall* BackendPrimitivesClient::Int64Method(
+    QVariant value
+) {
+    qlonglong arg_0;
+    arg_0 = value.value<qlonglong>();
+
+    return Int64Method(
+        arg_0
+    );
+}
+Int64MethodPendingCall* BackendPrimitivesClient::Int64Method(
     qlonglong value
 ) {
     QDBusArgument dbusvalue;
@@ -490,6 +561,16 @@ void Int64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+Uint64MethodPendingCall* BackendPrimitivesClient::Uint64Method(
+    QVariant value
+) {
+    qulonglong arg_0;
+    arg_0 = value.value<qulonglong>();
+
+    return Uint64Method(
+        arg_0
+    );
+}
 Uint64MethodPendingCall* BackendPrimitivesClient::Uint64Method(
     qulonglong value
 ) {
@@ -528,6 +609,16 @@ void Uint64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 }
 
 DoubleMethodPendingCall* BackendPrimitivesClient::DoubleMethod(
+    QVariant value
+) {
+    double arg_0;
+    arg_0 = value.value<double>();
+
+    return DoubleMethod(
+        arg_0
+    );
+}
+DoubleMethodPendingCall* BackendPrimitivesClient::DoubleMethod(
     double value
 ) {
     QDBusArgument dbusvalue;
@@ -564,6 +655,16 @@ void DoubleMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+StringMethodPendingCall* BackendPrimitivesClient::StringMethod(
+    QVariant value
+) {
+    QString arg_0;
+    arg_0 = value.value<QString>();
+
+    return StringMethod(
+        arg_0
+    );
+}
 StringMethodPendingCall* BackendPrimitivesClient::StringMethod(
     QString value
 ) {

@@ -5,7 +5,8 @@
  *   Object: Item
  *   Template: qt6/struct_source.j2
  */
-
+#include <QMetaType>
+#include <QDBusMetaType>
 #include "Item.hpp"
 
 using namespace gen::structs;
@@ -37,9 +38,29 @@ Item ItemFactory::create (
     QString name,
     double price
 ) const {
-return Item {
-    .name = name,
-    .price = price,
-};
+    return Item {
+        .name = name,
+        .price = price,
+    };
+}
 
+Item ItemFactory::create (
+    QVariant name,
+    QVariant price
+) const {
+    QString member_0;
+    member_0 = name.value<QString>();
+
+    double member_1;
+    member_1 = price.value<double>();
+
+    return Item {
+        .name = member_0,
+        .price = member_1,
+    };
+}
+
+void Item::registerMetaTypes() {
+    qRegisterMetaType<Item>("Item");
+    qDBusRegisterMetaType<Item>();
 }

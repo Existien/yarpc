@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "StructDict.hpp"
 #include "SimonsDict.hpp"
@@ -38,6 +39,15 @@ class DictsStructMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     DictsStructMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QMap<$1, $2> &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a DictsStructMethod call.
@@ -52,7 +62,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const QMap<$1, $2> &reply
+        QVariant reply
     );
 
     /**
@@ -90,7 +100,7 @@ class DictsWithStructsInterface : public QObject {
     /**
      * @brief a simple property
      */
-    Q_PROPERTY(QMap<$1, $2> dictStructProperty READ getDictStructProperty WRITE setDictStructProperty NOTIFY dictStructPropertyChanged)
+    Q_PROPERTY(QVariant dictStructProperty READ getVariantDictStructProperty WRITE setVariantDictStructProperty NOTIFY dictStructPropertyChanged)
 
 public:
     DictsWithStructsInterface(QObject* parent = nullptr);
@@ -117,21 +127,7 @@ public:
     void handleDictsStructMethodCalled(QDBusMessage call);
 
 
-public slots:
-    /** @brief Registeres and connects the interface. */
-    void connect();
 
-    /** @brief Unregisteres and disconnects the interface. */
-    void disconnect();
-
-    /**
-     * @brief a simple signal with one argument
-     *
-     * @param numbers numbers
-     */
-    void EmitDictStructSignal(
-        QMap<$1, $2> numbers
-    );
 
     /**
      * @brief Getter for the DictStructProperty property.
@@ -146,6 +142,50 @@ public slots:
      * @param value the new value of the property
      */
     void setDictStructProperty(const QMap<$1, $2> &value );
+
+
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param numbers numbers
+     */
+    void EmitDictStructSignal(
+        QMap<$1, $2> numbers
+    );
+
+
+public slots:
+    /** @brief Registeres and connects the interface. */
+    void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
+    void disconnect();
+
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param numbers numbers
+     */
+    void EmitDictStructSignal(
+        QVariant numbers
+    );
+
+
+private:
+
+    /**
+     * @brief Getter for the DictStructProperty property as variant.
+     *
+     * @returns the current value of the property as variant
+     */
+    QVariant getVariantDictStructProperty() const;
+
+    /**
+     * @brief Setter for the DictStructProperty property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantDictStructProperty(QVariant value );
 
 
 signals:

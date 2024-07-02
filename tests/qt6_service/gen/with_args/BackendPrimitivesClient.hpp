@@ -11,11 +11,12 @@
 #include <QDBusMessage>
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include <QVariant>
 #include "DBusError.hpp"
 namespace gen::with_args {
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Uint8Method method calls.
  */
 class Uint8MethodPendingCall : public QObject {
     Q_OBJECT
@@ -44,7 +45,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the BoolMethod method calls.
  */
 class BoolMethodPendingCall : public QObject {
     Q_OBJECT
@@ -73,7 +74,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Int16Method method calls.
  */
 class Int16MethodPendingCall : public QObject {
     Q_OBJECT
@@ -102,7 +103,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Uint16Method method calls.
  */
 class Uint16MethodPendingCall : public QObject {
     Q_OBJECT
@@ -131,7 +132,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Int32Method method calls.
  */
 class Int32MethodPendingCall : public QObject {
     Q_OBJECT
@@ -160,7 +161,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Uint32Method method calls.
  */
 class Uint32MethodPendingCall : public QObject {
     Q_OBJECT
@@ -189,7 +190,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Int64Method method calls.
  */
 class Int64MethodPendingCall : public QObject {
     Q_OBJECT
@@ -218,7 +219,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Uint64Method method calls.
  */
 class Uint64MethodPendingCall : public QObject {
     Q_OBJECT
@@ -247,7 +248,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the DoubleMethod method calls.
  */
 class DoubleMethodPendingCall : public QObject {
     Q_OBJECT
@@ -276,7 +277,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the StringMethod method calls.
  */
 class StringMethodPendingCall : public QObject {
     Q_OBJECT
@@ -316,21 +317,6 @@ class BackendPrimitivesClient : public QObject {
     Q_PROPERTY(bool connected READ getConnected NOTIFY connectedChanged)
 public:
     BackendPrimitivesClient(QObject* parent = nullptr);
-
-public slots:
-    /**
-     * @brief Returns whether the target service is available.
-     *
-     * @returns Whether the target service is available.
-     */
-    bool getConnected() const;
-
-    /**
-     * @brief Returns a map containing the current values of all properties.
-     *
-     * @returns a map containing the current values of all properties
-     */
-    QVariantMap getAllProperties() const;
 
     /**
      * @brief a method
@@ -440,6 +426,131 @@ public slots:
      */
     StringMethodPendingCall* StringMethod(
         QString value
+    );
+
+public slots:
+    /**
+     * @brief Returns whether the target service is available.
+     *
+     * @returns Whether the target service is available.
+     */
+    bool getConnected() const;
+
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    Uint8MethodPendingCall* Uint8Method(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    BoolMethodPendingCall* BoolMethod(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    Int16MethodPendingCall* Int16Method(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    Uint16MethodPendingCall* Uint16Method(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    Int32MethodPendingCall* Int32Method(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    Uint32MethodPendingCall* Uint32Method(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    Int64MethodPendingCall* Int64Method(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    Uint64MethodPendingCall* Uint64Method(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    DoubleMethodPendingCall* DoubleMethod(
+        QVariant value
+    );
+
+    /**
+     * @brief a method
+     *
+     * @param value the value
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    StringMethodPendingCall* StringMethod(
+        QVariant value
     );
 
 signals:

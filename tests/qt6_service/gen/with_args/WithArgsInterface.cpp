@@ -8,13 +8,13 @@
 #include "WithArgsInterface.hpp"
 #include "WithArgsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::with_args;
 
 WithArgsInterface::WithArgsInterface(QObject* parent)
 : QObject(parent) {
+    registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -59,6 +59,17 @@ void WithArgsInterface::EmitNotified(
     }
 }
 
+void WithArgsInterface::EmitNotified(
+    QVariant message
+) {
+    QString arg_0;
+    arg_0 = message.value<QString>();
+
+    EmitNotified(
+        arg_0
+    );
+}
+
 void WithArgsInterface::EmitOrderReceived(
     QString item,
     uint amount,
@@ -73,6 +84,27 @@ void WithArgsInterface::EmitOrderReceived(
     }
 }
 
+void WithArgsInterface::EmitOrderReceived(
+    QVariant item,
+    QVariant amount,
+    QVariant pricePerItem
+) {
+    QString arg_0;
+    arg_0 = item.value<QString>();
+
+    uint arg_1;
+    arg_1 = amount.value<uint>();
+
+    double arg_2;
+    arg_2 = pricePerItem.value<double>();
+
+    EmitOrderReceived(
+        arg_0,
+        arg_1,
+        arg_2
+    );
+}
+
 NotifyPendingReply::NotifyPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
     m_args = NotifyArgs{
@@ -83,6 +115,7 @@ NotifyPendingReply::NotifyPendingReply(QDBusMessage call, QObject *parent) : QOb
 NotifyArgs NotifyPendingReply::args() {
     return m_args;
 }
+
 
 void NotifyPendingReply::sendReply(
 ) {
@@ -128,6 +161,15 @@ OrderPendingReply::OrderPendingReply(QDBusMessage call, QObject *parent) : QObje
 
 OrderArgs OrderPendingReply::args() {
     return m_args;
+}
+
+void OrderPendingReply::sendReply(
+    QVariant reply
+) {
+    double unmarshalled;
+    unmarshalled = reply.value<double>();
+
+    sendReply(unmarshalled);
 }
 
 void OrderPendingReply::sendReply(
@@ -178,6 +220,21 @@ void WithArgsInterface::setSpeed(const double &value ) {
     }
 }
 
+QVariant WithArgsInterface::getVariantSpeed() const {
+    auto unmarshalled = getSpeed();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+void WithArgsInterface::setVariantSpeed(QVariant value ) {
+    double unmarshalled;
+    unmarshalled = value.value<double>();
+
+    setSpeed(unmarshalled);
+}
+
 uint WithArgsInterface::getDistance() const {
     return m_Distance;
 }
@@ -192,6 +249,21 @@ void WithArgsInterface::setDistance(const uint &value ) {
     }
 }
 
+QVariant WithArgsInterface::getVariantDistance() const {
+    auto unmarshalled = getDistance();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+void WithArgsInterface::setVariantDistance(QVariant value ) {
+    uint unmarshalled;
+    unmarshalled = value.value<uint>();
+
+    setDistance(unmarshalled);
+}
+
 double WithArgsInterface::getDuration() const {
     return m_Duration;
 }
@@ -204,6 +276,21 @@ void WithArgsInterface::setDuration(const double &value ) {
         changedProps.insert("Duration", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant WithArgsInterface::getVariantDuration() const {
+    auto unmarshalled = getDuration();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+void WithArgsInterface::setVariantDuration(QVariant value ) {
+    double unmarshalled;
+    unmarshalled = value.value<double>();
+
+    setDuration(unmarshalled);
 }
 
 

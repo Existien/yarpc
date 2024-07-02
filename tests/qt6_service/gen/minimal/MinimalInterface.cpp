@@ -8,13 +8,13 @@
 #include "MinimalInterface.hpp"
 #include "MinimalInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::minimal;
 
 MinimalInterface::MinimalInterface(QObject* parent)
 : QObject(parent) {
+    registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -58,6 +58,7 @@ void MinimalInterface::EmitBumped(
     }
 }
 
+
 BumpPendingReply::BumpPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
     m_args = BumpArgs{
@@ -67,6 +68,7 @@ BumpPendingReply::BumpPendingReply(QDBusMessage call, QObject *parent) : QObject
 BumpArgs BumpPendingReply::args() {
     return m_args;
 }
+
 
 void BumpPendingReply::sendReply(
 ) {

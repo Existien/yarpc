@@ -65,6 +65,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, Item &object);
 
 bool operator!=(const Item &lhs, const Item &rhs);
 
+
 /**
  * @brief Factory to create Item objects in QML.
  */
@@ -79,10 +80,26 @@ public:
      * @param name the name
      * @param price the price
      */
-    Q_INVOKABLE Item create (
+    Item create (
         QString name,
         double price
     ) const;
+
+    /**
+     * @brief Create a Item object.
+     *
+     * @param name the name
+     * @param price the price
+     */
+    Q_INVOKABLE Item create (
+        QVariant name,
+        QVariant price
+    ) const;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
 };
 
 }

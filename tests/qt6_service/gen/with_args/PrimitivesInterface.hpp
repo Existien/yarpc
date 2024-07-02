@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 namespace gen::with_args {
 
@@ -36,6 +37,15 @@ class Uint8MethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     Uint8MethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const uchar &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a Uint8Method call.
@@ -50,7 +60,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const uchar &reply
+        QVariant reply
     );
 
     /**
@@ -97,6 +107,15 @@ class BoolMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     BoolMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const bool &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a BoolMethod call.
@@ -111,7 +130,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const bool &reply
+        QVariant reply
     );
 
     /**
@@ -158,6 +177,15 @@ class Int16MethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     Int16MethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const short &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a Int16Method call.
@@ -172,7 +200,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const short &reply
+        QVariant reply
     );
 
     /**
@@ -219,6 +247,15 @@ class Uint16MethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     Uint16MethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const ushort &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a Uint16Method call.
@@ -233,7 +270,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const ushort &reply
+        QVariant reply
     );
 
     /**
@@ -280,6 +317,15 @@ class Int32MethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     Int32MethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const int &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a Int32Method call.
@@ -294,7 +340,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const int &reply
+        QVariant reply
     );
 
     /**
@@ -341,6 +387,15 @@ class Uint32MethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     Uint32MethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const uint &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a Uint32Method call.
@@ -355,7 +410,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const uint &reply
+        QVariant reply
     );
 
     /**
@@ -402,6 +457,15 @@ class Int64MethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     Int64MethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const qlonglong &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a Int64Method call.
@@ -416,7 +480,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const qlonglong &reply
+        QVariant reply
     );
 
     /**
@@ -463,6 +527,15 @@ class Uint64MethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     Uint64MethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const qulonglong &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a Uint64Method call.
@@ -477,7 +550,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const qulonglong &reply
+        QVariant reply
     );
 
     /**
@@ -524,6 +597,15 @@ class DoubleMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     DoubleMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const double &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a DoubleMethod call.
@@ -538,7 +620,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const double &reply
+        QVariant reply
     );
 
     /**
@@ -585,6 +667,15 @@ class StringMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     StringMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QString &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a StringMethod call.
@@ -599,7 +690,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const QString &reply
+        QVariant reply
     );
 
     /**
@@ -651,12 +742,23 @@ public:
      */
     bool getConnected() const;
 
+
+
+
+
+
+
+
+
+
+
     /**
      * @brief Handler for Uint8Method D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleUint8MethodCalled(QDBusMessage call);
+
 
     /**
      * @brief Handler for BoolMethod D-Bus calls.
@@ -665,12 +767,14 @@ public:
      */
     void handleBoolMethodCalled(QDBusMessage call);
 
+
     /**
      * @brief Handler for Int16Method D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleInt16MethodCalled(QDBusMessage call);
+
 
     /**
      * @brief Handler for Uint16Method D-Bus calls.
@@ -679,12 +783,14 @@ public:
      */
     void handleUint16MethodCalled(QDBusMessage call);
 
+
     /**
      * @brief Handler for Int32Method D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleInt32MethodCalled(QDBusMessage call);
+
 
     /**
      * @brief Handler for Uint32Method D-Bus calls.
@@ -693,12 +799,14 @@ public:
      */
     void handleUint32MethodCalled(QDBusMessage call);
 
+
     /**
      * @brief Handler for Int64Method D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleInt64MethodCalled(QDBusMessage call);
+
 
     /**
      * @brief Handler for Uint64Method D-Bus calls.
@@ -707,12 +815,14 @@ public:
      */
     void handleUint64MethodCalled(QDBusMessage call);
 
+
     /**
      * @brief Handler for DoubleMethod D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleDoubleMethodCalled(QDBusMessage call);
+
 
     /**
      * @brief Handler for StringMethod D-Bus calls.
@@ -722,12 +832,6 @@ public:
     void handleStringMethodCalled(QDBusMessage call);
 
 
-public slots:
-    /** @brief Registeres and connects the interface. */
-    void connect();
-
-    /** @brief Unregisteres and disconnects the interface. */
-    void disconnect();
 
     /**
      * @brief a signal
@@ -818,6 +922,107 @@ public slots:
     void EmitStringSignal(
         QString value
     );
+
+
+public slots:
+    /** @brief Registeres and connects the interface. */
+    void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
+    void disconnect();
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitUint8Signal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitBoolSignal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitInt16Signal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitUint16Signal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitInt32Signal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitUint32Signal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitInt64Signal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitUint64Signal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitDoubleSignal(
+        QVariant value
+    );
+
+    /**
+     * @brief a signal
+     *
+     * @param value the value
+     */
+    void EmitStringSignal(
+        QVariant value
+    );
+
+
+private:
 
 
 signals:

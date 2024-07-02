@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendEnumsWithStructsClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::enums;
 
@@ -25,8 +25,8 @@ BackendEnumsWithStructsClient::BackendEnumsWithStructsClient(QObject* parent)
     parent
    ))
 {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
+    registerMetaTypes();
+    EnumStruct::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -105,6 +105,16 @@ void BackendEnumsWithStructsClient::propertiesChangedHandler(QString iface, QVar
 }
 
 EnumMethodPendingCall* BackendEnumsWithStructsClient::EnumMethod(
+    QVariant color
+) {
+    EnumStruct arg_0;
+    arg_0 = color.value<EnumStruct>();
+
+    return EnumMethod(
+        arg_0
+    );
+}
+EnumMethodPendingCall* BackendEnumsWithStructsClient::EnumMethod(
     EnumStruct color
 ) {
     QDBusArgument dbuscolor;
@@ -169,8 +179,17 @@ EnumStruct BackendEnumsWithStructsClient::getEnumProperty() const {
     return unmarshalled;
 }
 
-void BackendEnumsWithStructsClient::setEnumProperty(const EnumStruct &newValue) {
 
+QVariant BackendEnumsWithStructsClient::getVariantEnumProperty() const {
+    auto unmarshalled = getEnumProperty();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+
+void BackendEnumsWithStructsClient::setEnumProperty(const EnumStruct &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -187,4 +206,11 @@ void BackendEnumsWithStructsClient::setEnumProperty(const EnumStruct &newValue) 
         "EnumProperty",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void BackendEnumsWithStructsClient::setVariantEnumProperty(QVariant value ) {
+    EnumStruct unmarshalled;
+    unmarshalled = value.value<EnumStruct>();
+
+    setEnumProperty(unmarshalled);
 }

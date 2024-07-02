@@ -12,6 +12,7 @@ qt_add_qml_module(Minimal
     SOURCES
         Connection.cpp
         DBusError.cpp
+        types.cpp
         MinimalInterface.cpp
         MinimalInterfaceAdaptor.cpp
         BackendMinimalClient.cpp

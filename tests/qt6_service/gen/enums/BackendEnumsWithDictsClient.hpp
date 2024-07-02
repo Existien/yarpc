@@ -11,12 +11,13 @@
 #include <QDBusMessage>
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "EnumStruct.hpp"
 namespace gen::enums {
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the EnumMethod method calls.
  */
 class EnumMethodPendingCall : public QObject {
     Q_OBJECT
@@ -57,25 +58,10 @@ class BackendEnumsWithDictsClient : public QObject {
     /**
      * @brief a property
      */
-    Q_PROPERTY(QMap<$1, $2> enumProperty READ getEnumProperty WRITE setEnumProperty NOTIFY enumPropertyChanged)
+    Q_PROPERTY(QVariant enumProperty READ getVariantEnumProperty WRITE setVariantEnumProperty NOTIFY enumPropertyChanged)
 
 public:
     BackendEnumsWithDictsClient(QObject* parent = nullptr);
-
-public slots:
-    /**
-     * @brief Returns whether the target service is available.
-     *
-     * @returns Whether the target service is available.
-     */
-    bool getConnected() const;
-
-    /**
-     * @brief Returns a map containing the current values of all properties.
-     *
-     * @returns a map containing the current values of all properties
-     */
-    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
@@ -106,6 +92,32 @@ public slots:
      */
     void setEnumProperty(const QMap<$1, $2> &newValue);
 
+public slots:
+    /**
+     * @brief Returns whether the target service is available.
+     *
+     * @returns Whether the target service is available.
+     */
+    bool getConnected() const;
+
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
+
+    /**
+     * @brief a simple method with one argument
+     *
+     * @param color a color
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    EnumMethodPendingCall* EnumMethod(
+        QVariant color
+    );
+
 signals:
     /**
      * @brief Emitted when the connected property changes.
@@ -133,6 +145,24 @@ private slots:
     void disconnectedHandler(const QString& service);
     void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void EnumSignalDBusHandler(QDBusMessage content);
+
+    /**
+     * @brief Getter for the EnumProperty property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+     * a property
+     */
+    QVariant getVariantEnumProperty() const;
+
+    /**
+     * @brief Setter for the EnumProperty property as variant.
+     *
+     * @param newValue the new value of the property wrapped in a variant
+     *
+     * a property
+     */
+    void setVariantEnumProperty(QVariant newValue);
 private:
     bool m_connected = false;
     QDBusServiceWatcher m_watcher;

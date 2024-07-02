@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "StructDict.hpp"
 #include "SimonsDict.hpp"
@@ -38,6 +39,15 @@ class DictMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     DictMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QMap<$1, $2> &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a DictMethod call.
@@ -52,7 +62,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const QMap<$1, $2> &reply
+        QVariant reply
     );
 
     /**
@@ -90,7 +100,7 @@ class DictsInterface : public QObject {
     /**
      * @brief a prop
      */
-    Q_PROPERTY(QMap<$1, $2> dictProperty READ getDictProperty WRITE setDictProperty NOTIFY dictPropertyChanged)
+    Q_PROPERTY(QVariant dictProperty READ getVariantDictProperty WRITE setVariantDictProperty NOTIFY dictPropertyChanged)
 
 public:
     DictsInterface(QObject* parent = nullptr);
@@ -117,21 +127,7 @@ public:
     void handleDictMethodCalled(QDBusMessage call);
 
 
-public slots:
-    /** @brief Registeres and connects the interface. */
-    void connect();
 
-    /** @brief Unregisteres and disconnects the interface. */
-    void disconnect();
-
-    /**
-     * @brief a signal
-     *
-     * @param keysNValues a dictionary
-     */
-    void EmitDictSignal(
-        QMap<$1, $2> keysNValues
-    );
 
     /**
      * @brief Getter for the DictProperty property.
@@ -146,6 +142,50 @@ public slots:
      * @param value the new value of the property
      */
     void setDictProperty(const QMap<$1, $2> &value );
+
+
+    /**
+     * @brief a signal
+     *
+     * @param keysNValues a dictionary
+     */
+    void EmitDictSignal(
+        QMap<$1, $2> keysNValues
+    );
+
+
+public slots:
+    /** @brief Registeres and connects the interface. */
+    void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
+    void disconnect();
+
+    /**
+     * @brief a signal
+     *
+     * @param keysNValues a dictionary
+     */
+    void EmitDictSignal(
+        QVariant keysNValues
+    );
+
+
+private:
+
+    /**
+     * @brief Getter for the DictProperty property as variant.
+     *
+     * @returns the current value of the property as variant
+     */
+    QVariant getVariantDictProperty() const;
+
+    /**
+     * @brief Setter for the DictProperty property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantDictProperty(QVariant value );
 
 
 signals:

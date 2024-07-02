@@ -23,7 +23,7 @@ class ArraysWithStructsInterfaceAdaptor : public QDBusAbstractAdaptor {
     /**
      * @brief a simple property
      */
-    Q_PROPERTY(QList<$1> ArrayStructProperty READ getArrayStructProperty WRITE setArrayStructProperty )
+    Q_PROPERTY(QList<StructArray> ArrayStructProperty READ getArrayStructProperty WRITE setArrayStructProperty )
 
 public:
     ArraysWithStructsInterfaceAdaptor(ArraysWithStructsInterface* iface, QObject* parent = nullptr);
@@ -36,8 +36,8 @@ public slots:
      *
      * @returns more numbers
      */
-    QList<$1> ArrayStructMethod(
-        QList<$1> numbers,
+    QList<SimonsArray> ArrayStructMethod(
+        QList<StructArray> numbers,
         const QDBusMessage &_message
     );
 signals:
@@ -48,11 +48,11 @@ signals:
      *
      */
     void ArrayStructSignal(
-        QList<$1> numbers
+        QList<StructArray> numbers
     );
 private:
-    QList<$1> getArrayStructProperty() const;
-    void setArrayStructProperty(const QList<$1> &value );
+    QList<StructArray> getArrayStructProperty() const;
+    void setArrayStructProperty(const QList<StructArray> &value );
     ArraysWithStructsInterface* m_iface;
 };
 

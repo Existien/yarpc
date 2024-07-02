@@ -8,17 +8,15 @@
 #include "DictKeysInterface.hpp"
 #include "DictKeysInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::dicts;
 
 DictKeysInterface::DictKeysInterface(QObject* parent)
 : QObject(parent) {
-    qRegisterMetaType<StructDict>("StructDict");
-    qDBusRegisterMetaType<StructDict>();
-    qRegisterMetaType<SimonsDict>("SimonsDict");
-    qDBusRegisterMetaType<SimonsDict>();
+    registerMetaTypes();
+    StructDict::registerMetaTypes();
+    SimonsDict::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -63,6 +61,17 @@ void DictKeysInterface::EmitUint8Signal(
     }
 }
 
+void DictKeysInterface::EmitUint8Signal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitUint8Signal(
+        arg_0
+    );
+}
+
 void DictKeysInterface::EmitBoolSignal(
     QMap<$1, $2> value
 ) {
@@ -71,6 +80,17 @@ void DictKeysInterface::EmitBoolSignal(
             value
         );
     }
+}
+
+void DictKeysInterface::EmitBoolSignal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitBoolSignal(
+        arg_0
+    );
 }
 
 void DictKeysInterface::EmitInt16Signal(
@@ -83,6 +103,17 @@ void DictKeysInterface::EmitInt16Signal(
     }
 }
 
+void DictKeysInterface::EmitInt16Signal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitInt16Signal(
+        arg_0
+    );
+}
+
 void DictKeysInterface::EmitUint16Signal(
     QMap<$1, $2> value
 ) {
@@ -91,6 +122,17 @@ void DictKeysInterface::EmitUint16Signal(
             value
         );
     }
+}
+
+void DictKeysInterface::EmitUint16Signal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitUint16Signal(
+        arg_0
+    );
 }
 
 void DictKeysInterface::EmitInt32Signal(
@@ -103,6 +145,17 @@ void DictKeysInterface::EmitInt32Signal(
     }
 }
 
+void DictKeysInterface::EmitInt32Signal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitInt32Signal(
+        arg_0
+    );
+}
+
 void DictKeysInterface::EmitUint32Signal(
     QMap<$1, $2> value
 ) {
@@ -111,6 +164,17 @@ void DictKeysInterface::EmitUint32Signal(
             value
         );
     }
+}
+
+void DictKeysInterface::EmitUint32Signal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitUint32Signal(
+        arg_0
+    );
 }
 
 void DictKeysInterface::EmitInt64Signal(
@@ -123,6 +187,17 @@ void DictKeysInterface::EmitInt64Signal(
     }
 }
 
+void DictKeysInterface::EmitInt64Signal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitInt64Signal(
+        arg_0
+    );
+}
+
 void DictKeysInterface::EmitUint64Signal(
     QMap<$1, $2> value
 ) {
@@ -131,6 +206,17 @@ void DictKeysInterface::EmitUint64Signal(
             value
         );
     }
+}
+
+void DictKeysInterface::EmitUint64Signal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitUint64Signal(
+        arg_0
+    );
 }
 
 void DictKeysInterface::EmitDoubleSignal(
@@ -143,6 +229,17 @@ void DictKeysInterface::EmitDoubleSignal(
     }
 }
 
+void DictKeysInterface::EmitDoubleSignal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitDoubleSignal(
+        arg_0
+    );
+}
+
 void DictKeysInterface::EmitStringSignal(
     QMap<$1, $2> value
 ) {
@@ -153,15 +250,40 @@ void DictKeysInterface::EmitStringSignal(
     }
 }
 
+void DictKeysInterface::EmitStringSignal(
+    QVariant value
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = value.value<QMap<$1, $2>>();
+
+    EmitStringSignal(
+        arg_0
+    );
+}
+
 Uint8MethodPendingReply::Uint8MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = Uint8MethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 Uint8MethodArgs Uint8MethodPendingReply::args() {
     return m_args;
+}
+
+void Uint8MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void Uint8MethodPendingReply::sendReply(
@@ -200,13 +322,27 @@ void DictKeysInterface::handleUint8MethodCalled(QDBusMessage call) {
 
 BoolMethodPendingReply::BoolMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = BoolMethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 BoolMethodArgs BoolMethodPendingReply::args() {
     return m_args;
+}
+
+void BoolMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void BoolMethodPendingReply::sendReply(
@@ -245,13 +381,27 @@ void DictKeysInterface::handleBoolMethodCalled(QDBusMessage call) {
 
 Int16MethodPendingReply::Int16MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = Int16MethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 Int16MethodArgs Int16MethodPendingReply::args() {
     return m_args;
+}
+
+void Int16MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void Int16MethodPendingReply::sendReply(
@@ -290,13 +440,27 @@ void DictKeysInterface::handleInt16MethodCalled(QDBusMessage call) {
 
 Uint16MethodPendingReply::Uint16MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = Uint16MethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 Uint16MethodArgs Uint16MethodPendingReply::args() {
     return m_args;
+}
+
+void Uint16MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void Uint16MethodPendingReply::sendReply(
@@ -335,13 +499,27 @@ void DictKeysInterface::handleUint16MethodCalled(QDBusMessage call) {
 
 Int32MethodPendingReply::Int32MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = Int32MethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 Int32MethodArgs Int32MethodPendingReply::args() {
     return m_args;
+}
+
+void Int32MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void Int32MethodPendingReply::sendReply(
@@ -380,13 +558,27 @@ void DictKeysInterface::handleInt32MethodCalled(QDBusMessage call) {
 
 Uint32MethodPendingReply::Uint32MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = Uint32MethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 Uint32MethodArgs Uint32MethodPendingReply::args() {
     return m_args;
+}
+
+void Uint32MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void Uint32MethodPendingReply::sendReply(
@@ -425,13 +617,27 @@ void DictKeysInterface::handleUint32MethodCalled(QDBusMessage call) {
 
 Int64MethodPendingReply::Int64MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = Int64MethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 Int64MethodArgs Int64MethodPendingReply::args() {
     return m_args;
+}
+
+void Int64MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void Int64MethodPendingReply::sendReply(
@@ -470,13 +676,27 @@ void DictKeysInterface::handleInt64MethodCalled(QDBusMessage call) {
 
 Uint64MethodPendingReply::Uint64MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = Uint64MethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 Uint64MethodArgs Uint64MethodPendingReply::args() {
     return m_args;
+}
+
+void Uint64MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void Uint64MethodPendingReply::sendReply(
@@ -515,13 +735,27 @@ void DictKeysInterface::handleUint64MethodCalled(QDBusMessage call) {
 
 DoubleMethodPendingReply::DoubleMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = DoubleMethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 DoubleMethodArgs DoubleMethodPendingReply::args() {
     return m_args;
+}
+
+void DoubleMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void DoubleMethodPendingReply::sendReply(
@@ -560,13 +794,27 @@ void DictKeysInterface::handleDoubleMethodCalled(QDBusMessage call) {
 
 StringMethodPendingReply::StringMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = StringMethodArgs{
-        .value = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .value = arg_0,
     };
 }
 
 StringMethodArgs StringMethodPendingReply::args() {
     return m_args;
+}
+
+void StringMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void StringMethodPendingReply::sendReply(

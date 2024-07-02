@@ -12,8 +12,13 @@
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ object.name }}
+{%- elif object.kind == 'builtin' -%}
+{%- if object.name == 'array' -%}
+{%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
+{{ object.qt6|replace("$1", inner_type) }}
 {%- else -%}
 {{ object.qt6 }}
+{%- endif -%}
 {%- endif -%}
 {%- endmacro %}
 {#
@@ -49,12 +54,61 @@
 {#
     Render function parameters
 #}
-{% macro funcparams(args, objects) %}
+{% macro funcparams(args, objects, asVariant=false) %}
 {% for i in range(0, args|count) %}
 {% set arg = args[i] %}
-{{ type(arg.type, objects) }} {{ arg.name }}
+{% if asVariant %}
+{% set argType = "QVariant" %}
+{% else %}
+{% set argType = type(arg.type, objects) %}
+{% endif %}
+{{ argType }} {{ arg.name }}
 {%- if i < args|count - 1 -%}
 ,
 {% endif %}
 {% endfor %}
+{% endmacro %}
+{#
+    Marshal value into QVariant
+#}
+{% macro marshalVariant(value, type_as_str, output, objects, i=0) %}
+QVariant {{ output }};
+{% set object = type_as_str|find_type(objects) %}
+{%- if object.kind == 'builtin' -%}
+{%- if object.name == 'array' -%}
+{%- set inner_type = type_as_str|extract_inner(object)|first %}
+QList<QVariant> list_{{i}};
+for (auto& item_{{i}} : {{ value }}) {
+    {{ marshalVariant("item_"+i|string, inner_type, "o_"+i|string, objects, i=i+1)|indent(4) }}
+    list_{{i}}.push_back(o_{{i}});
+}
+{{ output }} = QVariant::fromValue(list_{{i}});
+{% else %}
+{{ output }} = QVariant::fromValue({{value}});
+{% endif %}
+{% else %}
+{{ output }} = QVariant::fromValue({{value}});
+{% endif %}
+{% endmacro %}
+{#
+    Unmarshal value from QVariant
+#}
+{% macro unmarshalVariant(value, type_as_str, output, objects, i=0) %}
+{% set marshalled_type = type(type_as_str, objects) %}
+{{ marshalled_type }} {{ output }};
+{% set object = type_as_str|find_type(objects) %}
+{%- if object.kind == 'builtin' -%}
+{%- if object.name == 'array' -%}
+{%- set inner_type_as_str = type_as_str|extract_inner(object)|first %}
+{%- set inner_type = type(inner_type_as_str, objects) %}
+for (auto& item_{{i}} : {{ value }}.value<QVariantList>()) {
+    {{ unmarshalVariant("item_"+i|string, inner_type_as_str, "o_"+i|string, objects, i=i+1)|indent(4) }}
+    {{ output }}.push_back(o_{{i}});
+}
+{% else %}
+{{ output }} = {{ value }}.value<{{ marshalled_type }}>();
+{% endif %}
+{% else %}
+{{ output }} = {{ value }}.value<{{ marshalled_type }}>();
+{% endif %}
 {% endmacro %}

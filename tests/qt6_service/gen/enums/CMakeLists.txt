@@ -12,6 +12,7 @@ qt_add_qml_module(Enums
     SOURCES
         Connection.cpp
         DBusError.cpp
+        types.cpp
         EnumsInterface.cpp
         EnumsInterfaceAdaptor.cpp
         EnumsWithStructsInterface.cpp

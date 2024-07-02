@@ -5,7 +5,8 @@
  *   Object: StructDict
  *   Template: qt6/struct_source.j2
  */
-
+#include <QMetaType>
+#include <QDBusMetaType>
 #include "StructDict.hpp"
 
 using namespace gen::dicts;
@@ -33,8 +34,23 @@ bool gen::dicts::operator!=(const StructDict &lhs, const StructDict &rhs) {
 StructDict StructDictFactory::create (
     QMap<$1, $2> numbers
 ) const {
-return StructDict {
-    .numbers = numbers,
-};
+    return StructDict {
+        .numbers = numbers,
+    };
+}
 
+StructDict StructDictFactory::create (
+    QVariant numbers
+) const {
+    QMap<$1, $2> member_0;
+    member_0 = numbers.value<QMap<$1, $2>>();
+
+    return StructDict {
+        .numbers = member_0,
+    };
+}
+
+void StructDict::registerMetaTypes() {
+    qRegisterMetaType<StructDict>("StructDict");
+    qDBusRegisterMetaType<StructDict>();
 }

@@ -27,7 +27,7 @@ struct EnumStruct {
     /**
      * @brief colors
      */
-    Q_PROPERTY(QList<$1> colorArray MEMBER colorArray)
+    Q_PROPERTY(QList<> colorArray MEMBER colorArray)
     /**
      * @brief color map
      */
@@ -40,7 +40,7 @@ public:
     /**
      * @brief colors
      */
-    QList<$1> colorArray;
+    QList<> colorArray;
     /**
      * @brief color map
      */
@@ -74,6 +74,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, EnumStruct &objec
 
 bool operator!=(const EnumStruct &lhs, const EnumStruct &rhs);
 
+
 /**
  * @brief Factory to create EnumStruct objects in QML.
  */
@@ -89,11 +90,29 @@ public:
      * @param colorArray colors
      * @param colorDict color map
      */
-    Q_INVOKABLE EnumStruct create (
+    EnumStruct create (
          color,
-        QList<$1> colorArray,
+        QList<> colorArray,
         QMap<$1, $2> colorDict
     ) const;
+
+    /**
+     * @brief Create a EnumStruct object.
+     *
+     * @param color a color
+     * @param colorArray colors
+     * @param colorDict color map
+     */
+    Q_INVOKABLE EnumStruct create (
+        QVariant color,
+        QVariant colorArray,
+        QVariant colorDict
+    ) const;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
 };
 
 }

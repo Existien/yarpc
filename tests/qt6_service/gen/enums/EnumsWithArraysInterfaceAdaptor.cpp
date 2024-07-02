@@ -13,8 +13,8 @@ EnumsWithArraysInterfaceAdaptor::EnumsWithArraysInterfaceAdaptor(EnumsWithArrays
 
 }
 
-QList<$1> EnumsWithArraysInterfaceAdaptor::EnumMethod(
-    QList<$1> color,
+QList<> EnumsWithArraysInterfaceAdaptor::EnumMethod(
+    QList<> color,
     const QDBusMessage &_message
 ){
     _message.setDelayedReply(true);
@@ -22,11 +22,11 @@ QList<$1> EnumsWithArraysInterfaceAdaptor::EnumMethod(
     return {};
 }
 
-QList<$1> EnumsWithArraysInterfaceAdaptor::getEnumProperty() const {
+QList<> EnumsWithArraysInterfaceAdaptor::getEnumProperty() const {
     return m_iface->getEnumProperty();
 }
 
-void EnumsWithArraysInterfaceAdaptor::setEnumProperty(const QList<$1> &value ) {
+void EnumsWithArraysInterfaceAdaptor::setEnumProperty(const QList<> &value ) {
     emit m_iface->propertyEnumPropertySet(value);
 }
 

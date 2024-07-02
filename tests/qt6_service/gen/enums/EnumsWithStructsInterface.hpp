@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "EnumStruct.hpp"
 namespace gen::enums {
@@ -37,6 +38,15 @@ class EnumMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     EnumMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const EnumStruct &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a EnumMethod call.
@@ -51,7 +61,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const EnumStruct &reply
+        QVariant reply
     );
 
     /**
@@ -89,7 +99,7 @@ class EnumsWithStructsInterface : public QObject {
     /**
      * @brief a property
      */
-    Q_PROPERTY(EnumStruct enumProperty READ getEnumProperty WRITE setEnumProperty NOTIFY enumPropertyChanged)
+    Q_PROPERTY(QVariant enumProperty READ getVariantEnumProperty WRITE setVariantEnumProperty NOTIFY enumPropertyChanged)
 
 public:
     EnumsWithStructsInterface(QObject* parent = nullptr);
@@ -116,21 +126,7 @@ public:
     void handleEnumMethodCalled(QDBusMessage call);
 
 
-public slots:
-    /** @brief Registeres and connects the interface. */
-    void connect();
 
-    /** @brief Unregisteres and disconnects the interface. */
-    void disconnect();
-
-    /**
-     * @brief a simple signal with one argument
-     *
-     * @param color a color
-     */
-    void EmitEnumSignal(
-        EnumStruct color
-    );
 
     /**
      * @brief Getter for the EnumProperty property.
@@ -145,6 +141,50 @@ public slots:
      * @param value the new value of the property
      */
     void setEnumProperty(const EnumStruct &value );
+
+
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param color a color
+     */
+    void EmitEnumSignal(
+        EnumStruct color
+    );
+
+
+public slots:
+    /** @brief Registeres and connects the interface. */
+    void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
+    void disconnect();
+
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param color a color
+     */
+    void EmitEnumSignal(
+        QVariant color
+    );
+
+
+private:
+
+    /**
+     * @brief Getter for the EnumProperty property as variant.
+     *
+     * @returns the current value of the property as variant
+     */
+    QVariant getVariantEnumProperty() const;
+
+    /**
+     * @brief Setter for the EnumProperty property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantEnumProperty(QVariant value );
 
 
 signals:

@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendEnumsWithDictsClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::enums;
 
@@ -25,8 +25,8 @@ BackendEnumsWithDictsClient::BackendEnumsWithDictsClient(QObject* parent)
     parent
    ))
 {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
+    registerMetaTypes();
+    EnumStruct::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -105,6 +105,16 @@ void BackendEnumsWithDictsClient::propertiesChangedHandler(QString iface, QVaria
 }
 
 EnumMethodPendingCall* BackendEnumsWithDictsClient::EnumMethod(
+    QVariant color
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = color.value<QMap<$1, $2>>();
+
+    return EnumMethod(
+        arg_0
+    );
+}
+EnumMethodPendingCall* BackendEnumsWithDictsClient::EnumMethod(
     QMap<$1, $2> color
 ) {
     QDBusArgument dbuscolor;
@@ -163,13 +173,23 @@ QMap<$1, $2> BackendEnumsWithDictsClient::getEnumProperty() const {
     );
     QMap<$1, $2> unmarshalled{};
     if (reply.isValid()) {
-        unmarshalled = reply.value().variant().value<QMap<$1, $2>>();
+        auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
+        marshalled >> unmarshalled;
     }
     return unmarshalled;
 }
 
-void BackendEnumsWithDictsClient::setEnumProperty(const QMap<$1, $2> &newValue) {
 
+QVariant BackendEnumsWithDictsClient::getVariantEnumProperty() const {
+    auto unmarshalled = getEnumProperty();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+
+void BackendEnumsWithDictsClient::setEnumProperty(const QMap<$1, $2> &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -186,4 +206,11 @@ void BackendEnumsWithDictsClient::setEnumProperty(const QMap<$1, $2> &newValue) 
         "EnumProperty",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void BackendEnumsWithDictsClient::setVariantEnumProperty(QVariant value ) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = value.value<QMap<$1, $2>>();
+
+    setEnumProperty(unmarshalled);
 }

@@ -23,7 +23,7 @@ class EnumsWithArraysInterfaceAdaptor : public QDBusAbstractAdaptor {
     /**
      * @brief a property
      */
-    Q_PROPERTY(QList<$1> EnumProperty READ getEnumProperty WRITE setEnumProperty )
+    Q_PROPERTY(QList<> EnumProperty READ getEnumProperty WRITE setEnumProperty )
 
 public:
     EnumsWithArraysInterfaceAdaptor(EnumsWithArraysInterface* iface, QObject* parent = nullptr);
@@ -36,8 +36,8 @@ public slots:
      *
      * @returns another color
      */
-    QList<$1> EnumMethod(
-        QList<$1> color,
+    QList<> EnumMethod(
+        QList<> color,
         const QDBusMessage &_message
     );
 signals:
@@ -48,11 +48,11 @@ signals:
      *
      */
     void EnumSignal(
-        QList<$1> color
+        QList<> color
     );
 private:
-    QList<$1> getEnumProperty() const;
-    void setEnumProperty(const QList<$1> &value );
+    QList<> getEnumProperty() const;
+    void setEnumProperty(const QList<> &value );
     EnumsWithArraysInterface* m_iface;
 };
 

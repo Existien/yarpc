@@ -10,16 +10,15 @@
 #include "{{ target.className }}.hpp"
 #include "{{ target.className }}Adaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace {{ qt6.namespace(output) }};
 
 {{ target.className }}::{{ target.className }}(QObject* parent)
 : QObject(parent) {
+    registerMetaTypes();
     {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
-    qRegisterMetaType<{{ object.name }}>("{{ object.name }}");
-    qDBusRegisterMetaType<{{ object.name }}>();
+    {{ object.name }}::registerMetaTypes();
     {% endfor %}
     QObject::connect(
         &Connection::instance(),
@@ -76,14 +75,35 @@ void {{ target.className }}::Emit{{ member.name }}(
     }
 }
 
+{% if member.args|count > 0 %}
+void {{ target.className }}::Emit{{ member.name }}(
+    {{ qt6.funcparams(member.args, output.objects, true)|indent(4) }}
+) {
+    {% for i in range(0, member.args|count) %}
+    {% set arg = member.args[i] %}
+    {{ qt6.unmarshalVariant(arg.name, arg.type, "arg_"+i|string, output.objects)|indent(4) }}
+    {% endfor%}
+    Emit{{ member.name }}(
+        {% for i in range(0, member.args|count) %}
+        {% set arg = member.args[i] %}
+        arg_{{i}}
+        {%- if i < member.args|count - 1 -%}
+        ,
+        {% endif %}
+        {% endfor %}
+
+    );
+}
+{% endif %}
+
 {% endif %}
 {% if member.kind == 'method' %}
 {{ member.name }}PendingReply::{{ member.name }}PendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
     {% for i in range(0, member.args|count) %}
     {% set arg = member.args[i] %}
-    {% if ((arg.type|find_type(output.objects)).kind == 'struct') %}
-    {{ arg.type }} arg_{{i}};
+    {% if arg.type|needs_marshalling(output.objects) %}
+    {{ qt6.type(arg.type, output.objects) }} arg_{{i}};
     {
         auto marshalled = m_call.arguments()[{{i}}].value<QDBusArgument>();
         marshalled >> arg_{{i}};
@@ -93,7 +113,7 @@ void {{ target.className }}::Emit{{ member.name }}(
     m_args = {{ member.name }}Args{
         {% for i in range(0, member.args|count) %}
         {% set arg = member.args[i] %}
-        {% if ((arg.type|find_type(output.objects)).kind == 'struct') %}
+        {% if arg.type|needs_marshalling(output.objects) %}
         .{{ arg.name }} = arg_{{i}},
         {% else %}
         .{{ arg.name }} = m_call.arguments()[{{i}}].value<{{ qt6.type(arg.type, output.objects) }}>(),
@@ -105,6 +125,15 @@ void {{ target.className }}::Emit{{ member.name }}(
 {{ member.name }}Args {{ member.name }}PendingReply::args() {
     return m_args;
 }
+
+{% if member.returns is defined %}
+void {{ member.name }}PendingReply::sendReply(
+    QVariant reply
+) {
+    {{ qt6.unmarshalVariant("reply", member.returns.type, "unmarshalled", output.objects)|indent(4) }}
+    sendReply(unmarshalled);
+}
+{% endif %}
 
 void {{ member.name }}PendingReply::sendReply(
     {% if member.returns is defined %}
@@ -160,6 +189,17 @@ void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type,
         changedProps.insert("{{ member.name }}", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant {{ target.className }}::getVariant{{ member.name }}() const {
+    auto unmarshalled = get{{ member.name }}();
+    {{ qt6.marshalVariant("unmarshalled", member.type, "marshalled", output.objects)|indent(4) }}
+    return marshalled;
+}
+
+void {{ target.className }}::setVariant{{ member.name }}(QVariant value ) {
+    {{ qt6.unmarshalVariant("value", member.type, "unmarshalled", output.objects)|indent(4) }}
+    set{{ member.name }}(unmarshalled);
 }
 
 {% endif %}

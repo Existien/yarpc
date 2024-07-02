@@ -8,15 +8,14 @@
 #include "EnumsInterface.hpp"
 #include "EnumsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::enums;
 
 EnumsInterface::EnumsInterface(QObject* parent)
 : QObject(parent) {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
+    registerMetaTypes();
+    EnumStruct::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -53,13 +52,27 @@ bool EnumsInterface::getConnected() const {
 
 EnumMethodPendingReply::EnumMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+     arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = EnumMethodArgs{
-        .color = m_call.arguments()[0].value<>(),
+        .color = arg_0,
     };
 }
 
 EnumMethodArgs EnumMethodPendingReply::args() {
     return m_args;
+}
+
+void EnumMethodPendingReply::sendReply(
+    QVariant reply
+) {
+     unmarshalled;
+    unmarshalled = reply.value<>();
+
+    sendReply(unmarshalled);
 }
 
 void EnumMethodPendingReply::sendReply(
@@ -106,6 +119,17 @@ void EnumsInterface::EmitEnumSignal(
     }
 }
 
+void EnumsInterface::EmitEnumSignal(
+    QVariant color
+) {
+     arg_0;
+    arg_0 = color.value<>();
+
+    EmitEnumSignal(
+        arg_0
+    );
+}
+
  EnumsInterface::getEnumProperty() const {
     return m_EnumProperty;
 }
@@ -118,6 +142,21 @@ void EnumsInterface::setEnumProperty(const  &value ) {
         changedProps.insert("EnumProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant EnumsInterface::getVariantEnumProperty() const {
+    auto unmarshalled = getEnumProperty();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+void EnumsInterface::setVariantEnumProperty(QVariant value ) {
+     unmarshalled;
+    unmarshalled = value.value<>();
+
+    setEnumProperty(unmarshalled);
 }
 
 
