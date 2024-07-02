@@ -12,6 +12,7 @@ qt_add_qml_module(Structs
     SOURCES
         Connection.cpp
         DBusError.cpp
+        types.cpp
         StructsInterface.cpp
         StructsInterfaceAdaptor.cpp
         BackendStructsClient.cpp

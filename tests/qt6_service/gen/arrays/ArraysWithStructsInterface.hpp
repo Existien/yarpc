@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "StructArray.hpp"
 #include "SimonsArray.hpp"
@@ -22,9 +23,9 @@ class ArrayStructMethodArgs {
     /**
      * @brief Some numbers
      */
-    Q_PROPERTY(QList<$1> numbers MEMBER numbers)
+    Q_PROPERTY(QList<StructArray> numbers MEMBER numbers)
 public:
-    QList<$1> numbers;
+    QList<StructArray> numbers;
 };
 
 /**
@@ -38,6 +39,15 @@ class ArrayStructMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     ArrayStructMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QList<SimonsArray> &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a ArrayStructMethod call.
@@ -52,7 +62,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const QList<$1> &reply
+        QVariant reply
     );
 
     /**
@@ -90,7 +100,7 @@ class ArraysWithStructsInterface : public QObject {
     /**
      * @brief a simple property
      */
-    Q_PROPERTY(QList<$1> arrayStructProperty READ getArrayStructProperty WRITE setArrayStructProperty NOTIFY arrayStructPropertyChanged)
+    Q_PROPERTY(QVariant arrayStructProperty READ getVariantArrayStructProperty WRITE setVariantArrayStructProperty NOTIFY arrayStructPropertyChanged)
 
 public:
     ArraysWithStructsInterface(QObject* parent = nullptr);
@@ -117,6 +127,33 @@ public:
     void handleArrayStructMethodCalled(QDBusMessage call);
 
 
+
+
+    /**
+     * @brief Getter for the ArrayStructProperty property.
+     *
+     * @returns the current value of the property
+     */
+    QList<StructArray> getArrayStructProperty() const;
+
+    /**
+     * @brief Setter for the ArrayStructProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void setArrayStructProperty(const QList<StructArray> &value );
+
+
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param numbers numbers
+     */
+    void EmitArrayStructSignal(
+        QList<StructArray> numbers
+    );
+
+
 public slots:
     /** @brief Registeres and connects the interface. */
     void connect();
@@ -130,22 +167,25 @@ public slots:
      * @param numbers numbers
      */
     void EmitArrayStructSignal(
-        QList<$1> numbers
+        QVariant numbers
     );
 
-    /**
-     * @brief Getter for the ArrayStructProperty property.
-     *
-     * @returns the current value of the property
-     */
-    QList<$1> getArrayStructProperty() const;
+
+private:
 
     /**
-     * @brief Setter for the ArrayStructProperty property.
+     * @brief Getter for the ArrayStructProperty property as variant.
      *
-     * @param value the new value of the property
+     * @returns the current value of the property as variant
      */
-    void setArrayStructProperty(const QList<$1> &value );
+    QVariant getVariantArrayStructProperty() const;
+
+    /**
+     * @brief Setter for the ArrayStructProperty property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantArrayStructProperty(QVariant value );
 
 
 signals:
@@ -166,7 +206,7 @@ signals:
      *
      * @param value the new value of the property
      */
-    void propertyArrayStructPropertySet(QList<$1> value);
+    void propertyArrayStructPropertySet(QList<StructArray> value);
 
     /**
      * @brief Emitted when the value of the ArrayStructProperty property changes.
@@ -175,7 +215,7 @@ signals:
 
 private:
     void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
-    QList<$1> m_ArrayStructProperty = {};
+    QList<StructArray> m_ArrayStructProperty = {};
 };
 
 }

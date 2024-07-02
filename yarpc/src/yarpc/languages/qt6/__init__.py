@@ -1,5 +1,68 @@
 from yarpc.languages.base_language import BaseLanguage, ObjectKind, Target, DBusTypes
 from typing import List, Dict, Callable
+from yarpc.utils import extract_inner_names, find_type
+
+
+def _get_list_of_types(objects):
+    def get_inner(name):
+        inner_types = []
+        if name.startswith('array'):
+            inner = extract_inner_names(name, find_type(name, objects))
+            inner_types.append(inner[0])
+            inner_types.extend(get_inner(inner[0]))
+        if name.startswith('dict'):
+            inner = extract_inner_names(name, find_type(name, objects))
+            inner_types.extend(inner)
+            inner_types.extend(get_inner(inner[1]))
+        return inner_types
+
+    list_of_types = []
+    for item in filter(lambda x: x['kind'] == 'struct', objects):
+        for member in item.get('members', []):
+            list_of_types.append(member['type'])
+    for item in filter(lambda x: x['kind'] == 'interface', objects):
+        for member in item.get('members', []):
+            for arg in member.get('args', []):
+                list_of_types.append(arg['type'])
+            if member.get('returns'):
+                list_of_types.append(member['returns']['type'])
+            if member.get('type'):
+                list_of_types.append(member['type'])
+    for type in set(list_of_types):
+        list_of_types.extend(get_inner(type))
+    return set(list_of_types)
+
+
+def _get_list_of_arrays(objects):
+    return list(filter(lambda x: x.startswith('array'), _get_list_of_types(objects)))
+
+
+def _get_list_of_builtin_arrays(objects):
+    builtin_arrays = []
+    for item in _get_list_of_arrays(objects):
+        inner = extract_inner_names(item, find_type(item, objects))[0]
+        while inner.startswith('array'):
+            inner = extract_inner_names(inner, find_type(inner, objects))[0]
+        if find_type(inner, objects).get('kind') == 'builtin':
+            builtin_arrays.append(item)
+    return builtin_arrays
+
+
+def _get_array_types(name, objects):
+    return list(filter(
+        lambda x: f"<{name}>" in x,
+        _get_list_of_arrays(objects)
+    ))
+
+
+def _needs_marshalling(name, objects):
+    type_object = find_type(name, objects)
+    if type_object.get('kind', "") == 'builtin':
+        obj_name = type_object.get('name', "")
+        if obj_name != 'array' and obj_name != 'dict':
+            return False
+    return True
+
 
 class Language(BaseLanguage):
 
@@ -30,6 +93,14 @@ class Language(BaseLanguage):
             Target(
                 filename="Connection.cpp",
                 template="connection_source"
+            ),
+            Target(
+                filename="types.hpp",
+                template="types_header"
+            ),
+            Target(
+                filename="types.cpp",
+                template="types_source"
             ),
         ]
 
@@ -102,7 +173,10 @@ class Language(BaseLanguage):
         Returns:
             Dict[str, Callable[... ,object]: the language-specific jinja filters
         """
-        return {}
+        return {
+            "array_types": _get_array_types,
+            "needs_marshalling": _needs_marshalling,
+        }
 
     def get_jinja_globals(self) -> Dict[str, object]:
         """Returns a dictionary containing language-specific
@@ -111,4 +185,7 @@ class Language(BaseLanguage):
         Returns:
             Dict[str, object]: the language-specific jinja globals
         """
-        return {}
+        return {
+            'get_list_of_arrays': _get_list_of_arrays,
+            'get_list_of_builtin_arrays': _get_list_of_builtin_arrays,
+        }

@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendDictsClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::dicts;
 
@@ -25,10 +25,9 @@ BackendDictsClient::BackendDictsClient(QObject* parent)
     parent
    ))
 {
-    qRegisterMetaType<StructDict>("StructDict");
-    qDBusRegisterMetaType<StructDict>();
-    qRegisterMetaType<SimonsDict>("SimonsDict");
-    qDBusRegisterMetaType<SimonsDict>();
+    registerMetaTypes();
+    StructDict::registerMetaTypes();
+    SimonsDict::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -107,6 +106,16 @@ void BackendDictsClient::propertiesChangedHandler(QString iface, QVariantMap cha
 }
 
 DictMethodPendingCall* BackendDictsClient::DictMethod(
+    QVariant keysNValues
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = keysNValues.value<QMap<$1, $2>>();
+
+    return DictMethod(
+        arg_0
+    );
+}
+DictMethodPendingCall* BackendDictsClient::DictMethod(
     QMap<$1, $2> keysNValues
 ) {
     QDBusArgument dbuskeysNValues;
@@ -165,13 +174,23 @@ QMap<$1, $2> BackendDictsClient::getDictProperty() const {
     );
     QMap<$1, $2> unmarshalled{};
     if (reply.isValid()) {
-        unmarshalled = reply.value().variant().value<QMap<$1, $2>>();
+        auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
+        marshalled >> unmarshalled;
     }
     return unmarshalled;
 }
 
-void BackendDictsClient::setDictProperty(const QMap<$1, $2> &newValue) {
 
+QVariant BackendDictsClient::getVariantDictProperty() const {
+    auto unmarshalled = getDictProperty();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+
+void BackendDictsClient::setDictProperty(const QMap<$1, $2> &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -188,4 +207,11 @@ void BackendDictsClient::setDictProperty(const QMap<$1, $2> &newValue) {
         "DictProperty",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void BackendDictsClient::setVariantDictProperty(QVariant value ) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = value.value<QMap<$1, $2>>();
+
+    setDictProperty(unmarshalled);
 }

@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "StructArray.hpp"
 #include "SimonsArray.hpp"
@@ -22,9 +23,9 @@ class ArrayMethodArgs {
     /**
      * @brief Some numbers
      */
-    Q_PROPERTY(QList<$1> numbers MEMBER numbers)
+    Q_PROPERTY(QList<QList<uint>> numbers MEMBER numbers)
 public:
-    QList<$1> numbers;
+    QList<QList<uint>> numbers;
 };
 
 /**
@@ -38,6 +39,15 @@ class ArrayMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     ArrayMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QList<QList<double>> &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a ArrayMethod call.
@@ -52,7 +62,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const QList<$1> &reply
+        QVariant reply
     );
 
     /**
@@ -90,7 +100,7 @@ class ArraysInterface : public QObject {
     /**
      * @brief a simple property
      */
-    Q_PROPERTY(QList<$1> arrayProperty READ getArrayProperty WRITE setArrayProperty NOTIFY arrayPropertyChanged)
+    Q_PROPERTY(QVariant arrayProperty READ getVariantArrayProperty WRITE setVariantArrayProperty NOTIFY arrayPropertyChanged)
 
 public:
     ArraysInterface(QObject* parent = nullptr);
@@ -117,6 +127,33 @@ public:
     void handleArrayMethodCalled(QDBusMessage call);
 
 
+
+
+    /**
+     * @brief Getter for the ArrayProperty property.
+     *
+     * @returns the current value of the property
+     */
+    QList<QList<QString>> getArrayProperty() const;
+
+    /**
+     * @brief Setter for the ArrayProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void setArrayProperty(const QList<QList<QString>> &value );
+
+
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param numbers normalized numbers
+     */
+    void EmitArraySignal(
+        QList<QList<double>> numbers
+    );
+
+
 public slots:
     /** @brief Registeres and connects the interface. */
     void connect();
@@ -130,22 +167,25 @@ public slots:
      * @param numbers normalized numbers
      */
     void EmitArraySignal(
-        QList<$1> numbers
+        QVariant numbers
     );
 
-    /**
-     * @brief Getter for the ArrayProperty property.
-     *
-     * @returns the current value of the property
-     */
-    QList<$1> getArrayProperty() const;
+
+private:
 
     /**
-     * @brief Setter for the ArrayProperty property.
+     * @brief Getter for the ArrayProperty property as variant.
      *
-     * @param value the new value of the property
+     * @returns the current value of the property as variant
      */
-    void setArrayProperty(const QList<$1> &value );
+    QVariant getVariantArrayProperty() const;
+
+    /**
+     * @brief Setter for the ArrayProperty property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantArrayProperty(QVariant value );
 
 
 signals:
@@ -166,7 +206,7 @@ signals:
      *
      * @param value the new value of the property
      */
-    void propertyArrayPropertySet(QList<$1> value);
+    void propertyArrayPropertySet(QList<QList<QString>> value);
 
     /**
      * @brief Emitted when the value of the ArrayProperty property changes.
@@ -175,7 +215,7 @@ signals:
 
 private:
     void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
-    QList<$1> m_ArrayProperty = {};
+    QList<QList<QString>> m_ArrayProperty = {};
 };
 
 }

@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendMinimalClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::minimal;
 
@@ -25,6 +25,7 @@ BackendMinimalClient::BackendMinimalClient(QObject* parent)
     parent
    ))
 {
+    registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/minimal",

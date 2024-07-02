@@ -8,15 +8,14 @@
 #include "EnumsWithDictsInterface.hpp"
 #include "EnumsWithDictsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::enums;
 
 EnumsWithDictsInterface::EnumsWithDictsInterface(QObject* parent)
 : QObject(parent) {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
+    registerMetaTypes();
+    EnumStruct::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -53,13 +52,27 @@ bool EnumsWithDictsInterface::getConnected() const {
 
 EnumMethodPendingReply::EnumMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QMap<$1, $2> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = EnumMethodArgs{
-        .color = m_call.arguments()[0].value<QMap<$1, $2>>(),
+        .color = arg_0,
     };
 }
 
 EnumMethodArgs EnumMethodPendingReply::args() {
     return m_args;
+}
+
+void EnumMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = reply.value<QMap<$1, $2>>();
+
+    sendReply(unmarshalled);
 }
 
 void EnumMethodPendingReply::sendReply(
@@ -106,6 +119,17 @@ void EnumsWithDictsInterface::EmitEnumSignal(
     }
 }
 
+void EnumsWithDictsInterface::EmitEnumSignal(
+    QVariant color
+) {
+    QMap<$1, $2> arg_0;
+    arg_0 = color.value<QMap<$1, $2>>();
+
+    EmitEnumSignal(
+        arg_0
+    );
+}
+
 QMap<$1, $2> EnumsWithDictsInterface::getEnumProperty() const {
     return m_EnumProperty;
 }
@@ -118,6 +142,21 @@ void EnumsWithDictsInterface::setEnumProperty(const QMap<$1, $2> &value ) {
         changedProps.insert("EnumProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant EnumsWithDictsInterface::getVariantEnumProperty() const {
+    auto unmarshalled = getEnumProperty();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+void EnumsWithDictsInterface::setVariantEnumProperty(QVariant value ) {
+    QMap<$1, $2> unmarshalled;
+    unmarshalled = value.value<QMap<$1, $2>>();
+
+    setEnumProperty(unmarshalled);
 }
 
 

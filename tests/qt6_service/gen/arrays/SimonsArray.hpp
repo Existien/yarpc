@@ -23,12 +23,12 @@ struct SimonsArray {
     /**
      * @brief some struct arrays
      */
-    Q_PROPERTY(QList<$1> numbers MEMBER numbers)
+    Q_PROPERTY(QList<StructArray> numbers MEMBER numbers)
 public:
     /**
      * @brief some struct arrays
      */
-    QList<$1> numbers;
+    QList<StructArray> numbers;
 
     /**
      * @brief Registers MetaTypes used by this struct.
@@ -58,6 +58,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, SimonsArray &obje
 
 bool operator!=(const SimonsArray &lhs, const SimonsArray &rhs);
 
+bool operator!=(const QList<SimonsArray> &lhs, const QList<SimonsArray> &rhs);
+
 /**
  * @brief Factory to create SimonsArray objects in QML.
  */
@@ -71,9 +73,23 @@ public:
      *
      * @param numbers some struct arrays
      */
-    Q_INVOKABLE SimonsArray create (
-        QList<$1> numbers
+    SimonsArray create (
+        QList<StructArray> numbers
     ) const;
+
+    /**
+     * @brief Create a SimonsArray object.
+     *
+     * @param numbers some struct arrays
+     */
+    Q_INVOKABLE SimonsArray create (
+        QVariant numbers
+    ) const;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
 };
 
 }

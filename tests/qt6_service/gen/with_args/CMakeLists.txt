@@ -12,6 +12,7 @@ qt_add_qml_module(WithArgs
     SOURCES
         Connection.cpp
         DBusError.cpp
+        types.cpp
         WithArgsInterface.cpp
         WithArgsInterfaceAdaptor.cpp
         PrimitivesInterface.cpp

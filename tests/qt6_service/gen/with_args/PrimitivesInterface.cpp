@@ -8,13 +8,13 @@
 #include "PrimitivesInterface.hpp"
 #include "PrimitivesInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::with_args;
 
 PrimitivesInterface::PrimitivesInterface(QObject* parent)
 : QObject(parent) {
+    registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -59,6 +59,17 @@ void PrimitivesInterface::EmitUint8Signal(
     }
 }
 
+void PrimitivesInterface::EmitUint8Signal(
+    QVariant value
+) {
+    uchar arg_0;
+    arg_0 = value.value<uchar>();
+
+    EmitUint8Signal(
+        arg_0
+    );
+}
+
 void PrimitivesInterface::EmitBoolSignal(
     bool value
 ) {
@@ -67,6 +78,17 @@ void PrimitivesInterface::EmitBoolSignal(
             value
         );
     }
+}
+
+void PrimitivesInterface::EmitBoolSignal(
+    QVariant value
+) {
+    bool arg_0;
+    arg_0 = value.value<bool>();
+
+    EmitBoolSignal(
+        arg_0
+    );
 }
 
 void PrimitivesInterface::EmitInt16Signal(
@@ -79,6 +101,17 @@ void PrimitivesInterface::EmitInt16Signal(
     }
 }
 
+void PrimitivesInterface::EmitInt16Signal(
+    QVariant value
+) {
+    short arg_0;
+    arg_0 = value.value<short>();
+
+    EmitInt16Signal(
+        arg_0
+    );
+}
+
 void PrimitivesInterface::EmitUint16Signal(
     ushort value
 ) {
@@ -87,6 +120,17 @@ void PrimitivesInterface::EmitUint16Signal(
             value
         );
     }
+}
+
+void PrimitivesInterface::EmitUint16Signal(
+    QVariant value
+) {
+    ushort arg_0;
+    arg_0 = value.value<ushort>();
+
+    EmitUint16Signal(
+        arg_0
+    );
 }
 
 void PrimitivesInterface::EmitInt32Signal(
@@ -99,6 +143,17 @@ void PrimitivesInterface::EmitInt32Signal(
     }
 }
 
+void PrimitivesInterface::EmitInt32Signal(
+    QVariant value
+) {
+    int arg_0;
+    arg_0 = value.value<int>();
+
+    EmitInt32Signal(
+        arg_0
+    );
+}
+
 void PrimitivesInterface::EmitUint32Signal(
     uint value
 ) {
@@ -107,6 +162,17 @@ void PrimitivesInterface::EmitUint32Signal(
             value
         );
     }
+}
+
+void PrimitivesInterface::EmitUint32Signal(
+    QVariant value
+) {
+    uint arg_0;
+    arg_0 = value.value<uint>();
+
+    EmitUint32Signal(
+        arg_0
+    );
 }
 
 void PrimitivesInterface::EmitInt64Signal(
@@ -119,6 +185,17 @@ void PrimitivesInterface::EmitInt64Signal(
     }
 }
 
+void PrimitivesInterface::EmitInt64Signal(
+    QVariant value
+) {
+    qlonglong arg_0;
+    arg_0 = value.value<qlonglong>();
+
+    EmitInt64Signal(
+        arg_0
+    );
+}
+
 void PrimitivesInterface::EmitUint64Signal(
     qulonglong value
 ) {
@@ -127,6 +204,17 @@ void PrimitivesInterface::EmitUint64Signal(
             value
         );
     }
+}
+
+void PrimitivesInterface::EmitUint64Signal(
+    QVariant value
+) {
+    qulonglong arg_0;
+    arg_0 = value.value<qulonglong>();
+
+    EmitUint64Signal(
+        arg_0
+    );
 }
 
 void PrimitivesInterface::EmitDoubleSignal(
@@ -139,6 +227,17 @@ void PrimitivesInterface::EmitDoubleSignal(
     }
 }
 
+void PrimitivesInterface::EmitDoubleSignal(
+    QVariant value
+) {
+    double arg_0;
+    arg_0 = value.value<double>();
+
+    EmitDoubleSignal(
+        arg_0
+    );
+}
+
 void PrimitivesInterface::EmitStringSignal(
     QString value
 ) {
@@ -147,6 +246,17 @@ void PrimitivesInterface::EmitStringSignal(
             value
         );
     }
+}
+
+void PrimitivesInterface::EmitStringSignal(
+    QVariant value
+) {
+    QString arg_0;
+    arg_0 = value.value<QString>();
+
+    EmitStringSignal(
+        arg_0
+    );
 }
 
 Uint8MethodPendingReply::Uint8MethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
@@ -158,6 +268,15 @@ Uint8MethodPendingReply::Uint8MethodPendingReply(QDBusMessage call, QObject *par
 
 Uint8MethodArgs Uint8MethodPendingReply::args() {
     return m_args;
+}
+
+void Uint8MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    uchar unmarshalled;
+    unmarshalled = reply.value<uchar>();
+
+    sendReply(unmarshalled);
 }
 
 void Uint8MethodPendingReply::sendReply(
@@ -206,6 +325,15 @@ BoolMethodArgs BoolMethodPendingReply::args() {
 }
 
 void BoolMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    bool unmarshalled;
+    unmarshalled = reply.value<bool>();
+
+    sendReply(unmarshalled);
+}
+
+void BoolMethodPendingReply::sendReply(
     const bool &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
@@ -248,6 +376,15 @@ Int16MethodPendingReply::Int16MethodPendingReply(QDBusMessage call, QObject *par
 
 Int16MethodArgs Int16MethodPendingReply::args() {
     return m_args;
+}
+
+void Int16MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    short unmarshalled;
+    unmarshalled = reply.value<short>();
+
+    sendReply(unmarshalled);
 }
 
 void Int16MethodPendingReply::sendReply(
@@ -296,6 +433,15 @@ Uint16MethodArgs Uint16MethodPendingReply::args() {
 }
 
 void Uint16MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    ushort unmarshalled;
+    unmarshalled = reply.value<ushort>();
+
+    sendReply(unmarshalled);
+}
+
+void Uint16MethodPendingReply::sendReply(
     const ushort &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
@@ -338,6 +484,15 @@ Int32MethodPendingReply::Int32MethodPendingReply(QDBusMessage call, QObject *par
 
 Int32MethodArgs Int32MethodPendingReply::args() {
     return m_args;
+}
+
+void Int32MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    int unmarshalled;
+    unmarshalled = reply.value<int>();
+
+    sendReply(unmarshalled);
 }
 
 void Int32MethodPendingReply::sendReply(
@@ -386,6 +541,15 @@ Uint32MethodArgs Uint32MethodPendingReply::args() {
 }
 
 void Uint32MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    uint unmarshalled;
+    unmarshalled = reply.value<uint>();
+
+    sendReply(unmarshalled);
+}
+
+void Uint32MethodPendingReply::sendReply(
     const uint &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
@@ -428,6 +592,15 @@ Int64MethodPendingReply::Int64MethodPendingReply(QDBusMessage call, QObject *par
 
 Int64MethodArgs Int64MethodPendingReply::args() {
     return m_args;
+}
+
+void Int64MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    qlonglong unmarshalled;
+    unmarshalled = reply.value<qlonglong>();
+
+    sendReply(unmarshalled);
 }
 
 void Int64MethodPendingReply::sendReply(
@@ -476,6 +649,15 @@ Uint64MethodArgs Uint64MethodPendingReply::args() {
 }
 
 void Uint64MethodPendingReply::sendReply(
+    QVariant reply
+) {
+    qulonglong unmarshalled;
+    unmarshalled = reply.value<qulonglong>();
+
+    sendReply(unmarshalled);
+}
+
+void Uint64MethodPendingReply::sendReply(
     const qulonglong &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
@@ -521,6 +703,15 @@ DoubleMethodArgs DoubleMethodPendingReply::args() {
 }
 
 void DoubleMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    double unmarshalled;
+    unmarshalled = reply.value<double>();
+
+    sendReply(unmarshalled);
+}
+
+void DoubleMethodPendingReply::sendReply(
     const double &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
@@ -563,6 +754,15 @@ StringMethodPendingReply::StringMethodPendingReply(QDBusMessage call, QObject *p
 
 StringMethodArgs StringMethodPendingReply::args() {
     return m_args;
+}
+
+void StringMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QString unmarshalled;
+    unmarshalled = reply.value<QString>();
+
+    sendReply(unmarshalled);
 }
 
 void StringMethodPendingReply::sendReply(

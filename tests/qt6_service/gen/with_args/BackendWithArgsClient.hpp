@@ -11,11 +11,12 @@
 #include <QDBusMessage>
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include <QVariant>
 #include "DBusError.hpp"
 namespace gen::with_args {
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Notify method calls.
  */
 class NotifyPendingCall : public QObject {
     Q_OBJECT
@@ -42,7 +43,7 @@ private:
 };
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the Order method calls.
  */
 class OrderPendingCall : public QObject {
     Q_OBJECT
@@ -85,35 +86,20 @@ class BackendWithArgsClient : public QObject {
      * @brief the speed
      *   in m/s
      */
-    Q_PROPERTY(double speed READ getSpeed WRITE setSpeed NOTIFY speedChanged)
+    Q_PROPERTY(QVariant speed READ getVariantSpeed WRITE setVariantSpeed NOTIFY speedChanged)
 
     /**
      * @brief the distance to travel in m
      */
-    Q_PROPERTY(uint distance READ getDistance WRITE setDistance NOTIFY distanceChanged)
+    Q_PROPERTY(QVariant distance READ getVariantDistance WRITE setVariantDistance NOTIFY distanceChanged)
 
     /**
      * @brief the time until the distance is covered at the current speed
      */
-    Q_PROPERTY(double duration READ getDuration NOTIFY durationChanged)
+    Q_PROPERTY(QVariant duration READ getVariantDuration NOTIFY durationChanged)
 
 public:
     BackendWithArgsClient(QObject* parent = nullptr);
-
-public slots:
-    /**
-     * @brief Returns whether the target service is available.
-     *
-     * @returns Whether the target service is available.
-     */
-    bool getConnected() const;
-
-    /**
-     * @brief Returns a map containing the current values of all properties.
-     *
-     * @returns a map containing the current values of all properties
-     */
-    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
@@ -190,6 +176,49 @@ public slots:
      */
     double getDuration() const;
 
+public slots:
+    /**
+     * @brief Returns whether the target service is available.
+     *
+     * @returns Whether the target service is available.
+     */
+    bool getConnected() const;
+
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
+
+    /**
+     * @brief a simple method with one argument
+     *
+     * @param message The message
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    NotifyPendingCall* Notify(
+        QVariant message
+    );
+
+    /**
+     * @brief a simple method
+     *   with args and return value
+     *
+     * @param item The
+     *   item
+     * @param amount a amount ordered
+     * @param pricePerItem the price per item
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    OrderPendingCall* Order(
+        QVariant item,
+        QVariant amount,
+        QVariant pricePerItem
+    );
+
 signals:
     /**
      * @brief Emitted when the connected property changes.
@@ -248,6 +277,53 @@ private slots:
     void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void NotifiedDBusHandler(QDBusMessage content);
     void OrderReceivedDBusHandler(QDBusMessage content);
+
+    /**
+     * @brief Getter for the Speed property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+     * the speed
+     * in m/s
+     */
+    QVariant getVariantSpeed() const;
+
+    /**
+     * @brief Setter for the Speed property as variant.
+     *
+     * @param newValue the new value of the property wrapped in a variant
+     *
+     * the speed
+     * in m/s
+     */
+    void setVariantSpeed(QVariant newValue);
+
+    /**
+     * @brief Getter for the Distance property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+     * the distance to travel in m
+     */
+    QVariant getVariantDistance() const;
+
+    /**
+     * @brief Setter for the Distance property as variant.
+     *
+     * @param newValue the new value of the property wrapped in a variant
+     *
+     * the distance to travel in m
+     */
+    void setVariantDistance(QVariant newValue);
+
+    /**
+     * @brief Getter for the Duration property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+     * the time until the distance is covered at the current speed
+     */
+    QVariant getVariantDuration() const;
 private:
     bool m_connected = false;
     QDBusServiceWatcher m_watcher;

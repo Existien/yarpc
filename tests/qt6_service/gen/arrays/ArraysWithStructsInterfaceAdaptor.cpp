@@ -13,8 +13,8 @@ ArraysWithStructsInterfaceAdaptor::ArraysWithStructsInterfaceAdaptor(ArraysWithS
 
 }
 
-QList<$1> ArraysWithStructsInterfaceAdaptor::ArrayStructMethod(
-    QList<$1> numbers,
+QList<SimonsArray> ArraysWithStructsInterfaceAdaptor::ArrayStructMethod(
+    QList<StructArray> numbers,
     const QDBusMessage &_message
 ){
     _message.setDelayedReply(true);
@@ -22,11 +22,11 @@ QList<$1> ArraysWithStructsInterfaceAdaptor::ArrayStructMethod(
     return {};
 }
 
-QList<$1> ArraysWithStructsInterfaceAdaptor::getArrayStructProperty() const {
+QList<StructArray> ArraysWithStructsInterfaceAdaptor::getArrayStructProperty() const {
     return m_iface->getArrayStructProperty();
 }
 
-void ArraysWithStructsInterfaceAdaptor::setArrayStructProperty(const QList<$1> &value ) {
+void ArraysWithStructsInterfaceAdaptor::setArrayStructProperty(const QList<StructArray> &value ) {
     emit m_iface->propertyArrayStructPropertySet(value);
 }
 

@@ -8,10 +8,12 @@ qt_add_qml_module(Interfaces
         WithArgs.qml
         Primitives.qml
         Structs.qml
+        Arrays.qml
 )
 
 target_link_libraries(Interfaces PUBLIC
   Minimal
   WithArgs
   Structs
+  Arrays
 )

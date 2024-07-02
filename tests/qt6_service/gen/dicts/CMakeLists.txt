@@ -12,6 +12,7 @@ qt_add_qml_module(Dicts
     SOURCES
         Connection.cpp
         DBusError.cpp
+        types.cpp
         DictsInterface.cpp
         DictsInterfaceAdaptor.cpp
         DictsWithStructsInterface.cpp

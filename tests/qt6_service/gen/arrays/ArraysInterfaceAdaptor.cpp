@@ -13,8 +13,8 @@ ArraysInterfaceAdaptor::ArraysInterfaceAdaptor(ArraysInterface* iface, QObject* 
 
 }
 
-QList<$1> ArraysInterfaceAdaptor::ArrayMethod(
-    QList<$1> numbers,
+QList<QList<double>> ArraysInterfaceAdaptor::ArrayMethod(
+    QList<QList<uint>> numbers,
     const QDBusMessage &_message
 ){
     _message.setDelayedReply(true);
@@ -22,11 +22,11 @@ QList<$1> ArraysInterfaceAdaptor::ArrayMethod(
     return {};
 }
 
-QList<$1> ArraysInterfaceAdaptor::getArrayProperty() const {
+QList<QList<QString>> ArraysInterfaceAdaptor::getArrayProperty() const {
     return m_iface->getArrayProperty();
 }
 
-void ArraysInterfaceAdaptor::setArrayProperty(const QList<$1> &value ) {
+void ArraysInterfaceAdaptor::setArrayProperty(const QList<QList<QString>> &value ) {
     emit m_iface->propertyArrayPropertySet(value);
 }
 

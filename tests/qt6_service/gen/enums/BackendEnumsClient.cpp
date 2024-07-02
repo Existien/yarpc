@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendEnumsClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::enums;
 
@@ -25,8 +25,8 @@ BackendEnumsClient::BackendEnumsClient(QObject* parent)
     parent
    ))
 {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
+    registerMetaTypes();
+    EnumStruct::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -105,6 +105,16 @@ void BackendEnumsClient::propertiesChangedHandler(QString iface, QVariantMap cha
 }
 
 EnumMethodPendingCall* BackendEnumsClient::EnumMethod(
+    QVariant color
+) {
+     arg_0;
+    arg_0 = color.value<>();
+
+    return EnumMethod(
+        arg_0
+    );
+}
+EnumMethodPendingCall* BackendEnumsClient::EnumMethod(
      color
 ) {
     QDBusArgument dbuscolor;
@@ -163,13 +173,23 @@ void BackendEnumsClient::EnumSignalDBusHandler(QDBusMessage content) {
     );
      unmarshalled{};
     if (reply.isValid()) {
-        unmarshalled = reply.value().variant().value<>();
+        auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
+        marshalled >> unmarshalled;
     }
     return unmarshalled;
 }
 
-void BackendEnumsClient::setEnumProperty(const  &newValue) {
 
+QVariant BackendEnumsClient::getVariantEnumProperty() const {
+    auto unmarshalled = getEnumProperty();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+
+void BackendEnumsClient::setEnumProperty(const  &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -186,4 +206,11 @@ void BackendEnumsClient::setEnumProperty(const  &newValue) {
         "EnumProperty",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void BackendEnumsClient::setVariantEnumProperty(QVariant value ) {
+     unmarshalled;
+    unmarshalled = value.value<>();
+
+    setEnumProperty(unmarshalled);
 }

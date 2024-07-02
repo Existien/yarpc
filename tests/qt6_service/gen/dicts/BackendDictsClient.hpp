@@ -11,13 +11,14 @@
 #include <QDBusMessage>
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "StructDict.hpp"
 #include "SimonsDict.hpp"
 namespace gen::dicts {
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the DictMethod method calls.
  */
 class DictMethodPendingCall : public QObject {
     Q_OBJECT
@@ -58,25 +59,10 @@ class BackendDictsClient : public QObject {
     /**
      * @brief a prop
      */
-    Q_PROPERTY(QMap<$1, $2> dictProperty READ getDictProperty WRITE setDictProperty NOTIFY dictPropertyChanged)
+    Q_PROPERTY(QVariant dictProperty READ getVariantDictProperty WRITE setVariantDictProperty NOTIFY dictPropertyChanged)
 
 public:
     BackendDictsClient(QObject* parent = nullptr);
-
-public slots:
-    /**
-     * @brief Returns whether the target service is available.
-     *
-     * @returns Whether the target service is available.
-     */
-    bool getConnected() const;
-
-    /**
-     * @brief Returns a map containing the current values of all properties.
-     *
-     * @returns a map containing the current values of all properties
-     */
-    QVariantMap getAllProperties() const;
 
     /**
      * @brief a simple method with one argument
@@ -107,6 +93,32 @@ public slots:
      */
     void setDictProperty(const QMap<$1, $2> &newValue);
 
+public slots:
+    /**
+     * @brief Returns whether the target service is available.
+     *
+     * @returns Whether the target service is available.
+     */
+    bool getConnected() const;
+
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
+
+    /**
+     * @brief a simple method with one argument
+     *
+     * @param keysNValues a dictionary
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    DictMethodPendingCall* DictMethod(
+        QVariant keysNValues
+    );
+
 signals:
     /**
      * @brief Emitted when the connected property changes.
@@ -134,6 +146,24 @@ private slots:
     void disconnectedHandler(const QString& service);
     void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void DictSignalDBusHandler(QDBusMessage content);
+
+    /**
+     * @brief Getter for the DictProperty property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+     * a prop
+     */
+    QVariant getVariantDictProperty() const;
+
+    /**
+     * @brief Setter for the DictProperty property as variant.
+     *
+     * @param newValue the new value of the property wrapped in a variant
+     *
+     * a prop
+     */
+    void setVariantDictProperty(QVariant newValue);
 private:
     bool m_connected = false;
     QDBusServiceWatcher m_watcher;

@@ -30,4 +30,5 @@ target_link_libraries(service PRIVATE
 add_subdirectory(gen/minimal)
 add_subdirectory(gen/with_args)
 add_subdirectory(gen/structs)
+add_subdirectory(gen/arrays)
 add_subdirectory(interfaces)

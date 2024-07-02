@@ -69,6 +69,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, SimpleStruct &obj
 
 bool operator!=(const SimpleStruct &lhs, const SimpleStruct &rhs);
 
+
 /**
  * @brief Factory to create SimpleStruct objects in QML.
  */
@@ -84,10 +85,27 @@ public:
      * @param amount the amount
      *   ordered
      */
-    Q_INVOKABLE SimpleStruct create (
+    SimpleStruct create (
         Item item,
         uint amount
     ) const;
+
+    /**
+     * @brief Create a SimpleStruct object.
+     *
+     * @param item The item
+     * @param amount the amount
+     *   ordered
+     */
+    Q_INVOKABLE SimpleStruct create (
+        QVariant item,
+        QVariant amount
+    ) const;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
 };
 
 }

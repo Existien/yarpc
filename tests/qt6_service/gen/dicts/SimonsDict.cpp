@@ -5,7 +5,8 @@
  *   Object: SimonsDict
  *   Template: qt6/struct_source.j2
  */
-
+#include <QMetaType>
+#include <QDBusMetaType>
 #include "SimonsDict.hpp"
 
 using namespace gen::dicts;
@@ -33,8 +34,23 @@ bool gen::dicts::operator!=(const SimonsDict &lhs, const SimonsDict &rhs) {
 SimonsDict SimonsDictFactory::create (
     QMap<$1, $2> numbers
 ) const {
-return SimonsDict {
-    .numbers = numbers,
-};
+    return SimonsDict {
+        .numbers = numbers,
+    };
+}
 
+SimonsDict SimonsDictFactory::create (
+    QVariant numbers
+) const {
+    QMap<$1, $2> member_0;
+    member_0 = numbers.value<QMap<$1, $2>>();
+
+    return SimonsDict {
+        .numbers = member_0,
+    };
+}
+
+void SimonsDict::registerMetaTypes() {
+    qRegisterMetaType<SimonsDict>("SimonsDict");
+    qDBusRegisterMetaType<SimonsDict>();
 }

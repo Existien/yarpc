@@ -27,6 +27,8 @@ def extract_inner_names(type_name: str, type: dict) -> list:
     Returns:
         list: A list of the contained types, e.g. ['int32']
     """
+    if not type:
+        return []
     match = re.match(type.get('regex'), type_name)
     if not match:
         return []

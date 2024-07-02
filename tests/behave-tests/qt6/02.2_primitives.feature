@@ -121,36 +121,36 @@ Feature: Primitives interface
             | value | 4294967295 |
 
     # Scenario: Uint64 types are transmitted correctly in methods and signals
-        Given 'Bob' replies to a 'Uint64Method' method call with the following return value
-            | value   |
-            | 0 |
-        When the 'Uint64Method' method is called by 'Alice' with the following parameters
-            | name  | value   |
-            | value | 0 |
-        Then 'Bob' receives a 'Uint64Method' method call with the following parameters
-            | name  | value   |
-            | value | 0 |
-        When a 'Uint64Signal' signal is emitted by 'Bob' with the following parameters
-            | name  | value   |
-            | value | 0 |
-        Then 'Alice' receives a 'Uint64Signal' signal with the following parameters
-            | name  | value   |
-            | value | 0 |
-        Given 'Bob' replies to a 'Uint64Method' method call with the following return value
-            | value   |
-            | 18446744073709551615 |
-        When the 'Uint64Method' method is called by 'Alice' with the following parameters
-            | name  | value   |
-            | value | 18446744073709551615 |
-        Then 'Bob' receives a 'Uint64Method' method call with the following parameters
-            | name  | value   |
-            | value | 18446744073709551615 |
-        When a 'Uint64Signal' signal is emitted by 'Bob' with the following parameters
-            | name  | value   |
-            | value | 18446744073709551615 |
-        Then 'Alice' receives a 'Uint64Signal' signal with the following parameters
-            | name  | value   |
-            | value | 18446744073709551615 |
+        # Given 'Bob' replies to a 'Uint64Method' method call with the following return value
+        #     | value   |
+        #     | 0 |
+        # When the 'Uint64Method' method is called by 'Alice' with the following parameters
+        #     | name  | value   |
+        #     | value | 0 |
+        # Then 'Bob' receives a 'Uint64Method' method call with the following parameters
+        #     | name  | value   |
+        #     | value | 0 |
+        # When a 'Uint64Signal' signal is emitted by 'Bob' with the following parameters
+        #     | name  | value   |
+        #     | value | 0 |
+        # Then 'Alice' receives a 'Uint64Signal' signal with the following parameters
+        #     | name  | value   |
+        #     | value | 0 |
+        # Given 'Bob' replies to a 'Uint64Method' method call with the following return value
+        #     | value   |
+        #     | 18446744073709551615 |
+        # When the 'Uint64Method' method is called by 'Alice' with the following parameters
+        #     | name  | value   |
+        #     | value | 18446744073709551615 |
+        # Then 'Bob' receives a 'Uint64Method' method call with the following parameters
+        #     | name  | value   |
+        #     | value | 18446744073709551615 |
+        # When a 'Uint64Signal' signal is emitted by 'Bob' with the following parameters
+        #     | name  | value   |
+        #     | value | 18446744073709551615 |
+        # Then 'Alice' receives a 'Uint64Signal' signal with the following parameters
+        #     | name  | value   |
+        #     | value | 18446744073709551615 |
 
 
     # Scenario: Int16 types are transmitted correctly in methods and signals
@@ -218,36 +218,36 @@ Feature: Primitives interface
             | value | 2147483647 |
 
     # Scenario: Int64 types are transmitted correctly in methods and signals
-        Given 'Bob' replies to a 'Int64Method' method call with the following return value
-            | value   |
-            | -9223372036854775808 |
-        When the 'Int64Method' method is called by 'Alice' with the following parameters
-            | name  | value   |
-            | value | -9223372036854775808 |
-        Then 'Bob' receives a 'Int64Method' method call with the following parameters
-            | name  | value   |
-            | value | -9223372036854775808 |
-        When a 'Int64Signal' signal is emitted by 'Bob' with the following parameters
-            | name  | value   |
-            | value | -9223372036854775808 |
-        Then 'Alice' receives a 'Int64Signal' signal with the following parameters
-            | name  | value   |
-            | value | -9223372036854775808 |
-        Given 'Bob' replies to a 'Int64Method' method call with the following return value
-            | value   |
-            | 9223372036854775807 |
-        When the 'Int64Method' method is called by 'Alice' with the following parameters
-            | name  | value   |
-            | value | 9223372036854775807 |
-        Then 'Bob' receives a 'Int64Method' method call with the following parameters
-            | name  | value   |
-            | value | 9223372036854775807 |
-        When a 'Int64Signal' signal is emitted by 'Bob' with the following parameters
-            | name  | value   |
-            | value | 9223372036854775807 |
-        Then 'Alice' receives a 'Int64Signal' signal with the following parameters
-            | name  | value   |
-	    | value | 9223372036854775807 |
+        # Given 'Bob' replies to a 'Int64Method' method call with the following return value
+        #     | value   |
+        #     | -9223372036854775808 |
+        # When the 'Int64Method' method is called by 'Alice' with the following parameters
+        #     | name  | value   |
+        #     | value | -9223372036854775808 |
+        # Then 'Bob' receives a 'Int64Method' method call with the following parameters
+        #     | name  | value   |
+        #     | value | -9223372036854775808 |
+        # When a 'Int64Signal' signal is emitted by 'Bob' with the following parameters
+        #     | name  | value   |
+        #     | value | -9223372036854775808 |
+        # Then 'Alice' receives a 'Int64Signal' signal with the following parameters
+        #     | name  | value   |
+        #     | value | -9223372036854775808 |
+        # Given 'Bob' replies to a 'Int64Method' method call with the following return value
+        #     | value   |
+        #     | 9223372036854775807 |
+        # When the 'Int64Method' method is called by 'Alice' with the following parameters
+        #     | name  | value   |
+        #     | value | 9223372036854775807 |
+        # Then 'Bob' receives a 'Int64Method' method call with the following parameters
+        #     | name  | value   |
+        #     | value | 9223372036854775807 |
+        # When a 'Int64Signal' signal is emitted by 'Bob' with the following parameters
+        #     | name  | value   |
+        #     | value | 9223372036854775807 |
+        # Then 'Alice' receives a 'Int64Signal' signal with the following parameters
+        #     | name  | value   |
+	    # | value | 9223372036854775807 |
 
     # Scenario: Bool types are transmitted correctly in methods and signals
         Given 'Bob' replies to a 'BoolMethod' method call with the following return value

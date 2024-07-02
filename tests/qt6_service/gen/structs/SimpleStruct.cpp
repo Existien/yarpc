@@ -5,7 +5,8 @@
  *   Object: SimpleStruct
  *   Template: qt6/struct_source.j2
  */
-
+#include <QMetaType>
+#include <QDBusMetaType>
 #include "SimpleStruct.hpp"
 
 using namespace gen::structs;
@@ -37,9 +38,29 @@ SimpleStruct SimpleStructFactory::create (
     Item item,
     uint amount
 ) const {
-return SimpleStruct {
-    .item = item,
-    .amount = amount,
-};
+    return SimpleStruct {
+        .item = item,
+        .amount = amount,
+    };
+}
 
+SimpleStruct SimpleStructFactory::create (
+    QVariant item,
+    QVariant amount
+) const {
+    Item member_0;
+    member_0 = item.value<Item>();
+
+    uint member_1;
+    member_1 = amount.value<uint>();
+
+    return SimpleStruct {
+        .item = member_0,
+        .amount = member_1,
+    };
+}
+
+void SimpleStruct::registerMetaTypes() {
+    qRegisterMetaType<SimpleStruct>("SimpleStruct");
+    qDBusRegisterMetaType<SimpleStruct>();
 }

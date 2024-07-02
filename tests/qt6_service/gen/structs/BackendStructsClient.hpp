@@ -11,13 +11,14 @@
 #include <QDBusMessage>
 #include <QDBusServiceWatcher>
 #include <QDBusPendingCallWatcher>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "SimpleStruct.hpp"
 #include "Item.hpp"
 namespace gen::structs {
 
 /**
- * @brief Pending call object for the Bump method calls.
+ * @brief Pending call object for the SendStruct method calls.
  */
 class SendStructPendingCall : public QObject {
     Q_OBJECT
@@ -58,25 +59,10 @@ class BackendStructsClient : public QObject {
     /**
      * @brief a property for a simple struct
      */
-    Q_PROPERTY(SimpleStruct simple READ getSimple WRITE setSimple NOTIFY simpleChanged)
+    Q_PROPERTY(QVariant simple READ getVariantSimple WRITE setVariantSimple NOTIFY simpleChanged)
 
 public:
     BackendStructsClient(QObject* parent = nullptr);
-
-public slots:
-    /**
-     * @brief Returns whether the target service is available.
-     *
-     * @returns Whether the target service is available.
-     */
-    bool getConnected() const;
-
-    /**
-     * @brief Returns a map containing the current values of all properties.
-     *
-     * @returns a map containing the current values of all properties
-     */
-    QVariantMap getAllProperties() const;
 
     /**
      * @brief a method with a struct as args
@@ -107,6 +93,32 @@ public slots:
      */
     void setSimple(const SimpleStruct &newValue);
 
+public slots:
+    /**
+     * @brief Returns whether the target service is available.
+     *
+     * @returns Whether the target service is available.
+     */
+    bool getConnected() const;
+
+    /**
+     * @brief Returns a map containing the current values of all properties.
+     *
+     * @returns a map containing the current values of all properties
+     */
+    QVariantMap getAllProperties() const;
+
+    /**
+     * @brief a method with a struct as args
+     *
+     * @param simpleStruct the SimpleStruct to send
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    SendStructPendingCall* SendStruct(
+        QVariant simpleStruct
+    );
+
 signals:
     /**
      * @brief Emitted when the connected property changes.
@@ -136,6 +148,24 @@ private slots:
     void disconnectedHandler(const QString& service);
     void propertiesChangedHandler(QString interface, QVariantMap changes, QStringList);
     void StructReceivedDBusHandler(QDBusMessage content);
+
+    /**
+     * @brief Getter for the Simple property as variant.
+     *
+     * @returns the current value of the property as variant
+     *
+     * a property for a simple struct
+     */
+    QVariant getVariantSimple() const;
+
+    /**
+     * @brief Setter for the Simple property as variant.
+     *
+     * @param newValue the new value of the property wrapped in a variant
+     *
+     * a property for a simple struct
+     */
+    void setVariantSimple(QVariant newValue);
 private:
     bool m_connected = false;
     QDBusServiceWatcher m_watcher;

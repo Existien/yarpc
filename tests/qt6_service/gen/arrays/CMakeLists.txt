@@ -12,6 +12,7 @@ qt_add_qml_module(Arrays
     SOURCES
         Connection.cpp
         DBusError.cpp
+        types.cpp
         ArraysInterface.cpp
         ArraysInterfaceAdaptor.cpp
         ArraysWithStructsInterface.cpp

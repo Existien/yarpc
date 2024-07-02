@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "SimpleStruct.hpp"
 #include "Item.hpp"
@@ -38,6 +39,15 @@ class SendStructPendingReply : public QObject {
     QML_ELEMENT
 public:
     SendStructPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const SimpleStruct &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a SendStruct call.
@@ -52,7 +62,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const SimpleStruct &reply
+        QVariant reply
     );
 
     /**
@@ -90,7 +100,7 @@ class StructsInterface : public QObject {
     /**
      * @brief a property for a simple struct
      */
-    Q_PROPERTY(SimpleStruct simple READ getSimple WRITE setSimple NOTIFY simpleChanged)
+    Q_PROPERTY(QVariant simple READ getVariantSimple WRITE setVariantSimple NOTIFY simpleChanged)
 
 public:
     StructsInterface(QObject* parent = nullptr);
@@ -117,23 +127,7 @@ public:
     void handleSendStructCalled(QDBusMessage call);
 
 
-public slots:
-    /** @brief Registeres and connects the interface. */
-    void connect();
 
-    /** @brief Unregisteres and disconnects the interface. */
-    void disconnect();
-
-    /**
-     * @brief a signal with a struct as args
-     *
-     * @param simpleStruct the SimpleStruct
-     * @param totalCosts the total costs
-     */
-    void EmitStructReceived(
-        SimpleStruct simpleStruct,
-        double totalCosts
-    );
 
     /**
      * @brief Getter for the Simple property.
@@ -148,6 +142,54 @@ public slots:
      * @param value the new value of the property
      */
     void setSimple(const SimpleStruct &value );
+
+
+    /**
+     * @brief a signal with a struct as args
+     *
+     * @param simpleStruct the SimpleStruct
+     * @param totalCosts the total costs
+     */
+    void EmitStructReceived(
+        SimpleStruct simpleStruct,
+        double totalCosts
+    );
+
+
+public slots:
+    /** @brief Registeres and connects the interface. */
+    void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
+    void disconnect();
+
+    /**
+     * @brief a signal with a struct as args
+     *
+     * @param simpleStruct the SimpleStruct
+     * @param totalCosts the total costs
+     */
+    void EmitStructReceived(
+        QVariant simpleStruct,
+        QVariant totalCosts
+    );
+
+
+private:
+
+    /**
+     * @brief Getter for the Simple property as variant.
+     *
+     * @returns the current value of the property as variant
+     */
+    QVariant getVariantSimple() const;
+
+    /**
+     * @brief Setter for the Simple property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantSimple(QVariant value );
 
 
 signals:

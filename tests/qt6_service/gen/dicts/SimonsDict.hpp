@@ -58,6 +58,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, SimonsDict &objec
 
 bool operator!=(const SimonsDict &lhs, const SimonsDict &rhs);
 
+
 /**
  * @brief Factory to create SimonsDict objects in QML.
  */
@@ -71,9 +72,23 @@ public:
      *
      * @param numbers some struct dicts
      */
-    Q_INVOKABLE SimonsDict create (
+    SimonsDict create (
         QMap<$1, $2> numbers
     ) const;
+
+    /**
+     * @brief Create a SimonsDict object.
+     *
+     * @param numbers some struct dicts
+     */
+    Q_INVOKABLE SimonsDict create (
+        QVariant numbers
+    ) const;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
 };
 
 }

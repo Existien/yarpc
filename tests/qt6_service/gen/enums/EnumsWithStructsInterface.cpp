@@ -8,15 +8,14 @@
 #include "EnumsWithStructsInterface.hpp"
 #include "EnumsWithStructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::enums;
 
 EnumsWithStructsInterface::EnumsWithStructsInterface(QObject* parent)
 : QObject(parent) {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
+    registerMetaTypes();
+    EnumStruct::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -68,6 +67,15 @@ EnumMethodArgs EnumMethodPendingReply::args() {
 }
 
 void EnumMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    EnumStruct unmarshalled;
+    unmarshalled = reply.value<EnumStruct>();
+
+    sendReply(unmarshalled);
+}
+
+void EnumMethodPendingReply::sendReply(
     const EnumStruct &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
@@ -111,6 +119,17 @@ void EnumsWithStructsInterface::EmitEnumSignal(
     }
 }
 
+void EnumsWithStructsInterface::EmitEnumSignal(
+    QVariant color
+) {
+    EnumStruct arg_0;
+    arg_0 = color.value<EnumStruct>();
+
+    EmitEnumSignal(
+        arg_0
+    );
+}
+
 EnumStruct EnumsWithStructsInterface::getEnumProperty() const {
     return m_EnumProperty;
 }
@@ -123,6 +142,21 @@ void EnumsWithStructsInterface::setEnumProperty(const EnumStruct &value ) {
         changedProps.insert("EnumProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant EnumsWithStructsInterface::getVariantEnumProperty() const {
+    auto unmarshalled = getEnumProperty();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+void EnumsWithStructsInterface::setVariantEnumProperty(QVariant value ) {
+    EnumStruct unmarshalled;
+    unmarshalled = value.value<EnumStruct>();
+
+    setEnumProperty(unmarshalled);
 }
 
 

@@ -8,17 +8,15 @@
 #include "ArraysWithStructsInterface.hpp"
 #include "ArraysWithStructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::arrays;
 
 ArraysWithStructsInterface::ArraysWithStructsInterface(QObject* parent)
 : QObject(parent) {
-    qRegisterMetaType<StructArray>("StructArray");
-    qDBusRegisterMetaType<StructArray>();
-    qRegisterMetaType<SimonsArray>("SimonsArray");
-    qDBusRegisterMetaType<SimonsArray>();
+    registerMetaTypes();
+    StructArray::registerMetaTypes();
+    SimonsArray::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -55,8 +53,13 @@ bool ArraysWithStructsInterface::getConnected() const {
 
 ArrayStructMethodPendingReply::ArrayStructMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QList<StructArray> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = ArrayStructMethodArgs{
-        .numbers = m_call.arguments()[0].value<QList<$1>>(),
+        .numbers = arg_0,
     };
 }
 
@@ -65,7 +68,21 @@ ArrayStructMethodArgs ArrayStructMethodPendingReply::args() {
 }
 
 void ArrayStructMethodPendingReply::sendReply(
-    const QList<$1> &reply
+    QVariant reply
+) {
+    QList<SimonsArray> unmarshalled;
+    for (auto& item_0 : reply.value<QVariantList>()) {
+        SimonsArray o_0;
+        o_0 = item_0.value<SimonsArray>();
+
+        unmarshalled.push_back(o_0);
+    }
+
+    sendReply(unmarshalled);
+}
+
+void ArrayStructMethodPendingReply::sendReply(
+    const QList<SimonsArray> &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<ArraysWithStructsInterface*>(parent());
@@ -99,7 +116,7 @@ void ArraysWithStructsInterface::handleArrayStructMethodCalled(QDBusMessage call
 }
 
 void ArraysWithStructsInterface::EmitArrayStructSignal(
-    QList<$1> numbers
+    QList<StructArray> numbers
 ) {
     if (Connection::instance().ArraysWithStructs() != nullptr ) {
         emit Connection::instance().ArraysWithStructs()->ArrayStructSignal(
@@ -108,11 +125,27 @@ void ArraysWithStructsInterface::EmitArrayStructSignal(
     }
 }
 
-QList<$1> ArraysWithStructsInterface::getArrayStructProperty() const {
+void ArraysWithStructsInterface::EmitArrayStructSignal(
+    QVariant numbers
+) {
+    QList<StructArray> arg_0;
+    for (auto& item_0 : numbers.value<QVariantList>()) {
+        StructArray o_0;
+        o_0 = item_0.value<StructArray>();
+
+        arg_0.push_back(o_0);
+    }
+
+    EmitArrayStructSignal(
+        arg_0
+    );
+}
+
+QList<StructArray> ArraysWithStructsInterface::getArrayStructProperty() const {
     return m_ArrayStructProperty;
 }
 
-void ArraysWithStructsInterface::setArrayStructProperty(const QList<$1> &value ) {
+void ArraysWithStructsInterface::setArrayStructProperty(const QList<StructArray> &value ) {
     m_ArrayStructProperty = value;
     emit arrayStructPropertyChanged();
     if (Connection::instance().ArraysWithStructs() != nullptr ) {
@@ -120,6 +153,33 @@ void ArraysWithStructsInterface::setArrayStructProperty(const QList<$1> &value )
         changedProps.insert("ArrayStructProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant ArraysWithStructsInterface::getVariantArrayStructProperty() const {
+    auto unmarshalled = getArrayStructProperty();
+    QVariant marshalled;
+    QList<QVariant> list_0;
+    for (auto& item_0 : unmarshalled) {
+        QVariant o_0;
+        o_0 = QVariant::fromValue(item_0);
+
+        list_0.push_back(o_0);
+    }
+    marshalled = QVariant::fromValue(list_0);
+
+    return marshalled;
+}
+
+void ArraysWithStructsInterface::setVariantArrayStructProperty(QVariant value ) {
+    QList<StructArray> unmarshalled;
+    for (auto& item_0 : value.value<QVariantList>()) {
+        StructArray o_0;
+        o_0 = item_0.value<StructArray>();
+
+        unmarshalled.push_back(o_0);
+    }
+
+    setArrayStructProperty(unmarshalled);
 }
 
 

@@ -8,15 +8,14 @@
 #include "EnumsWithArraysInterface.hpp"
 #include "EnumsWithArraysInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::enums;
 
 EnumsWithArraysInterface::EnumsWithArraysInterface(QObject* parent)
 : QObject(parent) {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
+    registerMetaTypes();
+    EnumStruct::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -53,8 +52,13 @@ bool EnumsWithArraysInterface::getConnected() const {
 
 EnumMethodPendingReply::EnumMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
+    QList<> arg_0;
+    {
+        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
+        marshalled >> arg_0;
+    }
     m_args = EnumMethodArgs{
-        .color = m_call.arguments()[0].value<QList<$1>>(),
+        .color = arg_0,
     };
 }
 
@@ -63,7 +67,21 @@ EnumMethodArgs EnumMethodPendingReply::args() {
 }
 
 void EnumMethodPendingReply::sendReply(
-    const QList<$1> &reply
+    QVariant reply
+) {
+    QList<> unmarshalled;
+    for (auto& item_0 : reply.value<QVariantList>()) {
+         o_0;
+        o_0 = item_0.value<>();
+
+        unmarshalled.push_back(o_0);
+    }
+
+    sendReply(unmarshalled);
+}
+
+void EnumMethodPendingReply::sendReply(
+    const QList<> &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<EnumsWithArraysInterface*>(parent());
@@ -97,7 +115,7 @@ void EnumsWithArraysInterface::handleEnumMethodCalled(QDBusMessage call) {
 }
 
 void EnumsWithArraysInterface::EmitEnumSignal(
-    QList<$1> color
+    QList<> color
 ) {
     if (Connection::instance().EnumsWithArrays() != nullptr ) {
         emit Connection::instance().EnumsWithArrays()->EnumSignal(
@@ -106,11 +124,27 @@ void EnumsWithArraysInterface::EmitEnumSignal(
     }
 }
 
-QList<$1> EnumsWithArraysInterface::getEnumProperty() const {
+void EnumsWithArraysInterface::EmitEnumSignal(
+    QVariant color
+) {
+    QList<> arg_0;
+    for (auto& item_0 : color.value<QVariantList>()) {
+         o_0;
+        o_0 = item_0.value<>();
+
+        arg_0.push_back(o_0);
+    }
+
+    EmitEnumSignal(
+        arg_0
+    );
+}
+
+QList<> EnumsWithArraysInterface::getEnumProperty() const {
     return m_EnumProperty;
 }
 
-void EnumsWithArraysInterface::setEnumProperty(const QList<$1> &value ) {
+void EnumsWithArraysInterface::setEnumProperty(const QList<> &value ) {
     m_EnumProperty = value;
     emit enumPropertyChanged();
     if (Connection::instance().EnumsWithArrays() != nullptr ) {
@@ -118,6 +152,33 @@ void EnumsWithArraysInterface::setEnumProperty(const QList<$1> &value ) {
         changedProps.insert("EnumProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant EnumsWithArraysInterface::getVariantEnumProperty() const {
+    auto unmarshalled = getEnumProperty();
+    QVariant marshalled;
+    QList<QVariant> list_0;
+    for (auto& item_0 : unmarshalled) {
+        QVariant o_0;
+        o_0 = QVariant::fromValue(item_0);
+
+        list_0.push_back(o_0);
+    }
+    marshalled = QVariant::fromValue(list_0);
+
+    return marshalled;
+}
+
+void EnumsWithArraysInterface::setVariantEnumProperty(QVariant value ) {
+    QList<> unmarshalled;
+    for (auto& item_0 : value.value<QVariantList>()) {
+         o_0;
+        o_0 = item_0.value<>();
+
+        unmarshalled.push_back(o_0);
+    }
+
+    setEnumProperty(unmarshalled);
 }
 
 

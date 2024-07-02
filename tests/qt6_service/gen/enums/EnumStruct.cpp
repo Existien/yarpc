@@ -5,7 +5,8 @@
  *   Object: EnumStruct
  *   Template: qt6/struct_source.j2
  */
-
+#include <QMetaType>
+#include <QDBusMetaType>
 #include "EnumStruct.hpp"
 
 using namespace gen::enums;
@@ -38,13 +39,43 @@ bool gen::enums::operator!=(const EnumStruct &lhs, const EnumStruct &rhs) {
 
 EnumStruct EnumStructFactory::create (
      color,
-    QList<$1> colorArray,
+    QList<> colorArray,
     QMap<$1, $2> colorDict
 ) const {
-return EnumStruct {
-    .color = color,
-    .colorArray = colorArray,
-    .colorDict = colorDict,
-};
+    return EnumStruct {
+        .color = color,
+        .colorArray = colorArray,
+        .colorDict = colorDict,
+    };
+}
 
+EnumStruct EnumStructFactory::create (
+    QVariant color,
+    QVariant colorArray,
+    QVariant colorDict
+) const {
+     member_0;
+    member_0 = color.value<>();
+
+    QList<> member_1;
+    for (auto& item_0 : colorArray.value<QVariantList>()) {
+         o_0;
+        o_0 = item_0.value<>();
+
+        member_1.push_back(o_0);
+    }
+
+    QMap<$1, $2> member_2;
+    member_2 = colorDict.value<QMap<$1, $2>>();
+
+    return EnumStruct {
+        .color = member_0,
+        .colorArray = member_1,
+        .colorDict = member_2,
+    };
+}
+
+void EnumStruct::registerMetaTypes() {
+    qRegisterMetaType<EnumStruct>("EnumStruct");
+    qDBusRegisterMetaType<EnumStruct>();
 }

@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 #include "EnumStruct.hpp"
 namespace gen::enums {
@@ -21,9 +22,9 @@ class EnumMethodArgs {
     /**
      * @brief a color
      */
-    Q_PROPERTY(QList<$1> color MEMBER color)
+    Q_PROPERTY(QList<> color MEMBER color)
 public:
-    QList<$1> color;
+    QList<> color;
 };
 
 /**
@@ -37,6 +38,15 @@ class EnumMethodPendingReply : public QObject {
     QML_ELEMENT
 public:
     EnumMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QList<> &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a EnumMethod call.
@@ -51,7 +61,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const QList<$1> &reply
+        QVariant reply
     );
 
     /**
@@ -89,7 +99,7 @@ class EnumsWithArraysInterface : public QObject {
     /**
      * @brief a property
      */
-    Q_PROPERTY(QList<$1> enumProperty READ getEnumProperty WRITE setEnumProperty NOTIFY enumPropertyChanged)
+    Q_PROPERTY(QVariant enumProperty READ getVariantEnumProperty WRITE setVariantEnumProperty NOTIFY enumPropertyChanged)
 
 public:
     EnumsWithArraysInterface(QObject* parent = nullptr);
@@ -116,6 +126,33 @@ public:
     void handleEnumMethodCalled(QDBusMessage call);
 
 
+
+
+    /**
+     * @brief Getter for the EnumProperty property.
+     *
+     * @returns the current value of the property
+     */
+    QList<> getEnumProperty() const;
+
+    /**
+     * @brief Setter for the EnumProperty property.
+     *
+     * @param value the new value of the property
+     */
+    void setEnumProperty(const QList<> &value );
+
+
+    /**
+     * @brief a simple signal with one argument
+     *
+     * @param color a color
+     */
+    void EmitEnumSignal(
+        QList<> color
+    );
+
+
 public slots:
     /** @brief Registeres and connects the interface. */
     void connect();
@@ -129,22 +166,25 @@ public slots:
      * @param color a color
      */
     void EmitEnumSignal(
-        QList<$1> color
+        QVariant color
     );
 
-    /**
-     * @brief Getter for the EnumProperty property.
-     *
-     * @returns the current value of the property
-     */
-    QList<$1> getEnumProperty() const;
+
+private:
 
     /**
-     * @brief Setter for the EnumProperty property.
+     * @brief Getter for the EnumProperty property as variant.
      *
-     * @param value the new value of the property
+     * @returns the current value of the property as variant
      */
-    void setEnumProperty(const QList<$1> &value );
+    QVariant getVariantEnumProperty() const;
+
+    /**
+     * @brief Setter for the EnumProperty property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantEnumProperty(QVariant value );
 
 
 signals:
@@ -165,7 +205,7 @@ signals:
      *
      * @param value the new value of the property
      */
-    void propertyEnumPropertySet(QList<$1> value);
+    void propertyEnumPropertySet(QList<> value);
 
     /**
      * @brief Emitted when the value of the EnumProperty property changes.
@@ -174,7 +214,7 @@ signals:
 
 private:
     void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
-    QList<$1> m_EnumProperty = {};
+    QList<> m_EnumProperty = {};
 };
 
 }

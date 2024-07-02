@@ -6,13 +6,13 @@
  *   Template: qt6/client_source.j2
  */
 #include "BackendWithArgsClient.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace gen::with_args;
 
@@ -25,6 +25,7 @@ BackendWithArgsClient::BackendWithArgsClient(QObject* parent)
     parent
    ))
 {
+    registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -131,6 +132,16 @@ void BackendWithArgsClient::OrderReceivedDBusHandler(QDBusMessage content) {
     );
 }
 NotifyPendingCall* BackendWithArgsClient::Notify(
+    QVariant message
+) {
+    QString arg_0;
+    arg_0 = message.value<QString>();
+
+    return Notify(
+        arg_0
+    );
+}
+NotifyPendingCall* BackendWithArgsClient::Notify(
     QString message
 ) {
     QDBusArgument dbusmessage;
@@ -167,6 +178,26 @@ void NotifyPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     deleteLater();
 }
 
+OrderPendingCall* BackendWithArgsClient::Order(
+    QVariant item,
+    QVariant amount,
+    QVariant pricePerItem
+) {
+    QString arg_0;
+    arg_0 = item.value<QString>();
+
+    uint arg_1;
+    arg_1 = amount.value<uint>();
+
+    double arg_2;
+    arg_2 = pricePerItem.value<double>();
+
+    return Order(
+        arg_0,
+        arg_1,
+        arg_2
+    );
+}
 OrderPendingCall* BackendWithArgsClient::Order(
     QString item,
     uint amount,
@@ -233,8 +264,17 @@ double BackendWithArgsClient::getSpeed() const {
     return unmarshalled;
 }
 
-void BackendWithArgsClient::setSpeed(const double &newValue) {
 
+QVariant BackendWithArgsClient::getVariantSpeed() const {
+    auto unmarshalled = getSpeed();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+
+void BackendWithArgsClient::setSpeed(const double &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -251,6 +291,13 @@ void BackendWithArgsClient::setSpeed(const double &newValue) {
         "Speed",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void BackendWithArgsClient::setVariantSpeed(QVariant value ) {
+    double unmarshalled;
+    unmarshalled = value.value<double>();
+
+    setSpeed(unmarshalled);
 }
 
 
@@ -273,8 +320,17 @@ uint BackendWithArgsClient::getDistance() const {
     return unmarshalled;
 }
 
-void BackendWithArgsClient::setDistance(const uint &newValue) {
 
+QVariant BackendWithArgsClient::getVariantDistance() const {
+    auto unmarshalled = getDistance();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+
+void BackendWithArgsClient::setDistance(const uint &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -291,6 +347,13 @@ void BackendWithArgsClient::setDistance(const uint &newValue) {
         "Distance",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void BackendWithArgsClient::setVariantDistance(QVariant value ) {
+    uint unmarshalled;
+    unmarshalled = value.value<uint>();
+
+    setDistance(unmarshalled);
 }
 
 
@@ -312,3 +375,13 @@ double BackendWithArgsClient::getDuration() const {
     }
     return unmarshalled;
 }
+
+
+QVariant BackendWithArgsClient::getVariantDuration() const {
+    auto unmarshalled = getDuration();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+

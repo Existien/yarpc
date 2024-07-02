@@ -9,6 +9,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QDBusMessage>
+#include <QVariant>
 #include "DBusError.hpp"
 namespace gen::with_args {
 
@@ -36,6 +37,7 @@ class NotifyPendingReply : public QObject {
     QML_ELEMENT
 public:
     NotifyPendingReply(QDBusMessage call, QObject *parent);
+
 public slots:
     /**
      * @brief Returns the arguments passed during a Notify call.
@@ -107,6 +109,15 @@ class OrderPendingReply : public QObject {
     QML_ELEMENT
 public:
     OrderPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const double &reply
+    );
 public slots:
     /**
      * @brief Returns the arguments passed during a Order call.
@@ -121,7 +132,7 @@ public slots:
      * @param reply the return value of the call
      */
     void sendReply(
-        const double &reply
+        QVariant reply
     );
 
     /**
@@ -162,17 +173,17 @@ class WithArgsInterface : public QObject {
      * @brief the speed
      *   in m/s
      */
-    Q_PROPERTY(double speed READ getSpeed WRITE setSpeed NOTIFY speedChanged)
+    Q_PROPERTY(QVariant speed READ getVariantSpeed WRITE setVariantSpeed NOTIFY speedChanged)
 
     /**
      * @brief the distance to travel in m
      */
-    Q_PROPERTY(uint distance READ getDistance WRITE setDistance NOTIFY distanceChanged)
+    Q_PROPERTY(QVariant distance READ getVariantDistance WRITE setVariantDistance NOTIFY distanceChanged)
 
     /**
      * @brief the time until the distance is covered at the current speed
      */
-    Q_PROPERTY(double duration READ getDuration WRITE setDuration NOTIFY durationChanged)
+    Q_PROPERTY(QVariant duration READ getVariantDuration WRITE setVariantDuration NOTIFY durationChanged)
 
 public:
     WithArgsInterface(QObject* parent = nullptr);
@@ -191,12 +202,15 @@ public:
      */
     bool getConnected() const;
 
+
+
     /**
      * @brief Handler for Notify D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleNotifyCalled(QDBusMessage call);
+
 
     /**
      * @brief Handler for Order D-Bus calls.
@@ -206,12 +220,51 @@ public:
     void handleOrderCalled(QDBusMessage call);
 
 
-public slots:
-    /** @brief Registeres and connects the interface. */
-    void connect();
 
-    /** @brief Unregisteres and disconnects the interface. */
-    void disconnect();
+    /**
+     * @brief Getter for the Speed property.
+     *
+     * @returns the current value of the property
+     */
+    double getSpeed() const;
+
+    /**
+     * @brief Setter for the Speed property.
+     *
+     * @param value the new value of the property
+     */
+    void setSpeed(const double &value );
+
+
+    /**
+     * @brief Getter for the Distance property.
+     *
+     * @returns the current value of the property
+     */
+    uint getDistance() const;
+
+    /**
+     * @brief Setter for the Distance property.
+     *
+     * @param value the new value of the property
+     */
+    void setDistance(const uint &value );
+
+
+    /**
+     * @brief Getter for the Duration property.
+     *
+     * @returns the current value of the property
+     */
+    double getDuration() const;
+
+    /**
+     * @brief Setter for the Duration property.
+     *
+     * @param value the new value of the property
+     */
+    void setDuration(const double &value );
+
 
     /**
      * @brief a simple signal with one argument
@@ -237,47 +290,82 @@ public slots:
         double pricePerItem
     );
 
-    /**
-     * @brief Getter for the Speed property.
-     *
-     * @returns the current value of the property
-     */
-    double getSpeed() const;
+
+public slots:
+    /** @brief Registeres and connects the interface. */
+    void connect();
+
+    /** @brief Unregisteres and disconnects the interface. */
+    void disconnect();
 
     /**
-     * @brief Setter for the Speed property.
+     * @brief a simple signal with one argument
      *
-     * @param value the new value of the property
+     * @param message The message
      */
-    void setSpeed(const double &value );
+    void EmitNotified(
+        QVariant message
+    );
 
     /**
-     * @brief Getter for the Distance property.
+     * @brief a simple signal with
+     *   multiple arguments
      *
-     * @returns the current value of the property
+     * @param item The item
+     * @param amount a amount
+     *   ordered
+     * @param pricePerItem the price per item
      */
-    uint getDistance() const;
+    void EmitOrderReceived(
+        QVariant item,
+        QVariant amount,
+        QVariant pricePerItem
+    );
+
+
+private:
 
     /**
-     * @brief Setter for the Distance property.
+     * @brief Getter for the Speed property as variant.
      *
-     * @param value the new value of the property
+     * @returns the current value of the property as variant
      */
-    void setDistance(const uint &value );
+    QVariant getVariantSpeed() const;
 
     /**
-     * @brief Getter for the Duration property.
+     * @brief Setter for the Speed property as variant.
      *
-     * @returns the current value of the property
+     * @param value the new value of the property wrapped in a variant
      */
-    double getDuration() const;
+    void setVariantSpeed(QVariant value );
 
     /**
-     * @brief Setter for the Duration property.
+     * @brief Getter for the Distance property as variant.
      *
-     * @param value the new value of the property
+     * @returns the current value of the property as variant
      */
-    void setDuration(const double &value );
+    QVariant getVariantDistance() const;
+
+    /**
+     * @brief Setter for the Distance property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantDistance(QVariant value );
+
+    /**
+     * @brief Getter for the Duration property as variant.
+     *
+     * @returns the current value of the property as variant
+     */
+    QVariant getVariantDuration() const;
+
+    /**
+     * @brief Setter for the Duration property as variant.
+     *
+     * @param value the new value of the property wrapped in a variant
+     */
+    void setVariantDuration(QVariant value );
 
 
 signals:

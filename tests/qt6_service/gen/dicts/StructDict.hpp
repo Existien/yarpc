@@ -57,6 +57,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, StructDict &objec
 
 bool operator!=(const StructDict &lhs, const StructDict &rhs);
 
+
 /**
  * @brief Factory to create StructDict objects in QML.
  */
@@ -70,9 +71,23 @@ public:
      *
      * @param numbers some numbers
      */
-    Q_INVOKABLE StructDict create (
+    StructDict create (
         QMap<$1, $2> numbers
     ) const;
+
+    /**
+     * @brief Create a StructDict object.
+     *
+     * @param numbers some numbers
+     */
+    Q_INVOKABLE StructDict create (
+        QVariant numbers
+    ) const;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
 };
 
 }

@@ -8,17 +8,15 @@
 #include "StructsInterface.hpp"
 #include "StructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
-#include <QMetaType>
-#include <QDBusMetaType>
+#include "types.hpp"
 
 using namespace gen::structs;
 
 StructsInterface::StructsInterface(QObject* parent)
 : QObject(parent) {
-    qRegisterMetaType<SimpleStruct>("SimpleStruct");
-    qDBusRegisterMetaType<SimpleStruct>();
-    qRegisterMetaType<Item>("Item");
-    qDBusRegisterMetaType<Item>();
+    registerMetaTypes();
+    SimpleStruct::registerMetaTypes();
+    Item::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -70,6 +68,15 @@ SendStructArgs SendStructPendingReply::args() {
 }
 
 void SendStructPendingReply::sendReply(
+    QVariant reply
+) {
+    SimpleStruct unmarshalled;
+    unmarshalled = reply.value<SimpleStruct>();
+
+    sendReply(unmarshalled);
+}
+
+void SendStructPendingReply::sendReply(
     const SimpleStruct &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
@@ -115,6 +122,22 @@ void StructsInterface::EmitStructReceived(
     }
 }
 
+void StructsInterface::EmitStructReceived(
+    QVariant simpleStruct,
+    QVariant totalCosts
+) {
+    SimpleStruct arg_0;
+    arg_0 = simpleStruct.value<SimpleStruct>();
+
+    double arg_1;
+    arg_1 = totalCosts.value<double>();
+
+    EmitStructReceived(
+        arg_0,
+        arg_1
+    );
+}
+
 SimpleStruct StructsInterface::getSimple() const {
     return m_Simple;
 }
@@ -127,6 +150,21 @@ void StructsInterface::setSimple(const SimpleStruct &value ) {
         changedProps.insert("Simple", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
+}
+
+QVariant StructsInterface::getVariantSimple() const {
+    auto unmarshalled = getSimple();
+    QVariant marshalled;
+    marshalled = QVariant::fromValue(unmarshalled);
+
+    return marshalled;
+}
+
+void StructsInterface::setVariantSimple(QVariant value ) {
+    SimpleStruct unmarshalled;
+    unmarshalled = value.value<SimpleStruct>();
+
+    setSimple(unmarshalled);
 }
 
 

@@ -8,13 +8,13 @@
 {% import "dbus/common.j2" as dbus %}
 {% import "qt6/common.j2" as qt6 %}
 #include "{{ target.className }}.hpp"
+#include "types.hpp"
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <QMetaType>
-#include <QDBusMetaType>
+
 
 using namespace {{ qt6.namespace(output) }};
 
@@ -27,9 +27,9 @@ using namespace {{ qt6.namespace(output) }};
     parent
    ))
 {
+    registerMetaTypes();
     {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
-    qRegisterMetaType<{{ object.name }}>("{{ object.name }}");
-    qDBusRegisterMetaType<{{ object.name }}>();
+    {{ object.name }}::registerMetaTypes();
     {% endfor %}
     QDBusInterface iface(
         "{{ target.busName }}",
@@ -118,6 +118,26 @@ void {{ target.className }}::propertiesChangedHandler(QString iface, QVariantMap
 
 {% for member in object.members %}
 {% if member.kind == 'method'%}
+{% if member.args|count > 0 %}
+{{ member.name }}PendingCall* {{ target.className }}::{{ member.name }}(
+    {{ qt6.funcparams(member.args, output.objects, true)|indent(4) }}
+) {
+    {% for i in range(0, member.args|count) %}
+    {% set arg = member.args[i] %}
+    {{ qt6.unmarshalVariant(arg.name, arg.type, "arg_"+i|string, output.objects)|indent(4) }}
+    {% endfor%}
+    return {{ member.name }}(
+        {% for i in range(0, member.args|count) %}
+        {% set arg = member.args[i] %}
+        arg_{{i}}
+        {%- if i < member.args|count - 1 -%}
+        ,
+        {% endif %}
+        {% endfor %}
+
+    );
+}
+{% endif %}
 {{ member.name }}PendingCall* {{ target.className }}::{{ member.name }}(
     {{ qt6.funcparams(member.args, output.objects)|indent(4) }}
 ) {
@@ -208,7 +228,7 @@ void {{ target.className }}::{{ member.name }}DBusHandler(QDBusMessage content) 
     );
     {{ qt6.type(member.type, output.objects) }} unmarshalled{};
     if (reply.isValid()) {
-        {% if (member.type|find_type(output.objects)).kind == 'struct' %}
+        {% if member.type|needs_marshalling(output.objects) %}
         auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
         marshalled >> unmarshalled;
         {% else %}
@@ -217,17 +237,17 @@ void {{ target.className }}::{{ member.name }}DBusHandler(QDBusMessage content) 
     }
     return unmarshalled;
 }
+
+
+QVariant {{ target.className }}::getVariant{{ member.name }}() const {
+    auto unmarshalled = get{{ member.name }}();
+    {{ qt6.marshalVariant("unmarshalled", member.type, "marshalled", output.objects)|indent(4) }}
+    return marshalled;
+}
+
 {% if member.readonly != true %}
 
 void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type, output.objects) }} &newValue) {
-    {# QDBusInterface iface(
-        "{{ target.busName }}",
-        "{{ target.objectPath }}",
-        "{{ target.interfaceName }}",
-        QDBusConnection::sessionBus()
-    );
-    iface.setProperty("{{ member.name }}", QVariant::fromValue(newValue)); #}
-
     QDBusInterface iface(
         "{{ target.busName }}",
         "{{ target.objectPath }}",
@@ -244,6 +264,11 @@ void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type,
         "{{ member.name }}",
         QVariant::fromValue<QDBusArgument>(marshalled)
     );
+}
+
+void {{ target.className }}::setVariant{{ member.name }}(QVariant value ) {
+    {{ qt6.unmarshalVariant("value", member.type, "unmarshalled", output.objects)|indent(4) }}
+    set{{ member.name }}(unmarshalled);
 }
 {% endif %}
 {% endif %}

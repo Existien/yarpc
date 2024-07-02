@@ -68,6 +68,11 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, {{ object.name }}
 
 bool operator!=(const {{ object.name }} &lhs, const {{ object.name }} &rhs);
 
+{% for array_type in object.name|array_types(output.objects) %}
+{% set qt6_type = qt6.type(array_type, output.objects ) %}
+bool operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs);
+{% endfor %}
+
 /**
  * @brief Factory to create {{ object.name }} objects in QML.
  */
@@ -83,11 +88,29 @@ public:
      {{ qt6.docparams(object.members)|indent(5) }}
      {% endif %}
      */
-    Q_INVOKABLE {{ object.name }} create (
+    {{ object.name }} create (
         {% if object.members|count > 0 %}
         {{ qt6.funcparams(object.members, output.objects)|indent(8) }}
         {% endif %}
     ) const;
+
+    /**
+     * @brief Create a {{ object.name }} object.
+    {% if object.members|count > 0 %}
+     *
+     {{ qt6.docparams(object.members)|indent(5) }}
+     {% endif %}
+     */
+    Q_INVOKABLE {{ object.name }} create (
+        {% if object.members|count > 0 %}
+        {{ qt6.funcparams(object.members, output.objects, true)|indent(8) }}
+        {% endif %}
+    ) const;
+
+    /**
+     * @brief Registers MetaTypes used by this struct.
+     */
+    static void registerMetaTypes();
 };
 
 }

@@ -7,7 +7,8 @@
  */
 {% import "dbus/common.j2" as dbus %}
 {% import "qt6/common.j2" as qt6 %}
-
+#include <QMetaType>
+#include <QDBusMetaType>
 #include "{{ object.name }}.hpp"
 
 using namespace {{ qt6.namespace(output) }};
@@ -37,17 +38,56 @@ bool {{ qt6.namespace(output) }}::operator!=(const {{ object.name }} &lhs, const
         {% endfor %}
     );
 }
+{% for array_type in object.name|array_types(output.objects) %}
+{% set qt6_type = qt6.type(array_type, output.objects ) %}
+
+bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
+    if (lhs.size() != rhs.size()) {
+        return true;
+    }
+    for (auto i=0; i<lhs.size(); ++i) {
+        if (lhs[i] != rhs[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+{% endfor %}
 
 {{ object.name }} {{object.name}}Factory::create (
     {% if object.members|count > 0 %}
     {{ qt6.funcparams(object.members, output.objects)|indent(4) }}
     {% endif %}
 ) const {
-return {{ object.name }} {
-    {% for member in object.members %}
-    .{{ member.name|camel_case }} = {{ member.name | camel_case }},
-    {% endfor %}
-};
-
+    return {{ object.name }} {
+        {% for member in object.members %}
+        .{{ member.name|camel_case }} = {{ member.name | camel_case }},
+        {% endfor %}
+    };
 }
 
+{{ object.name }} {{object.name}}Factory::create (
+    {% if object.members|count > 0 %}
+    {{ qt6.funcparams(object.members, output.objects, true)|indent(4) }}
+    {% endif %}
+) const {
+    {% for i in range(0, object.members|count) %}
+    {% set member = object.members[i] %}
+    {{ qt6.unmarshalVariant(member.name, member.type, "member_"+i|string, output.objects)|indent(4) }}
+    {% endfor%}
+    return {{ object.name }} {
+        {% for i in range(0, object.members|count) %}
+        {% set member = object.members[i] %}
+        .{{ member.name|camel_case }} = member_{{i}},
+        {% endfor %}
+    };
+}
+
+void {{object.name}}::registerMetaTypes() {
+    qRegisterMetaType<{{ object.name }}>("{{ object.name }}");
+    qDBusRegisterMetaType<{{ object.name }}>();
+    {% for array_type in object.name|array_types(output.objects) %}
+    {% set qt6_type = qt6.type(array_type, output.objects ) %}
+    qDBusRegisterMetaType<{{ qt6_type }}>();
+    {% endfor %}
+}
