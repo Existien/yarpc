@@ -1,5 +1,5 @@
 from yarpc.languages.base_language import BaseLanguage, ObjectKind, Target, DBusTypes
-from typing import List
+from typing import Callable, Dict, List
 from yarpc.utils import to_snake_case
 
 class Language(BaseLanguage):
@@ -51,3 +51,12 @@ class Language(BaseLanguage):
             array='List[$1]',
             dict='Dict[$1, $2]',
         )
+
+    def get_jinja_filters(self) -> Dict[str, Callable[... ,object]]:
+        """Returns a dictionary containing language-specific
+        jinja filters.
+
+        Returns:
+            Dict[str, Callable[... ,object]: the language-specific jinja filters
+        """
+        return {}

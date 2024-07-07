@@ -1,6 +1,6 @@
 from enum import Enum
 from dataclasses import dataclass
-from typing import List
+from typing import List, Dict, Callable
 
 
 class ObjectKind(Enum):
@@ -78,3 +78,13 @@ class BaseLanguage:
             DBusTypes: the mapping between D-Bus types and types of this language
         """
         raise NotImplementedError()
+
+    def get_jinja_filters(self) -> Dict[str, Callable[... ,object]]:
+        """Returns a dictionary containing language-specific
+        jinja filters.
+
+        Returns:
+            Dict[str, Callable[... ,object]: the language-specific jinja filters
+        """
+        raise NotImplementedError()
+
