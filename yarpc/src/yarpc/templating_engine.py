@@ -25,6 +25,7 @@ class TemplatingEngine:
                 lstrip_blocks=True,
             )
             self._register_filters(language)
+            self._register_globals(language)
 
     def _register_filters(self, language: str):
         """Registers custom filters for a specific language
@@ -43,6 +44,16 @@ class TemplatingEngine:
         filters.update(languages().get(language).get_jinja_filters())
         for key, value in filters.items():
             self._env[language].filters[key] = value
+
+    def _register_globals(self, language: str):
+        """Registers custom globals for a specific language
+
+        Args:
+            language (str): The language to register globals for
+        """
+        jinja_globals = languages().get(language).get_jinja_globals()
+        for key, value in jinja_globals.items():
+            self._env[language].globals[key] = value
 
 
     def render(self, language: str, template: str, context: dict) -> str:

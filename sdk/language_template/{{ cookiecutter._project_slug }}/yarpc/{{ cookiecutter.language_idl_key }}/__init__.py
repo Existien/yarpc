@@ -57,3 +57,12 @@ class Language(BaseLanguage):
             Dict[str, Callable[... ,object]: the language-specific jinja filters
         """
         return {}
+
+    def get_jinja_globals(self) -> Dict[str, object]:
+        """Returns a dictionary containing language-specific
+        global objects.
+
+        Returns:
+            Dict[str, object]: the language-specific jinja globals
+        """
+        return {}

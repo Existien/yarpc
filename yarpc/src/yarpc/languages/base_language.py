@@ -88,3 +88,11 @@ class BaseLanguage:
         """
         raise NotImplementedError()
 
+    def get_jinja_globals(self) -> Dict[str, object]:
+        """Returns a dictionary containing language-specific
+        global objects.
+
+        Returns:
+            Dict[str, object]: the language-specific jinja globals
+        """
+        raise NotImplementedError()
