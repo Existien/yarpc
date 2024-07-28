@@ -20,4 +20,4 @@ qt_add_qml_module(WithArgs
         BackendPrimitivesClient.cpp
 )
 
-target_link_libraries(WithArgs PRIVATE Qt6::DBus)
+target_link_libraries(WithArgs PUBLIC Qt6::DBus)

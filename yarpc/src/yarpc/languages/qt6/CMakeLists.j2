@@ -26,4 +26,4 @@ qt_add_qml_module({{ module_name }}
         {% endfor %}
 )
 
-target_link_libraries({{ module_name }} PRIVATE Qt6::DBus)
+target_link_libraries({{ module_name }} PUBLIC Qt6::DBus)

@@ -10,7 +10,7 @@ qt_add_qml_module(Interfaces
         Structs.qml
 )
 
-target_link_libraries(Interfaces PRIVATE
+target_link_libraries(Interfaces PUBLIC
   Minimal
   WithArgs
   Structs

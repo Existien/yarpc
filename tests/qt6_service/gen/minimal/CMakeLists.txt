@@ -17,4 +17,4 @@ qt_add_qml_module(Minimal
         BackendMinimalClient.cpp
 )
 
-target_link_libraries(Minimal PRIVATE Qt6::DBus)
+target_link_libraries(Minimal PUBLIC Qt6::DBus)
