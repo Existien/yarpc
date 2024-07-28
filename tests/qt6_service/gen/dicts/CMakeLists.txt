@@ -28,4 +28,4 @@ qt_add_qml_module(Dicts
         SimonsDict.cpp
 )
 
-target_link_libraries(Dicts PRIVATE Qt6::DBus)
+target_link_libraries(Dicts PUBLIC Qt6::DBus)

@@ -27,4 +27,4 @@ qt_add_qml_module(Enums
         EnumStruct.cpp
 )
 
-target_link_libraries(Enums PRIVATE Qt6::DBus)
+target_link_libraries(Enums PUBLIC Qt6::DBus)

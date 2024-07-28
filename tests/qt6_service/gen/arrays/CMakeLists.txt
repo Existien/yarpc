@@ -22,4 +22,4 @@ qt_add_qml_module(Arrays
         SimonsArray.cpp
 )
 
-target_link_libraries(Arrays PRIVATE Qt6::DBus)
+target_link_libraries(Arrays PUBLIC Qt6::DBus)

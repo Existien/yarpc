@@ -19,4 +19,4 @@ qt_add_qml_module(Structs
         Item.cpp
 )
 
-target_link_libraries(Structs PRIVATE Qt6::DBus)
+target_link_libraries(Structs PUBLIC Qt6::DBus)
