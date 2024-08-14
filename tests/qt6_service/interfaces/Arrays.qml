@@ -16,7 +16,6 @@ Item {
         onArraySignalReceived: function(numbers) {
             ArraysInterface.EmitArraySignal(numbers)
         }
-        onArrayPropertyChanged: console.log(arrayProperty)
     }
 
     Connections {

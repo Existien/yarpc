@@ -9,5 +9,6 @@
 #include <QDBusMetaType>
 
 void gen::dicts::registerMetaTypes() {
+    qRegisterMetaType<QList<QMap<$1, $2>>>("QList<QMap<$1, $2>>");
     qDBusRegisterMetaType<QList<QMap<$1, $2>>>();
 }

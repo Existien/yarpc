@@ -75,5 +75,6 @@ StructArray StructArrayFactory::create (
 void StructArray::registerMetaTypes() {
     qRegisterMetaType<StructArray>("StructArray");
     qDBusRegisterMetaType<StructArray>();
+    qRegisterMetaType<QList<StructArray>>("QList<StructArray>");
     qDBusRegisterMetaType<QList<StructArray>>();
 }

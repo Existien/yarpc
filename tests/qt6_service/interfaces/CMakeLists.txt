@@ -9,6 +9,7 @@ qt_add_qml_module(Interfaces
         Primitives.qml
         Structs.qml
         Arrays.qml
+        ArraysWithStructs.qml
 )
 
 target_link_libraries(Interfaces PUBLIC

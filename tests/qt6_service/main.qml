@@ -12,4 +12,5 @@ Window {
     Primitives{}
     Structs{}
     Arrays{}
+    ArraysWithStructs{}
 }

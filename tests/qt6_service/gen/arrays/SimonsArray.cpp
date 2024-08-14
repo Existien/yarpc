@@ -70,5 +70,6 @@ SimonsArray SimonsArrayFactory::create (
 void SimonsArray::registerMetaTypes() {
     qRegisterMetaType<SimonsArray>("SimonsArray");
     qDBusRegisterMetaType<SimonsArray>();
+    qRegisterMetaType<QList<SimonsArray>>("QList<SimonsArray>");
     qDBusRegisterMetaType<QList<SimonsArray>>();
 }

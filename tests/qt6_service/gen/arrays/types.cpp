@@ -9,10 +9,16 @@
 #include <QDBusMetaType>
 
 void gen::arrays::registerMetaTypes() {
+    qRegisterMetaType<QList<QList<double>>>("QList<QList<double>>");
     qDBusRegisterMetaType<QList<QList<double>>>();
-    qDBusRegisterMetaType<QList<QList<QString>>>();
-    qDBusRegisterMetaType<QList<QList<uint>>>();
-    qDBusRegisterMetaType<QList<QString>>();
+    qRegisterMetaType<QList<double>>("QList<double>");
     qDBusRegisterMetaType<QList<double>>();
+    qRegisterMetaType<QList<QList<uint>>>("QList<QList<uint>>");
+    qDBusRegisterMetaType<QList<QList<uint>>>();
+    qRegisterMetaType<QList<QList<QString>>>("QList<QList<QString>>");
+    qDBusRegisterMetaType<QList<QList<QString>>>();
+    qRegisterMetaType<QList<QString>>("QList<QString>");
+    qDBusRegisterMetaType<QList<QString>>();
+    qRegisterMetaType<QList<uint>>("QList<uint>");
     qDBusRegisterMetaType<QList<uint>>();
 }
