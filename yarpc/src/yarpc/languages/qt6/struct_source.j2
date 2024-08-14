@@ -88,6 +88,7 @@ void {{object.name}}::registerMetaTypes() {
     qDBusRegisterMetaType<{{ object.name }}>();
     {% for array_type in object.name|array_types(output.objects) %}
     {% set qt6_type = qt6.type(array_type, output.objects ) %}
+    qRegisterMetaType<{{ qt6_type }}>("{{ qt6_type }}");
     qDBusRegisterMetaType<{{ qt6_type }}>();
     {% endfor %}
 }
