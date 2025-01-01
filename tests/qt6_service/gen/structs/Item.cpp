@@ -59,8 +59,3 @@ Item ItemFactory::create (
         .price = member_1,
     };
 }
-
-void Item::registerMetaTypes() {
-    qRegisterMetaType<Item>("Item");
-    qDBusRegisterMetaType<Item>();
-}

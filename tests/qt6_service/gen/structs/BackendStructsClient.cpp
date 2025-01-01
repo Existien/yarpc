@@ -26,8 +26,6 @@ BackendStructsClient::BackendStructsClient(QObject* parent)
    ))
 {
     registerMetaTypes();
-    SimpleStruct::registerMetaTypes();
-    Item::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/structs",

@@ -4,21 +4,31 @@
  *   File: /workspace/tests/definitions/qt6/04_arrays.yml
  *   Template: qt6/types_source.j2
  */
+#include "StructArray.hpp"
+#include "SimonsArray.hpp"
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
 
 void gen::arrays::registerMetaTypes() {
-    qRegisterMetaType<QList<QList<double>>>("QList<QList<double>>");
-    qDBusRegisterMetaType<QList<QList<double>>>();
-    qRegisterMetaType<QList<double>>("QList<double>");
-    qDBusRegisterMetaType<QList<double>>();
-    qRegisterMetaType<QList<QList<uint>>>("QList<QList<uint>>");
-    qDBusRegisterMetaType<QList<QList<uint>>>();
-    qRegisterMetaType<QList<QList<QString>>>("QList<QList<QString>>");
-    qDBusRegisterMetaType<QList<QList<QString>>>();
+    qRegisterMetaType<StructArray>("StructArray");
+    qDBusRegisterMetaType<StructArray>();
+    qRegisterMetaType<SimonsArray>("SimonsArray");
+    qDBusRegisterMetaType<SimonsArray>();
     qRegisterMetaType<QList<QString>>("QList<QString>");
     qDBusRegisterMetaType<QList<QString>>();
+    qRegisterMetaType<QList<double>>("QList<double>");
+    qDBusRegisterMetaType<QList<double>>();
+    qRegisterMetaType<QList<SimonsArray>>("QList<SimonsArray>");
+    qDBusRegisterMetaType<QList<SimonsArray>>();
+    qRegisterMetaType<QList<StructArray>>("QList<StructArray>");
+    qDBusRegisterMetaType<QList<StructArray>>();
+    qRegisterMetaType<QList<QList<QString>>>("QList<QList<QString>>");
+    qDBusRegisterMetaType<QList<QList<QString>>>();
+    qRegisterMetaType<QList<QList<double>>>("QList<QList<double>>");
+    qDBusRegisterMetaType<QList<QList<double>>>();
+    qRegisterMetaType<QList<QList<uint>>>("QList<QList<uint>>");
+    qDBusRegisterMetaType<QList<QList<uint>>>();
     qRegisterMetaType<QList<uint>>("QList<uint>");
     qDBusRegisterMetaType<QList<uint>>();
 }

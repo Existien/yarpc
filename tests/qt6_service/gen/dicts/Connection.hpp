@@ -12,9 +12,6 @@
 #include <QDBusMessage>
 #include <memory>
 #include "DictsInterfaceAdaptor.hpp"
-#include "DictsWithStructsInterfaceAdaptor.hpp"
-#include "DictsWithArraysInterfaceAdaptor.hpp"
-#include "DictKeysInterfaceAdaptor.hpp"
 namespace gen::dicts {
 
 /**
@@ -34,15 +31,6 @@ public:
 
     /** @brief Pointer to the adaptor for a registered DictsInterface interface or null if it isn't registered. */
     DictsInterfaceAdaptor *m_dicts = nullptr;
-
-    /** @brief Pointer to the adaptor for a registered DictsWithStructsInterface interface or null if it isn't registered. */
-    DictsWithStructsInterfaceAdaptor *m_dictsWithStructs = nullptr;
-
-    /** @brief Pointer to the adaptor for a registered DictsWithArraysInterface interface or null if it isn't registered. */
-    DictsWithArraysInterfaceAdaptor *m_dictsWithArrays = nullptr;
-
-    /** @brief Pointer to the adaptor for a registered DictKeysInterface interface or null if it isn't registered. */
-    DictKeysInterfaceAdaptor *m_dictKeys = nullptr;
 
 };
 
@@ -103,66 +91,6 @@ public:
     bool isDictsRegistered() const;
     DictsInterfaceAdaptor * Dicts();
 
-    /**
-     * @brief Registers the DictsWithStructs interface under its object path.
-     *
-     * @param interface pointer to the DictsWithStructs object to register
-     */
-    void registerDictsWithStructs(QObject* interface);
-
-    /**
-     * @brief Unregisters the DictsWithStructs.
-     */
-    void unregisterDictsWithStructs();
-
-    /**
-     * @brief Returns whether the DictsWithStructs interface is registered.
-     *
-     * @returns whether the interface is registered
-     */
-    bool isDictsWithStructsRegistered() const;
-    DictsWithStructsInterfaceAdaptor * DictsWithStructs();
-
-    /**
-     * @brief Registers the DictsWithArrays interface under its object path.
-     *
-     * @param interface pointer to the DictsWithArrays object to register
-     */
-    void registerDictsWithArrays(QObject* interface);
-
-    /**
-     * @brief Unregisters the DictsWithArrays.
-     */
-    void unregisterDictsWithArrays();
-
-    /**
-     * @brief Returns whether the DictsWithArrays interface is registered.
-     *
-     * @returns whether the interface is registered
-     */
-    bool isDictsWithArraysRegistered() const;
-    DictsWithArraysInterfaceAdaptor * DictsWithArrays();
-
-    /**
-     * @brief Registers the DictKeys interface under its object path.
-     *
-     * @param interface pointer to the DictKeys object to register
-     */
-    void registerDictKeys(QObject* interface);
-
-    /**
-     * @brief Unregisters the DictKeys.
-     */
-    void unregisterDictKeys();
-
-    /**
-     * @brief Returns whether the DictKeys interface is registered.
-     *
-     * @returns whether the interface is registered
-     */
-    bool isDictKeysRegistered() const;
-    DictKeysInterfaceAdaptor * DictKeys();
-
 public slots:
     /**
      * @brief Establishes a connection to the D-Bus.
@@ -193,9 +121,6 @@ private:
     std::unique_ptr<DictsTestserviceYarpcComObjectPath> m_DictsTestserviceYarpcComObjectPath = nullptr;
 
     QObject* m_Dicts = nullptr;
-    QObject* m_DictsWithStructs = nullptr;
-    QObject* m_DictsWithArrays = nullptr;
-    QObject* m_DictKeys = nullptr;
 
 };
 

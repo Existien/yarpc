@@ -40,11 +40,6 @@ public:
      *   ordered
      */
     uint amount;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 /**
@@ -101,11 +96,6 @@ public:
         QVariant item,
         QVariant amount
     ) const;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 }

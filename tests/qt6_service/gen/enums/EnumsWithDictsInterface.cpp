@@ -5,6 +5,7 @@
  *   Object: EnumsWithDicts
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "EnumsWithDictsInterface.hpp"
 #include "EnumsWithDictsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
@@ -15,7 +16,6 @@ using namespace gen::enums;
 EnumsWithDictsInterface::EnumsWithDictsInterface(QObject* parent)
 : QObject(parent) {
     registerMetaTypes();
-    EnumStruct::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -52,7 +52,7 @@ bool EnumsWithDictsInterface::getConnected() const {
 
 EnumMethodPendingReply::EnumMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    QMap<$1, $2> arg_0;
+    QMap<, > arg_0;
     {
         auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
         marshalled >> arg_0;
@@ -69,14 +69,14 @@ EnumMethodArgs EnumMethodPendingReply::args() {
 void EnumMethodPendingReply::sendReply(
     QVariant reply
 ) {
-    QMap<$1, $2> unmarshalled;
-    unmarshalled = reply.value<QMap<$1, $2>>();
+    QMap<, > unmarshalled;
+    unmarshalled = reply.value<QMap<, >>();
 
     sendReply(unmarshalled);
 }
 
 void EnumMethodPendingReply::sendReply(
-    const QMap<$1, $2> &reply
+    const QMap<, > &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<EnumsWithDictsInterface*>(parent());
@@ -110,7 +110,7 @@ void EnumsWithDictsInterface::handleEnumMethodCalled(QDBusMessage call) {
 }
 
 void EnumsWithDictsInterface::EmitEnumSignal(
-    QMap<$1, $2> color
+    QMap<, > color
 ) {
     if (Connection::instance().EnumsWithDicts() != nullptr ) {
         emit Connection::instance().EnumsWithDicts()->EnumSignal(
@@ -122,19 +122,19 @@ void EnumsWithDictsInterface::EmitEnumSignal(
 void EnumsWithDictsInterface::EmitEnumSignal(
     QVariant color
 ) {
-    QMap<$1, $2> arg_0;
-    arg_0 = color.value<QMap<$1, $2>>();
+    QMap<, > arg_0;
+    arg_0 = color.value<QMap<, >>();
 
     EmitEnumSignal(
         arg_0
     );
 }
 
-QMap<$1, $2> EnumsWithDictsInterface::getEnumProperty() const {
+QMap<, > EnumsWithDictsInterface::getEnumProperty() const {
     return m_EnumProperty;
 }
 
-void EnumsWithDictsInterface::setEnumProperty(const QMap<$1, $2> &value ) {
+void EnumsWithDictsInterface::setEnumProperty(const QMap<, > &value ) {
     m_EnumProperty = value;
     emit enumPropertyChanged();
     if (Connection::instance().EnumsWithDicts() != nullptr ) {
@@ -153,8 +153,8 @@ QVariant EnumsWithDictsInterface::getVariantEnumProperty() const {
 }
 
 void EnumsWithDictsInterface::setVariantEnumProperty(QVariant value ) {
-    QMap<$1, $2> unmarshalled;
-    unmarshalled = value.value<QMap<$1, $2>>();
+    QMap<, > unmarshalled;
+    unmarshalled = value.value<QMap<, >>();
 
     setEnumProperty(unmarshalled);
 }

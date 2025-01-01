@@ -29,11 +29,6 @@ public:
      * @brief some struct arrays
      */
     QList<StructArray> numbers;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 /**
@@ -85,11 +80,6 @@ public:
     Q_INVOKABLE SimonsArray create (
         QVariant numbers
     ) const;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 }

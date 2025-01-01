@@ -13,8 +13,8 @@ EnumsWithDictsInterfaceAdaptor::EnumsWithDictsInterfaceAdaptor(EnumsWithDictsInt
 
 }
 
-QMap<$1, $2> EnumsWithDictsInterfaceAdaptor::EnumMethod(
-    QMap<$1, $2> color,
+QMap<, > EnumsWithDictsInterfaceAdaptor::EnumMethod(
+    QMap<, > color,
     const QDBusMessage &_message
 ){
     _message.setDelayedReply(true);
@@ -22,11 +22,11 @@ QMap<$1, $2> EnumsWithDictsInterfaceAdaptor::EnumMethod(
     return {};
 }
 
-QMap<$1, $2> EnumsWithDictsInterfaceAdaptor::getEnumProperty() const {
+QMap<, > EnumsWithDictsInterfaceAdaptor::getEnumProperty() const {
     return m_iface->getEnumProperty();
 }
 
-void EnumsWithDictsInterfaceAdaptor::setEnumProperty(const QMap<$1, $2> &value ) {
+void EnumsWithDictsInterfaceAdaptor::setEnumProperty(const QMap<, > &value ) {
     emit m_iface->propertyEnumPropertySet(value);
 }
 

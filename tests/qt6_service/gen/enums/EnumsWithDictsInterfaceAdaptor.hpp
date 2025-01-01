@@ -23,7 +23,7 @@ class EnumsWithDictsInterfaceAdaptor : public QDBusAbstractAdaptor {
     /**
      * @brief a property
      */
-    Q_PROPERTY(QMap<$1, $2> EnumProperty READ getEnumProperty WRITE setEnumProperty )
+    Q_PROPERTY(QMap<, > EnumProperty READ getEnumProperty WRITE setEnumProperty )
 
 public:
     EnumsWithDictsInterfaceAdaptor(EnumsWithDictsInterface* iface, QObject* parent = nullptr);
@@ -36,8 +36,8 @@ public slots:
      *
      * @returns another color
      */
-    QMap<$1, $2> EnumMethod(
-        QMap<$1, $2> color,
+    QMap<, > EnumMethod(
+        QMap<, > color,
         const QDBusMessage &_message
     );
 signals:
@@ -48,11 +48,11 @@ signals:
      *
      */
     void EnumSignal(
-        QMap<$1, $2> color
+        QMap<, > color
     );
 private:
-    QMap<$1, $2> getEnumProperty() const;
-    void setEnumProperty(const QMap<$1, $2> &value );
+    QMap<, > getEnumProperty() const;
+    void setEnumProperty(const QMap<, > &value );
     EnumsWithDictsInterface* m_iface;
 };
 

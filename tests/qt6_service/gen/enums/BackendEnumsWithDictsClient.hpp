@@ -31,7 +31,7 @@ signals:
      *
      * @param another color
      */
-    void finished(const QMap<$1, $2> &reply);
+    void finished(const QMap<, > &reply);
 
     /**
      * @brief Emitted when an error ocurred during an EnumMethod call.
@@ -71,7 +71,7 @@ public:
      * @returns Pending call object with finished signal containing the reply.
      */
     EnumMethodPendingCall* EnumMethod(
-        QMap<$1, $2> color
+        QMap<, > color
     );
 
     /**
@@ -81,7 +81,7 @@ public:
      *
      * a property
      */
-    QMap<$1, $2> getEnumProperty() const;
+    QMap<, > getEnumProperty() const;
 
     /**
      * @brief Setter for the EnumProperty property.
@@ -90,7 +90,7 @@ public:
      *
      * a property
      */
-    void setEnumProperty(const QMap<$1, $2> &newValue);
+    void setEnumProperty(const QMap<, > &newValue);
 
 public slots:
     /**
@@ -130,7 +130,7 @@ signals:
      * @param color a color
      */
     void enumSignalReceived(
-        QMap<$1, $2> color
+        QMap<, > color
     );
 
     /**

@@ -31,7 +31,7 @@ struct EnumStruct {
     /**
      * @brief color map
      */
-    Q_PROPERTY(QMap<$1, $2> colorDict MEMBER colorDict)
+    Q_PROPERTY(QMap<, > colorDict MEMBER colorDict)
 public:
     /**
      * @brief a color
@@ -44,12 +44,7 @@ public:
     /**
      * @brief color map
      */
-    QMap<$1, $2> colorDict;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
+    QMap<, > colorDict;
 };
 
 /**
@@ -93,7 +88,7 @@ public:
     EnumStruct create (
          color,
         QList<> colorArray,
-        QMap<$1, $2> colorDict
+        QMap<, > colorDict
     ) const;
 
     /**
@@ -108,11 +103,6 @@ public:
         QVariant colorArray,
         QVariant colorDict
     ) const;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 }

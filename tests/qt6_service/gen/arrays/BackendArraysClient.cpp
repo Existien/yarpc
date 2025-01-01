@@ -26,8 +26,6 @@ BackendArraysClient::BackendArraysClient(QObject* parent)
    ))
 {
     registerMetaTypes();
-    StructArray::registerMetaTypes();
-    SimonsArray::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",

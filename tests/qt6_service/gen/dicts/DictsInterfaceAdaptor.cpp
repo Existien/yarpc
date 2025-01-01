@@ -13,8 +13,8 @@ DictsInterfaceAdaptor::DictsInterfaceAdaptor(DictsInterface* iface, QObject* par
 
 }
 
-QMap<$1, $2> DictsInterfaceAdaptor::DictMethod(
-    QMap<$1, $2> keysNValues,
+QMap<QString, QString> DictsInterfaceAdaptor::DictMethod(
+    QMap<QString, uint> keysNValues,
     const QDBusMessage &_message
 ){
     _message.setDelayedReply(true);
@@ -22,11 +22,11 @@ QMap<$1, $2> DictsInterfaceAdaptor::DictMethod(
     return {};
 }
 
-QMap<$1, $2> DictsInterfaceAdaptor::getDictProperty() const {
+QMap<QString, uint> DictsInterfaceAdaptor::getDictProperty() const {
     return m_iface->getDictProperty();
 }
 
-void DictsInterfaceAdaptor::setDictProperty(const QMap<$1, $2> &value ) {
+void DictsInterfaceAdaptor::setDictProperty(const QMap<QString, uint> &value ) {
     emit m_iface->propertyDictPropertySet(value);
 }
 

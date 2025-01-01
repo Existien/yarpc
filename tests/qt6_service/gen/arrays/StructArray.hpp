@@ -28,11 +28,6 @@ public:
      * @brief some numbers
      */
     QList<QList<uint>> numbers;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 /**
@@ -84,11 +79,6 @@ public:
     Q_INVOKABLE StructArray create (
         QVariant numbers
     ) const;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 }

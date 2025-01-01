@@ -40,7 +40,7 @@ bool gen::enums::operator!=(const EnumStruct &lhs, const EnumStruct &rhs) {
 EnumStruct EnumStructFactory::create (
      color,
     QList<> colorArray,
-    QMap<$1, $2> colorDict
+    QMap<, > colorDict
 ) const {
     return EnumStruct {
         .color = color,
@@ -65,17 +65,12 @@ EnumStruct EnumStructFactory::create (
         member_1.push_back(o_0);
     }
 
-    QMap<$1, $2> member_2;
-    member_2 = colorDict.value<QMap<$1, $2>>();
+    QMap<, > member_2;
+    member_2 = colorDict.value<QMap<, >>();
 
     return EnumStruct {
         .color = member_0,
         .colorArray = member_1,
         .colorDict = member_2,
     };
-}
-
-void EnumStruct::registerMetaTypes() {
-    qRegisterMetaType<EnumStruct>("EnumStruct");
-    qDBusRegisterMetaType<EnumStruct>();
 }

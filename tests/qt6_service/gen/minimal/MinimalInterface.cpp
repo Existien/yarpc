@@ -5,6 +5,7 @@
  *   Object: Minimal
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "MinimalInterface.hpp"
 #include "MinimalInterfaceAdaptor.hpp"
 #include "Connection.hpp"

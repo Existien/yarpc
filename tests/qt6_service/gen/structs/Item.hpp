@@ -36,11 +36,6 @@ public:
      * @brief the price
      */
     double price;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 /**
@@ -95,11 +90,6 @@ public:
         QVariant name,
         QVariant price
     ) const;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 }

@@ -8,6 +8,9 @@
 
 namespace gen::enums {
 
+    /**
+     * @brief Registers MetaTypes used by this interface.
+     */
     void registerMetaTypes();
 
 }
