@@ -5,6 +5,8 @@
  *   Template: qt6/types_header.j2
  */
 #pragma once
+#include "StructDict.hpp"
+#include "SimonsDict.hpp"
 
 namespace gen::dicts {
 
@@ -13,5 +15,7 @@ namespace gen::dicts {
 */
 void registerMetaTypes();
 
+bool operator!=(const QMap<QString, StructDict> &lhs, const QMap<QString, StructDict> &rhs);
+bool operator!=(const QMap<QString, SimonsDict> &lhs, const QMap<QString, SimonsDict> &rhs);
 
 }

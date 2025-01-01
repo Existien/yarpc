@@ -12,14 +12,14 @@ outputs:
     definition: DictsWithStructs
     objectPath: /com/yarpc/testservice/dicts
     interfaceName: com.yarpc.testservice.dictsWithStructs
-  - className: DictsWithArraysInterface
-    definition: DictsWithArrays
-    objectPath: /com/yarpc/testservice/dicts
-    interfaceName: com.yarpc.testservice.dictsWithArrays
-  - className: DictKeysInterface
-    definition: DictKeys
-    objectPath: /com/yarpc/testservice/dicts
-    interfaceName: com.yarpc.testservice.dictKeys
+  # - className: DictsWithArraysInterface
+  #   definition: DictsWithArrays
+  #   objectPath: /com/yarpc/testservice/dicts
+  #   interfaceName: com.yarpc.testservice.dictsWithArrays
+  # - className: DictKeysInterface
+  #   definition: DictKeys
+  #   objectPath: /com/yarpc/testservice/dicts
+  #   interfaceName: com.yarpc.testservice.dictKeys
   clients:
   - className: BackendDictsClient
     definition: Dicts
@@ -31,13 +31,13 @@ outputs:
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend/dicts
     interfaceName: com.yarpc.backend.dictsWithStructs
-  - className: BackendDictsWithArraysClient
-    definition: DictsWithArrays
-    busName: com.yarpc.backend
-    objectPath: /com/yarpc/backend/dicts
-    interfaceName: com.yarpc.backend.dictsWithArrays
-  - className: BackendDictKeysClient
-    definition: DictKeys
-    busName: com.yarpc.backend
-    objectPath: /com/yarpc/backend/dicts
-    interfaceName: com.yarpc.backend.dictKeys
+  # - className: BackendDictsWithArraysClient
+  #   definition: DictsWithArrays
+  #   busName: com.yarpc.backend
+  #   objectPath: /com/yarpc/backend/dicts
+  #   interfaceName: com.yarpc.backend.dictsWithArrays
+  # - className: BackendDictKeysClient
+  #   definition: DictKeys
+  #   busName: com.yarpc.backend
+  #   objectPath: /com/yarpc/backend/dicts
+  #   interfaceName: com.yarpc.backend.dictKeys

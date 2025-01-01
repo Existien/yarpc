@@ -12,6 +12,7 @@
 #include <QDBusMessage>
 #include <memory>
 #include "DictsInterfaceAdaptor.hpp"
+#include "DictsWithStructsInterfaceAdaptor.hpp"
 namespace gen::dicts {
 
 /**
@@ -31,6 +32,9 @@ public:
 
     /** @brief Pointer to the adaptor for a registered DictsInterface interface or null if it isn't registered. */
     DictsInterfaceAdaptor *m_dicts = nullptr;
+
+    /** @brief Pointer to the adaptor for a registered DictsWithStructsInterface interface or null if it isn't registered. */
+    DictsWithStructsInterfaceAdaptor *m_dictsWithStructs = nullptr;
 
 };
 
@@ -91,6 +95,26 @@ public:
     bool isDictsRegistered() const;
     DictsInterfaceAdaptor * Dicts();
 
+    /**
+     * @brief Registers the DictsWithStructs interface under its object path.
+     *
+     * @param interface pointer to the DictsWithStructs object to register
+     */
+    void registerDictsWithStructs(QObject* interface);
+
+    /**
+     * @brief Unregisters the DictsWithStructs.
+     */
+    void unregisterDictsWithStructs();
+
+    /**
+     * @brief Returns whether the DictsWithStructs interface is registered.
+     *
+     * @returns whether the interface is registered
+     */
+    bool isDictsWithStructsRegistered() const;
+    DictsWithStructsInterfaceAdaptor * DictsWithStructs();
+
 public slots:
     /**
      * @brief Establishes a connection to the D-Bus.
@@ -121,6 +145,7 @@ private:
     std::unique_ptr<DictsTestserviceYarpcComObjectPath> m_DictsTestserviceYarpcComObjectPath = nullptr;
 
     QObject* m_Dicts = nullptr;
+    QObject* m_DictsWithStructs = nullptr;
 
 };
 

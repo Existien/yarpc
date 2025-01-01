@@ -11,6 +11,7 @@ qt_add_qml_module(Interfaces
         Arrays.qml
         ArraysWithStructs.qml
         Dictionaries.qml
+        DictsWithStructs.qml
 )
 
 target_link_libraries(Interfaces PUBLIC

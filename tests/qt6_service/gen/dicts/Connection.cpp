@@ -6,6 +6,7 @@
  */
 #include "Connection.hpp"
 #include "DictsInterface.hpp"
+#include "DictsWithStructsInterface.hpp"
 
 using namespace gen::dicts;
 
@@ -17,6 +18,7 @@ bool DictsTestserviceYarpcComObjectPath::hasRegistrations() const {
     return (
         false
         || m_dicts != nullptr
+        || m_dictsWithStructs != nullptr
     );
 }
 
@@ -56,6 +58,7 @@ void Connection::disconnectIfUnused(){
     if (
         false
         || m_Dicts != nullptr
+        || m_DictsWithStructs != nullptr
     ) {
         return;
     }
@@ -73,9 +76,17 @@ void Connection::updateRegistrations() {
                 m_DictsTestserviceYarpcComObjectPath.get()
             );
         }
+        if (m_DictsWithStructs != nullptr) {
+            auto dictsWithStructsInterface = dynamic_cast<DictsWithStructsInterface*>(m_DictsWithStructs);
+            m_DictsTestserviceYarpcComObjectPath->m_dictsWithStructs = new DictsWithStructsInterfaceAdaptor(
+                dictsWithStructsInterface,
+                m_DictsTestserviceYarpcComObjectPath.get()
+            );
+        }
         if (
             false
             || m_Dicts != nullptr
+            || m_DictsWithStructs != nullptr
         ) {
             m_connection->registerObject(
                 "/com/yarpc/testservice/dicts",
@@ -124,6 +135,37 @@ bool Connection::isDictsRegistered() const {
 DictsInterfaceAdaptor* Connection::Dicts() {
     if (m_DictsTestserviceYarpcComObjectPath != nullptr) {
         return m_DictsTestserviceYarpcComObjectPath->m_dicts;
+    } else {
+        return nullptr;
+    }
+}
+
+void Connection::registerDictsWithStructs(QObject* interface) {
+    if (m_DictsWithStructs == nullptr) {
+        auto dictsWithStructsInterface = dynamic_cast<DictsWithStructsInterface*>(interface);
+        if (dictsWithStructsInterface != nullptr) {
+            m_DictsWithStructs = interface;
+        }
+    }
+    connect();
+    updateRegistrations();
+}
+
+void Connection::unregisterDictsWithStructs() {
+    if (m_DictsWithStructs != nullptr) {
+        m_DictsWithStructs = nullptr;
+    }
+    updateRegistrations();
+    disconnectIfUnused();
+}
+
+bool Connection::isDictsWithStructsRegistered() const {
+    return (m_DictsWithStructs != nullptr);
+}
+
+DictsWithStructsInterfaceAdaptor* Connection::DictsWithStructs() {
+    if (m_DictsTestserviceYarpcComObjectPath != nullptr) {
+        return m_DictsTestserviceYarpcComObjectPath->m_dictsWithStructs;
     } else {
         return nullptr;
     }
