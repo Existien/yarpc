@@ -42,9 +42,22 @@ def _get_list_of_dicts(objects):
 
 
 def _get_array_types(name, objects):
-    return list(filter(
-        lambda x: f"<{name}>" in x,
-        _get_list_of_arrays(objects)
+    return list(map(
+        lambda x: x.replace(' ',""),
+        filter(
+            lambda x: f"<{name}>" in x,
+            _get_list_of_arrays(objects)
+        )
+    ))
+
+
+def _get_dict_types(name, objects):
+    return list(map(
+        lambda x: x.replace(' ',""),
+        filter(
+            lambda x: f"{name}>" in x,
+            _get_list_of_dicts(objects)
+        )
     ))
 
 
@@ -168,6 +181,7 @@ class Language(BaseLanguage):
         """
         return {
             "array_types": _get_array_types,
+            "dict_types": _get_dict_types,
             "needs_marshalling": _needs_marshalling,
         }
 

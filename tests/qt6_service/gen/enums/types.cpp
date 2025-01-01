@@ -16,4 +16,3 @@ void gen::enums::registerMetaTypes() {
     qRegisterMetaType<QMap<, >>("QMap<, >");
     qDBusRegisterMetaType<QMap<, >>();
 }
-

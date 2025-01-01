@@ -26,9 +26,17 @@ void {{ qt6.namespace(output) }}::registerMetaTypes() {
     qDBusRegisterMetaType<{{ qt6_type }}>();
     {% endfor %}
 }
-
+{% set array_type_list = [] %}
+{% set dict_type_list = [] %}
 {% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
 {% for array_type in struct.name|array_types(output.objects) %}
+{% set devNull = array_type_list.append(array_type) %}
+{% endfor %}
+{% for dict_type in struct.name|dict_types(output.objects) %}
+{% set devNull = dict_type_list.append(dict_type) %}
+{% endfor %}
+{% endfor %}
+{% for array_type in array_type_list|unique %}
 {% set qt6_type = qt6.type(array_type, output.objects ) %}
 
 bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
@@ -43,4 +51,22 @@ bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{
     return false;
 }
 {% endfor %}
+{% for dict_type in dict_type_list|unique %}
+{% set qt6_type = qt6.type(dict_type, output.objects ) %}
+
+bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
+    if (lhs.size() != rhs.size()) {
+        return true;
+    }
+    for (auto i=lhs.keyBegin(); i!=lhs.keyEnd(); ++i) {
+        if (!rhs.contains(*i))
+        {
+            return true;
+        }
+        if (lhs[*i] != rhs[*i]) {
+            return true;
+        }
+    }
+    return false;
+}
 {% endfor %}

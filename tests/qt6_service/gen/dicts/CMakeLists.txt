@@ -15,7 +15,12 @@ qt_add_qml_module(Dicts
         types.cpp
         DictsInterface.cpp
         DictsInterfaceAdaptor.cpp
+        DictsWithStructsInterface.cpp
+        DictsWithStructsInterfaceAdaptor.cpp
         BackendDictsClient.cpp
+        BackendDictsWithStructsClient.cpp
+        StructDict.cpp
+        SimonsDict.cpp
 )
 
 target_link_libraries(Dicts PUBLIC Qt6::DBus)

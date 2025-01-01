@@ -14,4 +14,5 @@ Window {
     Arrays{}
     ArraysWithStructs{}
     Dictionaries{}
+    DictsWithStructs{}
 }

@@ -14,4 +14,3 @@ void gen::structs::registerMetaTypes() {
     qRegisterMetaType<Item>("Item");
     qDBusRegisterMetaType<Item>();
 }
-
