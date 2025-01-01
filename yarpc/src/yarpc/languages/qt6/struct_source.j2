@@ -82,13 +82,3 @@ bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{
         {% endfor %}
     };
 }
-
-void {{object.name}}::registerMetaTypes() {
-    qRegisterMetaType<{{ object.name }}>("{{ object.name }}");
-    qDBusRegisterMetaType<{{ object.name }}>();
-    {% for array_type in object.name|array_types(output.objects) %}
-    {% set qt6_type = qt6.type(array_type, output.objects ) %}
-    qRegisterMetaType<{{ qt6_type }}>("{{ qt6_type }}");
-    qDBusRegisterMetaType<{{ qt6_type }}>();
-    {% endfor %}
-}

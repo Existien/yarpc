@@ -6,13 +6,25 @@
  */
 {% import "dbus/common.j2" as dbus %}
 {% import "qt6/common.j2" as qt6 %}
+{% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
+#include "{{ struct.name }}.hpp"
+{% endfor %}
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
 
 void {{ qt6.namespace(output) }}::registerMetaTypes() {
-    {% for array_type in get_list_of_builtin_arrays(output.objects) %}
+    {% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
+    qRegisterMetaType<{{ struct.name }}>("{{ struct.name }}");
+    qDBusRegisterMetaType<{{ struct.name }}>();
+    {% endfor %}
+    {% for array_type in get_list_of_arrays(output.objects) %}
     {% set qt6_type = qt6.type(array_type, output.objects ) %}
+    qRegisterMetaType<{{ qt6_type }}>("{{ qt6_type }}");
+    qDBusRegisterMetaType<{{ qt6_type }}>();
+    {% endfor %}
+    {% for dict_type in get_list_of_dicts(output.objects) %}
+    {% set qt6_type = qt6.type(dict_type, output.objects ) %}
     qRegisterMetaType<{{ qt6_type }}>("{{ qt6_type }}");
     qDBusRegisterMetaType<{{ qt6_type }}>();
     {% endfor %}

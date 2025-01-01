@@ -37,15 +37,8 @@ def _get_list_of_arrays(objects):
     return list(filter(lambda x: x.startswith('array'), _get_list_of_types(objects)))
 
 
-def _get_list_of_builtin_arrays(objects):
-    builtin_arrays = []
-    for item in _get_list_of_arrays(objects):
-        inner = extract_inner_names(item, find_type(item, objects))[0]
-        while inner.startswith('array'):
-            inner = extract_inner_names(inner, find_type(inner, objects))[0]
-        if find_type(inner, objects).get('kind') == 'builtin':
-            builtin_arrays.append(item)
-    return builtin_arrays
+def _get_list_of_dicts(objects):
+    return list(filter(lambda x: x.startswith('dict'), _get_list_of_types(objects)))
 
 
 def _get_array_types(name, objects):
@@ -187,5 +180,5 @@ class Language(BaseLanguage):
         """
         return {
             'get_list_of_arrays': _get_list_of_arrays,
-            'get_list_of_builtin_arrays': _get_list_of_builtin_arrays,
+            'get_list_of_dicts': _get_list_of_dicts,
         }

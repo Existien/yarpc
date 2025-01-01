@@ -16,6 +16,11 @@
 {%- if object.name == 'array' -%}
 {%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
 {{ object.qt6|replace("$1", inner_type) }}
+{%- elif object.name == 'dict' -%}
+{%- set inner_types = type_as_str|extract_inner(object) -%}
+{%- set key_type = type(inner_types[0], objects) -%}
+{%- set value_type = type(inner_types[1], objects) -%}
+{{ object.qt6|replace("$1", key_type)|replace("$2", value_type) }}
 {%- else -%}
 {{ object.qt6 }}
 {%- endif -%}
