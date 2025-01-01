@@ -10,6 +10,7 @@
 #include <QMetaType>
 #include <QDBusMetaType>
 #include "{{ object.name }}.hpp"
+#include "types.hpp"
 
 using namespace {{ qt6.namespace(output) }};
 
@@ -38,21 +39,6 @@ bool {{ qt6.namespace(output) }}::operator!=(const {{ object.name }} &lhs, const
         {% endfor %}
     );
 }
-{% for array_type in object.name|array_types(output.objects) %}
-{% set qt6_type = qt6.type(array_type, output.objects ) %}
-
-bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
-    if (lhs.size() != rhs.size()) {
-        return true;
-    }
-    for (auto i=0; i<lhs.size(); ++i) {
-        if (lhs[i] != rhs[i]) {
-            return true;
-        }
-    }
-    return false;
-}
-{% endfor %}
 
 {{ object.name }} {{object.name}}Factory::create (
     {% if object.members|count > 0 %}

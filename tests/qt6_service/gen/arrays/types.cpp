@@ -4,8 +4,6 @@
  *   File: /workspace/tests/definitions/qt6/04_arrays.yml
  *   Template: qt6/types_source.j2
  */
-#include "StructArray.hpp"
-#include "SimonsArray.hpp"
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
@@ -15,20 +13,45 @@ void gen::arrays::registerMetaTypes() {
     qDBusRegisterMetaType<StructArray>();
     qRegisterMetaType<SimonsArray>("SimonsArray");
     qDBusRegisterMetaType<SimonsArray>();
-    qRegisterMetaType<QList<QString>>("QList<QString>");
-    qDBusRegisterMetaType<QList<QString>>();
+    qRegisterMetaType<QList<uint>>("QList<uint>");
+    qDBusRegisterMetaType<QList<uint>>();
+    qRegisterMetaType<QList<QList<double>>>("QList<QList<double>>");
+    qDBusRegisterMetaType<QList<QList<double>>>();
     qRegisterMetaType<QList<double>>("QList<double>");
     qDBusRegisterMetaType<QList<double>>();
     qRegisterMetaType<QList<SimonsArray>>("QList<SimonsArray>");
     qDBusRegisterMetaType<QList<SimonsArray>>();
+    qRegisterMetaType<QList<QString>>("QList<QString>");
+    qDBusRegisterMetaType<QList<QString>>();
     qRegisterMetaType<QList<StructArray>>("QList<StructArray>");
     qDBusRegisterMetaType<QList<StructArray>>();
-    qRegisterMetaType<QList<QList<QString>>>("QList<QList<QString>>");
-    qDBusRegisterMetaType<QList<QList<QString>>>();
-    qRegisterMetaType<QList<QList<double>>>("QList<QList<double>>");
-    qDBusRegisterMetaType<QList<QList<double>>>();
     qRegisterMetaType<QList<QList<uint>>>("QList<QList<uint>>");
     qDBusRegisterMetaType<QList<QList<uint>>>();
-    qRegisterMetaType<QList<uint>>("QList<uint>");
-    qDBusRegisterMetaType<QList<uint>>();
+    qRegisterMetaType<QList<QList<QString>>>("QList<QList<QString>>");
+    qDBusRegisterMetaType<QList<QList<QString>>>();
+}
+
+
+bool gen::arrays::operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        return true;
+    }
+    for (auto i=0; i<lhs.size(); ++i) {
+        if (lhs[i] != rhs[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool gen::arrays::operator!=(const QList<SimonsArray> &lhs, const QList<SimonsArray> &rhs) {
+    if (lhs.size() != rhs.size()) {
+        return true;
+    }
+    for (auto i=0; i<lhs.size(); ++i) {
+        if (lhs[i] != rhs[i]) {
+            return true;
+        }
+    }
+    return false;
 }

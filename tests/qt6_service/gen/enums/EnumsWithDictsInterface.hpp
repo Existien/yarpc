@@ -12,6 +12,7 @@
 #include <QVariant>
 #include "DBusError.hpp"
 #include "EnumStruct.hpp"
+#include "types.hpp"
 namespace gen::enums {
 
 /**

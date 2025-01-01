@@ -10,3 +10,4 @@
 
 void gen::with_args::registerMetaTypes() {
 }
+

@@ -10,3 +10,4 @@
 
 void gen::minimal::registerMetaTypes() {
 }
+

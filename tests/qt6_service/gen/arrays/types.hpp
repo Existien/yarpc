@@ -5,12 +5,17 @@
  *   Template: qt6/types_header.j2
  */
 #pragma once
+#include "StructArray.hpp"
+#include "SimonsArray.hpp"
 
 namespace gen::arrays {
 
-    /**
-     * @brief Registers MetaTypes used by this interface.
-     */
-    void registerMetaTypes();
+/**
+* @brief Registers MetaTypes used by this interface.
+*/
+void registerMetaTypes();
+
+bool operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs);
+bool operator!=(const QList<SimonsArray> &lhs, const QList<SimonsArray> &rhs);
 
 }

@@ -11,6 +11,7 @@
 #include <QDBusMessage>
 #include <QVariant>
 #include "DBusError.hpp"
+#include "types.hpp"
 namespace gen::minimal {
 
 /**

@@ -7,12 +7,22 @@
 {% import "dbus/common.j2" as dbus %}
 {% import "qt6/common.j2" as qt6 %}
 #pragma once
+{% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
+#include "{{ struct.name }}.hpp"
+{% endfor %}
 
 namespace {{ qt6.namespace(output) }} {
 
-    /**
-     * @brief Registers MetaTypes used by this interface.
-     */
-    void registerMetaTypes();
+/**
+* @brief Registers MetaTypes used by this interface.
+*/
+void registerMetaTypes();
+
+{% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
+{% for array_type in struct.name|array_types(output.objects) %}
+{% set qt6_type = qt6.type(array_type, output.objects ) %}
+bool operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs);
+{% endfor %}
+{% endfor %}
 
 }

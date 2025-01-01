@@ -13,6 +13,7 @@
 #include "DBusError.hpp"
 #include "SimpleStruct.hpp"
 #include "Item.hpp"
+#include "types.hpp"
 namespace gen::structs {
 
 /**

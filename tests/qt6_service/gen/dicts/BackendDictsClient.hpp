@@ -13,6 +13,7 @@
 #include <QDBusPendingCallWatcher>
 #include <QVariant>
 #include "DBusError.hpp"
+#include "types.hpp"
 namespace gen::dicts {
 
 /**

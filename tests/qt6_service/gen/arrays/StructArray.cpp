@@ -8,6 +8,7 @@
 #include <QMetaType>
 #include <QDBusMetaType>
 #include "StructArray.hpp"
+#include "types.hpp"
 
 using namespace gen::arrays;
 
@@ -29,18 +30,6 @@ bool gen::arrays::operator!=(const StructArray &lhs, const StructArray &rhs) {
     return (false
         || lhs.numbers != rhs.numbers
     );
-}
-
-bool gen::arrays::operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs) {
-    if (lhs.size() != rhs.size()) {
-        return true;
-    }
-    for (auto i=0; i<lhs.size(); ++i) {
-        if (lhs[i] != rhs[i]) {
-            return true;
-        }
-    }
-    return false;
 }
 
 StructArray StructArrayFactory::create (

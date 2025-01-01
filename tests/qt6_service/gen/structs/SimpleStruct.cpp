@@ -8,6 +8,7 @@
 #include <QMetaType>
 #include <QDBusMetaType>
 #include "SimpleStruct.hpp"
+#include "types.hpp"
 
 using namespace gen::structs;
 
