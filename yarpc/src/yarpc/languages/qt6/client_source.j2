@@ -28,9 +28,6 @@ using namespace {{ qt6.namespace(output) }};
    ))
 {
     registerMetaTypes();
-    {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
-    {{ object.name }}::registerMetaTypes();
-    {% endfor %}
     QDBusInterface iface(
         "{{ target.busName }}",
         "{{ target.objectPath }}",

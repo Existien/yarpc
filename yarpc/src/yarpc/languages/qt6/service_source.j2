@@ -7,6 +7,7 @@
  */
 {% import "dbus/common.j2" as dbus %}
 {% import "qt6/common.j2" as qt6 %}
+#include <QDBusArgument>
 #include "{{ target.className }}.hpp"
 #include "{{ target.className }}Adaptor.hpp"
 #include "Connection.hpp"
@@ -17,9 +18,6 @@ using namespace {{ qt6.namespace(output) }};
 {{ target.className }}::{{ target.className }}(QObject* parent)
 : QObject(parent) {
     registerMetaTypes();
-    {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
-    {{ object.name }}::registerMetaTypes();
-    {% endfor %}
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,

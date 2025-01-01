@@ -39,11 +39,6 @@ public:
      */
     {{ qt6.type(member.type, output.objects) }} {{member.name }};
     {% endfor %}
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 /**
@@ -106,11 +101,6 @@ public:
         {{ qt6.funcparams(object.members, output.objects, true)|indent(8) }}
         {% endif %}
     ) const;
-
-    /**
-     * @brief Registers MetaTypes used by this struct.
-     */
-    static void registerMetaTypes();
 };
 
 }
