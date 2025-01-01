@@ -13,4 +13,5 @@ Window {
     Structs{}
     Arrays{}
     ArraysWithStructs{}
+    Dictionaries{}
 }

@@ -5,6 +5,7 @@
  *   Object: Structs
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "StructsInterface.hpp"
 #include "StructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
@@ -15,8 +16,6 @@ using namespace gen::structs;
 StructsInterface::StructsInterface(QObject* parent)
 : QObject(parent) {
     registerMetaTypes();
-    SimpleStruct::registerMetaTypes();
-    Item::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,

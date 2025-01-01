@@ -23,7 +23,7 @@ class DictsInterfaceAdaptor : public QDBusAbstractAdaptor {
     /**
      * @brief a prop
      */
-    Q_PROPERTY(QMap<$1, $2> DictProperty READ getDictProperty WRITE setDictProperty )
+    Q_PROPERTY(QMap<QString, uint> DictProperty READ getDictProperty WRITE setDictProperty )
 
 public:
     DictsInterfaceAdaptor(DictsInterface* iface, QObject* parent = nullptr);
@@ -36,8 +36,8 @@ public slots:
      *
      * @returns another one
      */
-    QMap<$1, $2> DictMethod(
-        QMap<$1, $2> keysNValues,
+    QMap<QString, QString> DictMethod(
+        QMap<QString, uint> keysNValues,
         const QDBusMessage &_message
     );
 signals:
@@ -48,11 +48,11 @@ signals:
      *
      */
     void DictSignal(
-        QMap<$1, $2> keysNValues
+        QMap<QString, uint> keysNValues
     );
 private:
-    QMap<$1, $2> getDictProperty() const;
-    void setDictProperty(const QMap<$1, $2> &value );
+    QMap<QString, uint> getDictProperty() const;
+    void setDictProperty(const QMap<QString, uint> &value );
     DictsInterface* m_iface;
 };
 

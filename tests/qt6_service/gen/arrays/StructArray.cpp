@@ -71,10 +71,3 @@ StructArray StructArrayFactory::create (
         .numbers = member_0,
     };
 }
-
-void StructArray::registerMetaTypes() {
-    qRegisterMetaType<StructArray>("StructArray");
-    qDBusRegisterMetaType<StructArray>();
-    qRegisterMetaType<QList<StructArray>>("QList<StructArray>");
-    qDBusRegisterMetaType<QList<StructArray>>();
-}

@@ -59,8 +59,3 @@ SimpleStruct SimpleStructFactory::create (
         .amount = member_1,
     };
 }
-
-void SimpleStruct::registerMetaTypes() {
-    qRegisterMetaType<SimpleStruct>("SimpleStruct");
-    qDBusRegisterMetaType<SimpleStruct>();
-}

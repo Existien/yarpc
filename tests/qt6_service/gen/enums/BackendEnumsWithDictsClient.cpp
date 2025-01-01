@@ -26,7 +26,6 @@ BackendEnumsWithDictsClient::BackendEnumsWithDictsClient(QObject* parent)
    ))
 {
     registerMetaTypes();
-    EnumStruct::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -107,15 +106,15 @@ void BackendEnumsWithDictsClient::propertiesChangedHandler(QString iface, QVaria
 EnumMethodPendingCall* BackendEnumsWithDictsClient::EnumMethod(
     QVariant color
 ) {
-    QMap<$1, $2> arg_0;
-    arg_0 = color.value<QMap<$1, $2>>();
+    QMap<, > arg_0;
+    arg_0 = color.value<QMap<, >>();
 
     return EnumMethod(
         arg_0
     );
 }
 EnumMethodPendingCall* BackendEnumsWithDictsClient::EnumMethod(
-    QMap<$1, $2> color
+    QMap<, > color
 ) {
     QDBusArgument dbuscolor;
     dbuscolor << color;
@@ -142,7 +141,7 @@ EnumMethodPendingCall::EnumMethodPendingCall(QDBusPendingCall pendingCall, QObje
 
 void EnumMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
+    QDBusPendingReply<QMap<, >> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
@@ -154,12 +153,12 @@ void EnumMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 
 void BackendEnumsWithDictsClient::EnumSignalDBusHandler(QDBusMessage content) {
     emit enumSignalReceived(
-        content.arguments()[0].value<QMap<$1, $2>>()
+        content.arguments()[0].value<QMap<, >>()
     );
 }
 
 
-QMap<$1, $2> BackendEnumsWithDictsClient::getEnumProperty() const {
+QMap<, > BackendEnumsWithDictsClient::getEnumProperty() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -171,7 +170,7 @@ QMap<$1, $2> BackendEnumsWithDictsClient::getEnumProperty() const {
         "com.yarpc.backend.enumsWithDicts",
         "EnumProperty"
     );
-    QMap<$1, $2> unmarshalled{};
+    QMap<, > unmarshalled{};
     if (reply.isValid()) {
         auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
         marshalled >> unmarshalled;
@@ -189,7 +188,7 @@ QVariant BackendEnumsWithDictsClient::getVariantEnumProperty() const {
 }
 
 
-void BackendEnumsWithDictsClient::setEnumProperty(const QMap<$1, $2> &newValue) {
+void BackendEnumsWithDictsClient::setEnumProperty(const QMap<, > &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -209,8 +208,8 @@ void BackendEnumsWithDictsClient::setEnumProperty(const QMap<$1, $2> &newValue) 
 }
 
 void BackendEnumsWithDictsClient::setVariantEnumProperty(QVariant value ) {
-    QMap<$1, $2> unmarshalled;
-    unmarshalled = value.value<QMap<$1, $2>>();
+    QMap<, > unmarshalled;
+    unmarshalled = value.value<QMap<, >>();
 
     setEnumProperty(unmarshalled);
 }

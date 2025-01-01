@@ -5,6 +5,7 @@
  *   Object: EnumsWithStructs
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "EnumsWithStructsInterface.hpp"
 #include "EnumsWithStructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
@@ -15,7 +16,6 @@ using namespace gen::enums;
 EnumsWithStructsInterface::EnumsWithStructsInterface(QObject* parent)
 : QObject(parent) {
     registerMetaTypes();
-    EnumStruct::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,

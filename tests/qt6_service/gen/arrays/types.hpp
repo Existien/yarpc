@@ -8,6 +8,9 @@
 
 namespace gen::arrays {
 
+    /**
+     * @brief Registers MetaTypes used by this interface.
+     */
     void registerMetaTypes();
 
 }

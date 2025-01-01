@@ -8,6 +8,9 @@
 
 namespace gen::structs {
 
+    /**
+     * @brief Registers MetaTypes used by this interface.
+     */
     void registerMetaTypes();
 
 }

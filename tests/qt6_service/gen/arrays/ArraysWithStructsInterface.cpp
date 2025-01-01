@@ -5,6 +5,7 @@
  *   Object: ArraysWithStructs
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "ArraysWithStructsInterface.hpp"
 #include "ArraysWithStructsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
@@ -15,8 +16,6 @@ using namespace gen::arrays;
 ArraysWithStructsInterface::ArraysWithStructsInterface(QObject* parent)
 : QObject(parent) {
     registerMetaTypes();
-    StructArray::registerMetaTypes();
-    SimonsArray::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,

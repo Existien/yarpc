@@ -26,8 +26,6 @@ BackendDictsClient::BackendDictsClient(QObject* parent)
    ))
 {
     registerMetaTypes();
-    StructDict::registerMetaTypes();
-    SimonsDict::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -108,15 +106,15 @@ void BackendDictsClient::propertiesChangedHandler(QString iface, QVariantMap cha
 DictMethodPendingCall* BackendDictsClient::DictMethod(
     QVariant keysNValues
 ) {
-    QMap<$1, $2> arg_0;
-    arg_0 = keysNValues.value<QMap<$1, $2>>();
+    QMap<QString, uint> arg_0;
+    arg_0 = keysNValues.value<QMap<QString, uint>>();
 
     return DictMethod(
         arg_0
     );
 }
 DictMethodPendingCall* BackendDictsClient::DictMethod(
-    QMap<$1, $2> keysNValues
+    QMap<QString, uint> keysNValues
 ) {
     QDBusArgument dbuskeysNValues;
     dbuskeysNValues << keysNValues;
@@ -143,7 +141,7 @@ DictMethodPendingCall::DictMethodPendingCall(QDBusPendingCall pendingCall, QObje
 
 void DictMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<QMap<$1, $2>> reply {*watcher};
+    QDBusPendingReply<QMap<QString, QString>> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
@@ -155,12 +153,12 @@ void DictMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 
 void BackendDictsClient::DictSignalDBusHandler(QDBusMessage content) {
     emit dictSignalReceived(
-        content.arguments()[0].value<QMap<$1, $2>>()
+        content.arguments()[0].value<QMap<QString, uint>>()
     );
 }
 
 
-QMap<$1, $2> BackendDictsClient::getDictProperty() const {
+QMap<QString, uint> BackendDictsClient::getDictProperty() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -172,7 +170,7 @@ QMap<$1, $2> BackendDictsClient::getDictProperty() const {
         "com.yarpc.backend.dicts",
         "DictProperty"
     );
-    QMap<$1, $2> unmarshalled{};
+    QMap<QString, uint> unmarshalled{};
     if (reply.isValid()) {
         auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
         marshalled >> unmarshalled;
@@ -190,7 +188,7 @@ QVariant BackendDictsClient::getVariantDictProperty() const {
 }
 
 
-void BackendDictsClient::setDictProperty(const QMap<$1, $2> &newValue) {
+void BackendDictsClient::setDictProperty(const QMap<QString, uint> &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -210,8 +208,8 @@ void BackendDictsClient::setDictProperty(const QMap<$1, $2> &newValue) {
 }
 
 void BackendDictsClient::setVariantDictProperty(QVariant value ) {
-    QMap<$1, $2> unmarshalled;
-    unmarshalled = value.value<QMap<$1, $2>>();
+    QMap<QString, uint> unmarshalled;
+    unmarshalled = value.value<QMap<QString, uint>>();
 
     setDictProperty(unmarshalled);
 }

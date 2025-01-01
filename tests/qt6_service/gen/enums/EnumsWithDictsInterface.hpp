@@ -22,9 +22,9 @@ class EnumMethodArgs {
     /**
      * @brief a color
      */
-    Q_PROPERTY(QMap<$1, $2> color MEMBER color)
+    Q_PROPERTY(QMap<, > color MEMBER color)
 public:
-    QMap<$1, $2> color;
+    QMap<, > color;
 };
 
 /**
@@ -45,7 +45,7 @@ public:
      * @param reply the return value of the call
      */
     void sendReply(
-        const QMap<$1, $2> &reply
+        const QMap<, > &reply
     );
 public slots:
     /**
@@ -133,14 +133,14 @@ public:
      *
      * @returns the current value of the property
      */
-    QMap<$1, $2> getEnumProperty() const;
+    QMap<, > getEnumProperty() const;
 
     /**
      * @brief Setter for the EnumProperty property.
      *
      * @param value the new value of the property
      */
-    void setEnumProperty(const QMap<$1, $2> &value );
+    void setEnumProperty(const QMap<, > &value );
 
 
     /**
@@ -149,7 +149,7 @@ public:
      * @param color a color
      */
     void EmitEnumSignal(
-        QMap<$1, $2> color
+        QMap<, > color
     );
 
 
@@ -205,7 +205,7 @@ signals:
      *
      * @param value the new value of the property
      */
-    void propertyEnumPropertySet(QMap<$1, $2> value);
+    void propertyEnumPropertySet(QMap<, > value);
 
     /**
      * @brief Emitted when the value of the EnumProperty property changes.
@@ -214,7 +214,7 @@ signals:
 
 private:
     void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
-    QMap<$1, $2> m_EnumProperty = {};
+    QMap<, > m_EnumProperty = {};
 };
 
 }

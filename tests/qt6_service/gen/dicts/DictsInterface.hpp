@@ -11,8 +11,6 @@
 #include <QDBusMessage>
 #include <QVariant>
 #include "DBusError.hpp"
-#include "StructDict.hpp"
-#include "SimonsDict.hpp"
 namespace gen::dicts {
 
 /**
@@ -23,9 +21,9 @@ class DictMethodArgs {
     /**
      * @brief a dictionary
      */
-    Q_PROPERTY(QMap<$1, $2> keysNValues MEMBER keysNValues)
+    Q_PROPERTY(QMap<QString, uint> keysNValues MEMBER keysNValues)
 public:
-    QMap<$1, $2> keysNValues;
+    QMap<QString, uint> keysNValues;
 };
 
 /**
@@ -46,7 +44,7 @@ public:
      * @param reply the return value of the call
      */
     void sendReply(
-        const QMap<$1, $2> &reply
+        const QMap<QString, QString> &reply
     );
 public slots:
     /**
@@ -134,14 +132,14 @@ public:
      *
      * @returns the current value of the property
      */
-    QMap<$1, $2> getDictProperty() const;
+    QMap<QString, uint> getDictProperty() const;
 
     /**
      * @brief Setter for the DictProperty property.
      *
      * @param value the new value of the property
      */
-    void setDictProperty(const QMap<$1, $2> &value );
+    void setDictProperty(const QMap<QString, uint> &value );
 
 
     /**
@@ -150,7 +148,7 @@ public:
      * @param keysNValues a dictionary
      */
     void EmitDictSignal(
-        QMap<$1, $2> keysNValues
+        QMap<QString, uint> keysNValues
     );
 
 
@@ -206,7 +204,7 @@ signals:
      *
      * @param value the new value of the property
      */
-    void propertyDictPropertySet(QMap<$1, $2> value);
+    void propertyDictPropertySet(QMap<QString, uint> value);
 
     /**
      * @brief Emitted when the value of the DictProperty property changes.
@@ -215,7 +213,7 @@ signals:
 
 private:
     void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
-    QMap<$1, $2> m_DictProperty = {};
+    QMap<QString, uint> m_DictProperty = {};
 };
 
 }

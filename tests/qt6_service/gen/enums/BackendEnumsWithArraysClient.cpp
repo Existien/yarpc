@@ -26,7 +26,6 @@ BackendEnumsWithArraysClient::BackendEnumsWithArraysClient(QObject* parent)
    ))
 {
     registerMetaTypes();
-    EnumStruct::registerMetaTypes();
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",

@@ -21,7 +21,6 @@ Item {
     Connections {
         target: ArraysInterface
         function onArrayMethodCalled(reply) {
-            console.log(reply.args().numbers)
             var call = client.ArrayMethod(reply.args().numbers)
             call.finished.connect(function(r){reply.sendReply(r)})
             call.error.connect(function(e){reply.sendError(e)})

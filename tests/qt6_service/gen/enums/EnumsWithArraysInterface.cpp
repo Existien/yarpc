@@ -5,6 +5,7 @@
  *   Object: EnumsWithArrays
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "EnumsWithArraysInterface.hpp"
 #include "EnumsWithArraysInterfaceAdaptor.hpp"
 #include "Connection.hpp"
@@ -15,7 +16,6 @@ using namespace gen::enums;
 EnumsWithArraysInterface::EnumsWithArraysInterface(QObject* parent)
 : QObject(parent) {
     registerMetaTypes();
-    EnumStruct::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,

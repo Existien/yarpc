@@ -5,6 +5,7 @@
  *   Object: WithArgs
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "WithArgsInterface.hpp"
 #include "WithArgsInterfaceAdaptor.hpp"
 #include "Connection.hpp"

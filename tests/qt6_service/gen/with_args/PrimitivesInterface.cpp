@@ -5,6 +5,7 @@
  *   Object: Primitives
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "PrimitivesInterface.hpp"
 #include "PrimitivesInterfaceAdaptor.hpp"
 #include "Connection.hpp"

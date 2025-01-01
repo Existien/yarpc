@@ -5,6 +5,7 @@
  *   Object: Dicts
  *   Template: qt6/service_source.j2
  */
+#include <QDBusArgument>
 #include "DictsInterface.hpp"
 #include "DictsInterfaceAdaptor.hpp"
 #include "Connection.hpp"
@@ -15,8 +16,6 @@ using namespace gen::dicts;
 DictsInterface::DictsInterface(QObject* parent)
 : QObject(parent) {
     registerMetaTypes();
-    StructDict::registerMetaTypes();
-    SimonsDict::registerMetaTypes();
     QObject::connect(
         &Connection::instance(),
         &Connection::connectedChanged,
@@ -53,7 +52,7 @@ bool DictsInterface::getConnected() const {
 
 DictMethodPendingReply::DictMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-    QMap<$1, $2> arg_0;
+    QMap<QString, uint> arg_0;
     {
         auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
         marshalled >> arg_0;
@@ -70,14 +69,14 @@ DictMethodArgs DictMethodPendingReply::args() {
 void DictMethodPendingReply::sendReply(
     QVariant reply
 ) {
-    QMap<$1, $2> unmarshalled;
-    unmarshalled = reply.value<QMap<$1, $2>>();
+    QMap<QString, QString> unmarshalled;
+    unmarshalled = reply.value<QMap<QString, QString>>();
 
     sendReply(unmarshalled);
 }
 
 void DictMethodPendingReply::sendReply(
-    const QMap<$1, $2> &reply
+    const QMap<QString, QString> &reply
 ) {
     auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
     auto iface = dynamic_cast<DictsInterface*>(parent());
@@ -111,7 +110,7 @@ void DictsInterface::handleDictMethodCalled(QDBusMessage call) {
 }
 
 void DictsInterface::EmitDictSignal(
-    QMap<$1, $2> keysNValues
+    QMap<QString, uint> keysNValues
 ) {
     if (Connection::instance().Dicts() != nullptr ) {
         emit Connection::instance().Dicts()->DictSignal(
@@ -123,19 +122,19 @@ void DictsInterface::EmitDictSignal(
 void DictsInterface::EmitDictSignal(
     QVariant keysNValues
 ) {
-    QMap<$1, $2> arg_0;
-    arg_0 = keysNValues.value<QMap<$1, $2>>();
+    QMap<QString, uint> arg_0;
+    arg_0 = keysNValues.value<QMap<QString, uint>>();
 
     EmitDictSignal(
         arg_0
     );
 }
 
-QMap<$1, $2> DictsInterface::getDictProperty() const {
+QMap<QString, uint> DictsInterface::getDictProperty() const {
     return m_DictProperty;
 }
 
-void DictsInterface::setDictProperty(const QMap<$1, $2> &value ) {
+void DictsInterface::setDictProperty(const QMap<QString, uint> &value ) {
     m_DictProperty = value;
     emit dictPropertyChanged();
     if (Connection::instance().Dicts() != nullptr ) {
@@ -154,8 +153,8 @@ QVariant DictsInterface::getVariantDictProperty() const {
 }
 
 void DictsInterface::setVariantDictProperty(QVariant value ) {
-    QMap<$1, $2> unmarshalled;
-    unmarshalled = value.value<QMap<$1, $2>>();
+    QMap<QString, uint> unmarshalled;
+    unmarshalled = value.value<QMap<QString, uint>>();
 
     setDictProperty(unmarshalled);
 }

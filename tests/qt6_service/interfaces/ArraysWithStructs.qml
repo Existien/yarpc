@@ -21,7 +21,6 @@ Item {
     Connections {
         target: ArraysWithStructsInterface
         function onArrayStructMethodCalled(reply) {
-            console.log(reply.args().numbers)
             var call = client.ArrayStructMethod(reply.args().numbers)
             call.finished.connect(function(r){reply.sendReply(r)})
             call.error.connect(function(e){reply.sendError(e)})

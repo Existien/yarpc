@@ -13,8 +13,6 @@
 #include <QDBusPendingCallWatcher>
 #include <QVariant>
 #include "DBusError.hpp"
-#include "StructDict.hpp"
-#include "SimonsDict.hpp"
 namespace gen::dicts {
 
 /**
@@ -32,7 +30,7 @@ signals:
      *
      * @param another one
      */
-    void finished(const QMap<$1, $2> &reply);
+    void finished(const QMap<QString, QString> &reply);
 
     /**
      * @brief Emitted when an error ocurred during an DictMethod call.
@@ -72,7 +70,7 @@ public:
      * @returns Pending call object with finished signal containing the reply.
      */
     DictMethodPendingCall* DictMethod(
-        QMap<$1, $2> keysNValues
+        QMap<QString, uint> keysNValues
     );
 
     /**
@@ -82,7 +80,7 @@ public:
      *
      * a prop
      */
-    QMap<$1, $2> getDictProperty() const;
+    QMap<QString, uint> getDictProperty() const;
 
     /**
      * @brief Setter for the DictProperty property.
@@ -91,7 +89,7 @@ public:
      *
      * a prop
      */
-    void setDictProperty(const QMap<$1, $2> &newValue);
+    void setDictProperty(const QMap<QString, uint> &newValue);
 
 public slots:
     /**
@@ -131,7 +129,7 @@ signals:
      * @param keysNValues a dictionary
      */
     void dictSignalReceived(
-        QMap<$1, $2> keysNValues
+        QMap<QString, uint> keysNValues
     );
 
     /**
