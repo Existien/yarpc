@@ -15,6 +15,7 @@
 #include "DBusError.hpp"
 #include "StructArray.hpp"
 #include "SimonsArray.hpp"
+#include "types.hpp"
 namespace gen::arrays {
 
 /**

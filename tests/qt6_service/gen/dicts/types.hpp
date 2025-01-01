@@ -8,9 +8,10 @@
 
 namespace gen::dicts {
 
-    /**
-     * @brief Registers MetaTypes used by this interface.
-     */
-    void registerMetaTypes();
+/**
+* @brief Registers MetaTypes used by this interface.
+*/
+void registerMetaTypes();
+
 
 }

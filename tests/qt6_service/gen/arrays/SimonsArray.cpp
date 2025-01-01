@@ -8,6 +8,7 @@
 #include <QMetaType>
 #include <QDBusMetaType>
 #include "SimonsArray.hpp"
+#include "types.hpp"
 
 using namespace gen::arrays;
 
@@ -29,18 +30,6 @@ bool gen::arrays::operator!=(const SimonsArray &lhs, const SimonsArray &rhs) {
     return (false
         || lhs.numbers != rhs.numbers
     );
-}
-
-bool gen::arrays::operator!=(const QList<SimonsArray> &lhs, const QList<SimonsArray> &rhs) {
-    if (lhs.size() != rhs.size()) {
-        return true;
-    }
-    for (auto i=0; i<lhs.size(); ++i) {
-        if (lhs[i] != rhs[i]) {
-            return true;
-        }
-    }
-    return false;
 }
 
 SimonsArray SimonsArrayFactory::create (

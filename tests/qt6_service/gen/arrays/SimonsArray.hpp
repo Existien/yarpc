@@ -53,8 +53,6 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, SimonsArray &obje
 
 bool operator!=(const SimonsArray &lhs, const SimonsArray &rhs);
 
-bool operator!=(const QList<SimonsArray> &lhs, const QList<SimonsArray> &rhs);
-
 /**
  * @brief Factory to create SimonsArray objects in QML.
  */

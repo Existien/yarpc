@@ -60,7 +60,6 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, Item &object);
 
 bool operator!=(const Item &lhs, const Item &rhs);
 
-
 /**
  * @brief Factory to create Item objects in QML.
  */

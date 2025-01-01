@@ -8,6 +8,7 @@
 #include <QMetaType>
 #include <QDBusMetaType>
 #include "EnumStruct.hpp"
+#include "types.hpp"
 
 using namespace gen::enums;
 

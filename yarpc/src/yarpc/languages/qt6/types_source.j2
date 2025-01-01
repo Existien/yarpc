@@ -6,9 +6,6 @@
  */
 {% import "dbus/common.j2" as dbus %}
 {% import "qt6/common.j2" as qt6 %}
-{% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
-#include "{{ struct.name }}.hpp"
-{% endfor %}
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
@@ -29,3 +26,21 @@ void {{ qt6.namespace(output) }}::registerMetaTypes() {
     qDBusRegisterMetaType<{{ qt6_type }}>();
     {% endfor %}
 }
+
+{% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
+{% for array_type in struct.name|array_types(output.objects) %}
+{% set qt6_type = qt6.type(array_type, output.objects ) %}
+
+bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
+    if (lhs.size() != rhs.size()) {
+        return true;
+    }
+    for (auto i=0; i<lhs.size(); ++i) {
+        if (lhs[i] != rhs[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+{% endfor %}
+{% endfor %}

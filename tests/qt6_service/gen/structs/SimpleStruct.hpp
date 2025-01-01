@@ -64,7 +64,6 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, SimpleStruct &obj
 
 bool operator!=(const SimpleStruct &lhs, const SimpleStruct &rhs);
 
-
 /**
  * @brief Factory to create SimpleStruct objects in QML.
  */

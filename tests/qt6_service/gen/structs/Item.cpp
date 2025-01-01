@@ -8,6 +8,7 @@
 #include <QMetaType>
 #include <QDBusMetaType>
 #include "Item.hpp"
+#include "types.hpp"
 
 using namespace gen::structs;
 

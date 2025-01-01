@@ -4,8 +4,6 @@
  *   File: /workspace/tests/definitions/qt6/03_structs.yml
  *   Template: qt6/types_source.j2
  */
-#include "SimpleStruct.hpp"
-#include "Item.hpp"
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
@@ -16,3 +14,4 @@ void gen::structs::registerMetaTypes() {
     qRegisterMetaType<Item>("Item");
     qDBusRegisterMetaType<Item>();
 }
+

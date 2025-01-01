@@ -4,7 +4,6 @@
  *   File: /workspace/tests/definitions/qt6/06_enums.yml
  *   Template: qt6/types_source.j2
  */
-#include "EnumStruct.hpp"
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
@@ -17,3 +16,4 @@ void gen::enums::registerMetaTypes() {
     qRegisterMetaType<QMap<, >>("QMap<, >");
     qDBusRegisterMetaType<QMap<, >>();
 }
+

@@ -14,3 +14,4 @@ void gen::dicts::registerMetaTypes() {
     qRegisterMetaType<QMap<QString, uint>>("QMap<QString, uint>");
     qDBusRegisterMetaType<QMap<QString, uint>>();
 }
+

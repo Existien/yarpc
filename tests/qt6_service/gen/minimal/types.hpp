@@ -8,9 +8,10 @@
 
 namespace gen::minimal {
 
-    /**
-     * @brief Registers MetaTypes used by this interface.
-     */
-    void registerMetaTypes();
+/**
+* @brief Registers MetaTypes used by this interface.
+*/
+void registerMetaTypes();
+
 
 }

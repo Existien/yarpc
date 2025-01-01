@@ -5,12 +5,15 @@
  *   Template: qt6/types_header.j2
  */
 #pragma once
+#include "SimpleStruct.hpp"
+#include "Item.hpp"
 
 namespace gen::structs {
 
-    /**
-     * @brief Registers MetaTypes used by this interface.
-     */
-    void registerMetaTypes();
+/**
+* @brief Registers MetaTypes used by this interface.
+*/
+void registerMetaTypes();
+
 
 }
