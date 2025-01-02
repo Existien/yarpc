@@ -28,11 +28,11 @@ void registerMetaTypes();
 {% set devNull = dict_type_list.append(dict_type) %}
 {% endfor %}
 {% endfor %}
-{% for array_type in array_type_list|unique %}
+{% for array_type in array_type_list|sort|unique %}
 {% set qt6_type = qt6.type(array_type, output.objects ) %}
 bool operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs);
 {% endfor %}
-{% for dict_type in dict_type_list|unique %}
+{% for dict_type in dict_type_list|sort|unique %}
 {% set qt6_type = qt6.type(dict_type, output.objects ) %}
 bool operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs);
 {% endfor %}
