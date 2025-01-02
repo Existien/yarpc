@@ -15,20 +15,20 @@ void gen::arrays::registerMetaTypes() {
     qDBusRegisterMetaType<SimonsArray>();
     qRegisterMetaType<QList<uint>>("QList<uint>");
     qDBusRegisterMetaType<QList<uint>>();
-    qRegisterMetaType<QList<double>>("QList<double>");
-    qDBusRegisterMetaType<QList<double>>();
+    qRegisterMetaType<QList<QList<uint>>>("QList<QList<uint>>");
+    qDBusRegisterMetaType<QList<QList<uint>>>();
     qRegisterMetaType<QList<QList<QString>>>("QList<QList<QString>>");
     qDBusRegisterMetaType<QList<QList<QString>>>();
+    qRegisterMetaType<QList<double>>("QList<double>");
+    qDBusRegisterMetaType<QList<double>>();
     qRegisterMetaType<QList<QList<double>>>("QList<QList<double>>");
     qDBusRegisterMetaType<QList<QList<double>>>();
-    qRegisterMetaType<QList<QString>>("QList<QString>");
-    qDBusRegisterMetaType<QList<QString>>();
     qRegisterMetaType<QList<SimonsArray>>("QList<SimonsArray>");
     qDBusRegisterMetaType<QList<SimonsArray>>();
     qRegisterMetaType<QList<StructArray>>("QList<StructArray>");
     qDBusRegisterMetaType<QList<StructArray>>();
-    qRegisterMetaType<QList<QList<uint>>>("QList<QList<uint>>");
-    qDBusRegisterMetaType<QList<QList<uint>>>();
+    qRegisterMetaType<QList<QString>>("QList<QString>");
+    qDBusRegisterMetaType<QList<QString>>();
 }
 
 bool gen::arrays::operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs) {

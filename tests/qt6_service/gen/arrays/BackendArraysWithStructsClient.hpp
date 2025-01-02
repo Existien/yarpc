@@ -132,7 +132,7 @@ signals:
      * @param numbers numbers
      */
     void arrayStructSignalReceived(
-        QList<StructArray> numbers
+        QVariant numbers
     );
 
     /**

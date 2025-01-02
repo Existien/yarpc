@@ -152,8 +152,10 @@ void DictsStructMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher
 
 
 void BackendDictsWithStructsClient::DictStructSignalDBusHandler(QDBusMessage content) {
+    QMap<QString, StructDict> arg_0;
+    content.arguments()[0].value<QDBusArgument>() >> arg_0;
     emit dictStructSignalReceived(
-        content.arguments()[0].value<QMap<QString, StructDict>>()
+        QVariant::fromValue(arg_0)
     );
 }
 

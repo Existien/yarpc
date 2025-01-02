@@ -174,62 +174,72 @@ void BackendPrimitivesClient::propertiesChangedHandler(QString iface, QVariantMa
 
 
 void BackendPrimitivesClient::Uint8SignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<uchar>();
     emit uint8SignalReceived(
-        content.arguments()[0].value<uchar>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::BoolSignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<bool>();
     emit boolSignalReceived(
-        content.arguments()[0].value<bool>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::Int16SignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<short>();
     emit int16SignalReceived(
-        content.arguments()[0].value<short>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::Uint16SignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<ushort>();
     emit uint16SignalReceived(
-        content.arguments()[0].value<ushort>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::Int32SignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<int>();
     emit int32SignalReceived(
-        content.arguments()[0].value<int>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::Uint32SignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<uint>();
     emit uint32SignalReceived(
-        content.arguments()[0].value<uint>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::Int64SignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<qlonglong>();
     emit int64SignalReceived(
-        content.arguments()[0].value<qlonglong>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::Uint64SignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<qulonglong>();
     emit uint64SignalReceived(
-        content.arguments()[0].value<qulonglong>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::DoubleSignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<double>();
     emit doubleSignalReceived(
-        content.arguments()[0].value<double>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendPrimitivesClient::StringSignalDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<QString>();
     emit stringSignalReceived(
-        content.arguments()[0].value<QString>()
+        QVariant::fromValue(arg_0)
     );
 }
 Uint8MethodPendingCall* BackendPrimitivesClient::Uint8Method(

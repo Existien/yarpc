@@ -119,16 +119,20 @@ void BackendWithArgsClient::propertiesChangedHandler(QString iface, QVariantMap 
 
 
 void BackendWithArgsClient::NotifiedDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<QString>();
     emit notifiedReceived(
-        content.arguments()[0].value<QString>()
+        QVariant::fromValue(arg_0)
     );
 }
 
 void BackendWithArgsClient::OrderReceivedDBusHandler(QDBusMessage content) {
+    auto arg_0 = content.arguments()[0].value<QString>();
+    auto arg_1 = content.arguments()[1].value<uint>();
+    auto arg_2 = content.arguments()[2].value<double>();
     emit orderReceivedReceived(
-        content.arguments()[0].value<QString>(),
-        content.arguments()[1].value<uint>(),
-        content.arguments()[2].value<double>()
+        QVariant::fromValue(arg_0),
+        QVariant::fromValue(arg_1),
+        QVariant::fromValue(arg_2)
     );
 }
 NotifyPendingCall* BackendWithArgsClient::Notify(

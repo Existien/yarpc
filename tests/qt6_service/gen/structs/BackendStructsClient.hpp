@@ -133,8 +133,8 @@ signals:
      * @param totalCosts the total costs
      */
     void structReceivedReceived(
-        SimpleStruct simpleStruct,
-        double totalCosts
+        QVariant simpleStruct,
+        QVariant totalCosts
     );
 
     /**

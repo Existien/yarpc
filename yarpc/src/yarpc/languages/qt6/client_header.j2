@@ -192,7 +192,7 @@ signals:
      */
     void {{ member.name|camel_case }}Received(
     {% if member.args|count > 0 %}
-        {{ qt6.funcparams(member.args, output.objects)|indent(8) }}
+        {{ qt6.funcparams(member.args, output.objects, true)|indent(8) }}
     {% endif %}
     );
     {% endif %}

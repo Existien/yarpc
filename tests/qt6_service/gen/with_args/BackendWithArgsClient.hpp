@@ -232,7 +232,7 @@ signals:
      * @param message The message
      */
     void notifiedReceived(
-        QString message
+        QVariant message
     );
 
     /**
@@ -245,9 +245,9 @@ signals:
      * @param pricePerItem the price per item
      */
     void orderReceivedReceived(
-        QString item,
-        uint amount,
-        double pricePerItem
+        QVariant item,
+        QVariant amount,
+        QVariant pricePerItem
     );
 
     /**

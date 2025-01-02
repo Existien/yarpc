@@ -131,7 +131,7 @@ signals:
      * @param color a color
      */
     void enumSignalReceived(
-        EnumStruct color
+        QVariant color
     );
 
     /**

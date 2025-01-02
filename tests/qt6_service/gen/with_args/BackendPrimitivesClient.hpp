@@ -566,7 +566,7 @@ signals:
      * @param value the value
      */
     void uint8SignalReceived(
-        uchar value
+        QVariant value
     );
 
     /**
@@ -575,7 +575,7 @@ signals:
      * @param value the value
      */
     void boolSignalReceived(
-        bool value
+        QVariant value
     );
 
     /**
@@ -584,7 +584,7 @@ signals:
      * @param value the value
      */
     void int16SignalReceived(
-        short value
+        QVariant value
     );
 
     /**
@@ -593,7 +593,7 @@ signals:
      * @param value the value
      */
     void uint16SignalReceived(
-        ushort value
+        QVariant value
     );
 
     /**
@@ -602,7 +602,7 @@ signals:
      * @param value the value
      */
     void int32SignalReceived(
-        int value
+        QVariant value
     );
 
     /**
@@ -611,7 +611,7 @@ signals:
      * @param value the value
      */
     void uint32SignalReceived(
-        uint value
+        QVariant value
     );
 
     /**
@@ -620,7 +620,7 @@ signals:
      * @param value the value
      */
     void int64SignalReceived(
-        qlonglong value
+        QVariant value
     );
 
     /**
@@ -629,7 +629,7 @@ signals:
      * @param value the value
      */
     void uint64SignalReceived(
-        qulonglong value
+        QVariant value
     );
 
     /**
@@ -638,7 +638,7 @@ signals:
      * @param value the value
      */
     void doubleSignalReceived(
-        double value
+        QVariant value
     );
 
     /**
@@ -647,7 +647,7 @@ signals:
      * @param value the value
      */
     void stringSignalReceived(
-        QString value
+        QVariant value
     );
 
 private slots:

@@ -132,7 +132,7 @@ signals:
      * @param numbers some numbers
      */
     void dictsArraySignalReceived(
-        QMap<QString, QList<QMap<QString, uint>>> numbers
+        QVariant numbers
     );
 
     /**

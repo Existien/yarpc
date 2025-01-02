@@ -196,11 +196,19 @@ void {{ member.name }}PendingCall::callFinished(QDBusPendingCallWatcher *watcher
 
 {% if member.kind == 'signal' %}
 void {{ target.className }}::{{ member.name }}DBusHandler(QDBusMessage content) {
+    {% for i in range(0, member.args|count) %}
+    {% set arg = member.args[i] %}
+    {% set type = arg.type|find_type(output.objects) %}
+    {% if type.kind == 'struct' or type.name == 'array' or type.name == 'dict' %}
+    {{ qt6.type(arg.type, output.objects) }} arg_{{ i|string}};
+    content.arguments()[{{ i|string }}].value<QDBusArgument>() >> arg_{{ i|string}};
+    {% else %}
+    auto arg_{{ i|string }} = content.arguments()[{{ i|string }}].value<{{ qt6.type(arg.type, output.objects) }}>();
+    {% endif %}
+    {% endfor %}
     emit {{ member.name|camel_case }}Received(
         {% for i in range(0, member.args|count) %}
-        {% set arg = member.args[i] %}
-        {% set argument = "content.arguments()[" + i|string + "].value<" + qt6.type(arg.type, output.objects) + ">()" %}
-        {{ argument }}
+        QVariant::fromValue(arg_{{ i|string }})
         {%- if i < member.args|count - 1 -%}
         ,
         {% endif %}

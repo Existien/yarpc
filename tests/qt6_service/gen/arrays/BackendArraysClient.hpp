@@ -132,7 +132,7 @@ signals:
      * @param numbers normalized numbers
      */
     void arraySignalReceived(
-        QList<QList<double>> numbers
+        QVariant numbers
     );
 
     /**
