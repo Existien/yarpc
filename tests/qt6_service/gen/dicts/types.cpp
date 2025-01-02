@@ -13,20 +13,24 @@ void gen::dicts::registerMetaTypes() {
     qDBusRegisterMetaType<StructDict>();
     qRegisterMetaType<SimonsDict>("SimonsDict");
     qDBusRegisterMetaType<SimonsDict>();
+    qRegisterMetaType<QList<QMap<QString, uint>>>("QList<QMap<QString, uint>>");
+    qDBusRegisterMetaType<QList<QMap<QString, uint>>>();
     qRegisterMetaType<QMap<QString, QString>>("QMap<QString, QString>");
     qDBusRegisterMetaType<QMap<QString, QString>>();
-    qRegisterMetaType<QMap<QString, StructDict>>("QMap<QString, StructDict>");
-    qDBusRegisterMetaType<QMap<QString, StructDict>>();
-    qRegisterMetaType<QMap<QString, uint>>("QMap<QString, uint>");
-    qDBusRegisterMetaType<QMap<QString, uint>>();
     qRegisterMetaType<QMap<QString, QMap<QString, uint>>>("QMap<QString, QMap<QString, uint>>");
     qDBusRegisterMetaType<QMap<QString, QMap<QString, uint>>>();
-    qRegisterMetaType<QMap<QString, SimonsDict>>("QMap<QString, SimonsDict>");
-    qDBusRegisterMetaType<QMap<QString, SimonsDict>>();
     qRegisterMetaType<QMap<QString, StructDict>>("QMap<QString, StructDict>");
     qDBusRegisterMetaType<QMap<QString, StructDict>>();
     qRegisterMetaType<QMap<QString, uint>>("QMap<QString, uint>");
     qDBusRegisterMetaType<QMap<QString, uint>>();
+    qRegisterMetaType<QMap<QString, StructDict>>("QMap<QString, StructDict>");
+    qDBusRegisterMetaType<QMap<QString, StructDict>>();
+    qRegisterMetaType<QMap<QString, QList<QMap<QString, uint>>>>("QMap<QString, QList<QMap<QString, uint>>>");
+    qDBusRegisterMetaType<QMap<QString, QList<QMap<QString, uint>>>>();
+    qRegisterMetaType<QMap<QString, uint>>("QMap<QString, uint>");
+    qDBusRegisterMetaType<QMap<QString, uint>>();
+    qRegisterMetaType<QMap<QString, SimonsDict>>("QMap<QString, SimonsDict>");
+    qDBusRegisterMetaType<QMap<QString, SimonsDict>>();
 }
 
 bool gen::dicts::operator!=(const QMap<QString, StructDict> &lhs, const QMap<QString, StructDict> &rhs) {

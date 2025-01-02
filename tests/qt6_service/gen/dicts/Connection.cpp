@@ -7,6 +7,7 @@
 #include "Connection.hpp"
 #include "DictsInterface.hpp"
 #include "DictsWithStructsInterface.hpp"
+#include "DictsWithArraysInterface.hpp"
 
 using namespace gen::dicts;
 
@@ -19,6 +20,7 @@ bool DictsTestserviceYarpcComObjectPath::hasRegistrations() const {
         false
         || m_dicts != nullptr
         || m_dictsWithStructs != nullptr
+        || m_dictsWithArrays != nullptr
     );
 }
 
@@ -59,6 +61,7 @@ void Connection::disconnectIfUnused(){
         false
         || m_Dicts != nullptr
         || m_DictsWithStructs != nullptr
+        || m_DictsWithArrays != nullptr
     ) {
         return;
     }
@@ -83,10 +86,18 @@ void Connection::updateRegistrations() {
                 m_DictsTestserviceYarpcComObjectPath.get()
             );
         }
+        if (m_DictsWithArrays != nullptr) {
+            auto dictsWithArraysInterface = dynamic_cast<DictsWithArraysInterface*>(m_DictsWithArrays);
+            m_DictsTestserviceYarpcComObjectPath->m_dictsWithArrays = new DictsWithArraysInterfaceAdaptor(
+                dictsWithArraysInterface,
+                m_DictsTestserviceYarpcComObjectPath.get()
+            );
+        }
         if (
             false
             || m_Dicts != nullptr
             || m_DictsWithStructs != nullptr
+            || m_DictsWithArrays != nullptr
         ) {
             m_connection->registerObject(
                 "/com/yarpc/testservice/dicts",
@@ -166,6 +177,37 @@ bool Connection::isDictsWithStructsRegistered() const {
 DictsWithStructsInterfaceAdaptor* Connection::DictsWithStructs() {
     if (m_DictsTestserviceYarpcComObjectPath != nullptr) {
         return m_DictsTestserviceYarpcComObjectPath->m_dictsWithStructs;
+    } else {
+        return nullptr;
+    }
+}
+
+void Connection::registerDictsWithArrays(QObject* interface) {
+    if (m_DictsWithArrays == nullptr) {
+        auto dictsWithArraysInterface = dynamic_cast<DictsWithArraysInterface*>(interface);
+        if (dictsWithArraysInterface != nullptr) {
+            m_DictsWithArrays = interface;
+        }
+    }
+    connect();
+    updateRegistrations();
+}
+
+void Connection::unregisterDictsWithArrays() {
+    if (m_DictsWithArrays != nullptr) {
+        m_DictsWithArrays = nullptr;
+    }
+    updateRegistrations();
+    disconnectIfUnused();
+}
+
+bool Connection::isDictsWithArraysRegistered() const {
+    return (m_DictsWithArrays != nullptr);
+}
+
+DictsWithArraysInterfaceAdaptor* Connection::DictsWithArrays() {
+    if (m_DictsTestserviceYarpcComObjectPath != nullptr) {
+        return m_DictsTestserviceYarpcComObjectPath->m_dictsWithArrays;
     } else {
         return nullptr;
     }
