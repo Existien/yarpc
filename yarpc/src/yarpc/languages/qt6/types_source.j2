@@ -15,12 +15,12 @@ void {{ qt6.namespace(output) }}::registerMetaTypes() {
     qRegisterMetaType<{{ struct.name }}>("{{ struct.name }}");
     qDBusRegisterMetaType<{{ struct.name }}>();
     {% endfor %}
-    {% for array_type in get_list_of_arrays(output.objects) %}
+    {% for array_type in get_list_of_arrays(output.objects)|sort %}
     {% set qt6_type = qt6.type(array_type, output.objects ) %}
     qRegisterMetaType<{{ qt6_type }}>("{{ qt6_type }}");
     qDBusRegisterMetaType<{{ qt6_type }}>();
     {% endfor %}
-    {% for dict_type in get_list_of_dicts(output.objects) %}
+    {% for dict_type in get_list_of_dicts(output.objects)|sort %}
     {% set qt6_type = qt6.type(dict_type, output.objects ) %}
     qRegisterMetaType<{{ qt6_type }}>("{{ qt6_type }}");
     qDBusRegisterMetaType<{{ qt6_type }}>();
@@ -36,7 +36,7 @@ void {{ qt6.namespace(output) }}::registerMetaTypes() {
 {% set devNull = dict_type_list.append(dict_type) %}
 {% endfor %}
 {% endfor %}
-{% for array_type in array_type_list|unique %}
+{% for array_type in array_type_list|sort|unique %}
 {% set qt6_type = qt6.type(array_type, output.objects ) %}
 
 bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
@@ -51,7 +51,7 @@ bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{
     return false;
 }
 {% endfor %}
-{% for dict_type in dict_type_list|unique %}
+{% for dict_type in dict_type_list|sort|unique %}
 {% set qt6_type = qt6.type(dict_type, output.objects ) %}
 
 bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {

@@ -15,7 +15,7 @@ namespace gen::arrays {
 */
 void registerMetaTypes();
 
-bool operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs);
 bool operator!=(const QList<SimonsArray> &lhs, const QList<SimonsArray> &rhs);
+bool operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs);
 
 }

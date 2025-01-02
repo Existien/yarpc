@@ -15,7 +15,7 @@ namespace gen::dicts {
 */
 void registerMetaTypes();
 
-bool operator!=(const QMap<QString, StructDict> &lhs, const QMap<QString, StructDict> &rhs);
 bool operator!=(const QMap<QString, SimonsDict> &lhs, const QMap<QString, SimonsDict> &rhs);
+bool operator!=(const QMap<QString, StructDict> &lhs, const QMap<QString, StructDict> &rhs);
 
 }
