@@ -17,8 +17,11 @@ qt_add_qml_module(Dicts
         DictsInterfaceAdaptor.cpp
         DictsWithStructsInterface.cpp
         DictsWithStructsInterfaceAdaptor.cpp
+        DictsWithArraysInterface.cpp
+        DictsWithArraysInterfaceAdaptor.cpp
         BackendDictsClient.cpp
         BackendDictsWithStructsClient.cpp
+        BackendDictsWithArraysClient.cpp
         StructDict.cpp
         SimonsDict.cpp
 )

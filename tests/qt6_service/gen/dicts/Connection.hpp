@@ -13,6 +13,7 @@
 #include <memory>
 #include "DictsInterfaceAdaptor.hpp"
 #include "DictsWithStructsInterfaceAdaptor.hpp"
+#include "DictsWithArraysInterfaceAdaptor.hpp"
 namespace gen::dicts {
 
 /**
@@ -35,6 +36,9 @@ public:
 
     /** @brief Pointer to the adaptor for a registered DictsWithStructsInterface interface or null if it isn't registered. */
     DictsWithStructsInterfaceAdaptor *m_dictsWithStructs = nullptr;
+
+    /** @brief Pointer to the adaptor for a registered DictsWithArraysInterface interface or null if it isn't registered. */
+    DictsWithArraysInterfaceAdaptor *m_dictsWithArrays = nullptr;
 
 };
 
@@ -115,6 +119,26 @@ public:
     bool isDictsWithStructsRegistered() const;
     DictsWithStructsInterfaceAdaptor * DictsWithStructs();
 
+    /**
+     * @brief Registers the DictsWithArrays interface under its object path.
+     *
+     * @param interface pointer to the DictsWithArrays object to register
+     */
+    void registerDictsWithArrays(QObject* interface);
+
+    /**
+     * @brief Unregisters the DictsWithArrays.
+     */
+    void unregisterDictsWithArrays();
+
+    /**
+     * @brief Returns whether the DictsWithArrays interface is registered.
+     *
+     * @returns whether the interface is registered
+     */
+    bool isDictsWithArraysRegistered() const;
+    DictsWithArraysInterfaceAdaptor * DictsWithArrays();
+
 public slots:
     /**
      * @brief Establishes a connection to the D-Bus.
@@ -146,6 +170,7 @@ private:
 
     QObject* m_Dicts = nullptr;
     QObject* m_DictsWithStructs = nullptr;
+    QObject* m_DictsWithArrays = nullptr;
 
 };
 
