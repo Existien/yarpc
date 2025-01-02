@@ -149,7 +149,6 @@ public:
     void handle{{ member.name }}Called(QDBusMessage call);
 
     {% endif %}
-
     {% if member.kind == 'property' %}
     /**
      * @brief Getter for the {{ member.name }} property.

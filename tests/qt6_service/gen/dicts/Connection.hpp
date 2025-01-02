@@ -14,6 +14,7 @@
 #include "DictsInterfaceAdaptor.hpp"
 #include "DictsWithStructsInterfaceAdaptor.hpp"
 #include "DictsWithArraysInterfaceAdaptor.hpp"
+#include "DictKeysInterfaceAdaptor.hpp"
 namespace gen::dicts {
 
 /**
@@ -39,6 +40,9 @@ public:
 
     /** @brief Pointer to the adaptor for a registered DictsWithArraysInterface interface or null if it isn't registered. */
     DictsWithArraysInterfaceAdaptor *m_dictsWithArrays = nullptr;
+
+    /** @brief Pointer to the adaptor for a registered DictKeysInterface interface or null if it isn't registered. */
+    DictKeysInterfaceAdaptor *m_dictKeys = nullptr;
 
 };
 
@@ -139,6 +143,26 @@ public:
     bool isDictsWithArraysRegistered() const;
     DictsWithArraysInterfaceAdaptor * DictsWithArrays();
 
+    /**
+     * @brief Registers the DictKeys interface under its object path.
+     *
+     * @param interface pointer to the DictKeys object to register
+     */
+    void registerDictKeys(QObject* interface);
+
+    /**
+     * @brief Unregisters the DictKeys.
+     */
+    void unregisterDictKeys();
+
+    /**
+     * @brief Returns whether the DictKeys interface is registered.
+     *
+     * @returns whether the interface is registered
+     */
+    bool isDictKeysRegistered() const;
+    DictKeysInterfaceAdaptor * DictKeys();
+
 public slots:
     /**
      * @brief Establishes a connection to the D-Bus.
@@ -171,6 +195,7 @@ private:
     QObject* m_Dicts = nullptr;
     QObject* m_DictsWithStructs = nullptr;
     QObject* m_DictsWithArrays = nullptr;
+    QObject* m_DictKeys = nullptr;
 
 };
 

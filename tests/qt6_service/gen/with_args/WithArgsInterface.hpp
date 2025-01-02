@@ -203,8 +203,6 @@ public:
      */
     bool getConnected() const;
 
-
-
     /**
      * @brief Handler for Notify D-Bus calls.
      *
@@ -212,15 +210,12 @@ public:
      */
     void handleNotifyCalled(QDBusMessage call);
 
-
     /**
      * @brief Handler for Order D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleOrderCalled(QDBusMessage call);
-
-
 
     /**
      * @brief Getter for the Speed property.
@@ -236,7 +231,6 @@ public:
      */
     void setSpeed(const double &value );
 
-
     /**
      * @brief Getter for the Distance property.
      *
@@ -250,7 +244,6 @@ public:
      * @param value the new value of the property
      */
     void setDistance(const uint &value );
-
 
     /**
      * @brief Getter for the Duration property.

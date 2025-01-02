@@ -99,14 +99,12 @@ public:
      */
     bool getConnected() const;
 
-
     /**
      * @brief Handler for Bump D-Bus calls.
      *
      * @param call the D-Bus call object
      */
     void handleBumpCalled(QDBusMessage call);
-
 
 
 
