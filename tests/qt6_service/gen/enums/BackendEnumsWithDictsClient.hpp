@@ -131,7 +131,7 @@ signals:
      * @param color a color
      */
     void enumSignalReceived(
-        QMap<, > color
+        QVariant color
     );
 
     /**

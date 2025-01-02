@@ -152,9 +152,12 @@ void SendStructPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 
 
 void BackendStructsClient::StructReceivedDBusHandler(QDBusMessage content) {
+    SimpleStruct arg_0;
+    content.arguments()[0].value<QDBusArgument>() >> arg_0;
+    auto arg_1 = content.arguments()[1].value<double>();
     emit structReceivedReceived(
-        content.arguments()[0].value<SimpleStruct>(),
-        content.arguments()[1].value<double>()
+        QVariant::fromValue(arg_0),
+        QVariant::fromValue(arg_1)
     );
 }
 

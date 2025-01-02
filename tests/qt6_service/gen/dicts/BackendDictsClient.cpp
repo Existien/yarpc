@@ -152,8 +152,10 @@ void DictMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 
 
 void BackendDictsClient::DictSignalDBusHandler(QDBusMessage content) {
+    QMap<QString, uint> arg_0;
+    content.arguments()[0].value<QDBusArgument>() >> arg_0;
     emit dictSignalReceived(
-        content.arguments()[0].value<QMap<QString, uint>>()
+        QVariant::fromValue(arg_0)
     );
 }
 

@@ -132,7 +132,7 @@ signals:
      * @param keysNValues a dictionary
      */
     void dictSignalReceived(
-        QMap<QString, uint> keysNValues
+        QVariant keysNValues
     );
 
     /**

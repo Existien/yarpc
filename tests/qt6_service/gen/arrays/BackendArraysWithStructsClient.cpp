@@ -157,8 +157,10 @@ void ArrayStructMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher
 
 
 void BackendArraysWithStructsClient::ArrayStructSignalDBusHandler(QDBusMessage content) {
+    QList<StructArray> arg_0;
+    content.arguments()[0].value<QDBusArgument>() >> arg_0;
     emit arrayStructSignalReceived(
-        content.arguments()[0].value<QList<StructArray>>()
+        QVariant::fromValue(arg_0)
     );
 }
 

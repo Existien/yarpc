@@ -157,8 +157,10 @@ void EnumMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 
 
 void BackendEnumsWithArraysClient::EnumSignalDBusHandler(QDBusMessage content) {
+    QList<> arg_0;
+    content.arguments()[0].value<QDBusArgument>() >> arg_0;
     emit enumSignalReceived(
-        content.arguments()[0].value<QList<>>()
+        QVariant::fromValue(arg_0)
     );
 }
 

@@ -132,7 +132,7 @@ signals:
      * @param numbers numbers
      */
     void dictStructSignalReceived(
-        QMap<QString, StructDict> numbers
+        QVariant numbers
     );
 
     /**

@@ -162,8 +162,10 @@ void ArrayMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 
 
 void BackendArraysClient::ArraySignalDBusHandler(QDBusMessage content) {
+    QList<QList<double>> arg_0;
+    content.arguments()[0].value<QDBusArgument>() >> arg_0;
     emit arraySignalReceived(
-        content.arguments()[0].value<QList<QList<double>>>()
+        QVariant::fromValue(arg_0)
     );
 }
 
