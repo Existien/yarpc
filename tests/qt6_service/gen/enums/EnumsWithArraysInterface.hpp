@@ -126,9 +126,6 @@ public:
      */
     void handleEnumMethodCalled(QDBusMessage call);
 
-
-
-
     /**
      * @brief Getter for the EnumProperty property.
      *

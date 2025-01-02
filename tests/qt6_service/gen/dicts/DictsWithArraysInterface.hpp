@@ -127,9 +127,6 @@ public:
      */
     void handleDictsArrayMethodCalled(QDBusMessage call);
 
-
-
-
     /**
      * @brief Getter for the DictArrayProperty property.
      *

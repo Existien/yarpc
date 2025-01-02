@@ -127,9 +127,6 @@ public:
      */
     void handleDictMethodCalled(QDBusMessage call);
 
-
-
-
     /**
      * @brief Getter for the DictProperty property.
      *

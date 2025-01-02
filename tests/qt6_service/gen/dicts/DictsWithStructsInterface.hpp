@@ -127,9 +127,6 @@ public:
      */
     void handleDictsStructMethodCalled(QDBusMessage call);
 
-
-
-
     /**
      * @brief Getter for the DictStructProperty property.
      *

@@ -127,9 +127,6 @@ public:
      */
     void handleArrayStructMethodCalled(QDBusMessage call);
 
-
-
-
     /**
      * @brief Getter for the ArrayStructProperty property.
      *

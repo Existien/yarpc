@@ -16,4 +16,5 @@ Window {
     Dictionaries{}
     DictsWithStructs{}
     DictsWithArrays{}
+    DictKeys{}
 }

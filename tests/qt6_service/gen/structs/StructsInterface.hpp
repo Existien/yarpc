@@ -127,9 +127,6 @@ public:
      */
     void handleSendStructCalled(QDBusMessage call);
 
-
-
-
     /**
      * @brief Getter for the Simple property.
      *
