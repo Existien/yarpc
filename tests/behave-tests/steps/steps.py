@@ -20,6 +20,7 @@ from python_mocks import (
     EnumsWithArraysClientMock, BackendEnumsWithArraysInterfaceMock,
     EnumsWithDictsClientMock, BackendEnumsWithDictsInterfaceMock,
     EnumsWithStructsClientMock, BackendEnumsWithStructsInterfaceMock, EnumStruct,
+    QmlInstantiationClientMock, QmlInstantiationInterfaceMock, QmlStruct
 )
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError
@@ -197,6 +198,8 @@ async def step_impl(context):
                         }
                     )
                 )
+            case 'QmlInstantiation':
+                service=QmlInstantiationInterfaceMock()
             case _:
                 assert False, f"Unknown interface '{interface}'"
         assert service is not None, f"Could not find service '{interface}'"
@@ -249,6 +252,8 @@ async def step_impl(context):
                 client = EnumsWithDictsClientMock()
             case 'EnumsWithStructs':
                 client = EnumsWithStructsClientMock()
+            case 'QmlInstantiation':
+                client = QmlInstantiationClientMock()
             case _:
                 assert False, f"Unknown interface '{interface}'"
         client_task = asyncio.create_task(client.connect())

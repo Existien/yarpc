@@ -7,8 +7,11 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
+#include <QJSValueIterator>
 
-void gen::dicts::registerMetaTypes() {
+namespace gen::dicts {
+
+void registerMetaTypes() {
     qRegisterMetaType<StructDict>("StructDict");
     qDBusRegisterMetaType<StructDict>();
     qRegisterMetaType<SimonsDict>("SimonsDict");
@@ -53,7 +56,7 @@ void gen::dicts::registerMetaTypes() {
     qDBusRegisterMetaType<QMap<uchar, QString>>();
 }
 
-bool gen::dicts::operator!=(const QMap<QString, SimonsDict> &lhs, const QMap<QString, SimonsDict> &rhs) {
+bool operator!=(const QMap<QString, SimonsDict> &lhs, const QMap<QString, SimonsDict> &rhs) {
     if (lhs.size() != rhs.size()) {
         return true;
     }
@@ -69,7 +72,7 @@ bool gen::dicts::operator!=(const QMap<QString, SimonsDict> &lhs, const QMap<QSt
     return false;
 }
 
-bool gen::dicts::operator!=(const QMap<QString, StructDict> &lhs, const QMap<QString, StructDict> &rhs) {
+bool operator!=(const QMap<QString, StructDict> &lhs, const QMap<QString, StructDict> &rhs) {
     if (lhs.size() != rhs.size()) {
         return true;
     }
@@ -83,4 +86,207 @@ bool gen::dicts::operator!=(const QMap<QString, StructDict> &lhs, const QMap<QSt
         }
     }
     return false;
+}
+
+QMap<bool, QString> Conversions::jsToMapOfBoolToString(QVariant jsonObject) {
+    QMap<bool, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        bool key_0 = ((*k_0) == "true");
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<double, QString> Conversions::jsToMapOfDoubleToString(QVariant jsonObject) {
+    QMap<double, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        double key_0 = (*k_0).toDouble();
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<short, QString> Conversions::jsToMapOfInt16ToString(QVariant jsonObject) {
+    QMap<short, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        short key_0 = (*k_0).toInt();
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<int, QString> Conversions::jsToMapOfInt32ToString(QVariant jsonObject) {
+    QMap<int, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        int key_0 = (*k_0).toLong();
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<qlonglong, QString> Conversions::jsToMapOfInt64ToString(QVariant jsonObject) {
+    QMap<qlonglong, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        qlonglong key_0 = (*k_0).toLongLong();
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<QString, QList<QMap<QString, uint>>> Conversions::jsToMapOfStringToListOfMapOfStringToUint32(QVariant jsonObject) {
+    QMap<QString, QList<QMap<QString, uint>>> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        QString key_0 = (*k_0);
+        auto v_0 = map_0.value(*k_0);
+        QList<QMap<QString, uint>> o_0;
+        for (auto &v_1 : v_0.toList()) {
+            QMap<QString, uint> o_1;
+            auto map_2 = v_1.toMap();
+            for (auto k_2 = map_2.keyBegin(); k_2 != map_2.keyEnd(); ++k_2) {
+                QString key_2 = (*k_2);
+                auto v_2 = map_2.value(*k_2);
+                o_1[key_2] = v_2.value<uint>();
+            }
+
+            o_0.append(o_1);
+        }
+
+        converted[key_0] = o_0;
+    }
+
+    return converted;
+}
+
+QMap<QString, QMap<QString, uint>> Conversions::jsToMapOfStringToMapOfStringToUint32(QVariant jsonObject) {
+    QMap<QString, QMap<QString, uint>> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        QString key_0 = (*k_0);
+        auto v_0 = map_0.value(*k_0);
+        QMap<QString, uint> o_0;
+        auto map_1 = v_0.toMap();
+        for (auto k_1 = map_1.keyBegin(); k_1 != map_1.keyEnd(); ++k_1) {
+            QString key_1 = (*k_1);
+            auto v_1 = map_1.value(*k_1);
+            o_0[key_1] = v_1.value<uint>();
+        }
+
+        converted[key_0] = o_0;
+    }
+
+    return converted;
+}
+
+QMap<QString, SimonsDict> Conversions::jsToMapOfStringToSimonsDict(QVariant jsonObject) {
+    QMap<QString, SimonsDict> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        QString key_0 = (*k_0);
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<SimonsDict>();
+    }
+
+    return converted;
+}
+
+QMap<QString, QString> Conversions::jsToMapOfStringToString(QVariant jsonObject) {
+    QMap<QString, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        QString key_0 = (*k_0);
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<QString, StructDict> Conversions::jsToMapOfStringToStructDict(QVariant jsonObject) {
+    QMap<QString, StructDict> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        QString key_0 = (*k_0);
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<StructDict>();
+    }
+
+    return converted;
+}
+
+QMap<QString, uint> Conversions::jsToMapOfStringToUint32(QVariant jsonObject) {
+    QMap<QString, uint> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        QString key_0 = (*k_0);
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<uint>();
+    }
+
+    return converted;
+}
+
+QMap<ushort, QString> Conversions::jsToMapOfUint16ToString(QVariant jsonObject) {
+    QMap<ushort, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        ushort key_0 = (*k_0).toUInt();
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<uint, QString> Conversions::jsToMapOfUint32ToString(QVariant jsonObject) {
+    QMap<uint, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        uint key_0 = (*k_0).toULong();
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<qulonglong, QString> Conversions::jsToMapOfUint64ToString(QVariant jsonObject) {
+    QMap<qulonglong, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        qulonglong key_0 = (*k_0).toULongLong();
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
+QMap<uchar, QString> Conversions::jsToMapOfUint8ToString(QVariant jsonObject) {
+    QMap<uchar, QString> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        uchar key_0 = (*k_0).toUInt();
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QString>();
+    }
+
+    return converted;
+}
+
 }

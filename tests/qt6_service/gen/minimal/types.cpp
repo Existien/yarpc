@@ -7,6 +7,11 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
+#include <QJSValueIterator>
 
-void gen::minimal::registerMetaTypes() {
+namespace gen::minimal {
+
+void registerMetaTypes() {
+}
+
 }

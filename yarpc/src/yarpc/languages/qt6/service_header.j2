@@ -139,7 +139,7 @@ public:
      */
     bool getConnected() const;
 
-    {% for member in object. members %}
+    {% for member in object.members %}
     {% if member.kind == 'method' %}
     /**
      * @brief Handler for {{ member.name }} D-Bus calls.

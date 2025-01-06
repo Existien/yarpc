@@ -5,6 +5,8 @@
  *   Template: qt6/types_header.j2
  */
 #pragma once
+#include <qqmlintegration.h>
+#include <QObject>
 #include "SimpleStruct.hpp"
 #include "Item.hpp"
 
@@ -15,5 +17,12 @@ namespace gen::structs {
 */
 void registerMetaTypes();
 
+
+class Conversions : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+};
 
 }

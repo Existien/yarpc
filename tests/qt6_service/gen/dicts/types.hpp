@@ -5,6 +5,8 @@
  *   Template: qt6/types_header.j2
  */
 #pragma once
+#include <qqmlintegration.h>
+#include <QObject>
 #include "StructDict.hpp"
 #include "SimonsDict.hpp"
 
@@ -17,5 +19,27 @@ void registerMetaTypes();
 
 bool operator!=(const QMap<QString, SimonsDict> &lhs, const QMap<QString, SimonsDict> &rhs);
 bool operator!=(const QMap<QString, StructDict> &lhs, const QMap<QString, StructDict> &rhs);
+
+class Conversions : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    Q_INVOKABLE QMap<bool, QString> jsToMapOfBoolToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<double, QString> jsToMapOfDoubleToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<short, QString> jsToMapOfInt16ToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<int, QString> jsToMapOfInt32ToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<qlonglong, QString> jsToMapOfInt64ToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<QString, QList<QMap<QString, uint>>> jsToMapOfStringToListOfMapOfStringToUint32(QVariant jsonObject);
+    Q_INVOKABLE QMap<QString, QMap<QString, uint>> jsToMapOfStringToMapOfStringToUint32(QVariant jsonObject);
+    Q_INVOKABLE QMap<QString, SimonsDict> jsToMapOfStringToSimonsDict(QVariant jsonObject);
+    Q_INVOKABLE QMap<QString, QString> jsToMapOfStringToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<QString, StructDict> jsToMapOfStringToStructDict(QVariant jsonObject);
+    Q_INVOKABLE QMap<QString, uint> jsToMapOfStringToUint32(QVariant jsonObject);
+    Q_INVOKABLE QMap<ushort, QString> jsToMapOfUint16ToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<uint, QString> jsToMapOfUint32ToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<qulonglong, QString> jsToMapOfUint64ToString(QVariant jsonObject);
+    Q_INVOKABLE QMap<uchar, QString> jsToMapOfUint8ToString(QVariant jsonObject);
+};
 
 }

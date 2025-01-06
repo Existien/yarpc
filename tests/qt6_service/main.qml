@@ -17,4 +17,5 @@ Window {
     DictsWithStructs{}
     DictsWithArrays{}
     DictKeys{}
+    QmlInstantiation{}
 }

@@ -9,8 +9,11 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
+#include <QJSValueIterator>
 
-void {{ qt6.namespace(output) }}::registerMetaTypes() {
+namespace {{ qt6.namespace(output) }} {
+
+void registerMetaTypes() {
     {% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
     qRegisterMetaType<{{ struct.name }}>("{{ struct.name }}");
     qDBusRegisterMetaType<{{ struct.name }}>();
@@ -39,7 +42,7 @@ void {{ qt6.namespace(output) }}::registerMetaTypes() {
 {% for array_type in array_type_list|sort|unique %}
 {% set qt6_type = qt6.type(array_type, output.objects ) %}
 
-bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
+bool operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
     if (lhs.size() != rhs.size()) {
         return true;
     }
@@ -54,7 +57,7 @@ bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{
 {% for dict_type in dict_type_list|sort|unique %}
 {% set qt6_type = qt6.type(dict_type, output.objects ) %}
 
-bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
+bool operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs) {
     if (lhs.size() != rhs.size()) {
         return true;
     }
@@ -70,3 +73,55 @@ bool {{ qt6.namespace(output) }}::operator!=(const {{ qt6_type }} &lhs, const {{
     return false;
 }
 {% endfor %}
+{% set type_list = [] %}
+{% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
+{% for member in struct.members %}
+{% set devNull = type_list.append(member.type|replace(' ', '')) %}
+{% endfor %}
+{% endfor %}
+{% for iface in output.objects|selectattr('kind', 'equalto', 'interface') %}
+{% for method in iface.members|selectattr('kind', 'equalto', 'method') %}
+{% for arg in method.args %}
+{% set devNull = type_list.append(arg.type|replace(' ', '')) %}
+{% endfor %}
+{% if method.returns %}
+{% set devNull = type_list.append(method.returns.type|replace(' ', '')) %}
+{% endif %}
+{% endfor %}
+{% for signal in iface.members|selectattr('kind', 'equalto', 'signal') %}
+{% for arg in signal.args %}
+{% set devNull = type_list.append(arg.type|replace(' ', '')) %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% set dict_type_list = [] %}
+{% set array_type_list = [] %}
+{% for t in type_list|sort|unique %}
+{% if (t|find_type(output.objects)).name == 'dict' %}
+{% set devNull = dict_type_list.append(t) %}
+{% elif (t|find_type(output.objects)).name == 'array' %}
+{% if 'dict<' in t %}
+{% set devNull = array_type_list.append(t) %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% for dict_type in dict_type_list %}
+{% set qt6_type = qt6.type(dict_type, output.objects ) %}
+{% set dict_name = qt6.convert_type_to_name(dict_type, output.objects) %}
+
+{{ qt6_type }} Conversions::jsTo{{ dict_name }}(QVariant jsonObject) {
+    {{ qt6.convert_js_to_map("jsonObject", "converted", dict_type, output.objects)|indent(4) }}
+    return converted;
+}
+{% endfor %}
+{% for array_type in array_type_list %}
+{% set qt6_type = qt6.type(array_type, output.objects ) %}
+{% set array_name = qt6.convert_type_to_name(array_type, output.objects) %}
+
+{{ qt6_type }} Conversions::jsTo{{ array_name }}(QVariant jsonObject) {
+    {{ qt6.convert_js_to_list("jsonObject", "converted", array_type, output.objects)|indent(4) }}
+    return converted;
+}
+{% endfor %}
+
+}

@@ -7,10 +7,15 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
+#include <QJSValueIterator>
 
-void gen::structs::registerMetaTypes() {
+namespace gen::structs {
+
+void registerMetaTypes() {
     qRegisterMetaType<SimpleStruct>("SimpleStruct");
     qDBusRegisterMetaType<SimpleStruct>();
     qRegisterMetaType<Item>("Item");
     qDBusRegisterMetaType<Item>();
+}
+
 }

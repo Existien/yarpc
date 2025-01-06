@@ -17,6 +17,7 @@ Feature: EnumsWithDicts interface
             | EnumsWithArrays   |      |
             | EnumsWithDicts    | Bob  |
             | EnumsWithStructs  |      |
+            | QmlInstantiation  |      |
         And a running service started with 'qt6_service/run.sh'
         And a mocked python client connecting to the following interfaces
             | interface      | name  |
