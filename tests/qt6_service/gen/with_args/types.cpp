@@ -7,6 +7,11 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
+#include <QJSValueIterator>
 
-void gen::with_args::registerMetaTypes() {
+namespace gen::with_args {
+
+void registerMetaTypes() {
+}
+
 }

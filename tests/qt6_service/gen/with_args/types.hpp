@@ -5,6 +5,8 @@
  *   Template: qt6/types_header.j2
  */
 #pragma once
+#include <qqmlintegration.h>
+#include <QObject>
 
 namespace gen::with_args {
 
@@ -13,5 +15,12 @@ namespace gen::with_args {
 */
 void registerMetaTypes();
 
+
+class Conversions : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+};
 
 }

@@ -14,6 +14,7 @@ qt_add_qml_module(Interfaces
         DictsWithStructs.qml
         DictsWithArrays.qml
         DictKeys.qml
+        QmlInstantiation.qml
 )
 
 target_link_libraries(Interfaces PUBLIC
@@ -22,4 +23,5 @@ target_link_libraries(Interfaces PUBLIC
   Structs
   Arrays
   Dicts
+  QmlInstantiation
 )

@@ -1,0 +1,270 @@
+outputs:
+- language: qt6
+  location: qt6_service/gen/qml_instantiation
+  busName: com.yarpc.testservice
+  qmlUri: gen.qml_instantiation
+  services:
+  - className: QmlAsServiceInterface
+    definition: QmlAsService
+    objectPath: /com/yarpc/testservice/qmlInstantiation
+    interfaceName: com.yarpc.testservice.qmlInstantiation
+  clients:
+  - className: QmlAsClient
+    definition: QmlAsClient
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend/qmlInstantiation
+    interfaceName: com.yarpc.backend.qmlInstantiation
+- language: py
+  location: python_mocks/src/python_mocks/qml_instantiation_gen
+  busName: com.yarpc.backend
+  client_mocks:
+  - className: QmlInstantiationClientMock
+    definition: QmlAsService
+    busName: com.yarpc.testservice
+    objectPath: /com/yarpc/testservice/qmlInstantiation
+    interfaceName: com.yarpc.testservice.qmlInstantiation
+  service_mocks:
+  - className: QmlInstantiationInterfaceMock
+    definition: QmlAsClient
+    objectPath: /com/yarpc/backend/qmlInstantiation
+    interfaceName: com.yarpc.backend.qmlInstantiation
+objects:
+- name: QmlStruct
+  kind: struct
+  docs: A struct
+  members:
+  - name: content
+    type: string
+    docs: the content
+  - name: number
+    type: double
+    docs: a number
+- name: QmlAsService
+  kind: interface
+  docs: Interface to test returning values and signal arguments instantiated in QML
+  members:
+  - name: PassStructMethod
+    kind: method
+    docs: pass struct
+    returns:
+      type: QmlStruct
+      docs: the struct
+  - name: PassStructSignal
+    kind: signal
+    docs: pass struct
+    args:
+    - name: qmlStruct
+      type: QmlStruct
+      docs: the struct
+  - name: PassArrayInArrayMethod
+    kind: method
+    docs: pass nested arrays
+    returns:
+      type: array<array<uint32>>
+      docs: the nested array
+  - name: PassArrayInArraySignal
+    kind: signal
+    docs: pass nested arrays
+    args:
+    - name: listOfLists
+      type: array<array<uint32>>
+      docs: the nested array
+  - name: PassStructsInArrayMethod
+    kind: method
+    docs: pass structs in array
+    returns:
+      type: array<QmlStruct>
+      docs: list of structs
+  - name: PassStructsInArraySignal
+    kind: signal
+    docs: pass structs in array
+    args:
+    - name: listOfStructs
+      type: array<QmlStruct>
+      docs: list of structs
+  - name: PassDictWithStringsMethod
+    kind: method
+    docs: pass a dict with strings as keys
+    returns:
+      type: dict<string,string>
+      docs: dict with string as keys
+  - name: PassDictWithStringsSignal
+    kind: signal
+    docs: pass a dict with strings as keys
+    args:
+    - name: dictWithStrings
+      type: dict<string,string>
+      docs: dict with string as keys
+  - name: PassDictWithNumbersMethod
+    kind: method
+    docs: pass a dict with numbers as keys
+    returns:
+      type: dict<uint32,string>
+      docs: dict with numbers as keys
+  - name: PassDictWithNumbersSignal
+    kind: signal
+    docs: pass a dict with numbers as keys
+    args:
+    - name: dictWithNumbers
+      type: dict<uint32,string>
+      docs: dict with numbers as keys
+  - name: PassDictWithStructsMethod
+    kind: method
+    docs: pass a dict with structs as values
+    returns:
+      type: dict<string,QmlStruct>
+      docs: dict with structs as values
+  - name: PassDictWithStructsSignal
+    kind: signal
+    docs: pass a dict with structs as values
+    args:
+    - name: dictWithStructs
+      type: dict<string,QmlStruct>
+      docs: dict with structs as values
+  - name: PassDictInArrayMethod
+    kind: method
+    docs: pass dict in array
+    returns:
+      type: array<dict<string,string>>
+      docs: list of dicts
+  - name: PassDictInArraySignal
+    kind: signal
+    docs: pass dict in array
+    args:
+    - name: listOfDicts
+      type: array<dict<string,string>>
+      docs: list of dicts
+  - name: PassDictInDictMethod
+    kind: method
+    docs: pass dict in dict
+    returns:
+      type: dict<string,dict<string,string>>
+      docs: dict of dicts
+  - name: PassDictInDictSignal
+    kind: signal
+    docs: pass dict in dict
+    args:
+    - name: dictOfDicts
+      type: dict<string,dict<string,string>>
+      docs: dict of dicts
+  - name: PassArrayInDictMethod
+    kind: method
+    docs: pass array in dict
+    returns:
+      type: dict<string,array<string>>
+      docs: dict of lists
+  - name: PassArrayInDictSignal
+    kind: signal
+    docs: pass array in dict
+    args:
+    - name: dictOfLists
+      type: dict<string,array<string>>
+      docs: dict of lists
+  - name: PassDictInArrayInDictMethod
+    kind: method
+    docs: pass dict in array in dict
+    returns:
+      type: dict<string,array<dict<string,string>>>
+      docs: dict of lists of dicts
+  - name: PassDictInArrayInDictSignal
+    kind: signal
+    docs: pass dict in array in dict
+    args:
+    - name: dictOfListsOfDicts
+      type: dict<string,array<dict<string,string>>>
+      docs: dict of lists of dicts
+  - name: PassDictInArrayInArrayMethod
+    kind: method
+    docs: pass dict in array in array
+    returns:
+      type: array<array<dict<string,string>>>
+      docs: list of lists of dicts
+  - name: PassDictInArrayInArraySignal
+    kind: signal
+    docs: pass dict in array in array
+    args:
+    - name: listOfListsOfDicts
+      type: array<array<dict<string,string>>>
+      docs: list of lists of dicts
+
+- name: QmlAsClient
+  kind: interface
+  docs: Interface to test passing arguments instantiated in QML
+  members:
+  - name: PassStructMethod
+    kind: method
+    docs: pass struct
+    args:
+    - name: qmlStruct
+      type: QmlStruct
+      docs: the struct
+  - name: PassArrayInArrayMethod
+    kind: method
+    docs: pass nested arrays
+    args:
+    - name: listOfLists
+      type: array<array<uint32>>
+      docs: the nested array
+  - name: PassStructsInArrayMethod
+    kind: method
+    docs: pass structs in array
+    args:
+    - name: listOfStructs
+      type: array<QmlStruct>
+      docs: list of structs
+  - name: PassDictWithStringsMethod
+    kind: method
+    docs: pass a dict with strings as keys
+    args:
+    - name: dictWithStrings
+      type: dict<string,string>
+      docs: dict with string as keys
+  - name: PassDictWithNumbersMethod
+    kind: method
+    docs: pass a dict with numbers as keys
+    args:
+    - name: dictWithNumbers
+      type: dict<uint32,string>
+      docs: dict with numbers as keys
+  - name: PassDictWithStructsMethod
+    kind: method
+    docs: pass a dict with structs as values
+    args:
+    - name: dictWithStructs
+      type: dict<string,QmlStruct>
+      docs: dict with structs as values
+  - name: PassDictInArrayMethod
+    kind: method
+    docs: pass dict in array
+    args:
+    - name: listOfDicts
+      type: array<dict<string,string>>
+      docs: list of dicts
+  - name: PassDictInDictMethod
+    kind: method
+    docs: pass dict in dict
+    args:
+    - name: dictOfDicts
+      type: dict<string,dict<string,string>>
+      docs: dict of dicts
+  - name: PassArrayInDictMethod
+    kind: method
+    docs: pass array in dict
+    args:
+    - name: dictOfLists
+      type: dict<string,array<string>>
+      docs: dict of lists
+  - name: PassDictInArrayInDictMethod
+    kind: method
+    docs: pass dict in array in dict
+    args:
+    - name: dictOfListsOfDicts
+      type: dict<string,array<dict<string,string>>>
+      docs: dict of lists of dicts
+  - name: PassDictInArrayInArrayMethod
+    kind: method
+    docs: pass dict in array in array
+    args:
+    - name: listOfListsOfDicts
+      type: array<array<dict<string,string>>>
+      docs: list of lists of dicts

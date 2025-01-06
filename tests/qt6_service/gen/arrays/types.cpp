@@ -7,8 +7,11 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
+#include <QJSValueIterator>
 
-void gen::arrays::registerMetaTypes() {
+namespace gen::arrays {
+
+void registerMetaTypes() {
     qRegisterMetaType<StructArray>("StructArray");
     qDBusRegisterMetaType<StructArray>();
     qRegisterMetaType<SimonsArray>("SimonsArray");
@@ -31,7 +34,7 @@ void gen::arrays::registerMetaTypes() {
     qDBusRegisterMetaType<QList<uint>>();
 }
 
-bool gen::arrays::operator!=(const QList<SimonsArray> &lhs, const QList<SimonsArray> &rhs) {
+bool operator!=(const QList<SimonsArray> &lhs, const QList<SimonsArray> &rhs) {
     if (lhs.size() != rhs.size()) {
         return true;
     }
@@ -43,7 +46,7 @@ bool gen::arrays::operator!=(const QList<SimonsArray> &lhs, const QList<SimonsAr
     return false;
 }
 
-bool gen::arrays::operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs) {
+bool operator!=(const QList<StructArray> &lhs, const QList<StructArray> &rhs) {
     if (lhs.size() != rhs.size()) {
         return true;
     }
@@ -53,4 +56,6 @@ bool gen::arrays::operator!=(const QList<StructArray> &lhs, const QList<StructAr
         }
     }
     return false;
+}
+
 }

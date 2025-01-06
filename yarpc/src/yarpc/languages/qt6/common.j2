@@ -117,3 +117,96 @@ for (auto& item_{{i}} : {{ value }}.value<QVariantList>()) {
 {{ output }} = {{ value }}.value<{{ marshalled_type }}>();
 {% endif %}
 {% endmacro %}
+{#
+    Converts type to name
+#}
+{% macro convert_type_to_name(type_as_str, objects) %}
+{% set outer_type = type_as_str|find_type(objects) %}
+{%- if outer_type.name == 'dict' -%}
+{% set inner_types = type_as_str|extract_inner(outer_type) %}
+MapOf{{ inner_types[0]|pascal_case }}To{{ convert_type_to_name(inner_types[1], objects) }}
+{%- elif outer_type.name == 'array' -%}
+{% set inner_types = type_as_str|extract_inner(outer_type) %}
+ListOf{{ convert_type_to_name(inner_types[0], objects) }}
+{%- else -%}
+{{ type_as_str|pascal_case }}
+{%- endif -%}
+{% endmacro %}
+{#
+    Parses a string as the requested type
+#}
+{% macro parse_string(entry, type_as_str) %}
+{%- if type_as_str == 'string' -%}
+{{ entry }}
+{%- elif type_as_str == 'bool' -%}
+({{ entry }} == "true")
+{%- elif type_as_str == 'uint8' -%}
+{{ entry }}.toUInt()
+{%- elif type_as_str == 'int16' -%}
+{{ entry }}.toInt()
+{%- elif type_as_str == 'uint16' -%}
+{{ entry }}.toUInt()
+{%- elif type_as_str == 'int32' -%}
+{{ entry }}.toLong()
+{%- elif type_as_str == 'uint32' -%}
+{{ entry }}.toULong()
+{%- elif type_as_str == 'int64' -%}
+{{ entry }}.toLongLong()
+{%- elif type_as_str == 'uint64' -%}
+{{ entry }}.toULongLong()
+{%- elif type_as_str == 'double' -%}
+{{ entry }}.toDouble()
+{%- endif -%}
+{% endmacro %}
+{#
+    Converts JSValue to Maps
+#}
+{% macro convert_js_to_map(value, output, type_as_str, objects, i=0) %}
+{% set output_type = type(type_as_str, objects) %}
+{{ output_type }} {{ output }};
+{% set outer_type = type_as_str|find_type(objects) %}
+{% set inner_types = type_as_str|extract_inner(outer_type) %}
+{% set value_type = type(inner_types[1], objects) %}
+{% set key_type = type(inner_types[0], objects) %}
+{% set map = "map_"+i|string %}
+{% set k = "k_"+i|string %}
+{% set v = "v_"+i|string %}
+{% set o = "o_"+i|string %}
+{% set key = "key_"+i|string %}
+auto {{ map }} = {{ value }}.toMap();
+for (auto {{ k }} = {{ map }}.keyBegin(); {{ k }} != {{ map }}.keyEnd(); ++{{ k }}) {
+    {{ key_type }} {{ key }} = {{ parse_string("(*"+k+")", inner_types[0]) }};
+    auto {{ v }} = {{ map }}.value(*{{ k }});
+    {% if (inner_types[1]|find_type(objects)).name == 'dict' %}
+    {{ convert_js_to_map(v, o, inner_types[1], objects, i+1)|indent(4) }}
+    {{ output }}[{{ key }}] = {{ o }};
+    {% elif (inner_types[1]|find_type(objects)).name == 'array' %}
+    {{ convert_js_to_list(v, o, inner_types[1], objects, i+1)|indent(4) }}
+    {{ output }}[{{ key }}] = {{ o }};
+    {% else %}
+    {{ output }}[{{ key }}] = {{ v }}.value<{{ value_type }}>();
+    {% endif %}
+}
+{% endmacro %}
+{#
+    Converts Lists containing JSValue to Lists containing Maps
+#}
+{% macro convert_js_to_list(value, output, type_as_str, objects, i=0) %}
+{% set output_type = type(type_as_str, objects) %}
+{{ output_type }} {{ output }};
+{% set outer_type = type_as_str|find_type(objects) %}
+{% set inner_type = (type_as_str|extract_inner(outer_type))[0] %}
+{% set v = "v_"+i|string %}
+{% set o = "o_"+i|string %}
+for (auto &{{ v }} : {{ value }}.toList()) {
+    {% if (inner_type|find_type(objects)).name == 'dict' %}
+    {{ convert_js_to_map(v, o, inner_type, objects, i+1)|indent(4) }}
+    {{ output }}.append({{ o }});
+    {% elif (inner_type|find_type(objects)).name == 'array' %}
+    {{ convert_js_to_list(v, o, inner_type, objects, i+1)|indent(4) }}
+    {{ output }}.append({{ o }});
+    {% else %}
+    {{ output }}.append({{ v }}.value<{{ type(inner_type, objects) }}>());
+    {% endif %}
+}
+{% endmacro %}

@@ -13,6 +13,7 @@ from .enums_mock import get_enums_mock
 from .enums_with_structs_mock import get_enums_with_structs_mock
 from .enums_with_arrays_mock import get_enums_with_arrays_mock
 from .enums_with_dicts_mock import get_enums_with_dicts_mock
+from .qml_instantiation_mock import get_qml_instantiation_mock
 import asyncio
 
 
@@ -32,6 +33,7 @@ def main():
         get_enums_with_structs_mock(),
         get_enums_with_arrays_mock(),
         get_enums_with_dicts_mock(),
+        get_qml_instantiation_mock(),
     ]
 
     print("Python mock service running")
