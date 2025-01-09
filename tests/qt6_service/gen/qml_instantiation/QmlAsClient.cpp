@@ -106,7 +106,7 @@ PassStructMethodPendingCall* QmlAsClient::PassStructMethod(
     QmlStruct qmlStruct
 ) {
     QDBusArgument dbusqmlStruct;
-    dbusqmlStruct << qmlStruct;
+    dbusqmlStruct << static_cast<QmlStruct>(qmlStruct);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -163,7 +163,7 @@ PassArrayInArrayMethodPendingCall* QmlAsClient::PassArrayInArrayMethod(
     QList<QList<uint>> listOfLists
 ) {
     QDBusArgument dbuslistOfLists;
-    dbuslistOfLists << listOfLists;
+    dbuslistOfLists << static_cast<QList<QList<uint>>>(listOfLists);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -215,7 +215,7 @@ PassStructsInArrayMethodPendingCall* QmlAsClient::PassStructsInArrayMethod(
     QList<QmlStruct> listOfStructs
 ) {
     QDBusArgument dbuslistOfStructs;
-    dbuslistOfStructs << listOfStructs;
+    dbuslistOfStructs << static_cast<QList<QmlStruct>>(listOfStructs);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -262,7 +262,7 @@ PassDictWithStringsMethodPendingCall* QmlAsClient::PassDictWithStringsMethod(
     QMap<QString, QString> dictWithStrings
 ) {
     QDBusArgument dbusdictWithStrings;
-    dbusdictWithStrings << dictWithStrings;
+    dbusdictWithStrings << static_cast<QMap<QString, QString>>(dictWithStrings);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -309,7 +309,7 @@ PassDictWithNumbersMethodPendingCall* QmlAsClient::PassDictWithNumbersMethod(
     QMap<uint, QString> dictWithNumbers
 ) {
     QDBusArgument dbusdictWithNumbers;
-    dbusdictWithNumbers << dictWithNumbers;
+    dbusdictWithNumbers << static_cast<QMap<uint, QString>>(dictWithNumbers);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -356,7 +356,7 @@ PassDictWithStructsMethodPendingCall* QmlAsClient::PassDictWithStructsMethod(
     QMap<QString, QmlStruct> dictWithStructs
 ) {
     QDBusArgument dbusdictWithStructs;
-    dbusdictWithStructs << dictWithStructs;
+    dbusdictWithStructs << static_cast<QMap<QString, QmlStruct>>(dictWithStructs);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -408,7 +408,7 @@ PassDictInArrayMethodPendingCall* QmlAsClient::PassDictInArrayMethod(
     QList<QMap<QString, QString>> listOfDicts
 ) {
     QDBusArgument dbuslistOfDicts;
-    dbuslistOfDicts << listOfDicts;
+    dbuslistOfDicts << static_cast<QList<QMap<QString, QString>>>(listOfDicts);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -455,7 +455,7 @@ PassDictInDictMethodPendingCall* QmlAsClient::PassDictInDictMethod(
     QMap<QString, QMap<QString, QString>> dictOfDicts
 ) {
     QDBusArgument dbusdictOfDicts;
-    dbusdictOfDicts << dictOfDicts;
+    dbusdictOfDicts << static_cast<QMap<QString, QMap<QString, QString>>>(dictOfDicts);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -502,7 +502,7 @@ PassArrayInDictMethodPendingCall* QmlAsClient::PassArrayInDictMethod(
     QMap<QString, QList<QString>> dictOfLists
 ) {
     QDBusArgument dbusdictOfLists;
-    dbusdictOfLists << dictOfLists;
+    dbusdictOfLists << static_cast<QMap<QString, QList<QString>>>(dictOfLists);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -549,7 +549,7 @@ PassDictInArrayInDictMethodPendingCall* QmlAsClient::PassDictInArrayInDictMethod
     QMap<QString, QList<QMap<QString, QString>>> dictOfListsOfDicts
 ) {
     QDBusArgument dbusdictOfListsOfDicts;
-    dbusdictOfListsOfDicts << dictOfListsOfDicts;
+    dbusdictOfListsOfDicts << static_cast<QMap<QString, QList<QMap<QString, QString>>>>(dictOfListsOfDicts);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",
@@ -606,7 +606,7 @@ PassDictInArrayInArrayMethodPendingCall* QmlAsClient::PassDictInArrayInArrayMeth
     QList<QList<QMap<QString, QString>>> listOfListsOfDicts
 ) {
     QDBusArgument dbuslistOfListsOfDicts;
-    dbuslistOfListsOfDicts << listOfListsOfDicts;
+    dbuslistOfListsOfDicts << static_cast<QList<QList<QMap<QString, QString>>>>(listOfListsOfDicts);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/qmlInstantiation",

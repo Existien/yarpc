@@ -268,7 +268,7 @@ Uint8MethodPendingReply::Uint8MethodPendingReply(QDBusMessage call, QObject *par
         marshalled >> arg_0;
     }
     m_args = Uint8MethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<uchar, QString>>(arg_0),
     };
 }
 
@@ -288,7 +288,8 @@ void Uint8MethodPendingReply::sendReply(
 void Uint8MethodPendingReply::sendReply(
     const QMap<uchar, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<uchar, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -327,7 +328,7 @@ BoolMethodPendingReply::BoolMethodPendingReply(QDBusMessage call, QObject *paren
         marshalled >> arg_0;
     }
     m_args = BoolMethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<bool, QString>>(arg_0),
     };
 }
 
@@ -347,7 +348,8 @@ void BoolMethodPendingReply::sendReply(
 void BoolMethodPendingReply::sendReply(
     const QMap<bool, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<bool, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -386,7 +388,7 @@ Int16MethodPendingReply::Int16MethodPendingReply(QDBusMessage call, QObject *par
         marshalled >> arg_0;
     }
     m_args = Int16MethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<short, QString>>(arg_0),
     };
 }
 
@@ -406,7 +408,8 @@ void Int16MethodPendingReply::sendReply(
 void Int16MethodPendingReply::sendReply(
     const QMap<short, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<short, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -445,7 +448,7 @@ Uint16MethodPendingReply::Uint16MethodPendingReply(QDBusMessage call, QObject *p
         marshalled >> arg_0;
     }
     m_args = Uint16MethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<ushort, QString>>(arg_0),
     };
 }
 
@@ -465,7 +468,8 @@ void Uint16MethodPendingReply::sendReply(
 void Uint16MethodPendingReply::sendReply(
     const QMap<ushort, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<ushort, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -504,7 +508,7 @@ Int32MethodPendingReply::Int32MethodPendingReply(QDBusMessage call, QObject *par
         marshalled >> arg_0;
     }
     m_args = Int32MethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<int, QString>>(arg_0),
     };
 }
 
@@ -524,7 +528,8 @@ void Int32MethodPendingReply::sendReply(
 void Int32MethodPendingReply::sendReply(
     const QMap<int, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<int, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -563,7 +568,7 @@ Uint32MethodPendingReply::Uint32MethodPendingReply(QDBusMessage call, QObject *p
         marshalled >> arg_0;
     }
     m_args = Uint32MethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<uint, QString>>(arg_0),
     };
 }
 
@@ -583,7 +588,8 @@ void Uint32MethodPendingReply::sendReply(
 void Uint32MethodPendingReply::sendReply(
     const QMap<uint, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<uint, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -622,7 +628,7 @@ Int64MethodPendingReply::Int64MethodPendingReply(QDBusMessage call, QObject *par
         marshalled >> arg_0;
     }
     m_args = Int64MethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<qlonglong, QString>>(arg_0),
     };
 }
 
@@ -642,7 +648,8 @@ void Int64MethodPendingReply::sendReply(
 void Int64MethodPendingReply::sendReply(
     const QMap<qlonglong, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<qlonglong, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -681,7 +688,7 @@ Uint64MethodPendingReply::Uint64MethodPendingReply(QDBusMessage call, QObject *p
         marshalled >> arg_0;
     }
     m_args = Uint64MethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<qulonglong, QString>>(arg_0),
     };
 }
 
@@ -701,7 +708,8 @@ void Uint64MethodPendingReply::sendReply(
 void Uint64MethodPendingReply::sendReply(
     const QMap<qulonglong, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<qulonglong, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -740,7 +748,7 @@ DoubleMethodPendingReply::DoubleMethodPendingReply(QDBusMessage call, QObject *p
         marshalled >> arg_0;
     }
     m_args = DoubleMethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<double, QString>>(arg_0),
     };
 }
 
@@ -760,7 +768,8 @@ void DoubleMethodPendingReply::sendReply(
 void DoubleMethodPendingReply::sendReply(
     const QMap<double, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<double, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -799,7 +808,7 @@ StringMethodPendingReply::StringMethodPendingReply(QDBusMessage call, QObject *p
         marshalled >> arg_0;
     }
     m_args = StringMethodArgs{
-        .value = arg_0,
+        .value = static_cast<QMap<QString, QString>>(arg_0),
     };
 }
 
@@ -819,7 +828,8 @@ void StringMethodPendingReply::sendReply(
 void StringMethodPendingReply::sendReply(
     const QMap<QString, QString> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<QString, QString>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictKeysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);

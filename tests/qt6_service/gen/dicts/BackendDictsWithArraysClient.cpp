@@ -117,7 +117,7 @@ DictsArrayMethodPendingCall* BackendDictsWithArraysClient::DictsArrayMethod(
     QMap<QString, QList<QMap<QString, uint>>> numbers
 ) {
     QDBusArgument dbusnumbers;
-    dbusnumbers << numbers;
+    dbusnumbers << static_cast<QMap<QString, QList<QMap<QString, uint>>>>(numbers);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -145,7 +145,8 @@ void DictsArrayMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        QMap<QString, QList<QMap<QString, uint>>> finishedReply = reply;
+        emit finished(static_cast<QMap<QString, QList<QMap<QString, uint>>>>(finishedReply));
     }
     deleteLater();
 }
@@ -199,7 +200,7 @@ void BackendDictsWithArraysClient::setDictArrayProperty(const QMap<QString, QLis
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(newValue));
+    v.setVariant(QVariant::fromValue(static_cast<QMap<QString, QList<QMap<QString, uint>>>>(newValue)));
     marshalled << v;
     iface.call(
         "Set",

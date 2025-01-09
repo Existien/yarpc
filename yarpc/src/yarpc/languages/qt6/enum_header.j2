@@ -6,3 +6,56 @@
 *   Template: qt6/enum_header.j2
 */
 {% import "dbus/common.j2" as dbus %}
+{% import "qt6/common.j2" as qt6 %}
+#pragma once
+#include <QObject>
+#include <QDBusArgument>
+#include <qqmlintegration.h>
+
+namespace {{ qt6.namespace(output) }} {
+
+/**
+ Wrapper for the {{ object.name }} enum, since QML doesn't support enum classes.
+
+ This allows the enum values to be accessed in QML via `{{ object.name }}.
+ */
+class {{ object.name }} : public QObject {
+    Q_OBJECT
+    QML_SINGLETON
+    QML_ELEMENT
+public:
+
+    /**
+    {{ qt6.doctag(object, "brief")|indent(1) }}
+    */
+    enum Type : {{ qt6.type(object.name, output.objects, dbus=true) }} {
+        {% for member in object.members %}
+        {% for name, value in member.items() %}
+        {{ name }} = {{ value }},
+        {% endfor %}
+        {% endfor %}
+    };
+    Q_ENUM(Type)
+};
+
+/**
+ * @brief Marshalls a {{ object.name }} into a QDBusArgument.
+ *
+ * @param argument the argument to marshall into
+ * @param object the object to marshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const {{ object.name }}::Type &object);
+
+/**
+ * @brief Demarshalls a {{ object.name }} from a QDBusArgument.
+ *
+ * @param argument the argument to demarshall from
+ * @param object the object to demarshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, {{ object.name }}::Type &object);
+
+}

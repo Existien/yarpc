@@ -15,17 +15,8 @@ qt_add_qml_module(Enums
         types.cpp
         EnumsInterface.cpp
         EnumsInterfaceAdaptor.cpp
-        EnumsWithStructsInterface.cpp
-        EnumsWithStructsInterfaceAdaptor.cpp
-        EnumsWithArraysInterface.cpp
-        EnumsWithArraysInterfaceAdaptor.cpp
-        EnumsWithDictsInterface.cpp
-        EnumsWithDictsInterfaceAdaptor.cpp
         BackendEnumsClient.cpp
-        BackendEnumsWithStructsClient.cpp
-        BackendEnumsWithArraysClient.cpp
-        BackendEnumsWithDictsClient.cpp
-        EnumStruct.cpp
+        Color.cpp
 )
 
 target_link_libraries(Enums PUBLIC Qt6::DBus)

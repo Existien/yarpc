@@ -117,7 +117,7 @@ DictMethodPendingCall* BackendDictsClient::DictMethod(
     QMap<QString, uint> keysNValues
 ) {
     QDBusArgument dbuskeysNValues;
-    dbuskeysNValues << keysNValues;
+    dbuskeysNValues << static_cast<QMap<QString, uint>>(keysNValues);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -145,7 +145,8 @@ void DictMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        QMap<QString, QString> finishedReply = reply;
+        emit finished(static_cast<QMap<QString, QString>>(finishedReply));
     }
     deleteLater();
 }
@@ -199,7 +200,7 @@ void BackendDictsClient::setDictProperty(const QMap<QString, uint> &newValue) {
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(newValue));
+    v.setVariant(QVariant::fromValue(static_cast<QMap<QString, uint>>(newValue)));
     marshalled << v;
     iface.call(
         "Set",

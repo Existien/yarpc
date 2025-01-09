@@ -11,7 +11,7 @@
 #include <QDBusMessage>
 #include <QVariant>
 #include "DBusError.hpp"
-#include "EnumStruct.hpp"
+#include "Color.hpp"
 #include "types.hpp"
 namespace gen::enums {
 
@@ -23,9 +23,9 @@ class EnumMethodArgs {
     /**
      * @brief a color
      */
-    Q_PROPERTY( color MEMBER color)
+    Q_PROPERTY(Color::Type color MEMBER color)
 public:
-     color;
+    Color::Type color;
 };
 
 /**
@@ -46,7 +46,7 @@ public:
      * @param reply the return value of the call
      */
     void sendReply(
-        const  &reply
+        const Color::Type &reply
     );
 public slots:
     /**
@@ -131,14 +131,14 @@ public:
      *
      * @returns the current value of the property
      */
-     getEnumProperty() const;
+    Color::Type getEnumProperty() const;
 
     /**
      * @brief Setter for the EnumProperty property.
      *
      * @param value the new value of the property
      */
-    void setEnumProperty(const  &value );
+    void setEnumProperty(const Color::Type &value );
 
 
     /**
@@ -147,7 +147,7 @@ public:
      * @param color a color
      */
     void EmitEnumSignal(
-         color
+        Color::Type color
     );
 
 
@@ -203,7 +203,7 @@ signals:
      *
      * @param value the new value of the property
      */
-    void propertyEnumPropertySet( value);
+    void propertyEnumPropertySet(Color::Type value);
 
     /**
      * @brief Emitted when the value of the EnumProperty property changes.
@@ -212,7 +212,7 @@ signals:
 
 private:
     void emitPropertiesChangedSignal(const QVariantMap &changedProperties);
-     m_EnumProperty = {};
+    Color::Type m_EnumProperty = {};
 };
 
 }

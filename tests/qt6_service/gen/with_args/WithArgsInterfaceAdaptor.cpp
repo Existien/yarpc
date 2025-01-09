@@ -37,7 +37,7 @@ double WithArgsInterfaceAdaptor::getSpeed() const {
 }
 
 void WithArgsInterfaceAdaptor::setSpeed(const double &value ) {
-    emit m_iface->propertySpeedSet(value);
+    emit m_iface->propertySpeedSet(static_cast<const double>(value));
 }
 
 uint WithArgsInterfaceAdaptor::getDistance() const {
@@ -45,7 +45,7 @@ uint WithArgsInterfaceAdaptor::getDistance() const {
 }
 
 void WithArgsInterfaceAdaptor::setDistance(const uint &value ) {
-    emit m_iface->propertyDistanceSet(value);
+    emit m_iface->propertyDistanceSet(static_cast<const uint>(value));
 }
 
 double WithArgsInterfaceAdaptor::getDuration() const {

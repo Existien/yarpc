@@ -6,3 +6,19 @@
  *   Template: qt6/enum_source.j2
  */
 {% import "dbus/common.j2" as dbus %}
+{% import "qt6/common.j2" as qt6 %}
+#include "{{ object.name }}.hpp"
+
+using namespace {{ qt6.namespace(output) }};
+
+QDBusArgument &{{ qt6.namespace(output) }}::operator<<(QDBusArgument &argument, const {{ object.name }}::Type &object) {
+    argument << static_cast<{{ qt6.type(object.name, output.objects, dbus=true) }}>(object);
+    return argument;
+}
+
+const QDBusArgument &{{ qt6.namespace(output) }}::operator>>(const QDBusArgument &argument, {{ object.name }}::Type &object) {
+    {{ qt6.type(object.name, output.objects, dbus=true) }} tmp;
+    argument >> tmp;
+    object = static_cast<{{ object.name }}::Type>(tmp);
+    return argument;
+}

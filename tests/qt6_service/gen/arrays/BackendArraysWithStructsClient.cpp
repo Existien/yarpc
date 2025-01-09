@@ -122,7 +122,7 @@ ArrayStructMethodPendingCall* BackendArraysWithStructsClient::ArrayStructMethod(
     QList<StructArray> numbers
 ) {
     QDBusArgument dbusnumbers;
-    dbusnumbers << numbers;
+    dbusnumbers << static_cast<QList<StructArray>>(numbers);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",
@@ -150,7 +150,8 @@ void ArrayStructMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        QList<SimonsArray> finishedReply = reply;
+        emit finished(static_cast<QList<SimonsArray>>(finishedReply));
     }
     deleteLater();
 }
@@ -211,7 +212,7 @@ void BackendArraysWithStructsClient::setArrayStructProperty(const QList<StructAr
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(newValue));
+    v.setVariant(QVariant::fromValue(static_cast<QList<StructArray>>(newValue)));
     marshalled << v;
     iface.call(
         "Set",

@@ -27,6 +27,6 @@ QMap<QString, uint> DictsInterfaceAdaptor::getDictProperty() const {
 }
 
 void DictsInterfaceAdaptor::setDictProperty(const QMap<QString, uint> &value ) {
-    emit m_iface->propertyDictPropertySet(value);
+    emit m_iface->propertyDictPropertySet(static_cast<const QMap<QString, uint>>(value));
 }
 

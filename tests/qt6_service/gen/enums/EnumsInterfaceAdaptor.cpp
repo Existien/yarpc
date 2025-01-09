@@ -13,8 +13,8 @@ EnumsInterfaceAdaptor::EnumsInterfaceAdaptor(EnumsInterface* iface, QObject* par
 
 }
 
- EnumsInterfaceAdaptor::EnumMethod(
-     color,
+int EnumsInterfaceAdaptor::EnumMethod(
+    int color,
     const QDBusMessage &_message
 ){
     _message.setDelayedReply(true);
@@ -22,11 +22,11 @@ EnumsInterfaceAdaptor::EnumsInterfaceAdaptor(EnumsInterface* iface, QObject* par
     return {};
 }
 
- EnumsInterfaceAdaptor::getEnumProperty() const {
+int EnumsInterfaceAdaptor::getEnumProperty() const {
     return m_iface->getEnumProperty();
 }
 
-void EnumsInterfaceAdaptor::setEnumProperty(const  &value ) {
-    emit m_iface->propertyEnumPropertySet(value);
+void EnumsInterfaceAdaptor::setEnumProperty(const int &value ) {
+    emit m_iface->propertyEnumPropertySet(static_cast<const Color::Type>(value));
 }
 

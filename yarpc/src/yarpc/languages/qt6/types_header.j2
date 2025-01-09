@@ -38,12 +38,6 @@ bool operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs);
 {% set qt6_type = qt6.type(dict_type, output.objects ) %}
 bool operator!=(const {{ qt6_type }} &lhs, const {{ qt6_type }} &rhs);
 {% endfor %}
-
-class Conversions : public QObject {
-    Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
-public:
 {% set type_list = [] %}
 {% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
 {% for member in struct.members %}
@@ -76,6 +70,24 @@ public:
 {% endif %}
 {% endif %}
 {% endfor %}
+{% if dict_type_list|count + array_type_list|count > 0 %}
+
+/**
+ * Provides JS -> QMap conversion functions in QML.
+ *
+ * Since JS objects are passed as QJSValue,
+ * we need some helper functions to convert them
+ * to the QMaps used in the interface.
+ *
+ * This class provides helper functions to convert
+ * JS objects and array to the types required by
+ * the interface.
+ */
+class Conversions : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
 {% for dict_type in dict_type_list %}
 {% set qt6_type = qt6.type(dict_type, output.objects ) %}
 {% set dict_name = qt6.convert_type_to_name(dict_type, output.objects) %}
@@ -87,5 +99,5 @@ public:
     Q_INVOKABLE {{ qt6_type }} jsTo{{ array_name }}(QVariant jsonObject);
 {% endfor %}
 };
-
+{% endif %}
 }

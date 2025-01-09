@@ -27,6 +27,6 @@ QMap<QString, StructDict> DictsWithStructsInterfaceAdaptor::getDictStructPropert
 }
 
 void DictsWithStructsInterfaceAdaptor::setDictStructProperty(const QMap<QString, StructDict> &value ) {
-    emit m_iface->propertyDictStructPropertySet(value);
+    emit m_iface->propertyDictStructPropertySet(static_cast<const QMap<QString, StructDict>>(value));
 }
 

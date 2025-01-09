@@ -1,6 +1,5 @@
 import QtQuick
 import interfaces
-import gen.structs
 
 Window {
     height: 300
@@ -17,5 +16,6 @@ Window {
     DictsWithStructs{}
     DictsWithArrays{}
     DictKeys{}
+    Enums{}
     QmlInstantiation{}
 }

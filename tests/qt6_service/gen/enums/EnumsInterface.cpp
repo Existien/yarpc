@@ -52,13 +52,8 @@ bool EnumsInterface::getConnected() const {
 
 EnumMethodPendingReply::EnumMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
     m_call = call;
-     arg_0;
-    {
-        auto marshalled = m_call.arguments()[0].value<QDBusArgument>();
-        marshalled >> arg_0;
-    }
     m_args = EnumMethodArgs{
-        .color = arg_0,
+        .color = m_call.arguments()[0].value<Color::Type>(),
     };
 }
 
@@ -69,16 +64,17 @@ EnumMethodArgs EnumMethodPendingReply::args() {
 void EnumMethodPendingReply::sendReply(
     QVariant reply
 ) {
-     unmarshalled;
-    unmarshalled = reply.value<>();
+    Color::Type unmarshalled;
+    unmarshalled = reply.value<Color::Type>();
 
     sendReply(unmarshalled);
 }
 
 void EnumMethodPendingReply::sendReply(
-    const  &reply
+    const Color::Type &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<int>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<EnumsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -110,7 +106,7 @@ void EnumsInterface::handleEnumMethodCalled(QDBusMessage call) {
 }
 
 void EnumsInterface::EmitEnumSignal(
-     color
+    Color::Type color
 ) {
     if (Connection::instance().Enums() != nullptr ) {
         emit Connection::instance().Enums()->EnumSignal(
@@ -122,24 +118,24 @@ void EnumsInterface::EmitEnumSignal(
 void EnumsInterface::EmitEnumSignal(
     QVariant color
 ) {
-     arg_0;
-    arg_0 = color.value<>();
+    Color::Type arg_0;
+    arg_0 = color.value<Color::Type>();
 
     EmitEnumSignal(
         arg_0
     );
 }
 
- EnumsInterface::getEnumProperty() const {
+Color::Type EnumsInterface::getEnumProperty() const {
     return m_EnumProperty;
 }
 
-void EnumsInterface::setEnumProperty(const  &value ) {
+void EnumsInterface::setEnumProperty(const Color::Type &value ) {
     m_EnumProperty = value;
     emit enumPropertyChanged();
     if (Connection::instance().Enums() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("EnumProperty", QVariant::fromValue(value));
+        changedProps.insert("EnumProperty", QVariant::fromValue(static_cast<int>(value)));
         emitPropertiesChangedSignal(changedProps);
     }
 }
@@ -153,8 +149,8 @@ QVariant EnumsInterface::getVariantEnumProperty() const {
 }
 
 void EnumsInterface::setVariantEnumProperty(QVariant value ) {
-     unmarshalled;
-    unmarshalled = value.value<>();
+    Color::Type unmarshalled;
+    unmarshalled = value.value<Color::Type>();
 
     setEnumProperty(unmarshalled);
 }

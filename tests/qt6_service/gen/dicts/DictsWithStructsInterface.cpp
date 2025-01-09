@@ -58,7 +58,7 @@ DictsStructMethodPendingReply::DictsStructMethodPendingReply(QDBusMessage call, 
         marshalled >> arg_0;
     }
     m_args = DictsStructMethodArgs{
-        .numbers = arg_0,
+        .numbers = static_cast<QMap<QString, StructDict>>(arg_0),
     };
 }
 
@@ -78,7 +78,8 @@ void DictsStructMethodPendingReply::sendReply(
 void DictsStructMethodPendingReply::sendReply(
     const QMap<QString, SimonsDict> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<QString, SimonsDict>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictsWithStructsInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -139,7 +140,7 @@ void DictsWithStructsInterface::setDictStructProperty(const QMap<QString, Struct
     emit dictStructPropertyChanged();
     if (Connection::instance().DictsWithStructs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("DictStructProperty", QVariant::fromValue(value));
+        changedProps.insert("DictStructProperty", QVariant::fromValue(static_cast<QMap<QString, StructDict>>(value)));
         emitPropertiesChangedSignal(changedProps);
     }
 }

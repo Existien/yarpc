@@ -17,12 +17,4 @@ namespace gen::structs {
 */
 void registerMetaTypes();
 
-
-class Conversions : public QObject {
-    Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
-public:
-};
-
 }
