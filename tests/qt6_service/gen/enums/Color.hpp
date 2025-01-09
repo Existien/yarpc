@@ -5,3 +5,54 @@
 *   Object: Color
 *   Template: qt6/enum_header.j2
 */
+#pragma once
+#include <QObject>
+#include <QDBusArgument>
+#include <qqmlintegration.h>
+
+namespace gen::enums {
+
+/**
+ Wrapper for the Color enum, since QML doesn't support enum classes.
+
+ This allows the enum values to be accessed in QML via `Color.
+ */
+class Color : public QObject {
+    Q_OBJECT
+    QML_SINGLETON
+    QML_ELEMENT
+public:
+
+    /**
+    * @brief A enum of colors
+    */
+    enum Type : int {
+        RED = 0,
+        GREEN = 1,
+        BLUE = 2,
+        ORANGE = 3,
+    };
+    Q_ENUM(Type)
+};
+
+/**
+ * @brief Marshalls a Color into a QDBusArgument.
+ *
+ * @param argument the argument to marshall into
+ * @param object the object to marshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+QDBusArgument &operator<<(QDBusArgument &argument, const Color::Type &object);
+
+/**
+ * @brief Demarshalls a Color from a QDBusArgument.
+ *
+ * @param argument the argument to demarshall from
+ * @param object the object to demarshall
+ *
+ * @returns QDBusArgument the argument containing the marshalled object (same as argument)
+ */
+const QDBusArgument &operator>>(const QDBusArgument &argument, Color::Type &object);
+
+}

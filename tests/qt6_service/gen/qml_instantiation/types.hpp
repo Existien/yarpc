@@ -19,6 +19,17 @@ void registerMetaTypes();
 bool operator!=(const QList<QmlStruct> &lhs, const QList<QmlStruct> &rhs);
 bool operator!=(const QMap<QString, QmlStruct> &lhs, const QMap<QString, QmlStruct> &rhs);
 
+/**
+ * Provides JS -> QMap conversion functions in QML.
+ *
+ * Since JS objects are passed as QJSValue,
+ * we need some helper functions to convert them
+ * to the QMaps used in the interface.
+ *
+ * This class provides helper functions to convert
+ * JS objects and array to the types required by
+ * the interface.
+ */
 class Conversions : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -33,5 +44,4 @@ public:
     Q_INVOKABLE QList<QList<QMap<QString, QString>>> jsToListOfListOfMapOfStringToString(QVariant jsonObject);
     Q_INVOKABLE QList<QMap<QString, QString>> jsToListOfMapOfStringToString(QVariant jsonObject);
 };
-
 }

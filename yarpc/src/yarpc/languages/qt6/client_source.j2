@@ -140,7 +140,7 @@ void {{ target.className }}::propertiesChangedHandler(QString iface, QVariantMap
 ) {
     {% for arg in member.args %}
     QDBusArgument dbus{{ arg.name }};
-    dbus{{ arg.name }} << {{ arg.name }};
+    dbus{{ arg.name }} << static_cast<{{ qt6.type(arg.type, output.objects, dbus=true)}}>({{ arg.name }});
     {% endfor %}
     QDBusInterface iface(
         "{{ target.busName }}",
@@ -176,7 +176,7 @@ void {{ target.className }}::propertiesChangedHandler(QString iface, QVariantMap
 void {{ member.name }}PendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
     {% if member.returns is defined %}
-    {% set reply_type = qt6.type(member.returns.type, output.objects) %}
+    {% set reply_type = qt6.type(member.returns.type, output.objects, dbus=true) %}
     {% else %}
     {% set reply_type = "void" %}
     {% endif %}
@@ -185,7 +185,8 @@ void {{ member.name }}PendingCall::callFinished(QDBusPendingCallWatcher *watcher
         emit error(reply.error());
     } else {
         {% if member.returns is defined %}
-        emit finished(reply);
+        {{ reply_type }} finishedReply = reply;
+        emit finished(static_cast<{{qt6.type(member.returns.type, output.objects, dbus=false)}}>(finishedReply));
         {% else %}
         emit finished();
         {% endif %}
@@ -261,7 +262,7 @@ void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type,
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(newValue));
+    v.setVariant(QVariant::fromValue(static_cast<{{ qt6.type(member.type, output.objects, dbus=true) }}>(newValue)));
     marshalled << v;
     iface.call(
         "Set",

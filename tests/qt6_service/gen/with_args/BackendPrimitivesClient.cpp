@@ -256,7 +256,7 @@ Uint8MethodPendingCall* BackendPrimitivesClient::Uint8Method(
     uchar value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<uchar>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -284,7 +284,8 @@ void Uint8MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        uchar finishedReply = reply;
+        emit finished(static_cast<uchar>(finishedReply));
     }
     deleteLater();
 }
@@ -303,7 +304,7 @@ BoolMethodPendingCall* BackendPrimitivesClient::BoolMethod(
     bool value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<bool>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -331,7 +332,8 @@ void BoolMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        bool finishedReply = reply;
+        emit finished(static_cast<bool>(finishedReply));
     }
     deleteLater();
 }
@@ -350,7 +352,7 @@ Int16MethodPendingCall* BackendPrimitivesClient::Int16Method(
     short value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<short>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -378,7 +380,8 @@ void Int16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        short finishedReply = reply;
+        emit finished(static_cast<short>(finishedReply));
     }
     deleteLater();
 }
@@ -397,7 +400,7 @@ Uint16MethodPendingCall* BackendPrimitivesClient::Uint16Method(
     ushort value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<ushort>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -425,7 +428,8 @@ void Uint16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        ushort finishedReply = reply;
+        emit finished(static_cast<ushort>(finishedReply));
     }
     deleteLater();
 }
@@ -444,7 +448,7 @@ Int32MethodPendingCall* BackendPrimitivesClient::Int32Method(
     int value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<int>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -472,7 +476,8 @@ void Int32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        int finishedReply = reply;
+        emit finished(static_cast<int>(finishedReply));
     }
     deleteLater();
 }
@@ -491,7 +496,7 @@ Uint32MethodPendingCall* BackendPrimitivesClient::Uint32Method(
     uint value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<uint>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -519,7 +524,8 @@ void Uint32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        uint finishedReply = reply;
+        emit finished(static_cast<uint>(finishedReply));
     }
     deleteLater();
 }
@@ -538,7 +544,7 @@ Int64MethodPendingCall* BackendPrimitivesClient::Int64Method(
     qlonglong value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<qlonglong>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -566,7 +572,8 @@ void Int64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        qlonglong finishedReply = reply;
+        emit finished(static_cast<qlonglong>(finishedReply));
     }
     deleteLater();
 }
@@ -585,7 +592,7 @@ Uint64MethodPendingCall* BackendPrimitivesClient::Uint64Method(
     qulonglong value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<qulonglong>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -613,7 +620,8 @@ void Uint64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        qulonglong finishedReply = reply;
+        emit finished(static_cast<qulonglong>(finishedReply));
     }
     deleteLater();
 }
@@ -632,7 +640,7 @@ DoubleMethodPendingCall* BackendPrimitivesClient::DoubleMethod(
     double value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<double>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -660,7 +668,8 @@ void DoubleMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        double finishedReply = reply;
+        emit finished(static_cast<double>(finishedReply));
     }
     deleteLater();
 }
@@ -679,7 +688,7 @@ StringMethodPendingCall* BackendPrimitivesClient::StringMethod(
     QString value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << value;
+    dbusvalue << static_cast<QString>(value);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -707,7 +716,8 @@ void StringMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        QString finishedReply = reply;
+        emit finished(static_cast<QString>(finishedReply));
     }
     deleteLater();
 }

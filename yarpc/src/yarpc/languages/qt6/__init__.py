@@ -63,6 +63,8 @@ def _get_dict_types(name, objects):
 
 def _needs_marshalling(name, objects):
     type_object = find_type(name, objects)
+    if type_object.get('kind', "") == 'enum':
+        return False
     if type_object.get('kind', "") == 'builtin':
         obj_name = type_object.get('name', "")
         if obj_name != 'array' and obj_name != 'dict':

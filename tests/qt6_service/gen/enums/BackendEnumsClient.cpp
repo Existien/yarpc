@@ -106,18 +106,18 @@ void BackendEnumsClient::propertiesChangedHandler(QString iface, QVariantMap cha
 EnumMethodPendingCall* BackendEnumsClient::EnumMethod(
     QVariant color
 ) {
-     arg_0;
-    arg_0 = color.value<>();
+    Color::Type arg_0;
+    arg_0 = color.value<Color::Type>();
 
     return EnumMethod(
         arg_0
     );
 }
 EnumMethodPendingCall* BackendEnumsClient::EnumMethod(
-     color
+    Color::Type color
 ) {
     QDBusArgument dbuscolor;
-    dbuscolor << color;
+    dbuscolor << static_cast<int>(color);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -141,25 +141,26 @@ EnumMethodPendingCall::EnumMethodPendingCall(QDBusPendingCall pendingCall, QObje
 
 void EnumMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
 {
-    QDBusPendingReply<> reply {*watcher};
+    QDBusPendingReply<int> reply {*watcher};
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        int finishedReply = reply;
+        emit finished(static_cast<Color::Type>(finishedReply));
     }
     deleteLater();
 }
 
 
 void BackendEnumsClient::EnumSignalDBusHandler(QDBusMessage content) {
-    auto arg_0 = content.arguments()[0].value<>();
+    auto arg_0 = content.arguments()[0].value<Color::Type>();
     emit enumSignalReceived(
         QVariant::fromValue(arg_0)
     );
 }
 
 
- BackendEnumsClient::getEnumProperty() const {
+Color::Type BackendEnumsClient::getEnumProperty() const {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -171,10 +172,9 @@ void BackendEnumsClient::EnumSignalDBusHandler(QDBusMessage content) {
         "com.yarpc.backend.enums",
         "EnumProperty"
     );
-     unmarshalled{};
+    Color::Type unmarshalled{};
     if (reply.isValid()) {
-        auto marshalled = qvariant_cast<QDBusArgument>(reply.value().variant());
-        marshalled >> unmarshalled;
+        unmarshalled = reply.value().variant().value<Color::Type>();
     }
     return unmarshalled;
 }
@@ -189,7 +189,7 @@ QVariant BackendEnumsClient::getVariantEnumProperty() const {
 }
 
 
-void BackendEnumsClient::setEnumProperty(const  &newValue) {
+void BackendEnumsClient::setEnumProperty(const Color::Type &newValue) {
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/enums",
@@ -198,7 +198,7 @@ void BackendEnumsClient::setEnumProperty(const  &newValue) {
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(newValue));
+    v.setVariant(QVariant::fromValue(static_cast<int>(newValue)));
     marshalled << v;
     iface.call(
         "Set",
@@ -209,8 +209,8 @@ void BackendEnumsClient::setEnumProperty(const  &newValue) {
 }
 
 void BackendEnumsClient::setVariantEnumProperty(QVariant value ) {
-     unmarshalled;
-    unmarshalled = value.value<>();
+    Color::Type unmarshalled;
+    unmarshalled = value.value<Color::Type>();
 
     setEnumProperty(unmarshalled);
 }

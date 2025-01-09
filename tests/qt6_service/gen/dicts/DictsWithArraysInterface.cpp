@@ -58,7 +58,7 @@ DictsArrayMethodPendingReply::DictsArrayMethodPendingReply(QDBusMessage call, QO
         marshalled >> arg_0;
     }
     m_args = DictsArrayMethodArgs{
-        .numbers = arg_0,
+        .numbers = static_cast<QMap<QString, QList<QMap<QString, uint>>>>(arg_0),
     };
 }
 
@@ -78,7 +78,8 @@ void DictsArrayMethodPendingReply::sendReply(
 void DictsArrayMethodPendingReply::sendReply(
     const QMap<QString, QList<QMap<QString, uint>>> &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QMap<QString, QList<QMap<QString, uint>>>>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictsWithArraysInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -139,7 +140,7 @@ void DictsWithArraysInterface::setDictArrayProperty(const QMap<QString, QList<QM
     emit dictArrayPropertyChanged();
     if (Connection::instance().DictsWithArrays() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("DictArrayProperty", QVariant::fromValue(value));
+        changedProps.insert("DictArrayProperty", QVariant::fromValue(static_cast<QMap<QString, QList<QMap<QString, uint>>>>(value)));
         emitPropertiesChangedSignal(changedProps);
     }
 }

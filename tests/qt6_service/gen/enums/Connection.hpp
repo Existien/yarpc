@@ -12,9 +12,6 @@
 #include <QDBusMessage>
 #include <memory>
 #include "EnumsInterfaceAdaptor.hpp"
-#include "EnumsWithStructsInterfaceAdaptor.hpp"
-#include "EnumsWithArraysInterfaceAdaptor.hpp"
-#include "EnumsWithDictsInterfaceAdaptor.hpp"
 namespace gen::enums {
 
 /**
@@ -34,15 +31,6 @@ public:
 
     /** @brief Pointer to the adaptor for a registered EnumsInterface interface or null if it isn't registered. */
     EnumsInterfaceAdaptor *m_enums = nullptr;
-
-    /** @brief Pointer to the adaptor for a registered EnumsWithStructsInterface interface or null if it isn't registered. */
-    EnumsWithStructsInterfaceAdaptor *m_enumsWithStructs = nullptr;
-
-    /** @brief Pointer to the adaptor for a registered EnumsWithArraysInterface interface or null if it isn't registered. */
-    EnumsWithArraysInterfaceAdaptor *m_enumsWithArrays = nullptr;
-
-    /** @brief Pointer to the adaptor for a registered EnumsWithDictsInterface interface or null if it isn't registered. */
-    EnumsWithDictsInterfaceAdaptor *m_enumsWithDicts = nullptr;
 
 };
 
@@ -103,66 +91,6 @@ public:
     bool isEnumsRegistered() const;
     EnumsInterfaceAdaptor * Enums();
 
-    /**
-     * @brief Registers the EnumsWithStructs interface under its object path.
-     *
-     * @param interface pointer to the EnumsWithStructs object to register
-     */
-    void registerEnumsWithStructs(QObject* interface);
-
-    /**
-     * @brief Unregisters the EnumsWithStructs.
-     */
-    void unregisterEnumsWithStructs();
-
-    /**
-     * @brief Returns whether the EnumsWithStructs interface is registered.
-     *
-     * @returns whether the interface is registered
-     */
-    bool isEnumsWithStructsRegistered() const;
-    EnumsWithStructsInterfaceAdaptor * EnumsWithStructs();
-
-    /**
-     * @brief Registers the EnumsWithArrays interface under its object path.
-     *
-     * @param interface pointer to the EnumsWithArrays object to register
-     */
-    void registerEnumsWithArrays(QObject* interface);
-
-    /**
-     * @brief Unregisters the EnumsWithArrays.
-     */
-    void unregisterEnumsWithArrays();
-
-    /**
-     * @brief Returns whether the EnumsWithArrays interface is registered.
-     *
-     * @returns whether the interface is registered
-     */
-    bool isEnumsWithArraysRegistered() const;
-    EnumsWithArraysInterfaceAdaptor * EnumsWithArrays();
-
-    /**
-     * @brief Registers the EnumsWithDicts interface under its object path.
-     *
-     * @param interface pointer to the EnumsWithDicts object to register
-     */
-    void registerEnumsWithDicts(QObject* interface);
-
-    /**
-     * @brief Unregisters the EnumsWithDicts.
-     */
-    void unregisterEnumsWithDicts();
-
-    /**
-     * @brief Returns whether the EnumsWithDicts interface is registered.
-     *
-     * @returns whether the interface is registered
-     */
-    bool isEnumsWithDictsRegistered() const;
-    EnumsWithDictsInterfaceAdaptor * EnumsWithDicts();
-
 public slots:
     /**
      * @brief Establishes a connection to the D-Bus.
@@ -193,9 +121,6 @@ private:
     std::unique_ptr<EnumsTestserviceYarpcComObjectPath> m_EnumsTestserviceYarpcComObjectPath = nullptr;
 
     QObject* m_Enums = nullptr;
-    QObject* m_EnumsWithStructs = nullptr;
-    QObject* m_EnumsWithArrays = nullptr;
-    QObject* m_EnumsWithDicts = nullptr;
 
 };
 

@@ -27,6 +27,6 @@ QList<StructArray> ArraysWithStructsInterfaceAdaptor::getArrayStructProperty() c
 }
 
 void ArraysWithStructsInterfaceAdaptor::setArrayStructProperty(const QList<StructArray> &value ) {
-    emit m_iface->propertyArrayStructPropertySet(value);
+    emit m_iface->propertyArrayStructPropertySet(static_cast<const QList<StructArray>>(value));
 }
 

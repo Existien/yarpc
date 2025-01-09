@@ -27,6 +27,6 @@ QList<QList<QString>> ArraysInterfaceAdaptor::getArrayProperty() const {
 }
 
 void ArraysInterfaceAdaptor::setArrayProperty(const QList<QList<QString>> &value ) {
-    emit m_iface->propertyArrayPropertySet(value);
+    emit m_iface->propertyArrayPropertySet(static_cast<const QList<QList<QString>>>(value));
 }
 

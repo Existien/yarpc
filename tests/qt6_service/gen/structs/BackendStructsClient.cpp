@@ -117,7 +117,7 @@ SendStructPendingCall* BackendStructsClient::SendStruct(
     SimpleStruct simpleStruct
 ) {
     QDBusArgument dbussimpleStruct;
-    dbussimpleStruct << simpleStruct;
+    dbussimpleStruct << static_cast<SimpleStruct>(simpleStruct);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/structs",
@@ -145,7 +145,8 @@ void SendStructPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        SimpleStruct finishedReply = reply;
+        emit finished(static_cast<SimpleStruct>(finishedReply));
     }
     deleteLater();
 }
@@ -201,7 +202,7 @@ void BackendStructsClient::setSimple(const SimpleStruct &newValue) {
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(newValue));
+    v.setVariant(QVariant::fromValue(static_cast<SimpleStruct>(newValue)));
     marshalled << v;
     iface.call(
         "Set",

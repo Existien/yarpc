@@ -25,6 +25,9 @@ qt_add_qml_module({{ module_name }}
         {% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
         {{ object.name }}.cpp
         {% endfor %}
+        {% for object in output.objects|selectattr('kind', 'equalto', 'enum') %}
+        {{ object.name }}.cpp
+        {% endfor %}
 )
 
 target_link_libraries({{ module_name }} PUBLIC Qt6::DBus)

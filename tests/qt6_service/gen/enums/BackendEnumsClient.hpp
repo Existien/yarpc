@@ -13,7 +13,7 @@
 #include <QDBusPendingCallWatcher>
 #include <QVariant>
 #include "DBusError.hpp"
-#include "EnumStruct.hpp"
+#include "Color.hpp"
 #include "types.hpp"
 namespace gen::enums {
 
@@ -32,7 +32,7 @@ signals:
      *
      * @param another color
      */
-    void finished(const  &reply);
+    void finished(const Color::Type &reply);
 
     /**
      * @brief Emitted when an error ocurred during an EnumMethod call.
@@ -72,7 +72,7 @@ public:
      * @returns Pending call object with finished signal containing the reply.
      */
     EnumMethodPendingCall* EnumMethod(
-         color
+        Color::Type color
     );
 
     /**
@@ -82,7 +82,7 @@ public:
      *
      * a property
      */
-     getEnumProperty() const;
+    Color::Type getEnumProperty() const;
 
     /**
      * @brief Setter for the EnumProperty property.
@@ -91,7 +91,7 @@ public:
      *
      * a property
      */
-    void setEnumProperty(const  &newValue);
+    void setEnumProperty(const Color::Type &newValue);
 
 public slots:
     /**

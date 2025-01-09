@@ -27,7 +27,7 @@ class {{ target.className }}Adaptor : public QDBusAbstractAdaptor {
     /**
      {{ qt6.doctag(member, "brief")|indent(5) }}
      */
-    Q_PROPERTY({{ qt6.type(member.type, output.objects) }} {{ member.name }} READ get{{ member.name }} {% if member.readonly != True %}WRITE set{{ member.name }} {% endif %})
+    Q_PROPERTY({{ qt6.type(member.type, output.objects, dbus=true) }} {{ member.name }} READ get{{ member.name }} {% if member.readonly != True %}WRITE set{{ member.name }} {% endif %})
 
     {% endif %}
     {% endfor %}
@@ -49,13 +49,13 @@ public slots:
      {% endif %}
      */
     {% if member.returns is defined %}
-    {% set return_type = qt6.type(member.returns.type, output.objects) %}
+    {% set return_type = qt6.type(member.returns.type, output.objects, dbus=true) %}
     {% else %}
     {% set return_type = "void" %}
     {% endif %}
     {{ return_type }} {{ member.name }}(
     {% if member.args|count > 0 %}
-        {{ qt6.funcparams(member.args, output.objects)|indent(8) }},
+        {{ qt6.funcparams(member.args, output.objects, dbus=true)|indent(8) }},
     {% endif %}
         const QDBusMessage &_message
     );
@@ -74,7 +74,7 @@ signals:
      */
     void {{ member.name }}(
     {% if member.args|count > 0 %}
-        {{ qt6.funcparams(member.args, output.objects)|indent(8) }}
+        {{ qt6.funcparams(member.args, output.objects, dbus=true)|indent(8) }}
     {% endif %}
     );
     {% endif %}
@@ -82,9 +82,9 @@ signals:
 private:
     {% for member in object.members %}
     {% if member.kind == "property" %}
-    {{ qt6.type(member.type, output.objects)}} get{{ member.name }}() const;
+    {{ qt6.type(member.type, output.objects, dbus=true)}} get{{ member.name }}() const;
     {% if member.readonly != True %}
-    void set{{ member.name }}(const {{ qt6.type(member.type, output.objects) }} &value );
+    void set{{ member.name }}(const {{ qt6.type(member.type, output.objects, dbus=true) }} &value );
     {% endif %}
     {% endif %}
     {% endfor %}

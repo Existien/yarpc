@@ -283,7 +283,8 @@ void Uint8MethodPendingReply::sendReply(
 void Uint8MethodPendingReply::sendReply(
     const uchar &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<uchar>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -337,7 +338,8 @@ void BoolMethodPendingReply::sendReply(
 void BoolMethodPendingReply::sendReply(
     const bool &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<bool>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -391,7 +393,8 @@ void Int16MethodPendingReply::sendReply(
 void Int16MethodPendingReply::sendReply(
     const short &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<short>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -445,7 +448,8 @@ void Uint16MethodPendingReply::sendReply(
 void Uint16MethodPendingReply::sendReply(
     const ushort &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<ushort>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -499,7 +503,8 @@ void Int32MethodPendingReply::sendReply(
 void Int32MethodPendingReply::sendReply(
     const int &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<int>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -553,7 +558,8 @@ void Uint32MethodPendingReply::sendReply(
 void Uint32MethodPendingReply::sendReply(
     const uint &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<uint>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -607,7 +613,8 @@ void Int64MethodPendingReply::sendReply(
 void Int64MethodPendingReply::sendReply(
     const qlonglong &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<qlonglong>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -661,7 +668,8 @@ void Uint64MethodPendingReply::sendReply(
 void Uint64MethodPendingReply::sendReply(
     const qulonglong &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<qulonglong>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -715,7 +723,8 @@ void DoubleMethodPendingReply::sendReply(
 void DoubleMethodPendingReply::sendReply(
     const double &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<double>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);
@@ -769,7 +778,8 @@ void StringMethodPendingReply::sendReply(
 void StringMethodPendingReply::sendReply(
     const QString &reply
 ) {
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<QString>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<PrimitivesInterface*>(parent());
     if (iface != nullptr) {
         iface->finishCall(dbusReply);

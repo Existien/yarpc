@@ -27,6 +27,6 @@ QMap<QString, QList<QMap<QString, uint>>> DictsWithArraysInterfaceAdaptor::getDi
 }
 
 void DictsWithArraysInterfaceAdaptor::setDictArrayProperty(const QMap<QString, QList<QMap<QString, uint>>> &value ) {
-    emit m_iface->propertyDictArrayPropertySet(value);
+    emit m_iface->propertyDictArrayPropertySet(static_cast<const QMap<QString, QList<QMap<QString, uint>>>>(value));
 }
 

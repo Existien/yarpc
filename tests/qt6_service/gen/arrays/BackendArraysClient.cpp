@@ -127,7 +127,7 @@ ArrayMethodPendingCall* BackendArraysClient::ArrayMethod(
     QList<QList<uint>> numbers
 ) {
     QDBusArgument dbusnumbers;
-    dbusnumbers << numbers;
+    dbusnumbers << static_cast<QList<QList<uint>>>(numbers);
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/arrays",
@@ -155,7 +155,8 @@ void ArrayMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isValid()) {
         emit error(reply.error());
     } else {
-        emit finished(reply);
+        QList<QList<double>> finishedReply = reply;
+        emit finished(static_cast<QList<QList<double>>>(finishedReply));
     }
     deleteLater();
 }
@@ -223,7 +224,7 @@ void BackendArraysClient::setArrayProperty(const QList<QList<QString>> &newValue
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(newValue));
+    v.setVariant(QVariant::fromValue(static_cast<QList<QList<QString>>>(newValue)));
     marshalled << v;
     iface.call(
         "Set",

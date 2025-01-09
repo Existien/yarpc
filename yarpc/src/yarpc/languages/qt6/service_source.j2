@@ -101,7 +101,7 @@ void {{ target.className }}::Emit{{ member.name }}(
     {% for i in range(0, member.args|count) %}
     {% set arg = member.args[i] %}
     {% if arg.type|needs_marshalling(output.objects) %}
-    {{ qt6.type(arg.type, output.objects) }} arg_{{i}};
+    {{ qt6.type(arg.type, output.objects, dbus=true) }} arg_{{i}};
     {
         auto marshalled = m_call.arguments()[{{i}}].value<QDBusArgument>();
         marshalled >> arg_{{i}};
@@ -112,7 +112,7 @@ void {{ target.className }}::Emit{{ member.name }}(
         {% for i in range(0, member.args|count) %}
         {% set arg = member.args[i] %}
         {% if arg.type|needs_marshalling(output.objects) %}
-        .{{ arg.name }} = arg_{{i}},
+        .{{ arg.name }} = static_cast<{{ qt6.type(arg.type, output.objects) }}>(arg_{{i}}),
         {% else %}
         .{{ arg.name }} = m_call.arguments()[{{i}}].value<{{ qt6.type(arg.type, output.objects) }}>(),
         {% endif %}
@@ -139,7 +139,8 @@ void {{ member.name }}PendingReply::sendReply(
     {% endif %}
 ) {
     {% if member.returns is defined %}
-    auto dbusReply = m_call.createReply(QVariant::fromValue(reply));
+    auto replyToSend = static_cast<{{ qt6.type(member.returns.type, output.objects, dbus=true) }}>(reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     {% else %}
     auto dbusReply = m_call.createReply();
     {% endif %}
@@ -184,7 +185,7 @@ void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type,
     emit {{ member.name|camel_case }}Changed();
     if (Connection::instance().{{ object.name }}() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("{{ member.name }}", QVariant::fromValue(value));
+        changedProps.insert("{{ member.name }}", QVariant::fromValue(static_cast<{{ qt6.type(member.type, output.objects, dbus=true) }}>(value)));
         emitPropertiesChangedSignal(changedProps);
     }
 }

@@ -7,7 +7,6 @@
 #pragma once
 #include <qqmlintegration.h>
 #include <QObject>
-#include "EnumStruct.hpp"
 
 namespace gen::enums {
 
@@ -15,14 +14,5 @@ namespace gen::enums {
 * @brief Registers MetaTypes used by this interface.
 */
 void registerMetaTypes();
-
-
-class Conversions : public QObject {
-    Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
-public:
-    Q_INVOKABLE QMap<, > jsToMapOfColorToColor(QVariant jsonObject);
-};
 
 }
