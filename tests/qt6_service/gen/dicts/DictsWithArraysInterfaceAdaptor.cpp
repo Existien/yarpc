@@ -23,10 +23,11 @@ QMap<QString, QList<QMap<QString, uint>>> DictsWithArraysInterfaceAdaptor::Dicts
 }
 
 QMap<QString, QList<QMap<QString, uint>>> DictsWithArraysInterfaceAdaptor::getDictArrayProperty() const {
-    return m_iface->getDictArrayProperty();
+    auto value = m_iface->getDictArrayProperty();
+    return value;
 }
 
 void DictsWithArraysInterfaceAdaptor::setDictArrayProperty(const QMap<QString, QList<QMap<QString, uint>>> &value ) {
-    emit m_iface->propertyDictArrayPropertySet(static_cast<const QMap<QString, QList<QMap<QString, uint>>>>(value));
+    emit m_iface->propertyDictArrayPropertySet(value);
 }
 

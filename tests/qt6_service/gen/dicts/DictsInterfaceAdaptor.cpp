@@ -23,10 +23,11 @@ QMap<QString, QString> DictsInterfaceAdaptor::DictMethod(
 }
 
 QMap<QString, uint> DictsInterfaceAdaptor::getDictProperty() const {
-    return m_iface->getDictProperty();
+    auto value = m_iface->getDictProperty();
+    return value;
 }
 
 void DictsInterfaceAdaptor::setDictProperty(const QMap<QString, uint> &value ) {
-    emit m_iface->propertyDictPropertySet(static_cast<const QMap<QString, uint>>(value));
+    emit m_iface->propertyDictPropertySet(value);
 }
 

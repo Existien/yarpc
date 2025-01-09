@@ -23,10 +23,11 @@ QList<SimonsArray> ArraysWithStructsInterfaceAdaptor::ArrayStructMethod(
 }
 
 QList<StructArray> ArraysWithStructsInterfaceAdaptor::getArrayStructProperty() const {
-    return m_iface->getArrayStructProperty();
+    auto value = m_iface->getArrayStructProperty();
+    return value;
 }
 
 void ArraysWithStructsInterfaceAdaptor::setArrayStructProperty(const QList<StructArray> &value ) {
-    emit m_iface->propertyArrayStructPropertySet(static_cast<const QList<StructArray>>(value));
+    emit m_iface->propertyArrayStructPropertySet(value);
 }
 

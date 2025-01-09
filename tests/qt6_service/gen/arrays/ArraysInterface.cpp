@@ -59,7 +59,7 @@ ArrayMethodPendingReply::ArrayMethodPendingReply(QDBusMessage call, QObject *par
         marshalled >> arg_0;
     }
     m_args = ArrayMethodArgs{
-        .numbers = static_cast<QList<QList<uint>>>(arg_0),
+        .numbers = arg_0,
     };
 }
 
@@ -89,7 +89,7 @@ void ArrayMethodPendingReply::sendReply(
 void ArrayMethodPendingReply::sendReply(
     const QList<QList<double>> &reply
 ) {
-    auto replyToSend = static_cast<QList<QList<double>>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<ArraysInterface*>(parent());
     if (iface != nullptr) {
@@ -161,7 +161,7 @@ void ArraysInterface::setArrayProperty(const QList<QList<QString>> &value ) {
     emit arrayPropertyChanged();
     if (Connection::instance().Arrays() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("ArrayProperty", QVariant::fromValue(static_cast<QList<QList<QString>>>(value)));
+        changedProps.insert("ArrayProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

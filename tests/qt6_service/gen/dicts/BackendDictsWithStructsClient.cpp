@@ -118,7 +118,7 @@ DictsStructMethodPendingCall* BackendDictsWithStructsClient::DictsStructMethod(
     QMap<QString, StructDict> numbers
 ) {
     QDBusArgument dbusnumbers;
-    dbusnumbers << static_cast<QMap<QString, StructDict>>(numbers);
+    dbusnumbers << numbers;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -147,7 +147,7 @@ void DictsStructMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher
         emit error(reply.error());
     } else {
         QMap<QString, SimonsDict> finishedReply = reply;
-        emit finished(static_cast<QMap<QString, SimonsDict>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -201,7 +201,7 @@ void BackendDictsWithStructsClient::setDictStructProperty(const QMap<QString, St
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(static_cast<QMap<QString, StructDict>>(newValue)));
+    v.setVariant(QVariant::fromValue(newValue));
     marshalled << v;
     iface.call(
         "Set",

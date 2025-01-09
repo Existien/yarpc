@@ -59,7 +59,7 @@ SendStructPendingReply::SendStructPendingReply(QDBusMessage call, QObject *paren
         marshalled >> arg_0;
     }
     m_args = SendStructArgs{
-        .simpleStruct = static_cast<SimpleStruct>(arg_0),
+        .simpleStruct = arg_0,
     };
 }
 
@@ -79,7 +79,7 @@ void SendStructPendingReply::sendReply(
 void SendStructPendingReply::sendReply(
     const SimpleStruct &reply
 ) {
-    auto replyToSend = static_cast<SimpleStruct>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<StructsInterface*>(parent());
     if (iface != nullptr) {
@@ -148,7 +148,7 @@ void StructsInterface::setSimple(const SimpleStruct &value ) {
     emit simpleChanged();
     if (Connection::instance().Structs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("Simple", QVariant::fromValue(static_cast<SimpleStruct>(value)));
+        changedProps.insert("Simple", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

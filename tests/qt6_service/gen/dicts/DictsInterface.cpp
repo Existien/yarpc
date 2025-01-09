@@ -59,7 +59,7 @@ DictMethodPendingReply::DictMethodPendingReply(QDBusMessage call, QObject *paren
         marshalled >> arg_0;
     }
     m_args = DictMethodArgs{
-        .keysNValues = static_cast<QMap<QString, uint>>(arg_0),
+        .keysNValues = arg_0,
     };
 }
 
@@ -79,7 +79,7 @@ void DictMethodPendingReply::sendReply(
 void DictMethodPendingReply::sendReply(
     const QMap<QString, QString> &reply
 ) {
-    auto replyToSend = static_cast<QMap<QString, QString>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<DictsInterface*>(parent());
     if (iface != nullptr) {
@@ -141,7 +141,7 @@ void DictsInterface::setDictProperty(const QMap<QString, uint> &value ) {
     emit dictPropertyChanged();
     if (Connection::instance().Dicts() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("DictProperty", QVariant::fromValue(static_cast<QMap<QString, uint>>(value)));
+        changedProps.insert("DictProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

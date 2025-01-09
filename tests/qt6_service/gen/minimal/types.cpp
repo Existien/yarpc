@@ -7,7 +7,6 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
-#include <QJSValueIterator>
 
 namespace gen::minimal {
 

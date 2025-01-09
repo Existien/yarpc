@@ -20,18 +20,29 @@
 {%- endif -%}
 {%- elif object.kind == 'builtin' -%}
 {%- if object.name == 'array' -%}
-{%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
+{%- set inner_type = type(type_as_str|extract_inner(object)|first, objects, dbus=dbus) %}
 {{ object.qt6|replace("$1", inner_type) }}
 {%- elif object.name == 'dict' -%}
 {%- set inner_types = type_as_str|extract_inner(object) -%}
-{%- set key_type = type(inner_types[0], objects) -%}
-{%- set value_type = type(inner_types[1], objects) -%}
+{%- set key_type = type(inner_types[0], objects, dbus=dbus) -%}
+{%- set value_type = type(inner_types[1], objects, dbus=dbus) -%}
 {{ object.qt6|replace("$1", key_type)|replace("$2", value_type) }}
 {%- else -%}
 {{ object.qt6 }}
 {%- endif -%}
 {%- endif -%}
 {%- endmacro %}
+{#
+    Force cast type if required
+    Note that this only works if the underlying types are identical!
+#}
+{% macro force_cast(arg_name, arg_type, objects, dbus) %}
+{% if type(arg_type, objects) != type(arg_type, objects, dbus=true) %}
+*reinterpret_cast<const {{ type(arg_type, objects, dbus=dbus) }}*>(&{{ arg_name }})
+{%- else %}
+{{ arg_name }}
+{%- endif -%}
+{% endmacro %}
 {#
     Render generic doxygen tags
 #}

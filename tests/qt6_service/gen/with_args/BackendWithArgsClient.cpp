@@ -150,7 +150,7 @@ NotifyPendingCall* BackendWithArgsClient::Notify(
     QString message
 ) {
     QDBusArgument dbusmessage;
-    dbusmessage << static_cast<QString>(message);
+    dbusmessage << message;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -209,11 +209,11 @@ OrderPendingCall* BackendWithArgsClient::Order(
     double pricePerItem
 ) {
     QDBusArgument dbusitem;
-    dbusitem << static_cast<QString>(item);
+    dbusitem << item;
     QDBusArgument dbusamount;
-    dbusamount << static_cast<uint>(amount);
+    dbusamount << amount;
     QDBusArgument dbuspricePerItem;
-    dbuspricePerItem << static_cast<double>(pricePerItem);
+    dbuspricePerItem << pricePerItem;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -244,7 +244,7 @@ void OrderPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         double finishedReply = reply;
-        emit finished(static_cast<double>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -289,7 +289,7 @@ void BackendWithArgsClient::setSpeed(const double &newValue) {
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(static_cast<double>(newValue)));
+    v.setVariant(QVariant::fromValue(newValue));
     marshalled << v;
     iface.call(
         "Set",
@@ -345,7 +345,7 @@ void BackendWithArgsClient::setDistance(const uint &newValue) {
     );
     QDBusArgument marshalled;
     QDBusVariant v;
-    v.setVariant(QVariant::fromValue(static_cast<uint>(newValue)));
+    v.setVariant(QVariant::fromValue(newValue));
     marshalled << v;
     iface.call(
         "Set",

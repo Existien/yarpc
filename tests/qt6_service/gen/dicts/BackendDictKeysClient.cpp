@@ -267,7 +267,7 @@ Uint8MethodPendingCall* BackendDictKeysClient::Uint8Method(
     QMap<uchar, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<uchar, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -296,7 +296,7 @@ void Uint8MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<uchar, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<uchar, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -315,7 +315,7 @@ BoolMethodPendingCall* BackendDictKeysClient::BoolMethod(
     QMap<bool, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<bool, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -344,7 +344,7 @@ void BoolMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<bool, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<bool, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -363,7 +363,7 @@ Int16MethodPendingCall* BackendDictKeysClient::Int16Method(
     QMap<short, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<short, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -392,7 +392,7 @@ void Int16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<short, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<short, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -411,7 +411,7 @@ Uint16MethodPendingCall* BackendDictKeysClient::Uint16Method(
     QMap<ushort, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<ushort, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -440,7 +440,7 @@ void Uint16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<ushort, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<ushort, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -459,7 +459,7 @@ Int32MethodPendingCall* BackendDictKeysClient::Int32Method(
     QMap<int, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<int, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -488,7 +488,7 @@ void Int32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<int, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<int, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -507,7 +507,7 @@ Uint32MethodPendingCall* BackendDictKeysClient::Uint32Method(
     QMap<uint, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<uint, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -536,7 +536,7 @@ void Uint32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<uint, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<uint, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -555,7 +555,7 @@ Int64MethodPendingCall* BackendDictKeysClient::Int64Method(
     QMap<qlonglong, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<qlonglong, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -584,7 +584,7 @@ void Int64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<qlonglong, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<qlonglong, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -603,7 +603,7 @@ Uint64MethodPendingCall* BackendDictKeysClient::Uint64Method(
     QMap<qulonglong, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<qulonglong, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -632,7 +632,7 @@ void Uint64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<qulonglong, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<qulonglong, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -651,7 +651,7 @@ DoubleMethodPendingCall* BackendDictKeysClient::DoubleMethod(
     QMap<double, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<double, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -680,7 +680,7 @@ void DoubleMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<double, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<double, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -699,7 +699,7 @@ StringMethodPendingCall* BackendDictKeysClient::StringMethod(
     QMap<QString, QString> value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QMap<QString, QString>>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/dicts",
@@ -728,7 +728,7 @@ void StringMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QMap<QString, QString> finishedReply = reply;
-        emit finished(static_cast<QMap<QString, QString>>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }

@@ -74,7 +74,7 @@ void EnumMethodPendingReply::sendReply(
 void EnumMethodPendingReply::sendReply(
     const Color::Type &reply
 ) {
-    auto replyToSend = static_cast<int>(reply);
+    auto replyToSend = *reinterpret_cast<const int*>(&reply);
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<EnumsInterface*>(parent());
     if (iface != nullptr) {
@@ -111,7 +111,7 @@ void EnumsInterface::EmitEnumSignal(
 ) {
     if (Connection::instance().Enums() != nullptr ) {
         emit Connection::instance().Enums()->EnumSignal(
-            color
+            *reinterpret_cast<const int*>(&color)
         );
     }
 }
@@ -136,7 +136,7 @@ void EnumsInterface::setEnumProperty(const Color::Type &value ) {
     emit enumPropertyChanged();
     if (Connection::instance().Enums() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("EnumProperty", QVariant::fromValue(static_cast<int>(value)));
+        changedProps.insert("EnumProperty", QVariant::fromValue(*reinterpret_cast<const int*>(&value)));
         emitPropertiesChangedSignal(changedProps);
     }
 }

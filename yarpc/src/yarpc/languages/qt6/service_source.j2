@@ -64,7 +64,7 @@ void {{ target.className }}::Emit{{ member.name }}(
         emit Connection::instance().{{ object.name }}()->{{ member.name }}(
             {% for i in range(0, member.args|count) %}
             {% set arg = member.args[i] %}
-            {{ arg.name }}
+            {{ qt6.force_cast(arg.name, arg.type, output.objects, dbus=true) }}
             {%- if i < member.args|count - 1 -%}
             ,
             {% endif %}
@@ -113,7 +113,7 @@ void {{ target.className }}::Emit{{ member.name }}(
         {% for i in range(0, member.args|count) %}
         {% set arg = member.args[i] %}
         {% if arg.type|needs_marshalling(output.objects) %}
-        .{{ arg.name }} = static_cast<{{ qt6.type(arg.type, output.objects) }}>(arg_{{i}}),
+        .{{ arg.name }} = {{ qt6.force_cast("arg_"+i|string, arg.type, output.objects, dbus=false) }},
         {% else %}
         .{{ arg.name }} = m_call.arguments()[{{i}}].value<{{ qt6.type(arg.type, output.objects) }}>(),
         {% endif %}
@@ -140,7 +140,7 @@ void {{ member.name }}PendingReply::sendReply(
     {% endif %}
 ) {
     {% if member.returns is defined %}
-    auto replyToSend = static_cast<{{ qt6.type(member.returns.type, output.objects, dbus=true) }}>(reply);
+    auto replyToSend = {{ qt6.force_cast("reply", member.returns.type, output.objects, dbus=true) }};
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     {% else %}
     auto dbusReply = m_call.createReply();
@@ -186,7 +186,7 @@ void {{ target.className }}::set{{ member.name }}(const {{ qt6.type(member.type,
     emit {{ member.name|camel_case }}Changed();
     if (Connection::instance().{{ object.name }}() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("{{ member.name }}", QVariant::fromValue(static_cast<{{ qt6.type(member.type, output.objects, dbus=true) }}>(value)));
+        changedProps.insert("{{ member.name }}", QVariant::fromValue({{ qt6.force_cast("value", member.type, output.objects, dbus=true) }}));
         emitPropertiesChangedSignal(changedProps);
     }
 }
