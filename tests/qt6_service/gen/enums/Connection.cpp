@@ -6,6 +6,7 @@
  */
 #include "Connection.hpp"
 #include "EnumsInterface.hpp"
+#include "EnumsWithArraysInterface.hpp"
 
 using namespace gen::enums;
 
@@ -17,6 +18,7 @@ bool EnumsTestserviceYarpcComObjectPath::hasRegistrations() const {
     return (
         false
         || m_enums != nullptr
+        || m_enumsWithArrays != nullptr
     );
 }
 
@@ -56,6 +58,7 @@ void Connection::disconnectIfUnused(){
     if (
         false
         || m_Enums != nullptr
+        || m_EnumsWithArrays != nullptr
     ) {
         return;
     }
@@ -73,9 +76,17 @@ void Connection::updateRegistrations() {
                 m_EnumsTestserviceYarpcComObjectPath.get()
             );
         }
+        if (m_EnumsWithArrays != nullptr) {
+            auto enumsWithArraysInterface = dynamic_cast<EnumsWithArraysInterface*>(m_EnumsWithArrays);
+            m_EnumsTestserviceYarpcComObjectPath->m_enumsWithArrays = new EnumsWithArraysInterfaceAdaptor(
+                enumsWithArraysInterface,
+                m_EnumsTestserviceYarpcComObjectPath.get()
+            );
+        }
         if (
             false
             || m_Enums != nullptr
+            || m_EnumsWithArrays != nullptr
         ) {
             m_connection->registerObject(
                 "/com/yarpc/testservice/enums",
@@ -124,6 +135,37 @@ bool Connection::isEnumsRegistered() const {
 EnumsInterfaceAdaptor* Connection::Enums() {
     if (m_EnumsTestserviceYarpcComObjectPath != nullptr) {
         return m_EnumsTestserviceYarpcComObjectPath->m_enums;
+    } else {
+        return nullptr;
+    }
+}
+
+void Connection::registerEnumsWithArrays(QObject* interface) {
+    if (m_EnumsWithArrays == nullptr) {
+        auto enumsWithArraysInterface = dynamic_cast<EnumsWithArraysInterface*>(interface);
+        if (enumsWithArraysInterface != nullptr) {
+            m_EnumsWithArrays = interface;
+        }
+    }
+    connect();
+    updateRegistrations();
+}
+
+void Connection::unregisterEnumsWithArrays() {
+    if (m_EnumsWithArrays != nullptr) {
+        m_EnumsWithArrays = nullptr;
+    }
+    updateRegistrations();
+    disconnectIfUnused();
+}
+
+bool Connection::isEnumsWithArraysRegistered() const {
+    return (m_EnumsWithArrays != nullptr);
+}
+
+EnumsWithArraysInterfaceAdaptor* Connection::EnumsWithArrays() {
+    if (m_EnumsTestserviceYarpcComObjectPath != nullptr) {
+        return m_EnumsTestserviceYarpcComObjectPath->m_enumsWithArrays;
     } else {
         return nullptr;
     }

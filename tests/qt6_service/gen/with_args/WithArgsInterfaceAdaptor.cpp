@@ -33,22 +33,25 @@ double WithArgsInterfaceAdaptor::Order(
 }
 
 double WithArgsInterfaceAdaptor::getSpeed() const {
-    return m_iface->getSpeed();
+    auto value = m_iface->getSpeed();
+    return value;
 }
 
 void WithArgsInterfaceAdaptor::setSpeed(const double &value ) {
-    emit m_iface->propertySpeedSet(static_cast<const double>(value));
+    emit m_iface->propertySpeedSet(value);
 }
 
 uint WithArgsInterfaceAdaptor::getDistance() const {
-    return m_iface->getDistance();
+    auto value = m_iface->getDistance();
+    return value;
 }
 
 void WithArgsInterfaceAdaptor::setDistance(const uint &value ) {
-    emit m_iface->propertyDistanceSet(static_cast<const uint>(value));
+    emit m_iface->propertyDistanceSet(value);
 }
 
 double WithArgsInterfaceAdaptor::getDuration() const {
-    return m_iface->getDuration();
+    auto value = m_iface->getDuration();
+    return value;
 }
 

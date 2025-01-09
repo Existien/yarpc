@@ -73,7 +73,7 @@ void PassStructMethodPendingReply::sendReply(
 void PassStructMethodPendingReply::sendReply(
     const QmlStruct &reply
 ) {
-    auto replyToSend = static_cast<QmlStruct>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -158,7 +158,7 @@ void PassArrayInArrayMethodPendingReply::sendReply(
 void PassArrayInArrayMethodPendingReply::sendReply(
     const QList<QList<uint>> &reply
 ) {
-    auto replyToSend = static_cast<QList<QList<uint>>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -248,7 +248,7 @@ void PassStructsInArrayMethodPendingReply::sendReply(
 void PassStructsInArrayMethodPendingReply::sendReply(
     const QList<QmlStruct> &reply
 ) {
-    auto replyToSend = static_cast<QList<QmlStruct>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -328,7 +328,7 @@ void PassDictWithStringsMethodPendingReply::sendReply(
 void PassDictWithStringsMethodPendingReply::sendReply(
     const QMap<QString, QString> &reply
 ) {
-    auto replyToSend = static_cast<QMap<QString, QString>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -403,7 +403,7 @@ void PassDictWithNumbersMethodPendingReply::sendReply(
 void PassDictWithNumbersMethodPendingReply::sendReply(
     const QMap<uint, QString> &reply
 ) {
-    auto replyToSend = static_cast<QMap<uint, QString>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -478,7 +478,7 @@ void PassDictWithStructsMethodPendingReply::sendReply(
 void PassDictWithStructsMethodPendingReply::sendReply(
     const QMap<QString, QmlStruct> &reply
 ) {
-    auto replyToSend = static_cast<QMap<QString, QmlStruct>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -558,7 +558,7 @@ void PassDictInArrayMethodPendingReply::sendReply(
 void PassDictInArrayMethodPendingReply::sendReply(
     const QList<QMap<QString, QString>> &reply
 ) {
-    auto replyToSend = static_cast<QList<QMap<QString, QString>>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -638,7 +638,7 @@ void PassDictInDictMethodPendingReply::sendReply(
 void PassDictInDictMethodPendingReply::sendReply(
     const QMap<QString, QMap<QString, QString>> &reply
 ) {
-    auto replyToSend = static_cast<QMap<QString, QMap<QString, QString>>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -713,7 +713,7 @@ void PassArrayInDictMethodPendingReply::sendReply(
 void PassArrayInDictMethodPendingReply::sendReply(
     const QMap<QString, QList<QString>> &reply
 ) {
-    auto replyToSend = static_cast<QMap<QString, QList<QString>>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -788,7 +788,7 @@ void PassDictInArrayInDictMethodPendingReply::sendReply(
 void PassDictInArrayInDictMethodPendingReply::sendReply(
     const QMap<QString, QList<QMap<QString, QString>>> &reply
 ) {
-    auto replyToSend = static_cast<QMap<QString, QList<QMap<QString, QString>>>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {
@@ -873,7 +873,7 @@ void PassDictInArrayInArrayMethodPendingReply::sendReply(
 void PassDictInArrayInArrayMethodPendingReply::sendReply(
     const QList<QList<QMap<QString, QString>>> &reply
 ) {
-    auto replyToSend = static_cast<QList<QList<QMap<QString, QString>>>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
     if (iface != nullptr) {

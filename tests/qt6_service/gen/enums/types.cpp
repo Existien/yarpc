@@ -7,11 +7,13 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
-#include <QJSValueIterator>
+#include "Color.hpp"
 
 namespace gen::enums {
 
 void registerMetaTypes() {
+    qRegisterMetaType<QList<Color::Type>>("QList<Color::Type>");
+    qDBusRegisterMetaType<QList<int>>();
 }
 
 }

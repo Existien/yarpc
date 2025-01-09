@@ -23,10 +23,11 @@ QList<QList<double>> ArraysInterfaceAdaptor::ArrayMethod(
 }
 
 QList<QList<QString>> ArraysInterfaceAdaptor::getArrayProperty() const {
-    return m_iface->getArrayProperty();
+    auto value = m_iface->getArrayProperty();
+    return value;
 }
 
 void ArraysInterfaceAdaptor::setArrayProperty(const QList<QList<QString>> &value ) {
-    emit m_iface->propertyArrayPropertySet(static_cast<const QList<QList<QString>>>(value));
+    emit m_iface->propertyArrayPropertySet(value);
 }
 

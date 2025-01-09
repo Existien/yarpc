@@ -23,10 +23,11 @@ SimpleStruct StructsInterfaceAdaptor::SendStruct(
 }
 
 SimpleStruct StructsInterfaceAdaptor::getSimple() const {
-    return m_iface->getSimple();
+    auto value = m_iface->getSimple();
+    return value;
 }
 
 void StructsInterfaceAdaptor::setSimple(const SimpleStruct &value ) {
-    emit m_iface->propertySimpleSet(static_cast<const SimpleStruct>(value));
+    emit m_iface->propertySimpleSet(value);
 }
 

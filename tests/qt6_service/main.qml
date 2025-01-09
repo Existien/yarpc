@@ -17,5 +17,6 @@ Window {
     DictsWithArrays{}
     DictKeys{}
     Enums{}
+    EnumsWithArrays{}
     QmlInstantiation{}
 }

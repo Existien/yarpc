@@ -59,7 +59,7 @@ ArrayStructMethodPendingReply::ArrayStructMethodPendingReply(QDBusMessage call, 
         marshalled >> arg_0;
     }
     m_args = ArrayStructMethodArgs{
-        .numbers = static_cast<QList<StructArray>>(arg_0),
+        .numbers = arg_0,
     };
 }
 
@@ -84,7 +84,7 @@ void ArrayStructMethodPendingReply::sendReply(
 void ArrayStructMethodPendingReply::sendReply(
     const QList<SimonsArray> &reply
 ) {
-    auto replyToSend = static_cast<QList<SimonsArray>>(reply);
+    auto replyToSend = reply;
     auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
     auto iface = dynamic_cast<ArraysWithStructsInterface*>(parent());
     if (iface != nullptr) {
@@ -151,7 +151,7 @@ void ArraysWithStructsInterface::setArrayStructProperty(const QList<StructArray>
     emit arrayStructPropertyChanged();
     if (Connection::instance().ArraysWithStructs() != nullptr ) {
         QVariantMap changedProps;
-        changedProps.insert("ArrayStructProperty", QVariant::fromValue(static_cast<QList<StructArray>>(value)));
+        changedProps.insert("ArrayStructProperty", QVariant::fromValue(value));
         emitPropertiesChangedSignal(changedProps);
     }
 }

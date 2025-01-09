@@ -9,7 +9,9 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
-#include <QJSValueIterator>
+{% for enum in output.objects|selectattr('kind', 'equalto', 'enum') %}
+#include "{{ enum.name }}.hpp"
+{% endfor %}
 
 namespace {{ qt6.namespace(output) }} {
 
@@ -19,14 +21,14 @@ void registerMetaTypes() {
     qDBusRegisterMetaType<{{ struct.name }}>();
     {% endfor %}
     {% for array_type in get_list_of_arrays(output.objects)|sort %}
-    {% set qt6_type = qt6.type(array_type, output.objects ) %}
+    {% set qt6_type = qt6.type(array_type, output.objects) %}
     qRegisterMetaType<{{ qt6_type }}>("{{ qt6_type }}");
-    qDBusRegisterMetaType<{{ qt6_type }}>();
+    qDBusRegisterMetaType<{{ qt6.type(array_type, output.objects, dbus=true) }}>();
     {% endfor %}
     {% for dict_type in get_list_of_dicts(output.objects)|sort %}
-    {% set qt6_type = qt6.type(dict_type, output.objects ) %}
+    {% set qt6_type = qt6.type(dict_type, output.objects) %}
     qRegisterMetaType<{{ qt6_type }}>("{{ qt6_type }}");
-    qDBusRegisterMetaType<{{ qt6_type }}>();
+    qDBusRegisterMetaType<{{ qt6.type(dict_type, output.objects, dbus=true) }}>();
     {% endfor %}
 }
 {% set array_type_list = [] %}

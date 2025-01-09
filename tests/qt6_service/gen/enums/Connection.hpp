@@ -12,6 +12,7 @@
 #include <QDBusMessage>
 #include <memory>
 #include "EnumsInterfaceAdaptor.hpp"
+#include "EnumsWithArraysInterfaceAdaptor.hpp"
 namespace gen::enums {
 
 /**
@@ -31,6 +32,9 @@ public:
 
     /** @brief Pointer to the adaptor for a registered EnumsInterface interface or null if it isn't registered. */
     EnumsInterfaceAdaptor *m_enums = nullptr;
+
+    /** @brief Pointer to the adaptor for a registered EnumsWithArraysInterface interface or null if it isn't registered. */
+    EnumsWithArraysInterfaceAdaptor *m_enumsWithArrays = nullptr;
 
 };
 
@@ -91,6 +95,26 @@ public:
     bool isEnumsRegistered() const;
     EnumsInterfaceAdaptor * Enums();
 
+    /**
+     * @brief Registers the EnumsWithArrays interface under its object path.
+     *
+     * @param interface pointer to the EnumsWithArrays object to register
+     */
+    void registerEnumsWithArrays(QObject* interface);
+
+    /**
+     * @brief Unregisters the EnumsWithArrays.
+     */
+    void unregisterEnumsWithArrays();
+
+    /**
+     * @brief Returns whether the EnumsWithArrays interface is registered.
+     *
+     * @returns whether the interface is registered
+     */
+    bool isEnumsWithArraysRegistered() const;
+    EnumsWithArraysInterfaceAdaptor * EnumsWithArrays();
+
 public slots:
     /**
      * @brief Establishes a connection to the D-Bus.
@@ -121,6 +145,7 @@ private:
     std::unique_ptr<EnumsTestserviceYarpcComObjectPath> m_EnumsTestserviceYarpcComObjectPath = nullptr;
 
     QObject* m_Enums = nullptr;
+    QObject* m_EnumsWithArrays = nullptr;
 
 };
 

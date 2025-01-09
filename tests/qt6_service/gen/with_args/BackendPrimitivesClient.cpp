@@ -257,7 +257,7 @@ Uint8MethodPendingCall* BackendPrimitivesClient::Uint8Method(
     uchar value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<uchar>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -286,7 +286,7 @@ void Uint8MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         uchar finishedReply = reply;
-        emit finished(static_cast<uchar>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -305,7 +305,7 @@ BoolMethodPendingCall* BackendPrimitivesClient::BoolMethod(
     bool value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<bool>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -334,7 +334,7 @@ void BoolMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         bool finishedReply = reply;
-        emit finished(static_cast<bool>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -353,7 +353,7 @@ Int16MethodPendingCall* BackendPrimitivesClient::Int16Method(
     short value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<short>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -382,7 +382,7 @@ void Int16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         short finishedReply = reply;
-        emit finished(static_cast<short>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -401,7 +401,7 @@ Uint16MethodPendingCall* BackendPrimitivesClient::Uint16Method(
     ushort value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<ushort>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -430,7 +430,7 @@ void Uint16MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         ushort finishedReply = reply;
-        emit finished(static_cast<ushort>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -449,7 +449,7 @@ Int32MethodPendingCall* BackendPrimitivesClient::Int32Method(
     int value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<int>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -478,7 +478,7 @@ void Int32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         int finishedReply = reply;
-        emit finished(static_cast<int>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -497,7 +497,7 @@ Uint32MethodPendingCall* BackendPrimitivesClient::Uint32Method(
     uint value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<uint>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -526,7 +526,7 @@ void Uint32MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         uint finishedReply = reply;
-        emit finished(static_cast<uint>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -545,7 +545,7 @@ Int64MethodPendingCall* BackendPrimitivesClient::Int64Method(
     qlonglong value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<qlonglong>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -574,7 +574,7 @@ void Int64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         qlonglong finishedReply = reply;
-        emit finished(static_cast<qlonglong>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -593,7 +593,7 @@ Uint64MethodPendingCall* BackendPrimitivesClient::Uint64Method(
     qulonglong value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<qulonglong>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -622,7 +622,7 @@ void Uint64MethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         qulonglong finishedReply = reply;
-        emit finished(static_cast<qulonglong>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -641,7 +641,7 @@ DoubleMethodPendingCall* BackendPrimitivesClient::DoubleMethod(
     double value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<double>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -670,7 +670,7 @@ void DoubleMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         double finishedReply = reply;
-        emit finished(static_cast<double>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }
@@ -689,7 +689,7 @@ StringMethodPendingCall* BackendPrimitivesClient::StringMethod(
     QString value
 ) {
     QDBusArgument dbusvalue;
-    dbusvalue << static_cast<QString>(value);
+    dbusvalue << value;
     QDBusInterface iface(
         "com.yarpc.backend",
         "/com/yarpc/backend/withArgs",
@@ -718,7 +718,7 @@ void StringMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
         emit error(reply.error());
     } else {
         QString finishedReply = reply;
-        emit finished(static_cast<QString>(finishedReply));
+        emit finished(finishedReply);
     }
     deleteLater();
 }

@@ -23,10 +23,11 @@ QMap<QString, SimonsDict> DictsWithStructsInterfaceAdaptor::DictsStructMethod(
 }
 
 QMap<QString, StructDict> DictsWithStructsInterfaceAdaptor::getDictStructProperty() const {
-    return m_iface->getDictStructProperty();
+    auto value = m_iface->getDictStructProperty();
+    return value;
 }
 
 void DictsWithStructsInterfaceAdaptor::setDictStructProperty(const QMap<QString, StructDict> &value ) {
-    emit m_iface->propertyDictStructPropertySet(static_cast<const QMap<QString, StructDict>>(value));
+    emit m_iface->propertyDictStructPropertySet(value);
 }
 

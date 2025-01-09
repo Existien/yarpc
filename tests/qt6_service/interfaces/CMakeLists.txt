@@ -15,6 +15,7 @@ qt_add_qml_module(Interfaces
         DictsWithArrays.qml
         DictKeys.qml
         Enums.qml
+        EnumsWithArrays.qml
         QmlInstantiation.qml
 )
 

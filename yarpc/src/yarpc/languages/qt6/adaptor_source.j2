@@ -38,12 +38,13 @@ using namespace {{ qt6.namespace(output) }};
 {% endif %}
 {% if member.kind == 'property' %}
 {{ qt6.type(member.type, output.objects, dbus=true)}} {{ target.className }}Adaptor::get{{ member.name }}() const {
-    return m_iface->get{{ member.name }}();
+    auto value = m_iface->get{{ member.name }}();
+    return {{ qt6.force_cast("value", member.type, output.objects, dbus=true) }};
 }
 
 {% if member.readonly != True %}
 void {{ target.className }}Adaptor::set{{ member.name }}(const {{ qt6.type(member.type, output.objects, dbus=true) }} &value ) {
-    emit m_iface->property{{ member.name }}Set(static_cast<const {{ qt6.type(member.type, output.objects, dbus=False) }}>(value));
+    emit m_iface->property{{ member.name }}Set({{ qt6.force_cast("value", member.type, output.objects, dbus=false) }});
 }
 
 {% endif %}

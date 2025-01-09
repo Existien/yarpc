@@ -23,10 +23,11 @@ int EnumsInterfaceAdaptor::EnumMethod(
 }
 
 int EnumsInterfaceAdaptor::getEnumProperty() const {
-    return m_iface->getEnumProperty();
+    auto value = m_iface->getEnumProperty();
+    return *reinterpret_cast<const int*>(&value);
 }
 
 void EnumsInterfaceAdaptor::setEnumProperty(const int &value ) {
-    emit m_iface->propertyEnumPropertySet(static_cast<const Color::Type>(value));
+    emit m_iface->propertyEnumPropertySet(*reinterpret_cast<const Color::Type*>(&value));
 }
 
