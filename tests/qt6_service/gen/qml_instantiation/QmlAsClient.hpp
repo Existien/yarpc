@@ -17,6 +17,8 @@
 #include "types.hpp"
 namespace gen::qml_instantiation {
 
+namespace QmlAsClientUtils {
+
 /**
  * @brief Pending call object for the PassStructMethod method calls.
  */
@@ -314,6 +316,8 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+}
+
 /**
  * D-Bus client for the com.yarpc.backend.qmlInstantiation D-Bus interface
  */
@@ -334,7 +338,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassStructMethodPendingCall* PassStructMethod(
+    QmlAsClientUtils::PassStructMethodPendingCall* PassStructMethod(
         QmlStruct qmlStruct
     );
 
@@ -345,7 +349,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassArrayInArrayMethodPendingCall* PassArrayInArrayMethod(
+    QmlAsClientUtils::PassArrayInArrayMethodPendingCall* PassArrayInArrayMethod(
         QList<QList<uint>> listOfLists
     );
 
@@ -356,7 +360,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassStructsInArrayMethodPendingCall* PassStructsInArrayMethod(
+    QmlAsClientUtils::PassStructsInArrayMethodPendingCall* PassStructsInArrayMethod(
         QList<QmlStruct> listOfStructs
     );
 
@@ -367,7 +371,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictWithStringsMethodPendingCall* PassDictWithStringsMethod(
+    QmlAsClientUtils::PassDictWithStringsMethodPendingCall* PassDictWithStringsMethod(
         QMap<QString, QString> dictWithStrings
     );
 
@@ -378,7 +382,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictWithNumbersMethodPendingCall* PassDictWithNumbersMethod(
+    QmlAsClientUtils::PassDictWithNumbersMethodPendingCall* PassDictWithNumbersMethod(
         QMap<uint, QString> dictWithNumbers
     );
 
@@ -389,7 +393,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictWithStructsMethodPendingCall* PassDictWithStructsMethod(
+    QmlAsClientUtils::PassDictWithStructsMethodPendingCall* PassDictWithStructsMethod(
         QMap<QString, QmlStruct> dictWithStructs
     );
 
@@ -400,7 +404,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictInArrayMethodPendingCall* PassDictInArrayMethod(
+    QmlAsClientUtils::PassDictInArrayMethodPendingCall* PassDictInArrayMethod(
         QList<QMap<QString, QString>> listOfDicts
     );
 
@@ -411,7 +415,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictInDictMethodPendingCall* PassDictInDictMethod(
+    QmlAsClientUtils::PassDictInDictMethodPendingCall* PassDictInDictMethod(
         QMap<QString, QMap<QString, QString>> dictOfDicts
     );
 
@@ -422,7 +426,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassArrayInDictMethodPendingCall* PassArrayInDictMethod(
+    QmlAsClientUtils::PassArrayInDictMethodPendingCall* PassArrayInDictMethod(
         QMap<QString, QList<QString>> dictOfLists
     );
 
@@ -433,7 +437,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictInArrayInDictMethodPendingCall* PassDictInArrayInDictMethod(
+    QmlAsClientUtils::PassDictInArrayInDictMethodPendingCall* PassDictInArrayInDictMethod(
         QMap<QString, QList<QMap<QString, QString>>> dictOfListsOfDicts
     );
 
@@ -444,7 +448,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictInArrayInArrayMethodPendingCall* PassDictInArrayInArrayMethod(
+    QmlAsClientUtils::PassDictInArrayInArrayMethodPendingCall* PassDictInArrayInArrayMethod(
         QList<QList<QMap<QString, QString>>> listOfListsOfDicts
     );
 
@@ -470,7 +474,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassStructMethodPendingCall* PassStructMethod(
+    QmlAsClientUtils::PassStructMethodPendingCall* PassStructMethod(
         QVariant qmlStruct
     );
 
@@ -481,7 +485,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassArrayInArrayMethodPendingCall* PassArrayInArrayMethod(
+    QmlAsClientUtils::PassArrayInArrayMethodPendingCall* PassArrayInArrayMethod(
         QVariant listOfLists
     );
 
@@ -492,7 +496,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassStructsInArrayMethodPendingCall* PassStructsInArrayMethod(
+    QmlAsClientUtils::PassStructsInArrayMethodPendingCall* PassStructsInArrayMethod(
         QVariant listOfStructs
     );
 
@@ -503,7 +507,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictWithStringsMethodPendingCall* PassDictWithStringsMethod(
+    QmlAsClientUtils::PassDictWithStringsMethodPendingCall* PassDictWithStringsMethod(
         QVariant dictWithStrings
     );
 
@@ -514,7 +518,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictWithNumbersMethodPendingCall* PassDictWithNumbersMethod(
+    QmlAsClientUtils::PassDictWithNumbersMethodPendingCall* PassDictWithNumbersMethod(
         QVariant dictWithNumbers
     );
 
@@ -525,7 +529,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictWithStructsMethodPendingCall* PassDictWithStructsMethod(
+    QmlAsClientUtils::PassDictWithStructsMethodPendingCall* PassDictWithStructsMethod(
         QVariant dictWithStructs
     );
 
@@ -536,7 +540,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictInArrayMethodPendingCall* PassDictInArrayMethod(
+    QmlAsClientUtils::PassDictInArrayMethodPendingCall* PassDictInArrayMethod(
         QVariant listOfDicts
     );
 
@@ -547,7 +551,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictInDictMethodPendingCall* PassDictInDictMethod(
+    QmlAsClientUtils::PassDictInDictMethodPendingCall* PassDictInDictMethod(
         QVariant dictOfDicts
     );
 
@@ -558,7 +562,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassArrayInDictMethodPendingCall* PassArrayInDictMethod(
+    QmlAsClientUtils::PassArrayInDictMethodPendingCall* PassArrayInDictMethod(
         QVariant dictOfLists
     );
 
@@ -569,7 +573,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictInArrayInDictMethodPendingCall* PassDictInArrayInDictMethod(
+    QmlAsClientUtils::PassDictInArrayInDictMethodPendingCall* PassDictInArrayInDictMethod(
         QVariant dictOfListsOfDicts
     );
 
@@ -580,7 +584,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    PassDictInArrayInArrayMethodPendingCall* PassDictInArrayInArrayMethod(
+    QmlAsClientUtils::PassDictInArrayInArrayMethodPendingCall* PassDictInArrayInArrayMethod(
         QVariant listOfListsOfDicts
     );
 

@@ -15,6 +15,7 @@
 
 
 using namespace gen::arrays;
+using namespace BackendArraysWithStructsClientUtils;
 
 BackendArraysWithStructsClient::BackendArraysWithStructsClient(QObject* parent)
  : QObject(parent),

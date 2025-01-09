@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::dicts;
+using namespace DictKeysInterfaceUtils;
 
 DictKeysInterface::DictKeysInterface(QObject* parent)
 : QObject(parent) {

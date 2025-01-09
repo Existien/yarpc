@@ -14,6 +14,8 @@
 #include "types.hpp"
 namespace gen::with_args {
 
+namespace WithArgsInterfaceUtils {
+
 /**
  * @brief The arguments passed during a Notify call.
  */
@@ -156,6 +158,7 @@ private:
     OrderArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using only primitive types
@@ -373,14 +376,14 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void notifyCalled(NotifyPendingReply* reply);
+    void notifyCalled(WithArgsInterfaceUtils::NotifyPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the Order method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void orderCalled(OrderPendingReply* reply);
+    void orderCalled(WithArgsInterfaceUtils::OrderPendingReply* reply);
 
     /**
      * @brief Emitted when a client tries to set the Speed property.

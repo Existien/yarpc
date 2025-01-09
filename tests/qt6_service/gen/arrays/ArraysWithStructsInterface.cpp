@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::arrays;
+using namespace ArraysWithStructsInterfaceUtils;
 
 ArraysWithStructsInterface::ArraysWithStructsInterface(QObject* parent)
 : QObject(parent) {

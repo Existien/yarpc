@@ -15,6 +15,7 @@
 
 
 using namespace gen::with_args;
+using namespace BackendPrimitivesClientUtils;
 
 BackendPrimitivesClient::BackendPrimitivesClient(QObject* parent)
  : QObject(parent),

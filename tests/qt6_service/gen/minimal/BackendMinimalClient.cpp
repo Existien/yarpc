@@ -15,6 +15,7 @@
 
 
 using namespace gen::minimal;
+using namespace BackendMinimalClientUtils;
 
 BackendMinimalClient::BackendMinimalClient(QObject* parent)
  : QObject(parent),

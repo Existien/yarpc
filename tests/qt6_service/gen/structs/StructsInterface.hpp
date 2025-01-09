@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::structs {
 
+namespace StructsInterfaceUtils {
+
 /**
  * @brief The arguments passed during a SendStruct call.
  */
@@ -86,6 +88,7 @@ private:
     SendStructArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface with structures
@@ -201,7 +204,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void sendStructCalled(SendStructPendingReply* reply);
+    void sendStructCalled(StructsInterfaceUtils::SendStructPendingReply* reply);
 
     /**
      * @brief Emitted when a client tries to set the Simple property.

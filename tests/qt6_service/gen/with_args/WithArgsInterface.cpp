@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::with_args;
+using namespace WithArgsInterfaceUtils;
 
 WithArgsInterface::WithArgsInterface(QObject* parent)
 : QObject(parent) {

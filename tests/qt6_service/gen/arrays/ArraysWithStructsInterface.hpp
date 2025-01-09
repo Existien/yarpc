@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::arrays {
 
+namespace ArraysWithStructsInterfaceUtils {
+
 /**
  * @brief The arguments passed during a ArrayStructMethod call.
  */
@@ -86,6 +88,7 @@ private:
     ArrayStructMethodArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using arrays using structs using arrays
@@ -197,7 +200,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void arrayStructMethodCalled(ArrayStructMethodPendingReply* reply);
+    void arrayStructMethodCalled(ArraysWithStructsInterfaceUtils::ArrayStructMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client tries to set the ArrayStructProperty property.

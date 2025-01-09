@@ -15,6 +15,8 @@
 #include "types.hpp"
 namespace gen::enums {
 
+namespace EnumsInterfaceUtils {
+
 /**
  * @brief The arguments passed during a EnumMethod call.
  */
@@ -85,6 +87,7 @@ private:
     EnumMethodArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using enums
@@ -196,7 +199,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void enumMethodCalled(EnumMethodPendingReply* reply);
+    void enumMethodCalled(EnumsInterfaceUtils::EnumMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client tries to set the EnumProperty property.

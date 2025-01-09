@@ -18,6 +18,8 @@
 #include "types.hpp"
 namespace gen::dicts {
 
+namespace BackendDictsClientUtils {
+
 /**
  * @brief Pending call object for the DictMethod method calls.
  */
@@ -47,6 +49,8 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+}
+
 /**
  * D-Bus client for the com.yarpc.backend.dicts D-Bus interface
  */
@@ -72,7 +76,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DictMethodPendingCall* DictMethod(
+    BackendDictsClientUtils::DictMethodPendingCall* DictMethod(
         QMap<QString, uint> keysNValues
     );
 
@@ -116,7 +120,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DictMethodPendingCall* DictMethod(
+    BackendDictsClientUtils::DictMethodPendingCall* DictMethod(
         QVariant keysNValues
     );
 

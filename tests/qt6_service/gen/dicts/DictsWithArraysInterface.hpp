@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::dicts {
 
+namespace DictsWithArraysInterfaceUtils {
+
 /**
  * @brief The arguments passed during a DictsArrayMethod call.
  */
@@ -86,6 +88,7 @@ private:
     DictsArrayMethodArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using dicts using arrays using dicts
@@ -197,7 +200,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void dictsArrayMethodCalled(DictsArrayMethodPendingReply* reply);
+    void dictsArrayMethodCalled(DictsWithArraysInterfaceUtils::DictsArrayMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client tries to set the DictArrayProperty property.

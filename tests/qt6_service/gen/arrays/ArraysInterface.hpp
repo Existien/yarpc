@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::arrays {
 
+namespace ArraysInterfaceUtils {
+
 /**
  * @brief The arguments passed during a ArrayMethod call.
  */
@@ -86,6 +88,7 @@ private:
     ArrayMethodArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using arrays
@@ -197,7 +200,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void arrayMethodCalled(ArrayMethodPendingReply* reply);
+    void arrayMethodCalled(ArraysInterfaceUtils::ArrayMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client tries to set the ArrayProperty property.
