@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::dicts {
 
+namespace DictKeysInterfaceUtils {
+
 /**
  * @brief The arguments passed during a Uint8Method call.
  */
@@ -716,6 +718,7 @@ private:
     StringMethodArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using dictionaries with different keys
@@ -1019,70 +1022,70 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void uint8MethodCalled(Uint8MethodPendingReply* reply);
+    void uint8MethodCalled(DictKeysInterfaceUtils::Uint8MethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the BoolMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void boolMethodCalled(BoolMethodPendingReply* reply);
+    void boolMethodCalled(DictKeysInterfaceUtils::BoolMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the Int16Method method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void int16MethodCalled(Int16MethodPendingReply* reply);
+    void int16MethodCalled(DictKeysInterfaceUtils::Int16MethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the Uint16Method method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void uint16MethodCalled(Uint16MethodPendingReply* reply);
+    void uint16MethodCalled(DictKeysInterfaceUtils::Uint16MethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the Int32Method method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void int32MethodCalled(Int32MethodPendingReply* reply);
+    void int32MethodCalled(DictKeysInterfaceUtils::Int32MethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the Uint32Method method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void uint32MethodCalled(Uint32MethodPendingReply* reply);
+    void uint32MethodCalled(DictKeysInterfaceUtils::Uint32MethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the Int64Method method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void int64MethodCalled(Int64MethodPendingReply* reply);
+    void int64MethodCalled(DictKeysInterfaceUtils::Int64MethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the Uint64Method method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void uint64MethodCalled(Uint64MethodPendingReply* reply);
+    void uint64MethodCalled(DictKeysInterfaceUtils::Uint64MethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the DoubleMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void doubleMethodCalled(DoubleMethodPendingReply* reply);
+    void doubleMethodCalled(DictKeysInterfaceUtils::DoubleMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the StringMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void stringMethodCalled(StringMethodPendingReply* reply);
+    void stringMethodCalled(DictKeysInterfaceUtils::StringMethodPendingReply* reply);
 
 
 private:

@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::dicts;
+using namespace DictsWithStructsInterfaceUtils;
 
 DictsWithStructsInterface::DictsWithStructsInterface(QObject* parent)
 : QObject(parent) {

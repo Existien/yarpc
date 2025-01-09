@@ -15,6 +15,7 @@
 
 
 using namespace gen::dicts;
+using namespace BackendDictsWithArraysClientUtils;
 
 BackendDictsWithArraysClient::BackendDictsWithArraysClient(QObject* parent)
  : QObject(parent),

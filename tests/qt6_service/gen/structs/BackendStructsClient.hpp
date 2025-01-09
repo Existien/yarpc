@@ -18,6 +18,8 @@
 #include "types.hpp"
 namespace gen::structs {
 
+namespace BackendStructsClientUtils {
+
 /**
  * @brief Pending call object for the SendStruct method calls.
  */
@@ -47,6 +49,8 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+}
+
 /**
  * D-Bus client for the com.yarpc.backend.structs D-Bus interface
  */
@@ -72,7 +76,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    SendStructPendingCall* SendStruct(
+    BackendStructsClientUtils::SendStructPendingCall* SendStruct(
         SimpleStruct simpleStruct
     );
 
@@ -116,7 +120,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    SendStructPendingCall* SendStruct(
+    BackendStructsClientUtils::SendStructPendingCall* SendStruct(
         QVariant simpleStruct
     );
 

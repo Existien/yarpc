@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::with_args;
+using namespace PrimitivesInterfaceUtils;
 
 PrimitivesInterface::PrimitivesInterface(QObject* parent)
 : QObject(parent) {

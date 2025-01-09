@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::with_args {
 
+namespace BackendWithArgsClientUtils {
+
 /**
  * @brief Pending call object for the Notify method calls.
  */
@@ -73,6 +75,8 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+}
+
 /**
  * D-Bus client for the com.yarpc.backend.withArgs D-Bus interface
  */
@@ -109,7 +113,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    NotifyPendingCall* Notify(
+    BackendWithArgsClientUtils::NotifyPendingCall* Notify(
         QString message
     );
 
@@ -124,7 +128,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    OrderPendingCall* Order(
+    BackendWithArgsClientUtils::OrderPendingCall* Order(
         QString item,
         uint amount,
         double pricePerItem
@@ -199,7 +203,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    NotifyPendingCall* Notify(
+    BackendWithArgsClientUtils::NotifyPendingCall* Notify(
         QVariant message
     );
 
@@ -214,7 +218,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    OrderPendingCall* Order(
+    BackendWithArgsClientUtils::OrderPendingCall* Order(
         QVariant item,
         QVariant amount,
         QVariant pricePerItem

@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::qml_instantiation;
+using namespace QmlAsServiceInterfaceUtils;
 
 QmlAsServiceInterface::QmlAsServiceInterface(QObject* parent)
 : QObject(parent) {

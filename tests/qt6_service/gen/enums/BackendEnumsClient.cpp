@@ -15,6 +15,7 @@
 
 
 using namespace gen::enums;
+using namespace BackendEnumsClientUtils;
 
 BackendEnumsClient::BackendEnumsClient(QObject* parent)
  : QObject(parent),

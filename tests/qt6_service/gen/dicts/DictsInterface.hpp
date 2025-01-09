@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::dicts {
 
+namespace DictsInterfaceUtils {
+
 /**
  * @brief The arguments passed during a DictMethod call.
  */
@@ -86,6 +88,7 @@ private:
     DictMethodArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using dictionaries
@@ -197,7 +200,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void dictMethodCalled(DictMethodPendingReply* reply);
+    void dictMethodCalled(DictsInterfaceUtils::DictMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client tries to set the DictProperty property.

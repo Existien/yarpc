@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::enums;
+using namespace EnumsInterfaceUtils;
 
 EnumsInterface::EnumsInterface(QObject* parent)
 : QObject(parent) {

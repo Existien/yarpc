@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::with_args {
 
+namespace BackendPrimitivesClientUtils {
+
 /**
  * @brief Pending call object for the Uint8Method method calls.
  */
@@ -306,6 +308,8 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+}
+
 /**
  * D-Bus client for the com.yarpc.backend.primitives D-Bus interface
  */
@@ -326,7 +330,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint8MethodPendingCall* Uint8Method(
+    BackendPrimitivesClientUtils::Uint8MethodPendingCall* Uint8Method(
         uchar value
     );
 
@@ -337,7 +341,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    BoolMethodPendingCall* BoolMethod(
+    BackendPrimitivesClientUtils::BoolMethodPendingCall* BoolMethod(
         bool value
     );
 
@@ -348,7 +352,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int16MethodPendingCall* Int16Method(
+    BackendPrimitivesClientUtils::Int16MethodPendingCall* Int16Method(
         short value
     );
 
@@ -359,7 +363,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint16MethodPendingCall* Uint16Method(
+    BackendPrimitivesClientUtils::Uint16MethodPendingCall* Uint16Method(
         ushort value
     );
 
@@ -370,7 +374,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int32MethodPendingCall* Int32Method(
+    BackendPrimitivesClientUtils::Int32MethodPendingCall* Int32Method(
         int value
     );
 
@@ -381,7 +385,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint32MethodPendingCall* Uint32Method(
+    BackendPrimitivesClientUtils::Uint32MethodPendingCall* Uint32Method(
         uint value
     );
 
@@ -392,7 +396,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int64MethodPendingCall* Int64Method(
+    BackendPrimitivesClientUtils::Int64MethodPendingCall* Int64Method(
         qlonglong value
     );
 
@@ -403,7 +407,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint64MethodPendingCall* Uint64Method(
+    BackendPrimitivesClientUtils::Uint64MethodPendingCall* Uint64Method(
         qulonglong value
     );
 
@@ -414,7 +418,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DoubleMethodPendingCall* DoubleMethod(
+    BackendPrimitivesClientUtils::DoubleMethodPendingCall* DoubleMethod(
         double value
     );
 
@@ -425,7 +429,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    StringMethodPendingCall* StringMethod(
+    BackendPrimitivesClientUtils::StringMethodPendingCall* StringMethod(
         QString value
     );
 
@@ -451,7 +455,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint8MethodPendingCall* Uint8Method(
+    BackendPrimitivesClientUtils::Uint8MethodPendingCall* Uint8Method(
         QVariant value
     );
 
@@ -462,7 +466,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    BoolMethodPendingCall* BoolMethod(
+    BackendPrimitivesClientUtils::BoolMethodPendingCall* BoolMethod(
         QVariant value
     );
 
@@ -473,7 +477,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int16MethodPendingCall* Int16Method(
+    BackendPrimitivesClientUtils::Int16MethodPendingCall* Int16Method(
         QVariant value
     );
 
@@ -484,7 +488,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint16MethodPendingCall* Uint16Method(
+    BackendPrimitivesClientUtils::Uint16MethodPendingCall* Uint16Method(
         QVariant value
     );
 
@@ -495,7 +499,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int32MethodPendingCall* Int32Method(
+    BackendPrimitivesClientUtils::Int32MethodPendingCall* Int32Method(
         QVariant value
     );
 
@@ -506,7 +510,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint32MethodPendingCall* Uint32Method(
+    BackendPrimitivesClientUtils::Uint32MethodPendingCall* Uint32Method(
         QVariant value
     );
 
@@ -517,7 +521,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int64MethodPendingCall* Int64Method(
+    BackendPrimitivesClientUtils::Int64MethodPendingCall* Int64Method(
         QVariant value
     );
 
@@ -528,7 +532,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint64MethodPendingCall* Uint64Method(
+    BackendPrimitivesClientUtils::Uint64MethodPendingCall* Uint64Method(
         QVariant value
     );
 
@@ -539,7 +543,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DoubleMethodPendingCall* DoubleMethod(
+    BackendPrimitivesClientUtils::DoubleMethodPendingCall* DoubleMethod(
         QVariant value
     );
 
@@ -550,7 +554,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    StringMethodPendingCall* StringMethod(
+    BackendPrimitivesClientUtils::StringMethodPendingCall* StringMethod(
         QVariant value
     );
 

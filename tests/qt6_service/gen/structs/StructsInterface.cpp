@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::structs;
+using namespace StructsInterfaceUtils;
 
 StructsInterface::StructsInterface(QObject* parent)
 : QObject(parent) {

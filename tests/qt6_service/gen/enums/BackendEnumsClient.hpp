@@ -17,6 +17,8 @@
 #include "types.hpp"
 namespace gen::enums {
 
+namespace BackendEnumsClientUtils {
+
 /**
  * @brief Pending call object for the EnumMethod method calls.
  */
@@ -46,6 +48,8 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+}
+
 /**
  * D-Bus client for the com.yarpc.backend.enums D-Bus interface
  */
@@ -71,7 +75,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    EnumMethodPendingCall* EnumMethod(
+    BackendEnumsClientUtils::EnumMethodPendingCall* EnumMethod(
         Color::Type color
     );
 
@@ -115,7 +119,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    EnumMethodPendingCall* EnumMethod(
+    BackendEnumsClientUtils::EnumMethodPendingCall* EnumMethod(
         QVariant color
     );
 

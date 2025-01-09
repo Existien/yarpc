@@ -15,6 +15,7 @@
 
 
 using namespace gen::dicts;
+using namespace BackendDictKeysClientUtils;
 
 BackendDictKeysClient::BackendDictKeysClient(QObject* parent)
  : QObject(parent),

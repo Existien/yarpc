@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::dicts {
 
+namespace DictsWithStructsInterfaceUtils {
+
 /**
  * @brief The arguments passed during a DictsStructMethod call.
  */
@@ -86,6 +88,7 @@ private:
     DictsStructMethodArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using dicts using structs using dicts
@@ -197,7 +200,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void dictsStructMethodCalled(DictsStructMethodPendingReply* reply);
+    void dictsStructMethodCalled(DictsWithStructsInterfaceUtils::DictsStructMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client tries to set the DictStructProperty property.

@@ -14,6 +14,8 @@
 #include "types.hpp"
 namespace gen::minimal {
 
+namespace MinimalInterfaceUtils {
+
 /**
  * @brief The arguments passed during a Bump call.
  */
@@ -70,6 +72,7 @@ private:
     BumpArgs m_args;
 };
 
+}
 
 /**
  * @brief A interface using signals and methods without args
@@ -136,7 +139,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void bumpCalled(BumpPendingReply* reply);
+    void bumpCalled(MinimalInterfaceUtils::BumpPendingReply* reply);
 
 
 private:

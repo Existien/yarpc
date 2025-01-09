@@ -18,6 +18,8 @@
 #include "types.hpp"
 namespace gen::dicts {
 
+namespace BackendDictKeysClientUtils {
+
 /**
  * @brief Pending call object for the Uint8Method method calls.
  */
@@ -308,6 +310,8 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+}
+
 /**
  * D-Bus client for the com.yarpc.backend.dictKeys D-Bus interface
  */
@@ -328,7 +332,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint8MethodPendingCall* Uint8Method(
+    BackendDictKeysClientUtils::Uint8MethodPendingCall* Uint8Method(
         QMap<uchar, QString> value
     );
 
@@ -339,7 +343,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    BoolMethodPendingCall* BoolMethod(
+    BackendDictKeysClientUtils::BoolMethodPendingCall* BoolMethod(
         QMap<bool, QString> value
     );
 
@@ -350,7 +354,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int16MethodPendingCall* Int16Method(
+    BackendDictKeysClientUtils::Int16MethodPendingCall* Int16Method(
         QMap<short, QString> value
     );
 
@@ -361,7 +365,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint16MethodPendingCall* Uint16Method(
+    BackendDictKeysClientUtils::Uint16MethodPendingCall* Uint16Method(
         QMap<ushort, QString> value
     );
 
@@ -372,7 +376,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int32MethodPendingCall* Int32Method(
+    BackendDictKeysClientUtils::Int32MethodPendingCall* Int32Method(
         QMap<int, QString> value
     );
 
@@ -383,7 +387,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint32MethodPendingCall* Uint32Method(
+    BackendDictKeysClientUtils::Uint32MethodPendingCall* Uint32Method(
         QMap<uint, QString> value
     );
 
@@ -394,7 +398,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int64MethodPendingCall* Int64Method(
+    BackendDictKeysClientUtils::Int64MethodPendingCall* Int64Method(
         QMap<qlonglong, QString> value
     );
 
@@ -405,7 +409,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint64MethodPendingCall* Uint64Method(
+    BackendDictKeysClientUtils::Uint64MethodPendingCall* Uint64Method(
         QMap<qulonglong, QString> value
     );
 
@@ -416,7 +420,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DoubleMethodPendingCall* DoubleMethod(
+    BackendDictKeysClientUtils::DoubleMethodPendingCall* DoubleMethod(
         QMap<double, QString> value
     );
 
@@ -427,7 +431,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    StringMethodPendingCall* StringMethod(
+    BackendDictKeysClientUtils::StringMethodPendingCall* StringMethod(
         QMap<QString, QString> value
     );
 
@@ -453,7 +457,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint8MethodPendingCall* Uint8Method(
+    BackendDictKeysClientUtils::Uint8MethodPendingCall* Uint8Method(
         QVariant value
     );
 
@@ -464,7 +468,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    BoolMethodPendingCall* BoolMethod(
+    BackendDictKeysClientUtils::BoolMethodPendingCall* BoolMethod(
         QVariant value
     );
 
@@ -475,7 +479,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int16MethodPendingCall* Int16Method(
+    BackendDictKeysClientUtils::Int16MethodPendingCall* Int16Method(
         QVariant value
     );
 
@@ -486,7 +490,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint16MethodPendingCall* Uint16Method(
+    BackendDictKeysClientUtils::Uint16MethodPendingCall* Uint16Method(
         QVariant value
     );
 
@@ -497,7 +501,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int32MethodPendingCall* Int32Method(
+    BackendDictKeysClientUtils::Int32MethodPendingCall* Int32Method(
         QVariant value
     );
 
@@ -508,7 +512,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint32MethodPendingCall* Uint32Method(
+    BackendDictKeysClientUtils::Uint32MethodPendingCall* Uint32Method(
         QVariant value
     );
 
@@ -519,7 +523,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Int64MethodPendingCall* Int64Method(
+    BackendDictKeysClientUtils::Int64MethodPendingCall* Int64Method(
         QVariant value
     );
 
@@ -530,7 +534,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    Uint64MethodPendingCall* Uint64Method(
+    BackendDictKeysClientUtils::Uint64MethodPendingCall* Uint64Method(
         QVariant value
     );
 
@@ -541,7 +545,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    DoubleMethodPendingCall* DoubleMethod(
+    BackendDictKeysClientUtils::DoubleMethodPendingCall* DoubleMethod(
         QVariant value
     );
 
@@ -552,7 +556,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    StringMethodPendingCall* StringMethod(
+    BackendDictKeysClientUtils::StringMethodPendingCall* StringMethod(
         QVariant value
     );
 

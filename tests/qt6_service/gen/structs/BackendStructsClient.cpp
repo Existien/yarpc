@@ -15,6 +15,7 @@
 
 
 using namespace gen::structs;
+using namespace BackendStructsClientUtils;
 
 BackendStructsClient::BackendStructsClient(QObject* parent)
  : QObject(parent),

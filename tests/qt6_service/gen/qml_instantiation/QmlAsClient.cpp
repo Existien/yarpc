@@ -15,6 +15,7 @@
 
 
 using namespace gen::qml_instantiation;
+using namespace QmlAsClientUtils;
 
 QmlAsClient::QmlAsClient(QObject* parent)
  : QObject(parent),

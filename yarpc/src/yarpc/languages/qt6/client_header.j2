@@ -24,6 +24,8 @@
 #include "types.hpp"
 namespace {{ qt6.namespace(output) }} {
 
+namespace {{ target.className }}Utils {
+
 {% for member in object.members %}
 {% if member.kind == 'method' %}
 /**
@@ -64,6 +66,8 @@ private:
 
 {% endif %}
 {% endfor %}
+}
+
 /**
  * D-Bus client for the {{ target.interfaceName}} D-Bus interface
  */
@@ -124,7 +128,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    {{ member.name }}PendingCall* {{ member.name }}(
+    {{ target.className }}Utils::{{ member.name }}PendingCall* {{ member.name }}(
     {% if member.args|count > 0 %}
         {{ qt6.funcparams(member.args, output.objects)|indent(8) }}
     {% endif %}
@@ -159,7 +163,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    {{ member.name }}PendingCall* {{ member.name }}(
+    {{ target.className }}Utils::{{ member.name }}PendingCall* {{ member.name }}(
     {% if member.args|count > 0 %}
         {{ qt6.funcparams(member.args, output.objects, true)|indent(8) }}
     {% endif %}

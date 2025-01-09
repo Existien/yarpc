@@ -12,6 +12,7 @@
 #include "types.hpp"
 
 using namespace gen::minimal;
+using namespace MinimalInterfaceUtils;
 
 MinimalInterface::MinimalInterface(QObject* parent)
 : QObject(parent) {

@@ -22,6 +22,8 @@
 #include "types.hpp"
 namespace {{ qt6.namespace(output) }} {
 
+namespace {{ target.className }}Utils {
+
 {% for member in object.members %}
 {% if member.kind == 'method' %}
 /**
@@ -104,6 +106,7 @@ private:
 
 {% endif %}
 {% endfor %}
+}
 
 /**
  {{ qt6.doctag(object, "brief")|indent(1) }}
@@ -245,7 +248,7 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void {{ member.name|camel_case }}Called({{ member.name }}PendingReply* reply);
+    void {{ member.name|camel_case }}Called({{ target.className }}Utils::{{ member.name }}PendingReply* reply);
 
     {% endif %}
     {% if member.kind == 'property' %}

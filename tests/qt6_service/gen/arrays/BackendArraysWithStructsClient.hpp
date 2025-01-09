@@ -18,6 +18,8 @@
 #include "types.hpp"
 namespace gen::arrays {
 
+namespace BackendArraysWithStructsClientUtils {
+
 /**
  * @brief Pending call object for the ArrayStructMethod method calls.
  */
@@ -47,6 +49,8 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+}
+
 /**
  * D-Bus client for the com.yarpc.backend.arraysWithStructs D-Bus interface
  */
@@ -72,7 +76,7 @@ public:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    ArrayStructMethodPendingCall* ArrayStructMethod(
+    BackendArraysWithStructsClientUtils::ArrayStructMethodPendingCall* ArrayStructMethod(
         QList<StructArray> numbers
     );
 
@@ -116,7 +120,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    ArrayStructMethodPendingCall* ArrayStructMethod(
+    BackendArraysWithStructsClientUtils::ArrayStructMethodPendingCall* ArrayStructMethod(
         QVariant numbers
     );
 

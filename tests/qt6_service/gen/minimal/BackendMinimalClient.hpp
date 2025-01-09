@@ -16,6 +16,8 @@
 #include "types.hpp"
 namespace gen::minimal {
 
+namespace BackendMinimalClientUtils {
+
 /**
  * @brief Pending call object for the Bump method calls.
  */
@@ -42,6 +44,8 @@ private slots:
 private:
     QDBusPendingCallWatcher m_watcher;
 };
+
+}
 
 /**
  * D-Bus client for the com.yarpc.backend.minimal D-Bus interface
@@ -76,7 +80,7 @@ public slots:
      *
      * @returns Pending call object with finished signal containing the reply.
      */
-    BumpPendingCall* Bump(
+    BackendMinimalClientUtils::BumpPendingCall* Bump(
     );
 
 signals:

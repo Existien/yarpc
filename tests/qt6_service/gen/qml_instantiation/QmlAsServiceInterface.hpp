@@ -15,6 +15,8 @@
 #include "types.hpp"
 namespace gen::qml_instantiation {
 
+namespace QmlAsServiceInterfaceUtils {
+
 /**
  * @brief The arguments passed during a PassStructMethod call.
  */
@@ -730,6 +732,7 @@ private:
     PassDictInArrayInArrayMethodArgs m_args;
 };
 
+}
 
 /**
  * @brief Interface to test returning values and signal arguments instantiated in QML
@@ -1058,77 +1061,77 @@ signals:
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passStructMethodCalled(PassStructMethodPendingReply* reply);
+    void passStructMethodCalled(QmlAsServiceInterfaceUtils::PassStructMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassArrayInArrayMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passArrayInArrayMethodCalled(PassArrayInArrayMethodPendingReply* reply);
+    void passArrayInArrayMethodCalled(QmlAsServiceInterfaceUtils::PassArrayInArrayMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassStructsInArrayMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passStructsInArrayMethodCalled(PassStructsInArrayMethodPendingReply* reply);
+    void passStructsInArrayMethodCalled(QmlAsServiceInterfaceUtils::PassStructsInArrayMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassDictWithStringsMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passDictWithStringsMethodCalled(PassDictWithStringsMethodPendingReply* reply);
+    void passDictWithStringsMethodCalled(QmlAsServiceInterfaceUtils::PassDictWithStringsMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassDictWithNumbersMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passDictWithNumbersMethodCalled(PassDictWithNumbersMethodPendingReply* reply);
+    void passDictWithNumbersMethodCalled(QmlAsServiceInterfaceUtils::PassDictWithNumbersMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassDictWithStructsMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passDictWithStructsMethodCalled(PassDictWithStructsMethodPendingReply* reply);
+    void passDictWithStructsMethodCalled(QmlAsServiceInterfaceUtils::PassDictWithStructsMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassDictInArrayMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passDictInArrayMethodCalled(PassDictInArrayMethodPendingReply* reply);
+    void passDictInArrayMethodCalled(QmlAsServiceInterfaceUtils::PassDictInArrayMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassDictInDictMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passDictInDictMethodCalled(PassDictInDictMethodPendingReply* reply);
+    void passDictInDictMethodCalled(QmlAsServiceInterfaceUtils::PassDictInDictMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassArrayInDictMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passArrayInDictMethodCalled(PassArrayInDictMethodPendingReply* reply);
+    void passArrayInDictMethodCalled(QmlAsServiceInterfaceUtils::PassArrayInDictMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassDictInArrayInDictMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passDictInArrayInDictMethodCalled(PassDictInArrayInDictMethodPendingReply* reply);
+    void passDictInArrayInDictMethodCalled(QmlAsServiceInterfaceUtils::PassDictInArrayInDictMethodPendingReply* reply);
 
     /**
      * @brief Emitted when a client calls the PassDictInArrayInArrayMethod method.
      *
      * @param reply the reply object containing the call arguments and means to reply
      */
-    void passDictInArrayInArrayMethodCalled(PassDictInArrayInArrayMethodPendingReply* reply);
+    void passDictInArrayInArrayMethodCalled(QmlAsServiceInterfaceUtils::PassDictInArrayInArrayMethodPendingReply* reply);
 
 
 private:
