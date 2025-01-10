@@ -11,6 +11,8 @@
 namespace gen::enums {
 
 void registerMetaTypes() {
+    qRegisterMetaType<EnumStruct>("EnumStruct");
+    qDBusRegisterMetaType<EnumStruct>();
     qRegisterMetaType<QList<Color::Type>>("QList<Color::Type>");
     qDBusRegisterMetaType<QList<int>>();
     qRegisterMetaType<QMap<Color::Type, Color::Type>>("QMap<Color::Type, Color::Type>");

@@ -14,6 +14,7 @@
 #include "EnumsInterfaceAdaptor.hpp"
 #include "EnumsWithArraysInterfaceAdaptor.hpp"
 #include "EnumsWithDictsInterfaceAdaptor.hpp"
+#include "EnumsWithStructsInterfaceAdaptor.hpp"
 namespace gen::enums {
 
 /**
@@ -39,6 +40,9 @@ public:
 
     /** @brief Pointer to the adaptor for a registered EnumsWithDictsInterface interface or null if it isn't registered. */
     EnumsWithDictsInterfaceAdaptor *m_enumsWithDicts = nullptr;
+
+    /** @brief Pointer to the adaptor for a registered EnumsWithStructsInterface interface or null if it isn't registered. */
+    EnumsWithStructsInterfaceAdaptor *m_enumsWithStructs = nullptr;
 
 };
 
@@ -139,6 +143,26 @@ public:
     bool isEnumsWithDictsRegistered() const;
     EnumsWithDictsInterfaceAdaptor * EnumsWithDicts();
 
+    /**
+     * @brief Registers the EnumsWithStructs interface under its object path.
+     *
+     * @param interface pointer to the EnumsWithStructs object to register
+     */
+    void registerEnumsWithStructs(QObject* interface);
+
+    /**
+     * @brief Unregisters the EnumsWithStructs.
+     */
+    void unregisterEnumsWithStructs();
+
+    /**
+     * @brief Returns whether the EnumsWithStructs interface is registered.
+     *
+     * @returns whether the interface is registered
+     */
+    bool isEnumsWithStructsRegistered() const;
+    EnumsWithStructsInterfaceAdaptor * EnumsWithStructs();
+
 public slots:
     /**
      * @brief Establishes a connection to the D-Bus.
@@ -171,6 +195,7 @@ private:
     QObject* m_Enums = nullptr;
     QObject* m_EnumsWithArrays = nullptr;
     QObject* m_EnumsWithDicts = nullptr;
+    QObject* m_EnumsWithStructs = nullptr;
 
 };
 

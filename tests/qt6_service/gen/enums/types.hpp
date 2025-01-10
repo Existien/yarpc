@@ -7,6 +7,7 @@
 #pragma once
 #include <qqmlintegration.h>
 #include <QObject>
+#include "EnumStruct.hpp"
 #include "Color.hpp"
 
 namespace gen::enums {

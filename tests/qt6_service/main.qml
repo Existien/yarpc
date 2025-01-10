@@ -19,5 +19,6 @@ Window {
     Enums{}
     EnumsWithArrays{}
     EnumsWithDicts{}
+    EnumsWithStructs{}
     QmlInstantiation{}
 }
