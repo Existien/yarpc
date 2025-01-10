@@ -13,6 +13,7 @@
 #include <QDBusPendingCallWatcher>
 #include <QVariant>
 #include "DBusError.hpp"
+#include "EnumStruct.hpp"
 #include "Color.hpp"
 #include "types.hpp"
 namespace gen::enums {

@@ -17,7 +17,7 @@ using namespace {{ qt6.namespace(output) }};
 QDBusArgument &{{ qt6.namespace(output) }}::operator<<(QDBusArgument &argument, const {{ object.name }} &object) {
     argument.beginStructure();
     {% for member in object.members %}
-    argument << object.{{ member.name|camel_case }};
+    argument << {{ qt6.force_cast("object."+(member.name|camel_case), member.type, output.objects, dbus=true) }};
     {% endfor %}
     argument.endStructure();
     return argument;
@@ -26,7 +26,13 @@ QDBusArgument &{{ qt6.namespace(output) }}::operator<<(QDBusArgument &argument, 
 const QDBusArgument &{{ qt6.namespace(output) }}::operator>>(const QDBusArgument &argument, {{ object.name }} &object) {
     argument.beginStructure();
     {% for member in object.members %}
+    {% if qt6.type(member.type, output.objects, dbus=false) != qt6.type(member.type, output.objects, dbus=true) %}
+    {{ qt6.type(member.type, output.objects, dbus=true) }} dbus{{ member.name|pascal_case }};
+    argument >> dbus{{ member.name|pascal_case }};
+    object.{{ member.name|camel_case }} = {{ qt6.force_cast("dbus"+(member.name|pascal_case), member.type, output.objects, dbus=false) }};
+    {% else%}
     argument >> object.{{ member.name|camel_case }};
+    {% endif %}
     {% endfor %}
     argument.endStructure();
     return argument;

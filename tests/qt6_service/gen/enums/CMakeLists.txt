@@ -19,9 +19,13 @@ qt_add_qml_module(Enums
         EnumsWithArraysInterfaceAdaptor.cpp
         EnumsWithDictsInterface.cpp
         EnumsWithDictsInterfaceAdaptor.cpp
+        EnumsWithStructsInterface.cpp
+        EnumsWithStructsInterfaceAdaptor.cpp
         BackendEnumsClient.cpp
         BackendEnumsWithArraysClient.cpp
         BackendEnumsWithDictsClient.cpp
+        BackendEnumsWithStructsClient.cpp
+        EnumStruct.cpp
         Color.cpp
 )
 
