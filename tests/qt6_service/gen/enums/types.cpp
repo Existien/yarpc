@@ -7,13 +7,26 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
-#include "Color.hpp"
 
 namespace gen::enums {
 
 void registerMetaTypes() {
     qRegisterMetaType<QList<Color::Type>>("QList<Color::Type>");
     qDBusRegisterMetaType<QList<int>>();
+    qRegisterMetaType<QMap<Color::Type, Color::Type>>("QMap<Color::Type, Color::Type>");
+    qDBusRegisterMetaType<QMap<int, int>>();
+}
+
+QMap<Color::Type, Color::Type> Conversions::jsToMapOfColorToColor(QVariant jsonObject) {
+    QMap<Color::Type, Color::Type> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        Color::Type key_0 = static_cast<Color::Type>((*k_0).toLong());
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<Color::Type>();
+    }
+
+    return converted;
 }
 
 }

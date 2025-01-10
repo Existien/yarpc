@@ -7,6 +7,7 @@
 #pragma once
 #include <qqmlintegration.h>
 #include <QObject>
+#include "Color.hpp"
 
 namespace gen::enums {
 
@@ -15,4 +16,23 @@ namespace gen::enums {
 */
 void registerMetaTypes();
 
+
+/**
+ * Provides JS -> QMap conversion functions in QML.
+ *
+ * Since JS objects are passed as QJSValue,
+ * we need some helper functions to convert them
+ * to the QMaps used in the interface.
+ *
+ * This class provides helper functions to convert
+ * JS objects and array to the types required by
+ * the interface.
+ */
+class Conversions : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+public:
+    Q_INVOKABLE QMap<Color::Type, Color::Type> jsToMapOfColorToColor(QVariant jsonObject);
+};
 }

@@ -152,7 +152,7 @@ ListOf{{ convert_type_to_name(inner_types[0], objects) }}
 {#
     Parses a string as the requested type
 #}
-{% macro parse_string(entry, type_as_str) %}
+{% macro parse_string(entry, type_as_str, objects) %}
 {%- if type_as_str == 'string' -%}
 {{ entry }}
 {%- elif type_as_str == 'bool' -%}
@@ -173,6 +173,8 @@ ListOf{{ convert_type_to_name(inner_types[0], objects) }}
 {{ entry }}.toULongLong()
 {%- elif type_as_str == 'double' -%}
 {{ entry }}.toDouble()
+{%- elif (type_as_str|find_type(objects)).kind == 'enum' -%}
+static_cast<{{ type(type_as_str, objects) }}>({{ parse_string(entry, 'int32', objects) }})
 {%- endif -%}
 {% endmacro %}
 {#
@@ -192,7 +194,7 @@ ListOf{{ convert_type_to_name(inner_types[0], objects) }}
 {% set key = "key_"+i|string %}
 auto {{ map }} = {{ value }}.toMap();
 for (auto {{ k }} = {{ map }}.keyBegin(); {{ k }} != {{ map }}.keyEnd(); ++{{ k }}) {
-    {{ key_type }} {{ key }} = {{ parse_string("(*"+k+")", inner_types[0]) }};
+    {{ key_type }} {{ key }} = {{ parse_string("(*"+k+")", inner_types[0], objects) }};
     auto {{ v }} = {{ map }}.value(*{{ k }});
     {% if (inner_types[1]|find_type(objects)).name == 'dict' %}
     {{ convert_js_to_map(v, o, inner_types[1], objects, i+1)|indent(4) }}

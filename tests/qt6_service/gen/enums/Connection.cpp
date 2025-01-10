@@ -7,6 +7,7 @@
 #include "Connection.hpp"
 #include "EnumsInterface.hpp"
 #include "EnumsWithArraysInterface.hpp"
+#include "EnumsWithDictsInterface.hpp"
 
 using namespace gen::enums;
 
@@ -19,6 +20,7 @@ bool EnumsTestserviceYarpcComObjectPath::hasRegistrations() const {
         false
         || m_enums != nullptr
         || m_enumsWithArrays != nullptr
+        || m_enumsWithDicts != nullptr
     );
 }
 
@@ -59,6 +61,7 @@ void Connection::disconnectIfUnused(){
         false
         || m_Enums != nullptr
         || m_EnumsWithArrays != nullptr
+        || m_EnumsWithDicts != nullptr
     ) {
         return;
     }
@@ -83,10 +86,18 @@ void Connection::updateRegistrations() {
                 m_EnumsTestserviceYarpcComObjectPath.get()
             );
         }
+        if (m_EnumsWithDicts != nullptr) {
+            auto enumsWithDictsInterface = dynamic_cast<EnumsWithDictsInterface*>(m_EnumsWithDicts);
+            m_EnumsTestserviceYarpcComObjectPath->m_enumsWithDicts = new EnumsWithDictsInterfaceAdaptor(
+                enumsWithDictsInterface,
+                m_EnumsTestserviceYarpcComObjectPath.get()
+            );
+        }
         if (
             false
             || m_Enums != nullptr
             || m_EnumsWithArrays != nullptr
+            || m_EnumsWithDicts != nullptr
         ) {
             m_connection->registerObject(
                 "/com/yarpc/testservice/enums",
@@ -166,6 +177,37 @@ bool Connection::isEnumsWithArraysRegistered() const {
 EnumsWithArraysInterfaceAdaptor* Connection::EnumsWithArrays() {
     if (m_EnumsTestserviceYarpcComObjectPath != nullptr) {
         return m_EnumsTestserviceYarpcComObjectPath->m_enumsWithArrays;
+    } else {
+        return nullptr;
+    }
+}
+
+void Connection::registerEnumsWithDicts(QObject* interface) {
+    if (m_EnumsWithDicts == nullptr) {
+        auto enumsWithDictsInterface = dynamic_cast<EnumsWithDictsInterface*>(interface);
+        if (enumsWithDictsInterface != nullptr) {
+            m_EnumsWithDicts = interface;
+        }
+    }
+    connect();
+    updateRegistrations();
+}
+
+void Connection::unregisterEnumsWithDicts() {
+    if (m_EnumsWithDicts != nullptr) {
+        m_EnumsWithDicts = nullptr;
+    }
+    updateRegistrations();
+    disconnectIfUnused();
+}
+
+bool Connection::isEnumsWithDictsRegistered() const {
+    return (m_EnumsWithDicts != nullptr);
+}
+
+EnumsWithDictsInterfaceAdaptor* Connection::EnumsWithDicts() {
+    if (m_EnumsTestserviceYarpcComObjectPath != nullptr) {
+        return m_EnumsTestserviceYarpcComObjectPath->m_enumsWithDicts;
     } else {
         return nullptr;
     }

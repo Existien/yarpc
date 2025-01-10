@@ -12,6 +12,9 @@
 {% for struct in output.objects|selectattr('kind', 'equalto', 'struct') %}
 #include "{{ struct.name }}.hpp"
 {% endfor %}
+{% for enum in output.objects|selectattr('kind', 'equalto', 'enum') %}
+#include "{{ enum.name }}.hpp"
+{% endfor %}
 
 namespace {{ qt6.namespace(output) }} {
 

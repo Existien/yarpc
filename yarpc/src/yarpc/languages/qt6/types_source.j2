@@ -9,9 +9,6 @@
 #include "types.hpp"
 #include <QList>
 #include <QDBusMetaType>
-{% for enum in output.objects|selectattr('kind', 'equalto', 'enum') %}
-#include "{{ enum.name }}.hpp"
-{% endfor %}
 
 namespace {{ qt6.namespace(output) }} {
 
