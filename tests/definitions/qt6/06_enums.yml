@@ -12,10 +12,10 @@ outputs:
     definition: EnumsWithArrays
     objectPath: /com/yarpc/testservice/enums
     interfaceName: com.yarpc.testservice.enumsWithArrays
-  # - className: EnumsWithDictsInterface
-  #   definition: EnumsWithDicts
-  #   objectPath: /com/yarpc/testservice/enums
-  #   interfaceName: com.yarpc.testservice.enumsWithDicts
+  - className: EnumsWithDictsInterface
+    definition: EnumsWithDicts
+    objectPath: /com/yarpc/testservice/enums
+    interfaceName: com.yarpc.testservice.enumsWithDicts
   # - className: EnumsWithStructsInterface
   #   definition: EnumsWithStructs
   #   objectPath: /com/yarpc/testservice/enums
@@ -31,11 +31,11 @@ outputs:
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend/enums
     interfaceName: com.yarpc.backend.enumsWithArrays
-  # - className: BackendEnumsWithDictsClient
-  #   definition: EnumsWithDicts
-  #   busName: com.yarpc.backend
-  #   objectPath: /com/yarpc/backend/enums
-  #   interfaceName: com.yarpc.backend.enumsWithDicts
+  - className: BackendEnumsWithDictsClient
+    definition: EnumsWithDicts
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend/enums
+    interfaceName: com.yarpc.backend.enumsWithDicts
   # - className: BackendEnumsWithStructsClient
   #   definition: EnumsWithStructs
   #   busName: com.yarpc.backend
