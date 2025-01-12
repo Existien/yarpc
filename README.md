@@ -2,6 +2,8 @@
 
 yarpc generates D-Bus services and clients from interface definitions written in YAML.
 
+Documentation: https://existien.github.io/yarpc/
+
 ## SDK
 - build SDK via the `sdk/build.sh` script
 - start the SDK via the `sdk/run.sh` script
