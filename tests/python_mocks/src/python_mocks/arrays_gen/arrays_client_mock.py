@@ -136,7 +136,7 @@ class ArraysClientMock():
             numbers: 'aad',
     ):
         self.mock.ArraySignal(
-            [ [ x1 for x1 in x0 ] for x0 in numbers ],
+            numbers=[ [ x1 for x1 in x0 ] for x0 in numbers ],
         )
 
     async def get_ArrayProperty(self) -> List[List[str]]:

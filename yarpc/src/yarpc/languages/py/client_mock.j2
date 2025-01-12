@@ -144,7 +144,7 @@ class {{ target.className }}():
     ):
         self.mock.{{ member.name }}(
         {% for arg in member.args %}
-            {{ py.from_dbus(arg.name, arg.type, output.objects) }},
+            {{ arg.name }}={{ py.from_dbus(arg.name, arg.type, output.objects) }},
         {% endfor %}
         )
 {% endif %}

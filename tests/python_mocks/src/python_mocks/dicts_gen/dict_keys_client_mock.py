@@ -154,7 +154,7 @@ class DictKeysClientMock():
             value: 'a{ys}',
     ):
         self.mock.Uint8Signal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _BoolSignal_handler(
@@ -162,7 +162,7 @@ class DictKeysClientMock():
             value: 'a{bs}',
     ):
         self.mock.BoolSignal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _Int16Signal_handler(
@@ -170,7 +170,7 @@ class DictKeysClientMock():
             value: 'a{ns}',
     ):
         self.mock.Int16Signal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _Uint16Signal_handler(
@@ -178,7 +178,7 @@ class DictKeysClientMock():
             value: 'a{qs}',
     ):
         self.mock.Uint16Signal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _Int32Signal_handler(
@@ -186,7 +186,7 @@ class DictKeysClientMock():
             value: 'a{is}',
     ):
         self.mock.Int32Signal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _Uint32Signal_handler(
@@ -194,7 +194,7 @@ class DictKeysClientMock():
             value: 'a{us}',
     ):
         self.mock.Uint32Signal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _Int64Signal_handler(
@@ -202,7 +202,7 @@ class DictKeysClientMock():
             value: 'a{xs}',
     ):
         self.mock.Int64Signal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _Uint64Signal_handler(
@@ -210,7 +210,7 @@ class DictKeysClientMock():
             value: 'a{ts}',
     ):
         self.mock.Uint64Signal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _DoubleSignal_handler(
@@ -218,7 +218,7 @@ class DictKeysClientMock():
             value: 'a{ds}',
     ):
         self.mock.DoubleSignal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     def _StringSignal_handler(
@@ -226,7 +226,7 @@ class DictKeysClientMock():
             value: 'a{ss}',
     ):
         self.mock.StringSignal(
-            { k0: v0 for k0, v0 in value.items() },
+            value={ k0: v0 for k0, v0 in value.items() },
         )
 
     async def Uint8Method(

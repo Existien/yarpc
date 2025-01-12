@@ -137,8 +137,8 @@ class StructsClientMock():
             totalCosts: 'd',
     ):
         self.mock.StructReceived(
-            SimpleStruct.from_dbus(simpleStruct),
-            totalCosts,
+            simpleStruct=SimpleStruct.from_dbus(simpleStruct),
+            totalCosts=totalCosts,
         )
 
     async def get_Simple(self) -> SimpleStruct:

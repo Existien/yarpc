@@ -136,7 +136,7 @@ class EnumsWithArraysClientMock():
             color: 'ai',
     ):
         self.mock.EnumSignal(
-            [ Color(x0) for x0 in color ],
+            color=[ Color(x0) for x0 in color ],
         )
 
     async def get_EnumProperty(self) -> List[Color]:

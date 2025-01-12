@@ -136,7 +136,7 @@ class EnumsWithStructsClientMock():
             color: '(iaia{ii})',
     ):
         self.mock.EnumSignal(
-            EnumStruct.from_dbus(color),
+            color=EnumStruct.from_dbus(color),
         )
 
     async def get_EnumProperty(self) -> EnumStruct:

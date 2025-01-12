@@ -136,7 +136,7 @@ class DictsWithStructsClientMock():
             numbers: 'a{s(a{sa{su}})}',
     ):
         self.mock.DictStructSignal(
-            { k0: StructDict.from_dbus(v0) for k0, v0 in numbers.items() },
+            numbers={ k0: StructDict.from_dbus(v0) for k0, v0 in numbers.items() },
         )
 
     async def get_DictStructProperty(self) -> Dict[str, StructDict]:

@@ -136,7 +136,7 @@ class DictsWithArraysClientMock():
             numbers: 'a{saa{su}}',
     ):
         self.mock.DictsArraySignal(
-            { k0: [ { k2: v2 for k2, v2 in x1.items() } for x1 in v0 ] for k0, v0 in numbers.items() },
+            numbers={ k0: [ { k2: v2 for k2, v2 in x1.items() } for x1 in v0 ] for k0, v0 in numbers.items() },
         )
 
     async def get_DictArrayProperty(self) -> Dict[str, List[Dict[str, int]]]:

@@ -136,7 +136,7 @@ class DictsClientMock():
             keysNValues: 'a{su}',
     ):
         self.mock.DictSignal(
-            { k0: v0 for k0, v0 in keysNValues.items() },
+            keysNValues={ k0: v0 for k0, v0 in keysNValues.items() },
         )
 
     async def get_DictProperty(self) -> Dict[str, int]:

@@ -136,7 +136,7 @@ class EnumsClientMock():
             color: 'i',
     ):
         self.mock.EnumSignal(
-            Color(color),
+            color=Color(color),
         )
 
     async def get_EnumProperty(self) -> Color:

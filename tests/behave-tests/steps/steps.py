@@ -382,7 +382,7 @@ async def step_impl(context, name, signal):
     mock = getattr(client.mock, signal)
     while mock.call_count == 0:
         await asyncio.sleep(0.1)
-    mock.called_once_with(**kwargs)
+    mock.assert_called_once_with(**kwargs)
     mock.reset_mock()
 
 
@@ -422,5 +422,5 @@ async def step_impl(context, name):
     mock = client.mock.on_properties_changed
     while mock.call_count == 0:
         await asyncio.sleep(0.1)
-    mock.called_once_with(kwargs)
+    mock.assert_called_with(properties=kwargs)
     mock.reset_mock()

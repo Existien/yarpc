@@ -123,7 +123,7 @@ class WithArgsClientMock():
             message: 's',
     ):
         self.mock.Notified(
-            message,
+            message=message,
         )
 
     def _OrderReceived_handler(
@@ -133,9 +133,9 @@ class WithArgsClientMock():
             pricePerItem: 'd',
     ):
         self.mock.OrderReceived(
-            item,
-            amount,
-            pricePerItem,
+            item=item,
+            amount=amount,
+            pricePerItem=pricePerItem,
         )
 
     async def Notify(

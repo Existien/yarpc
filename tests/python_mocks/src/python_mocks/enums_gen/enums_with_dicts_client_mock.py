@@ -136,7 +136,7 @@ class EnumsWithDictsClientMock():
             color: 'a{ii}',
     ):
         self.mock.EnumSignal(
-            { Color(k0): Color(v0) for k0, v0 in color.items() },
+            color={ Color(k0): Color(v0) for k0, v0 in color.items() },
         )
 
     async def get_EnumProperty(self) -> Dict[Color, Color]:

@@ -152,7 +152,7 @@ class PrimitivesClientMock():
             value: 'y',
     ):
         self.mock.Uint8Signal(
-            value,
+            value=value,
         )
 
     def _BoolSignal_handler(
@@ -160,7 +160,7 @@ class PrimitivesClientMock():
             value: 'b',
     ):
         self.mock.BoolSignal(
-            value,
+            value=value,
         )
 
     def _Int16Signal_handler(
@@ -168,7 +168,7 @@ class PrimitivesClientMock():
             value: 'n',
     ):
         self.mock.Int16Signal(
-            value,
+            value=value,
         )
 
     def _Uint16Signal_handler(
@@ -176,7 +176,7 @@ class PrimitivesClientMock():
             value: 'q',
     ):
         self.mock.Uint16Signal(
-            value,
+            value=value,
         )
 
     def _Int32Signal_handler(
@@ -184,7 +184,7 @@ class PrimitivesClientMock():
             value: 'i',
     ):
         self.mock.Int32Signal(
-            value,
+            value=value,
         )
 
     def _Uint32Signal_handler(
@@ -192,7 +192,7 @@ class PrimitivesClientMock():
             value: 'u',
     ):
         self.mock.Uint32Signal(
-            value,
+            value=value,
         )
 
     def _Int64Signal_handler(
@@ -200,7 +200,7 @@ class PrimitivesClientMock():
             value: 'x',
     ):
         self.mock.Int64Signal(
-            value,
+            value=value,
         )
 
     def _Uint64Signal_handler(
@@ -208,7 +208,7 @@ class PrimitivesClientMock():
             value: 't',
     ):
         self.mock.Uint64Signal(
-            value,
+            value=value,
         )
 
     def _DoubleSignal_handler(
@@ -216,7 +216,7 @@ class PrimitivesClientMock():
             value: 'd',
     ):
         self.mock.DoubleSignal(
-            value,
+            value=value,
         )
 
     def _StringSignal_handler(
@@ -224,7 +224,7 @@ class PrimitivesClientMock():
             value: 's',
     ):
         self.mock.StringSignal(
-            value,
+            value=value,
         )
 
     async def Uint8Method(

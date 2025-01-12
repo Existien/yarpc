@@ -136,7 +136,7 @@ class ArraysWithStructsClientMock():
             numbers: 'a(aau)',
     ):
         self.mock.ArrayStructSignal(
-            [ StructArray.from_dbus(x0) for x0 in numbers ],
+            numbers=[ StructArray.from_dbus(x0) for x0 in numbers ],
         )
 
     async def get_ArrayStructProperty(self) -> List[StructArray]:
