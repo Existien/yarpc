@@ -15,6 +15,7 @@ from unittest.mock import AsyncMock
 from copy import deepcopy
 from enum import Enum
 from .qml_struct import QmlStruct
+from .qml_enum import QmlEnum
 
 
 class _Interface(ServiceInterface):
@@ -33,7 +34,7 @@ class _Interface(ServiceInterface):
     @method()
     async def PassStructMethod(
         self,
-        qmlStruct: '(sd)',
+        qmlStruct: '(sdi)',
     ) -> None:
         await self._wrapper.PassStructMethod(
             QmlStruct.from_dbus(qmlStruct),
@@ -53,7 +54,7 @@ class _Interface(ServiceInterface):
     @method()
     async def PassStructsInArrayMethod(
         self,
-        listOfStructs: 'a(sd)',
+        listOfStructs: 'a(sdi)',
     ) -> None:
         await self._wrapper.PassStructsInArrayMethod(
             [ QmlStruct.from_dbus(x0) for x0 in listOfStructs ],
@@ -83,7 +84,7 @@ class _Interface(ServiceInterface):
     @method()
     async def PassDictWithStructsMethod(
         self,
-        dictWithStructs: 'a{s(sd)}',
+        dictWithStructs: 'a{s(sdi)}',
     ) -> None:
         await self._wrapper.PassDictWithStructsMethod(
             { k0: QmlStruct.from_dbus(v0) for k0, v0 in dictWithStructs.items() },
@@ -140,6 +141,16 @@ class _Interface(ServiceInterface):
         )
         return None
 
+    @method()
+    async def PassDictWithEnumsMethod(
+        self,
+        dictOfEnumsToEnums: 'a{ii}',
+    ) -> None:
+        await self._wrapper.PassDictWithEnumsMethod(
+            { QmlEnum(k0): QmlEnum(v0) for k0, v0 in dictOfEnumsToEnums.items() },
+        )
+        return None
+
 
 class QmlInstantiationInterfaceMock():
     """
@@ -172,6 +183,7 @@ class QmlInstantiationInterfaceMock():
         self.mock.PassArrayInDictMethod.return_value = None
         self.mock.PassDictInArrayInDictMethod.return_value = None
         self.mock.PassDictInArrayInArrayMethod.return_value = None
+        self.mock.PassDictWithEnumsMethod.return_value = None
 
         self._properties = {}
 
@@ -337,3 +349,15 @@ class QmlInstantiationInterfaceMock():
             listOfListsOfDicts (List[List[Dict[str, str]]]): list of lists of dicts
         """
         return await self._await_mock_method("PassDictInArrayInArrayMethod", locals())
+
+    async def PassDictWithEnumsMethod(
+        self,
+        dictOfEnumsToEnums: Dict[QmlEnum, QmlEnum],
+    ) -> None:
+        """
+        pass dict with enums as keys and values
+
+        Args:
+            dictOfEnumsToEnums (Dict[QmlEnum, QmlEnum]): dict of enums to enums
+        """
+        return await self._await_mock_method("PassDictWithEnumsMethod", locals())

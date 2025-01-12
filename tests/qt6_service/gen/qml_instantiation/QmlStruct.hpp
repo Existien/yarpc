@@ -7,6 +7,7 @@
  */
 
 #pragma once
+#include "QmlEnum.hpp"
 #include <QObject>
 #include <QDBusArgument>
 #include <QDBusMessage>
@@ -27,6 +28,10 @@ struct QmlStruct {
      * @brief a number
      */
     Q_PROPERTY(double number MEMBER number)
+    /**
+     * @brief a enum
+     */
+    Q_PROPERTY(QmlEnum::Type someEnum MEMBER someEnum)
 public:
     /**
      * @brief the content
@@ -36,6 +41,10 @@ public:
      * @brief a number
      */
     double number;
+    /**
+     * @brief a enum
+     */
+    QmlEnum::Type someEnum;
 };
 
 /**
@@ -73,10 +82,12 @@ public:
      *
      * @param content the content
      * @param number a number
+     * @param someEnum a enum
      */
     QmlStruct create (
         QString content,
-        double number
+        double number,
+        QmlEnum::Type someEnum
     ) const;
 
     /**
@@ -84,10 +95,12 @@ public:
      *
      * @param content the content
      * @param number a number
+     * @param someEnum a enum
      */
     Q_INVOKABLE QmlStruct create (
         QVariant content,
-        QVariant number
+        QVariant number,
+        QVariant someEnum
     ) const;
 };
 

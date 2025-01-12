@@ -14,6 +14,7 @@
 #include <QVariant>
 #include "DBusError.hpp"
 #include "QmlStruct.hpp"
+#include "QmlEnum.hpp"
 #include "types.hpp"
 namespace gen::qml_instantiation {
 
@@ -316,6 +317,33 @@ private:
     QDBusPendingCallWatcher m_watcher;
 };
 
+/**
+ * @brief Pending call object for the PassDictWithEnumsMethod method calls.
+ */
+class PassDictWithEnumsMethodPendingCall : public QObject {
+    Q_OBJECT
+    QML_UNCREATABLE("")
+    QML_ELEMENT
+public:
+    PassDictWithEnumsMethodPendingCall(QDBusPendingCall pendingCall, QObject *parent);
+signals:
+    /**
+     * @brief Emitted when an PassDictWithEnumsMethod call returns.
+     */
+    void finished();
+
+    /**
+     * @brief Emitted when an error ocurred during an PassDictWithEnumsMethod call.
+     *
+     * @param error the error
+     */
+    void error(DBusError error);
+private slots:
+    void callFinished(QDBusPendingCallWatcher *watcher);
+private:
+    QDBusPendingCallWatcher m_watcher;
+};
+
 }
 
 /**
@@ -452,6 +480,17 @@ public:
         QList<QList<QMap<QString, QString>>> listOfListsOfDicts
     );
 
+    /**
+     * @brief pass dict with enums as keys and values
+     *
+     * @param dictOfEnumsToEnums dict of enums to enums
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    QmlAsClientUtils::PassDictWithEnumsMethodPendingCall* PassDictWithEnumsMethod(
+        QMap<QmlEnum::Type, QmlEnum::Type> dictOfEnumsToEnums
+    );
+
 public slots:
     /**
      * @brief Returns whether the target service is available.
@@ -586,6 +625,17 @@ public slots:
      */
     QmlAsClientUtils::PassDictInArrayInArrayMethodPendingCall* PassDictInArrayInArrayMethod(
         QVariant listOfListsOfDicts
+    );
+
+    /**
+     * @brief pass dict with enums as keys and values
+     *
+     * @param dictOfEnumsToEnums dict of enums to enums
+     *
+     * @returns Pending call object with finished signal containing the reply.
+     */
+    QmlAsClientUtils::PassDictWithEnumsMethodPendingCall* PassDictWithEnumsMethod(
+        QVariant dictOfEnumsToEnums
     );
 
 signals:

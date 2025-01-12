@@ -9,6 +9,13 @@
 
 using namespace gen::enums;
 
+Color::Type gen::enums::Color::fromValue(int value) {
+    return *reinterpret_cast<const Color::Type*>(&value);
+}
+int gen::enums::Color::toValue (Color::Type value) {
+    return *reinterpret_cast<const int*>(&value);
+}
+
 QDBusArgument &gen::enums::operator<<(QDBusArgument &argument, const Color::Type &object) {
     argument << static_cast<int>(object);
     return argument;

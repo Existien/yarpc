@@ -8,6 +8,7 @@
 #include <qqmlintegration.h>
 #include <QObject>
 #include "QmlStruct.hpp"
+#include "QmlEnum.hpp"
 
 namespace gen::qml_instantiation {
 
@@ -35,6 +36,7 @@ class Conversions : public QObject {
     QML_ELEMENT
     QML_SINGLETON
 public:
+    Q_INVOKABLE QMap<QmlEnum::Type, QmlEnum::Type> jsToMapOfQmlEnumToQmlEnum(QVariant jsonObject);
     Q_INVOKABLE QMap<QString, QList<QMap<QString, QString>>> jsToMapOfStringToListOfMapOfStringToString(QVariant jsonObject);
     Q_INVOKABLE QMap<QString, QList<QString>> jsToMapOfStringToListOfString(QVariant jsonObject);
     Q_INVOKABLE QMap<QString, QMap<QString, QString>> jsToMapOfStringToMapOfStringToString(QVariant jsonObject);

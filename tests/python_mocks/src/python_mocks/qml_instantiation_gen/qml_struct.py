@@ -5,6 +5,7 @@
 #   Object: QmlStruct
 #   Template: py/struct.j2
 
+from .qml_enum import QmlEnum
 from dataclasses import dataclass
 from typing import List, Dict
 
@@ -16,9 +17,11 @@ class QmlStruct:
     Args:
         content (str): the content
         number (float): a number
+        someEnum (QmlEnum): a enum
     """
     content: str
     number: float
+    someEnum: QmlEnum
 
     def to_dbus(self):
         """
@@ -30,6 +33,7 @@ class QmlStruct:
         return [
             self.content,
             self.number,
+            self.someEnum.value,
         ]
 
     def from_dbus(dbus_struct: list):
@@ -45,4 +49,5 @@ class QmlStruct:
         return QmlStruct(
             content=dbus_struct[0],
             number=dbus_struct[1],
+            someEnum=QmlEnum(dbus_struct[2]),
         )

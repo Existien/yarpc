@@ -101,3 +101,11 @@ QList<QList<QMap<QString, QString>>> QmlAsServiceInterfaceAdaptor::PassDictInArr
     return {};
 }
 
+QMap<int, int> QmlAsServiceInterfaceAdaptor::PassDictWithEnumsMethod(
+    const QDBusMessage &_message
+){
+    _message.setDelayedReply(true);
+    m_iface->handlePassDictWithEnumsMethodCalled(_message);
+    return {};
+}
+

@@ -12,6 +12,7 @@ from unittest.mock import Mock
 import sys
 import asyncio
 from .qml_struct import QmlStruct
+from .qml_enum import QmlEnum
 
 
 class QmlInstantiationClientMock():
@@ -63,6 +64,7 @@ class QmlInstantiationClientMock():
             self._interface.on_pass_array_in_dict_signal(self._PassArrayInDictSignal_handler)
             self._interface.on_pass_dict_in_array_in_dict_signal(self._PassDictInArrayInDictSignal_handler)
             self._interface.on_pass_dict_in_array_in_array_signal(self._PassDictInArrayInArraySignal_handler)
+            self._interface.on_pass_dict_with_enums_signal(self._PassDictWithEnumsSignal_handler)
 
             self._property_interface = proxy_object.get_interface(
                 "org.freedesktop.DBus.Properties"
@@ -108,6 +110,8 @@ class QmlInstantiationClientMock():
             self._interface.off_pass_dict_in_array_in_dict_signal(self._PassDictInArrayInDictSignal_handler)
         if self._PassDictInArrayInArraySignal_handler:
             self._interface.off_pass_dict_in_array_in_array_signal(self._PassDictInArrayInArraySignal_handler)
+        if self._PassDictWithEnumsSignal_handler:
+            self._interface.off_pass_dict_with_enums_signal(self._PassDictWithEnumsSignal_handler)
         if self._properties_changed_handler:
                 self._property_interface.off_properties_changed(self._properties_changed_handler)
         self._interface = None
@@ -124,6 +128,7 @@ class QmlInstantiationClientMock():
         self._PassArrayInDictSignal_handler = None
         self._PassDictInArrayInDictSignal_handler = None
         self._PassDictInArrayInArraySignal_handler = None
+        self._PassDictWithEnumsSignal_handler = None
 
     def _unpack_prop(self, name, variant):
         prop_map = {
@@ -166,7 +171,7 @@ class QmlInstantiationClientMock():
 
     def _PassStructSignal_handler(
         self,
-            qmlStruct: '(sd)',
+            qmlStruct: '(sdi)',
     ):
         self.mock.PassStructSignal(
             qmlStruct=QmlStruct.from_dbus(qmlStruct),
@@ -206,7 +211,7 @@ class QmlInstantiationClientMock():
 
     def _PassStructsInArraySignal_handler(
         self,
-            listOfStructs: 'a(sd)',
+            listOfStructs: 'a(sdi)',
     ):
         self.mock.PassStructsInArraySignal(
             listOfStructs=[ QmlStruct.from_dbus(x0) for x0 in listOfStructs ],
@@ -266,7 +271,7 @@ class QmlInstantiationClientMock():
 
     def _PassDictWithStructsSignal_handler(
         self,
-            dictWithStructs: 'a{s(sd)}',
+            dictWithStructs: 'a{s(sdi)}',
     ):
         self.mock.PassDictWithStructsSignal(
             dictWithStructs={ k0: QmlStruct.from_dbus(v0) for k0, v0 in dictWithStructs.items() },
@@ -370,4 +375,24 @@ class QmlInstantiationClientMock():
     ):
         self.mock.PassDictInArrayInArraySignal(
             listOfListsOfDicts=[ [ { k2: v2 for k2, v2 in x1.items() } for x1 in x0 ] for x0 in listOfListsOfDicts ],
+        )
+
+    async def PassDictWithEnumsMethod(
+        self,
+    ) -> Dict[QmlEnum, QmlEnum]:
+        """
+        pass dict with enums as keys and values
+        """
+        while not self._interface:
+            await asyncio.sleep(0.1)
+        raw_return = await self._interface.call_pass_dict_with_enums_method(
+        )
+        return { QmlEnum(k0): QmlEnum(v0) for k0, v0 in raw_return.items() }
+
+    def _PassDictWithEnumsSignal_handler(
+        self,
+            dictOfEnumsToEnums: 'a{ii}',
+    ):
+        self.mock.PassDictWithEnumsSignal(
+            dictOfEnumsToEnums={ QmlEnum(k0): QmlEnum(v0) for k0, v0 in dictOfEnumsToEnums.items() },
         )

@@ -122,6 +122,15 @@ public slots:
     QList<QList<QMap<QString, QString>>> PassDictInArrayInArrayMethod(
         const QDBusMessage &_message
     );
+    /**
+     * @brief pass dict with enums as keys and values
+     * @param _message The D-Bus message object
+     *
+     * @returns dict of enums to enums
+     */
+    QMap<int, int> PassDictWithEnumsMethod(
+        const QDBusMessage &_message
+    );
 signals:
     /**
      * @brief pass struct
@@ -221,6 +230,15 @@ signals:
      */
     void PassDictInArrayInArraySignal(
         QList<QList<QMap<QString, QString>>> listOfListsOfDicts
+    );
+    /**
+     * @brief pass dict with enums as keys and values
+     *
+     * @param dictOfEnumsToEnums dict of enums to enums
+     *
+     */
+    void PassDictWithEnumsSignal(
+        QMap<int, int> dictOfEnumsToEnums
     );
 private:
     QmlAsServiceInterface* m_iface;

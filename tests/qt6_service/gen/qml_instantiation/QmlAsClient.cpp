@@ -640,3 +640,50 @@ void PassDictInArrayInArrayMethodPendingCall::callFinished(QDBusPendingCallWatch
     deleteLater();
 }
 
+PassDictWithEnumsMethodPendingCall* QmlAsClient::PassDictWithEnumsMethod(
+    QVariant dictOfEnumsToEnums
+) {
+    QMap<QmlEnum::Type, QmlEnum::Type> arg_0;
+    arg_0 = dictOfEnumsToEnums.value<QMap<QmlEnum::Type, QmlEnum::Type>>();
+
+    return PassDictWithEnumsMethod(
+        arg_0
+    );
+}
+PassDictWithEnumsMethodPendingCall* QmlAsClient::PassDictWithEnumsMethod(
+    QMap<QmlEnum::Type, QmlEnum::Type> dictOfEnumsToEnums
+) {
+    QDBusArgument dbusdictOfEnumsToEnums;
+    dbusdictOfEnumsToEnums << *reinterpret_cast<const QMap<int, int>*>(&dictOfEnumsToEnums);
+    QDBusInterface iface(
+        "com.yarpc.backend",
+        "/com/yarpc/backend/qmlInstantiation",
+        "com.yarpc.backend.qmlInstantiation",
+        QDBusConnection::sessionBus()
+    );
+    QDBusPendingCall pendingCall {iface.asyncCall(
+        "PassDictWithEnumsMethod",
+        QVariant::fromValue(dbusdictOfEnumsToEnums)
+    )};
+    return new PassDictWithEnumsMethodPendingCall(pendingCall, this);
+}
+
+PassDictWithEnumsMethodPendingCall::PassDictWithEnumsMethodPendingCall(QDBusPendingCall pendingCall, QObject *parent)
+: QObject(parent), m_watcher(pendingCall, this) {
+    QObject::connect(
+        &m_watcher, &QDBusPendingCallWatcher::finished,
+        this, &PassDictWithEnumsMethodPendingCall::callFinished
+    );
+}
+
+void PassDictWithEnumsMethodPendingCall::callFinished(QDBusPendingCallWatcher *watcher)
+{
+    QDBusPendingReply<void> reply {*watcher};
+    if (!reply.isValid()) {
+        emit error(reply.error());
+    } else {
+        emit finished();
+    }
+    deleteLater();
+}
+
