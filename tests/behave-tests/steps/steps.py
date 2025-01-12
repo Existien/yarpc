@@ -20,7 +20,7 @@ from python_mocks import (
     EnumsWithArraysClientMock, BackendEnumsWithArraysInterfaceMock,
     EnumsWithDictsClientMock, BackendEnumsWithDictsInterfaceMock,
     EnumsWithStructsClientMock, BackendEnumsWithStructsInterfaceMock, EnumStruct,
-    QmlInstantiationClientMock, QmlInstantiationInterfaceMock, QmlStruct
+    QmlInstantiationClientMock, QmlInstantiationInterfaceMock, QmlStruct, QmlEnum,
 )
 from dbus_next.aio import MessageBus
 from dbus_next.errors import DBusError

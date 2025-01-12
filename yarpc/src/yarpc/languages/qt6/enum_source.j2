@@ -11,6 +11,13 @@
 
 using namespace {{ qt6.namespace(output) }};
 
+{{ object.name }}::Type {{ qt6.namespace(output) }}::{{ object.name }}::fromValue({{ qt6.type(object.name, output.objects, dbus=true) }} value) {
+    return {{ qt6.force_cast("value", object.name, output.objects, dbus=false) }};
+}
+{{ qt6.type(object.name, output.objects, dbus=true) }} {{ qt6.namespace(output) }}::{{ object.name }}::toValue ({{ object.name }}::Type value) {
+    return {{ qt6.force_cast("value", object.name, output.objects, dbus=true) }};
+}
+
 QDBusArgument &{{ qt6.namespace(output) }}::operator<<(QDBusArgument &argument, const {{ object.name }}::Type &object) {
     argument << static_cast<{{ qt6.type(object.name, output.objects, dbus=true) }}>(object);
     return argument;

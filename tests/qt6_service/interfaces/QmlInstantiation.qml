@@ -13,7 +13,7 @@ Item {
     Connections {
         target: QmlAsServiceInterface
         function onPassStructMethodCalled(reply) {
-            var obj = QmlStructFactory.create("Foo", 3.14)
+            var obj = QmlStructFactory.create("Foo", 3.14, QmlEnum.ONE)
             reply.sendReply(obj)
             QmlAsServiceInterface.EmitPassStructSignal(obj)
             client.PassStructMethod(obj)
@@ -27,8 +27,8 @@ Item {
         }
         function onPassStructsInArrayMethodCalled(reply) {
             var obj = [
-                QmlStructFactory.create("Foo", 3.14),
-                QmlStructFactory.create("Bar", 1.26)
+                QmlStructFactory.create("Foo", 3.14, QmlEnum.TWO),
+                QmlStructFactory.create("Bar", 1.26, QmlEnum.OWT)
             ]
             reply.sendReply(obj)
             QmlAsServiceInterface.EmitPassStructsInArraySignal(obj)
@@ -50,8 +50,8 @@ Item {
         }
         function onPassDictWithStructsMethodCalled(reply) {
             var jsobj = {
-                "A": QmlStructFactory.create("Foo", 1.0),
-                "B": QmlStructFactory.create("Bar", 2.0)
+                "A": QmlStructFactory.create("Foo", 1.0, QmlEnum.ONE),
+                "B": QmlStructFactory.create("Bar", 2.0, QmlEnum.TWO)
             }
             var obj = Conversions.jsToMapOfStringToQmlStruct(jsobj)
             reply.sendReply(obj)
@@ -107,6 +107,16 @@ Item {
             reply.sendReply(obj)
             QmlAsServiceInterface.EmitPassDictInArrayInArraySignal(obj)
             client.PassDictInArrayInArrayMethod(obj)
+        }
+        function onPassDictWithEnumsMethodCalled(reply) {
+            var jsob = {
+                [QmlEnum.ONE]: QmlEnum.ENO,
+                [QmlEnum.TWO]: QmlEnum.OWT
+            }
+            var obj = Conversions.jsToMapOfQmlEnumToQmlEnum(jsob)
+            reply.sendReply(obj)
+            QmlAsServiceInterface.EmitPassDictWithEnumsSignal(obj)
+            client.PassDictWithEnumsMethod(obj)
         }
     }
 }

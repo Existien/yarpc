@@ -17,6 +17,7 @@ qt_add_qml_module(QmlInstantiation
         QmlAsServiceInterfaceAdaptor.cpp
         QmlAsClient.cpp
         QmlStruct.cpp
+        QmlEnum.cpp
 )
 
 target_link_libraries(QmlInstantiation PUBLIC Qt6::DBus)

@@ -25,6 +25,8 @@ void registerMetaTypes() {
     qDBusRegisterMetaType<QList<QString>>();
     qRegisterMetaType<QList<uint>>("QList<uint>");
     qDBusRegisterMetaType<QList<uint>>();
+    qRegisterMetaType<QMap<QmlEnum::Type, QmlEnum::Type>>("QMap<QmlEnum::Type, QmlEnum::Type>");
+    qDBusRegisterMetaType<QMap<int, int>>();
     qRegisterMetaType<QMap<QString, QList<QMap<QString, QString>>>>("QMap<QString, QList<QMap<QString, QString>>>");
     qDBusRegisterMetaType<QMap<QString, QList<QMap<QString, QString>>>>();
     qRegisterMetaType<QMap<QString, QList<QString>>>("QMap<QString, QList<QString>>");
@@ -65,6 +67,18 @@ bool operator!=(const QMap<QString, QmlStruct> &lhs, const QMap<QString, QmlStru
         }
     }
     return false;
+}
+
+QMap<QmlEnum::Type, QmlEnum::Type> Conversions::jsToMapOfQmlEnumToQmlEnum(QVariant jsonObject) {
+    QMap<QmlEnum::Type, QmlEnum::Type> converted;
+    auto map_0 = jsonObject.toMap();
+    for (auto k_0 = map_0.keyBegin(); k_0 != map_0.keyEnd(); ++k_0) {
+        QmlEnum::Type key_0 = static_cast<QmlEnum::Type>((*k_0).toLong());
+        auto v_0 = map_0.value(*k_0);
+        converted[key_0] = v_0.value<QmlEnum::Type>();
+    }
+
+    return converted;
 }
 
 QMap<QString, QList<QMap<QString, QString>>> Conversions::jsToMapOfStringToListOfMapOfStringToString(QVariant jsonObject) {

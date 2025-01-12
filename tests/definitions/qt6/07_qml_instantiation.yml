@@ -39,6 +39,17 @@ objects:
   - name: number
     type: double
     docs: a number
+  - name: someEnum
+    type: QmlEnum
+    docs: a enum
+- name: QmlEnum
+  kind: enum
+  docs: an enum
+  members:
+  - ONE: 1
+  - TWO: 2
+  - ENO: -1
+  - OWT: -2
 - name: QmlAsService
   kind: interface
   docs: Interface to test returning values and signal arguments instantiated in QML
@@ -186,6 +197,19 @@ objects:
     - name: listOfListsOfDicts
       type: array<array<dict<string,string>>>
       docs: list of lists of dicts
+  - name: PassDictWithEnumsMethod
+    kind: method
+    docs: pass dict with enums as keys and values
+    returns:
+      type: dict<QmlEnum, QmlEnum>
+      docs: dict of enums to enums
+  - name: PassDictWithEnumsSignal
+    kind: signal
+    docs: pass dict with enums as keys and values
+    args:
+    - name: dictOfEnumsToEnums
+      type: dict<QmlEnum, QmlEnum>
+      docs: dict of enums to enums
 
 - name: QmlAsClient
   kind: interface
@@ -268,3 +292,10 @@ objects:
     - name: listOfListsOfDicts
       type: array<array<dict<string,string>>>
       docs: list of lists of dicts
+  - name: PassDictWithEnumsMethod
+    kind: method
+    docs: pass dict with enums as keys and values
+    args:
+    - name: dictOfEnumsToEnums
+      type: dict<QmlEnum, QmlEnum>
+      docs: dict of enums to enums

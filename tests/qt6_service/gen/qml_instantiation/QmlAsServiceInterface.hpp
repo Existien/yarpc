@@ -12,6 +12,7 @@
 #include <QVariant>
 #include "DBusError.hpp"
 #include "QmlStruct.hpp"
+#include "QmlEnum.hpp"
 #include "types.hpp"
 namespace gen::qml_instantiation {
 
@@ -732,6 +733,71 @@ private:
     PassDictInArrayInArrayMethodArgs m_args;
 };
 
+/**
+ * @brief The arguments passed during a PassDictWithEnumsMethod call.
+ */
+class PassDictWithEnumsMethodArgs {
+    Q_GADGET
+public:
+};
+
+/**
+ * @brief A pending reply to a PassDictWithEnumsMethod call.
+ *
+ * Use the sendReply or sendError methods to send the pending reply.
+ */
+class PassDictWithEnumsMethodPendingReply : public QObject {
+    Q_OBJECT
+    QML_UNCREATABLE("")
+    QML_ELEMENT
+public:
+    PassDictWithEnumsMethodPendingReply(QDBusMessage call, QObject *parent);
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        const QMap<QmlEnum::Type, QmlEnum::Type> &reply
+    );
+public slots:
+    /**
+     * @brief Returns the arguments passed during a PassDictWithEnumsMethod call.
+     *
+     * @returns the arguments of the call
+     */
+    PassDictWithEnumsMethodArgs args();
+
+    /**
+     * @brief Send a reply to the pending call.
+     *
+     * @param reply the return value of the call
+     */
+    void sendReply(
+        QVariant reply
+    );
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param name the name of the error
+     *   (needs to be in the form of a D-Bus URI, e.g. "com.yarpc.testservice.qmlInstantiation.OutOfCheeseError")
+     * @param message the error message
+     */
+    void sendError(const QString &name, const QString &message);
+
+    /**
+     * @brief Send an error in reply to the pending call.
+     *
+     * @param error the D-Bus error to send
+     */
+    void sendError(const DBusError &error);
+private:
+    QDBusMessage m_call;
+    PassDictWithEnumsMethodArgs m_args;
+};
+
 }
 
 /**
@@ -839,6 +905,13 @@ public:
      */
     void handlePassDictInArrayInArrayMethodCalled(QDBusMessage call);
 
+    /**
+     * @brief Handler for PassDictWithEnumsMethod D-Bus calls.
+     *
+     * @param call the D-Bus call object
+     */
+    void handlePassDictWithEnumsMethodCalled(QDBusMessage call);
+
 
     /**
      * @brief pass struct
@@ -937,6 +1010,15 @@ public:
      */
     void EmitPassDictInArrayInArraySignal(
         QList<QList<QMap<QString, QString>>> listOfListsOfDicts
+    );
+
+    /**
+     * @brief pass dict with enums as keys and values
+     *
+     * @param dictOfEnumsToEnums dict of enums to enums
+     */
+    void EmitPassDictWithEnumsSignal(
+        QMap<QmlEnum::Type, QmlEnum::Type> dictOfEnumsToEnums
     );
 
 
@@ -1046,6 +1128,15 @@ public slots:
         QVariant listOfListsOfDicts
     );
 
+    /**
+     * @brief pass dict with enums as keys and values
+     *
+     * @param dictOfEnumsToEnums dict of enums to enums
+     */
+    void EmitPassDictWithEnumsSignal(
+        QVariant dictOfEnumsToEnums
+    );
+
 
 private:
 
@@ -1132,6 +1223,13 @@ signals:
      * @param reply the reply object containing the call arguments and means to reply
      */
     void passDictInArrayInArrayMethodCalled(QmlAsServiceInterfaceUtils::PassDictInArrayInArrayMethodPendingReply* reply);
+
+    /**
+     * @brief Emitted when a client calls the PassDictWithEnumsMethod method.
+     *
+     * @param reply the reply object containing the call arguments and means to reply
+     */
+    void passDictWithEnumsMethodCalled(QmlAsServiceInterfaceUtils::PassDictWithEnumsMethodPendingReply* reply);
 
 
 private:

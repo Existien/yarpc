@@ -15,9 +15,9 @@
 namespace {{ qt6.namespace(output) }} {
 
 /**
- Wrapper for the {{ object.name }} enum, since QML doesn't support enum classes.
-
- This allows the enum values to be accessed in QML via `{{ object.name }}.
+ * Wrapper for the {{ object.name }} enum, since QML doesn't support enum classes.
+ *
+ * This allows the enum values to be accessed in QML via `{{ object.name }}.
  */
 class {{ object.name }} : public QObject {
     Q_OBJECT
@@ -26,8 +26,8 @@ class {{ object.name }} : public QObject {
 public:
 
     /**
-    {{ qt6.doctag(object, "brief")|indent(1) }}
-    */
+     * {{ qt6.doctag(object, "brief")|indent(1) }}
+     */
     enum Type : {{ qt6.type(object.name, output.objects, dbus=true) }} {
         {% for member in object.members %}
         {% for name, value in member.items() %}
@@ -36,6 +36,22 @@ public:
         {% endfor %}
     };
     Q_ENUM(Type)
+
+    /**
+     * Converts a value of the underlying type to the enum.
+     *
+     * @param value the value of the underlying type
+     * @returns the converted value
+     */
+    Q_INVOKABLE static Type fromValue({{ qt6.type(object.name, output.objects, dbus=true) }} value);
+
+    /**
+     * Converts an enum value to the underlying type.
+     *
+     * @param value the enum value
+     * @returns the converted value
+     */
+    Q_INVOKABLE static {{ qt6.type(object.name, output.objects, dbus=true) }} toValue (Type value);
 };
 
 /**

@@ -16,6 +16,7 @@ QDBusArgument &gen::qml_instantiation::operator<<(QDBusArgument &argument, const
     argument.beginStructure();
     argument << object.content;
     argument << object.number;
+    argument << *reinterpret_cast<const int*>(&object.someEnum);
     argument.endStructure();
     return argument;
 }
@@ -24,6 +25,9 @@ const QDBusArgument &gen::qml_instantiation::operator>>(const QDBusArgument &arg
     argument.beginStructure();
     argument >> object.content;
     argument >> object.number;
+    int dbusSomeEnum;
+    argument >> dbusSomeEnum;
+    object.someEnum = *reinterpret_cast<const QmlEnum::Type*>(&dbusSomeEnum);
     argument.endStructure();
     return argument;
 }
@@ -32,22 +36,26 @@ bool gen::qml_instantiation::operator!=(const QmlStruct &lhs, const QmlStruct &r
     return (false
         || lhs.content != rhs.content
         || lhs.number != rhs.number
+        || lhs.someEnum != rhs.someEnum
     );
 }
 
 QmlStruct QmlStructFactory::create (
     QString content,
-    double number
+    double number,
+    QmlEnum::Type someEnum
 ) const {
     return QmlStruct {
         .content = content,
         .number = number,
+        .someEnum = someEnum,
     };
 }
 
 QmlStruct QmlStructFactory::create (
     QVariant content,
-    QVariant number
+    QVariant number,
+    QVariant someEnum
 ) const {
     QString member_0;
     member_0 = content.value<QString>();
@@ -55,8 +63,12 @@ QmlStruct QmlStructFactory::create (
     double member_1;
     member_1 = number.value<double>();
 
+    QmlEnum::Type member_2;
+    member_2 = someEnum.value<QmlEnum::Type>();
+
     return QmlStruct {
         .content = member_0,
         .number = member_1,
+        .someEnum = member_2,
     };
 }

@@ -936,6 +936,81 @@ void QmlAsServiceInterface::EmitPassDictInArrayInArraySignal(
     );
 }
 
+PassDictWithEnumsMethodPendingReply::PassDictWithEnumsMethodPendingReply(QDBusMessage call, QObject *parent) : QObject(parent) {
+    m_call = call;
+    m_args = PassDictWithEnumsMethodArgs{
+    };
+}
+
+PassDictWithEnumsMethodArgs PassDictWithEnumsMethodPendingReply::args() {
+    return m_args;
+}
+
+void PassDictWithEnumsMethodPendingReply::sendReply(
+    QVariant reply
+) {
+    QMap<QmlEnum::Type, QmlEnum::Type> unmarshalled;
+    unmarshalled = reply.value<QMap<QmlEnum::Type, QmlEnum::Type>>();
+
+    sendReply(unmarshalled);
+}
+
+void PassDictWithEnumsMethodPendingReply::sendReply(
+    const QMap<QmlEnum::Type, QmlEnum::Type> &reply
+) {
+    auto replyToSend = *reinterpret_cast<const QMap<int, int>*>(&reply);
+    auto dbusReply = m_call.createReply(QVariant::fromValue(replyToSend));
+    auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
+    if (iface != nullptr) {
+        iface->finishCall(dbusReply);
+    }
+    deleteLater();
+}
+
+void PassDictWithEnumsMethodPendingReply::sendError(const QString& name, const QString& message) {
+    auto error_reply = m_call.createErrorReply(name, message);
+    auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
+    if (iface != nullptr) {
+        iface->finishCall(error_reply);
+    }
+    deleteLater();
+}
+
+void PassDictWithEnumsMethodPendingReply::sendError(const DBusError &error) {
+    auto error_reply = m_call.createErrorReply(error);
+    auto iface = dynamic_cast<QmlAsServiceInterface*>(parent());
+    if (iface != nullptr) {
+        iface->finishCall(error_reply);
+    }
+    deleteLater();
+}
+
+void QmlAsServiceInterface::handlePassDictWithEnumsMethodCalled(QDBusMessage call) {
+    auto reply = new PassDictWithEnumsMethodPendingReply(call, this);
+    emit passDictWithEnumsMethodCalled(reply);
+}
+
+void QmlAsServiceInterface::EmitPassDictWithEnumsSignal(
+    QMap<QmlEnum::Type, QmlEnum::Type> dictOfEnumsToEnums
+) {
+    if (Connection::instance().QmlAsService() != nullptr ) {
+        emit Connection::instance().QmlAsService()->PassDictWithEnumsSignal(
+            *reinterpret_cast<const QMap<int, int>*>(&dictOfEnumsToEnums)
+        );
+    }
+}
+
+void QmlAsServiceInterface::EmitPassDictWithEnumsSignal(
+    QVariant dictOfEnumsToEnums
+) {
+    QMap<QmlEnum::Type, QmlEnum::Type> arg_0;
+    arg_0 = dictOfEnumsToEnums.value<QMap<QmlEnum::Type, QmlEnum::Type>>();
+
+    EmitPassDictWithEnumsSignal(
+        arg_0
+    );
+}
+
 
 void QmlAsServiceInterface::emitPropertiesChangedSignal(const QVariantMap &changedProps) {
     auto signal = QDBusMessage::createSignal(

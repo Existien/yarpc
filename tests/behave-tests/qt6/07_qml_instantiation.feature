@@ -23,18 +23,17 @@ Feature: QML instantiation interface
             | interface       | name   |
             | QmlInstantiation | Alice |
 
-    @wip
     Scenario: Receive data instantiated in QML
         When the 'PassStructMethod' method is called by 'Alice'
         Then 'Alice' receives a return value of
-            | value                  |
-            | QmlStruct("Foo", 3.14) |
+            | value                               |
+            | QmlStruct("Foo", 3.14, QmlEnum.ONE) |
         And 'Alice' receives a 'PassStructSignal' signal with the following parameters
-            | name      | value                  |
-            | qmlStruct | QmlStruct("Foo", 3.14) |
+            | name      | value                               |
+            | qmlStruct | QmlStruct("Foo", 3.14, QmlEnum.ONE) |
         And 'Bob' receives a 'PassStructMethod' method call with the following parameters
-            | name      | value                  |
-            | qmlStruct | QmlStruct("Foo", 3.14) |
+            | name      | value                               |
+            | qmlStruct | QmlStruct("Foo", 3.14, QmlEnum.ONE) |
 
         When the 'PassArrayInArrayMethod' method is called by 'Alice'
         Then 'Alice' receives a return value of
@@ -49,14 +48,14 @@ Feature: QML instantiation interface
 
         When the 'PassStructsInArrayMethod' method is called by 'Alice'
         Then 'Alice' receives a return value of
-            | value                                           |
-            | [QmlStruct("Foo", 3.14),QmlStruct("Bar", 1.26)] |
+            | value                                                                     |
+            | [QmlStruct("Foo", 3.14, QmlEnum.TWO),QmlStruct("Bar", 1.26, QmlEnum.OWT)] |
         And 'Alice' receives a 'PassStructsInArraySignal' signal with the following parameters
-            | name          | value                                           |
-            | listOfStructs | [QmlStruct("Foo", 3.14),QmlStruct("Bar", 1.26)] |
+            | name          | value                                                                     |
+            | listOfStructs | [QmlStruct("Foo", 3.14, QmlEnum.TWO),QmlStruct("Bar", 1.26, QmlEnum.OWT)] |
         And 'Bob' receives a 'PassStructsInArrayMethod' method call with the following parameters
-            | name          | value                                           |
-            | listOfStructs | [QmlStruct("Foo", 3.14),QmlStruct("Bar", 1.26)] |
+            | name          | value                                                                     |
+            | listOfStructs | [QmlStruct("Foo", 3.14, QmlEnum.TWO),QmlStruct("Bar", 1.26, QmlEnum.OWT)] |
 
         When the 'PassDictWithStringsMethod' method is called by 'Alice'
         Then 'Alice' receives a return value of
@@ -82,14 +81,14 @@ Feature: QML instantiation interface
 
         When the 'PassDictWithStructsMethod' method is called by 'Alice'
         Then 'Alice' receives a return value of
-            | value                                                    |
-            | {"A": QmlStruct("Foo", 1.0), "B": QmlStruct("Bar", 2.0)} |
+            | value                                                                              |
+            | {"A": QmlStruct("Foo", 1.0, QmlEnum.ONE), "B": QmlStruct("Bar", 2.0, QmlEnum.TWO)} |
         And 'Alice' receives a 'PassDictWithStructsSignal' signal with the following parameters
-            | name            | value                                                    |
-            | dictWithStructs | {"A": QmlStruct("Foo", 1.0), "B": QmlStruct("Bar", 2.0)} |
+            | name            | value                                                                              |
+            | dictWithStructs | {"A": QmlStruct("Foo", 1.0, QmlEnum.ONE), "B": QmlStruct("Bar", 2.0, QmlEnum.TWO)} |
         And 'Bob' receives a 'PassDictWithStructsMethod' method call with the following parameters
-            | name            | value                                                    |
-            | dictWithStructs | {"A": QmlStruct("Foo", 1.0), "B": QmlStruct("Bar", 2.0)} |
+            | name            | value                                                                              |
+            | dictWithStructs | {"A": QmlStruct("Foo", 1.0, QmlEnum.ONE), "B": QmlStruct("Bar", 2.0, QmlEnum.TWO)} |
 
         When the 'PassDictInArrayMethod' method is called by 'Alice'
         Then 'Alice' receives a return value of
@@ -145,3 +144,14 @@ Feature: QML instantiation interface
         And 'Bob' receives a 'PassDictInArrayInArrayMethod' method call with the following parameters
             | name               | value                        |
             | listOfListsOfDicts | [[{"A": "b"}], [{"C": "d"}]] |
+
+        When the 'PassDictWithEnumsMethod' method is called by 'Alice'
+        Then 'Alice' receives a return value of
+            | value                                                |
+            | {QmlEnum.ONE: QmlEnum.ENO, QmlEnum.TWO: QmlEnum.OWT} |
+        And 'Alice' receives a 'PassDictWithEnumsSignal' signal with the following parameters
+            | name               | value                                                |
+            | dictOfEnumsToEnums | {QmlEnum.ONE: QmlEnum.ENO, QmlEnum.TWO: QmlEnum.OWT} |
+        And 'Bob' receives a 'PassDictWithEnumsMethod' method call with the following parameters
+            | name               | value                                                |
+            | dictOfEnumsToEnums | {QmlEnum.ONE: QmlEnum.ENO, QmlEnum.TWO: QmlEnum.OWT} |
