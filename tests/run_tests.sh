@@ -25,9 +25,13 @@ if [[ ${languages[*]} =~ "python" ]];then
     behave behave-tests/python
 fi
 
+# Run Qt6 tests
 if [[ ${languages[*]} =~ "qt6" ]];then
     pushd qt6_service
     ./build.sh
     popd
+    $thisdir/../sdk/start_xvfb.sh
+    export DISPLAY=:99
     behave behave-tests/qt6
+    $thisdir/../sdk/stop_xvfb.sh
 fi

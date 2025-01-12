@@ -49,6 +49,9 @@ RUN apt-get -y update && \
         libxcb-xkb-dev \
         libxkbcommon-dev \
         libxkbcommon-x11-dev \
+        xvfb \
+        xfwm4 \
+        psmisc \
     && \
     rm -rf /var/lib/apt/lists/*
 
