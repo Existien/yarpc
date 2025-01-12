@@ -1,4 +1,4 @@
-FROM ubuntu:23.04
+FROM ubuntu:24.04
 
 RUN apt-get -y update && \
     apt-get install --no-install-recommends -y \
@@ -20,7 +20,6 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip install --break-system-packages -U \
-    pip \
     pdm \
     cookiecutter \
     sphinx \

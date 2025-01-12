@@ -3,9 +3,12 @@
 
 [metadata]
 groups = ["default", "dev"]
-strategy = ["cross_platform", "inherit_metadata"]
-lock_version = "4.4.1"
-content_hash = "sha256:2b5648d4a336e3a7b151fb4537811f29e2e942ac9d6a20d4fb444609c9b80222"
+strategy = ["inherit_metadata"]
+lock_version = "4.5.0"
+content_hash = "sha256:a8a84346d85756201ea72cc2e1cf23f09a0c4e0ebeca45e163986ab99131be86"
+
+[[metadata.targets]]
+requires_python = ">=3.11.0"
 
 [[package]]
 name = "dbus-next"
@@ -21,7 +24,7 @@ files = [
 [[package]]
 name = "python-mocks"
 version = "0.1.0"
-requires_python = "==3.11.*"
+requires_python = ">=3.11.0"
 editable = true
 path = "./."
 summary = "Default template for PDM package"
