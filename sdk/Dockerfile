@@ -20,8 +20,9 @@ RUN apt-get -y update && \
         vim \
         # Qt dependencies
         libglib2.0-dev \
-        libgles2-mesa \
-        libgles2-mesa-dev \
+        libgles2 \
+        libgles-dev \
+        libglvnd-dev \
         libdbus-1-dev \
         libfontconfig1-dev \
         libfreetype6-dev \
