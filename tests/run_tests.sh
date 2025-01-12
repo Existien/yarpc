@@ -10,4 +10,4 @@ fi
 . behave-tests/.venv/bin/activate
 pip install -r behave-tests/requirements.txt
 
-behave behave-tests $@
+behave behave-tests

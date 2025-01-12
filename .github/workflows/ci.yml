@@ -1,0 +1,10 @@
+name: CI Pipeline
+on: [push]
+jobs:
+  Build-And-Test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+    - run: bash ${{ github.workspace }}/sdk/build.sh
+    - run: bash ${{ github.workspace }}/sdk/run.sh ./tests/run_tests.sh
