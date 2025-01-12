@@ -4,6 +4,12 @@ set -o nounset
 
 thisdir="$(realpath "$(dirname "$(readlink -f "$0")")")"
 
+if [[ $# > 0 ]]; then
+    interactive=0
+else
+    interactive=1
+fi
+
 # cleanup actions on script exit
 cleanup_cmds=()
 cleanup() {
@@ -15,8 +21,13 @@ trap cleanup EXIT
 
 docker_args=()
 docker_env=()
-args="exec /bin/bash"
-docker_args+=(--rm -ti)
+docker_args+=(--rm)
+if [[ $interactive == 1 ]]; then
+    args="exec /bin/bash"
+    docker_args+=(-ti)
+else
+    args="$@"
+fi
 
 # use current user in container
 user_id="$(id -u)"
