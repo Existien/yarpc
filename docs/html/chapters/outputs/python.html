@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
@@ -5,23 +7,19 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Python &mdash; YARPC  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Development" href="../04_development.html" />
+    <link rel="next" title="Qt6" href="qt6.html" />
     <link rel="prev" title="Structs" href="../objects/struct.html" /> 
 </head>
 
@@ -60,6 +58,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#how-to-use-the-generated-client-mocks">How to use the generated client mocks</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="qt6.html">Qt6</a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +166,7 @@ under the Bus name provided by the <code class="docutils literal notranslate"><s
 <dt>Emitting signals:</dt><dd><p>To emit a signal, just call the method of the same name at the service</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">MyService</span><span class="p">()</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">pinger</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pinger</span><span class="p">():</span>
   <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">service</span><span class="o">.</span><span class="n">Ping</span><span class="p">()</span>
@@ -184,9 +183,9 @@ coroutine with the same signature as the D-Bus method in question.
 To raise D-Bus errors within the callback, raise a <code class="docutils literal notranslate"><span class="pre">dbus_next.DBusError</span></code>.</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">MyService</span><span class="p">()</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handle_repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
   <span class="k">if</span> <span class="n">amount</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">dbus_next</span> <span class="kn">import</span> <span class="n">DBusError</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">dbus_next</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBusError</span>
     <span class="k">raise</span> <span class="n">DBusError</span><span class="p">(</span><span class="s2">&quot;com.myservice.InvalidArgument&quot;</span><span class="p">,</span> <span class="s2">&quot;Only amounts &gt; 0 are valid&quot;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">text</span><span class="o">*</span><span class="n">amount</span>
 
@@ -196,14 +195,14 @@ To raise D-Bus errors within the callback, raise a <code class="docutils literal
 </dd>
 <dt>Properties:</dt><dd><p>To manage properties, pass an object compatible with an <code class="docutils literal notranslate"><span class="pre">Provides&lt;ServiceName&gt;Properties</span></code> protocol
 as <code class="docutils literal notranslate"><span class="pre">property_provider</span></code> argument</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyProperties</span><span class="p">:</span>
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyProperties</span><span class="p">:</span>
+  <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">my_prop</span> <span class="o">=</span> <span class="mi">1</span>
 
-  <span class="k">async</span> <span class="k">def</span> <span class="nf">get_MyProp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_MyProp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_prop</span>
 
-  <span class="k">async</span> <span class="k">def</span> <span class="nf">set_MyProp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+  <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">set_MyProp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">my_prop</span> <span class="o">=</span> <span class="n">value</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;MyProp&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_prop</span><span class="p">}</span>
 
@@ -227,7 +226,7 @@ callback with the same signature as the D-Bus signal in question.</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">MyClient</span><span class="p">()</span>
 <span class="n">received_pings</span> <span class="o">=</span> <span class="mi">0</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handle_ping</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_ping</span><span class="p">():</span>
   <span class="n">received_pings</span> <span class="o">+=</span> <span class="mi">1</span>
   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;received </span><span class="si">{</span><span class="n">received_pings</span><span class="si">}</span><span class="s2"> pings so far&quot;</span><span class="p">)</span>
 
@@ -240,7 +239,7 @@ callback with the same signature as the D-Bus signal in question.</p>
 </div></blockquote>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">MyClient</span><span class="p">()</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">repeater</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">repeater</span><span class="p">():</span>
   <span class="n">amount</span> <span class="o">=</span> <span class="mi">1</span>
   <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -283,9 +282,9 @@ and returns a dictionary with the new property values.</p>
 Custom handlers can be registered by wrapping them in an <code class="docutils literal notranslate"><span class="pre">AsyncMock</span></code>:</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">service_mock</span> <span class="o">=</span> <span class="n">ServiceMock</span><span class="p">()</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">handle_repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
   <span class="k">if</span> <span class="n">amount</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">dbus_next</span> <span class="kn">import</span> <span class="n">DBusError</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">dbus_next</span><span class="w"> </span><span class="kn">import</span> <span class="n">DBusError</span>
     <span class="k">raise</span> <span class="n">DBusError</span><span class="p">(</span><span class="s2">&quot;com.myservice.InvalidArgument&quot;</span><span class="p">,</span> <span class="s2">&quot;Only amounts &gt; 0 are valid&quot;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">text</span><span class="o">*</span><span class="n">amount</span>
 
@@ -308,7 +307,7 @@ to the <code class="docutils literal notranslate"><span class="pre">unittest.moc
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../objects/struct.html" class="btn btn-neutral float-left" title="Structs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../04_development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="qt6.html" class="btn btn-neutral float-right" title="Qt6" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

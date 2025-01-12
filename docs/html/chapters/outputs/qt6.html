@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qt6 &mdash; YARPC  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Development" href="../04_development.html" />
+    <link rel="prev" title="Python" href="python.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            YARPC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../01_overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02_installing_yarpc.html">Installing Yarpc</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../03_interface_definition.html">Interface definition</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../03_interface_definition.html#objects">Objects</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../03_interface_definition.html#outputs">Outputs</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="python.html">Python</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Qt6</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keys">Keys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#restrictions">Restrictions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../04_development.html">Development</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">YARPC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../03_interface_definition.html">Interface definition</a></li>
+      <li class="breadcrumb-item active">Qt6</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/chapters/outputs/qt6.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="qt6">
+<h1>Qt6<a class="headerlink" href="#qt6" title="Link to this heading"></a></h1>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>CMake 3.19 or newer</p></li>
+<li><p>Qt6.5 (or newer) with QDBus module</p></li>
+</ul>
+</section>
+<section id="keys">
+<h2>Keys<a class="headerlink" href="#keys" title="Link to this heading"></a></h2>
+<dl>
+<dt>language</dt><dd><p><code class="docutils literal notranslate"><span class="pre">qt6</span></code></p>
+</dd>
+<dt>location</dt><dd><p>The directory where the code should be generated in.</p>
+<p>Relative paths will be resolved relative to the current working
+directory or the location provided by <code class="docutils literal notranslate"><span class="pre">--output-base</span></code>.</p>
+</dd>
+<dt>qmlUri</dt><dd><p>The QML URI the generated code will be found under.
+Also determines the namespace.
+The URI <code class="docutils literal notranslate"><span class="pre">gen.minimal</span></code> will result in the namespace <code class="docutils literal notranslate"><span class="pre">gen::minimal</span></code>.</p>
+</dd>
+<dt>busName</dt><dd><p>The busName used for D-Bus services.
+Can be omitted when generating only client code.</p>
+<p>Bus names have the reverse form of URLs (e.g. <code class="docutils literal notranslate"><span class="pre">com.yarpc.testing</span></code>)</p>
+</dd>
+<dt>services</dt><dd><p>A list of D-Bus interfaces for which service code should be generated</p>
+<dl>
+<dt>className</dt><dd><p>The class name to be used for the generated interface class in PascalCase.</p>
+</dd>
+<dt>definition</dt><dd><p>The interface object to use</p>
+</dd>
+<dt>objectPath</dt><dd><p>The D-Bus object path the interface will be available under.</p>
+<p>Object paths follow the same scheme as Bus names, but with slashes instead of periods. (e.g. <code class="docutils literal notranslate"><span class="pre">com/yarpc/testing</span></code>)</p>
+</dd>
+<dt>interfaceName</dt><dd><p>The name of the interface published under the objectPath.</p>
+<p>Interface names also have reverse form of URLs (e.g. <code class="docutils literal notranslate"><span class="pre">com.yarpc.testing.myCoolInterface</span></code>)</p>
+</dd>
+</dl>
+</dd>
+<dt>clients</dt><dd><p>A list of D-Bus interfaces for which client code should be generated</p>
+<dl>
+<dt>className</dt><dd><p>The class name to be used for the generated interface class in PascalCase.</p>
+</dd>
+<dt>definition</dt><dd><p>The interface object to use</p>
+</dd>
+<dt>busName</dt><dd><p>The busName used for the D-Bus service to connect to.</p>
+<p>Bus names have the reverse form of URLs (e.g. <code class="docutils literal notranslate"><span class="pre">com.yarpc.testing</span></code>)</p>
+</dd>
+<dt>objectPath</dt><dd><p>The D-Bus object path the interface will be available under.</p>
+<p>Object paths follow the same scheme as Bus names, but with slashes instead of periods. (e.g. <code class="docutils literal notranslate"><span class="pre">com/yarpc/testing</span></code>)</p>
+</dd>
+<dt>interfaceName</dt><dd><p>The name of the interface published under the objectPath.</p>
+<p>Interface names also have reverse form of URLs (e.g. <code class="docutils literal notranslate"><span class="pre">com.yarpc.testing.myCoolInterface</span></code>)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="restrictions">
+<h2>Restrictions<a class="headerlink" href="#restrictions" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The generator creates some auxiliary properties, signals methods and structs for plumbing.
+Most notably the <code class="docutils literal notranslate"><span class="pre">connected</span></code> property for interfaces.
+This can lead to naming conflicts, but shouldn’t ordinarily happen.</p></li>
+<li><p>The PropertiesChanged D-Bus signal is emitted for one property-change
+at a time, event when multiple properties change together</p></li>
+<li><p>Handling <code class="docutils literal notranslate"><span class="pre">int64</span></code> and <code class="docutils literal notranslate"><span class="pre">uint64</span></code> types in QML will lead to issues, since
+they are outside the range of Javascript numbers.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="python.html" class="btn btn-neutral float-left" title="Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../04_development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -104,5 +104,3 @@ The folder contains
 - The ``schema.json`` jsonschema for this language. This determines the format of the output for this
   language. Modify it to add additional keys (e.g. for namespaces or mocks)
 - The templates referenced in the ``Language`` class
-
-T.B.D
