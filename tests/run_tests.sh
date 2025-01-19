@@ -15,7 +15,11 @@ fi
 pip install -r behave-tests/requirements.txt
 
 if [[ $# == 0 ]];then
-    languages=(qt6 python)
+    languages=(
+        qt6
+        python
+        # EOL languages (used by cookiecutter)
+    )
 else
     languages=$@
 fi

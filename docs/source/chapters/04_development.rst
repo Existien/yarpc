@@ -70,12 +70,14 @@ Adding support for a new language
    - ``tests/behave-tests`` for the behave tests of this language
    - ``docs/source/chapters/outputs`` for the documentation of this language
 
+   It will also add the behave tests to the ``run_tests.sh`` script and the CI workflow.
+
 3. Adjust the skeleton entries
 
    - Document dependencies (such as the library used for D-Bus) and additional options
      for the output of your language
    - Adjust the templates, json schema and ``Language`` class for your language (see :ref:`language_folder`)
-   - Flesh out the app in ``tests/<language>_service``, so it can be compiled and started using the ``run.sh`` script
+   - Flesh out the app in ``tests/<language>_service``, so it can be compiled and started using the ``run.sh`` (and optionally ``build.sh``) script
 
 4. Implement the generator
 

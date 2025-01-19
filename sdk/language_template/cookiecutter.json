@@ -4,10 +4,12 @@
     "language_suffix": "py",
     "language_idl_key": "{{ cookiecutter.language_suffix }}",
     "language_folder": "{{ cookiecutter.language_idl_key }}",
+    "use_separate_build_script": true,
     "__prompts__": {
-    "language": "The language in human-readable form",
-    "language_suffix": "The file suffix for this language",
-    "language_idl_key": "The name by which the language is used in the YAML definitions",
-    "language_folder": "The folder name used for this language"
+        "language": "The language in human-readable form",
+        "language_suffix": "The file suffix for this language",
+        "language_idl_key": "The name by which the language is used in the YAML definitions",
+        "language_folder": "The folder name used for this language",
+        "use_separate_build_script": "Add a build script to be executed before tests are run?"
     }
 }
