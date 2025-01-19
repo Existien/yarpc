@@ -49,7 +49,7 @@ For manual testing, the BackendServiceMock can also be started manually via ``pd
 The SDK contains ``d-feet`` to call D-Bus methods and interact with properties and ``bustle`` to monitor signals.
 
 Adding support for a new language
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------
 
 1. Add language support to the SDK
 
@@ -93,7 +93,7 @@ Adding support for a new language
 .. _language_folder:
 
 Language folder
-~~~~~~~~~~~~~~~
+---------------
 
 Yarpc will automatically load all languages found in the ``languages`` folder of its package.
 These languages consist of a folder with the same name as the key used for them in the YAML interface
