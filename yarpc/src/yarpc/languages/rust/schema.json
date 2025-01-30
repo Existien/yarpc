@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Schema for Rust output",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "language",
+        "location"
+    ],
+    "properties": {
+        "language": {
+            "const": "rust"
+        },
+        "location": {
+            "type": "string"
+        },
+        "busName": {
+            "type": "string"
+        },
+        "services": {
+            "type": "array",
+            "items": {
+                "$ref": "../../schema/common.schema.json#/serviceInterface"
+            }
+        },
+        "clients": {
+            "type": "array",
+            "items": {
+                "$ref": "../../schema/common.schema.json#/clientInterface"
+            }
+        }
+    }
+}

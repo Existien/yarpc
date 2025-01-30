@@ -19,6 +19,7 @@ if [[ $# == 0 ]];then
         qt6
         python
         csharp
+        rust
         # EOL languages (used by cookiecutter)
     )
 else
@@ -48,3 +49,12 @@ if [[ ${languages[*]} =~ "csharp" ]];then
     popd
     behave behave-tests/csharp
 fi
+
+# Run Rust tests
+if [[ ${languages[*]} =~ "rust" ]];then
+    pushd rust_service
+    ./build.sh
+    popd
+    behave behave-tests/rust
+fi
+
