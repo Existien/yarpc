@@ -18,6 +18,7 @@ if [[ $# == 0 ]];then
     languages=(
         qt6
         python
+        rust
         # EOL languages (used by cookiecutter)
     )
 else
@@ -39,3 +40,12 @@ if [[ ${languages[*]} =~ "qt6" ]];then
     behave behave-tests/qt6
     $thisdir/../sdk/stop_xvfb.sh
 fi
+
+# Run Rust tests
+if [[ ${languages[*]} =~ "rust" ]];then
+    pushd rust_service
+    ./build.sh
+    popd
+    behave behave-tests/rust
+fi
+

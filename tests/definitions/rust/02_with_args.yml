@@ -1,0 +1,24 @@
+outputs:
+- language: rust
+  location: rust_service/gen/with_args
+  busName: com.yarpc.testservice
+  services:
+  - className: WithArgsInterface
+    definition: WithArgs
+    objectPath: /com/yarpc/testservice/withArgs
+    interfaceName: com.yarpc.testservice.withArgs
+  - className: PrimitivesInterface
+    definition: Primitives
+    objectPath: /com/yarpc/testservice/withArgs
+    interfaceName: com.yarpc.testservice.primitives
+  clients:
+  - className: BackendWithArgsClient
+    definition: WithArgs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend/withArgs
+    interfaceName: com.yarpc.backend.withArgs
+  - className: BackendPrimitivesClient
+    definition: Primitives
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend/withArgs
+    interfaceName: com.yarpc.backend.primitives

@@ -1,0 +1,24 @@
+outputs:
+- language: rust
+  location: rust_service/gen/arrays
+  busName: com.yarpc.testservice
+  services:
+  - className: ArraysInterface
+    definition: Arrays
+    objectPath: /com/yarpc/testservice/arrays
+    interfaceName: com.yarpc.testservice.arrays
+  - className: ArraysWithStructsInterface
+    definition: ArraysWithStructs
+    objectPath: /com/yarpc/testservice/arrays
+    interfaceName: com.yarpc.testservice.arraysWithStructs
+  clients:
+  - className: BackendArraysClient
+    definition: Arrays
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend/arrays
+    interfaceName: com.yarpc.backend.arrays
+  - className: BackendArraysWithStructsClient
+    definition: ArraysWithStructs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend/arrays
+    interfaceName: com.yarpc.backend.arraysWithStructs
