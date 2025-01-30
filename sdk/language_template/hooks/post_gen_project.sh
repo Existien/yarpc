@@ -61,7 +61,7 @@ echo "
 cd /workspace
 git add .
 git commit -m "
-Bootstrap {{ cookiecutter.language }} support
+feat: Bootstrap {{ cookiecutter.language }} support
 
 Parameters used:
 {%- for k,v in cookiecutter.items() -%}
