@@ -6,6 +6,7 @@ RUN apt-get -y update && \
         build-essential \
         bustle \
         cmake \
+        curl \
         dbus \
         d-feet \
         git \
@@ -67,5 +68,11 @@ RUN aqt install-qt linux desktop 6.5.3 gcc_64
 
 RUN sed -Ei '/en_US\.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 ENV LANG=en_US.UTF-8
+
+ENV RUSTUP_HOME="/.rustup"
+ENV CARGO_HOME="/.cargo"
+RUN curl https://sh.rustup.rs -sSf | bash -s - -y
+ENV PATH="/.cargo/bin:${PATH}"
+RUN cargo install dbus-codegen && chmod -R a+w /.cargo
 
 ENTRYPOINT ["/bin/bash", "-lc", "exec dbus-run-session -- \"$0\" \"$@\""]
