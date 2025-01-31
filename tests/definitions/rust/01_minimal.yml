@@ -1,6 +1,6 @@
 outputs:
 - language: rust
-  location: rust_service/gen/minimal
+  location: rust_service/src/gen
   busName: com.yarpc.testservice
   services:
   - className: MinimalInterface

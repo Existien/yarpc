@@ -1,5 +1,6 @@
 from yarpc.languages.base_language import BaseLanguage, ObjectKind, Target, DBusTypes
 from typing import List, Dict, Callable
+from yarpc.utils import to_snake_case
 
 class Language(BaseLanguage):
 
@@ -11,6 +12,8 @@ class Language(BaseLanguage):
             List[Target]: a list of targets to be generated.
         """
         return [
+            Target(filename="connection.rs", template="connection"),
+            Target(filename="mod.rs", template="mod"),
         ]
 
     def get_object_targets(self, name: str, object_kind: ObjectKind) -> List[Target]:
@@ -24,7 +27,7 @@ class Language(BaseLanguage):
                 Empty for non-supported ObjectKinds.
         """
         return [Target(
-            filename=f"{name}.rs",
+            filename=f"{to_snake_case(name)}.rs",
             template=object_kind.value
         )]
 
