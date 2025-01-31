@@ -4,6 +4,4 @@ set -e -u
 thisdir="$(realpath "$(dirname "$(readlink -f "$0")")")"
 pushd $thisdir
 
-# FIXME
-# Replace 'exit -1' with commands to run this service
-exit -1
+./target/debug/rust_service
