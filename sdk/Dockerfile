@@ -52,6 +52,7 @@ RUN apt-get -y update && \
         xvfb \
         xfwm4 \
         psmisc \
+        dotnet-sdk-8.0 \
     && \
     rm -rf /var/lib/apt/lists/*
 
