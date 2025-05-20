@@ -1,7 +1,8 @@
 using csharp_service;
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<Worker>();
+// builder.Services.AddHostedService<Worker>();
+builder.Services.AddHostedService<MinimalServiceWorker>();
 
 var host = builder.Build();
 host.Run();
