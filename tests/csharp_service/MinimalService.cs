@@ -1,6 +1,5 @@
 namespace csharp_service;
-using testservice;
-using testservice.minimal;
+using TestService.Generated;
 
 public class MinimalServiceWorker : BackgroundService
 {
@@ -13,9 +12,9 @@ public class MinimalServiceWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var client = new MinimalClient();
+        var client = new BackendMinimalClient();
 
-        var service = new Minimal();
+        var service = new MinimalInterface();
         service.OnBump = async ()=>{
             await client.BumpAsync();
         };

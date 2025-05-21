@@ -1,0 +1,11 @@
+{#
+    Render generic documentation tags
+#}
+{% macro doctag(member, tag) -%}
+{%- set lines = member.docs.strip().split('\n') -%}
+/// <{{tag}}>
+{% for line in lines %}
+/// {{ line.rstrip() }}
+{% endfor %}
+/// </{{tag}}>
+{%- endmacro %}
