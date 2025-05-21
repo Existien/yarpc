@@ -18,6 +18,7 @@ if [[ $# == 0 ]];then
     languages=(
         qt6
         python
+        csharp
         # EOL languages (used by cookiecutter)
     )
 else
@@ -38,4 +39,9 @@ if [[ ${languages[*]} =~ "qt6" ]];then
     export DISPLAY=:99
     behave behave-tests/qt6
     $thisdir/../sdk/stop_xvfb.sh
+fi
+
+# Run C# tests
+if [[ ${languages[*]} =~ "csharp" ]];then
+    behave behave-tests/csharp
 fi

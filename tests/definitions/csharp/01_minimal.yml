@@ -1,7 +1,8 @@
 outputs:
-- language: C#
+- language: cs
   location: csharp_service/Generated
   busName: com.yarpc.testservice
+  namespace: TestService.Generated
   services:
   - className: MinimalInterface
     definition: Minimal
