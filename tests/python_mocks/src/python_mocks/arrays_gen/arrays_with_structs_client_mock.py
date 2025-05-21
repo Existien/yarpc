@@ -58,7 +58,7 @@ class ArraysWithStructsClientMock():
             self._property_interface = proxy_object.get_interface(
                 "org.freedesktop.DBus.Properties"
             )
-            if self._properties_changed_handler:
+            if self._properties_changed_handler and self._property_interface:
                 self._property_interface.on_properties_changed(self._properties_changed_handler)
 
             self._close_event.clear()
@@ -79,7 +79,7 @@ class ArraysWithStructsClientMock():
         self._close_event.set()
         if self._ArrayStructSignal_handler:
             self._interface.off_array_struct_signal(self._ArrayStructSignal_handler)
-        if self._properties_changed_handler:
+        if self._properties_changed_handler and self._property_interface:
                 self._property_interface.off_properties_changed(self._properties_changed_handler)
         self._interface = None
         self._property_interface = None

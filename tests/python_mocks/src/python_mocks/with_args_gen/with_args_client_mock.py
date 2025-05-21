@@ -57,7 +57,7 @@ class WithArgsClientMock():
             self._property_interface = proxy_object.get_interface(
                 "org.freedesktop.DBus.Properties"
             )
-            if self._properties_changed_handler:
+            if self._properties_changed_handler and self._property_interface:
                 self._property_interface.on_properties_changed(self._properties_changed_handler)
 
             self._close_event.clear()
@@ -80,7 +80,7 @@ class WithArgsClientMock():
             self._interface.off_notified(self._Notified_handler)
         if self._OrderReceived_handler:
             self._interface.off_order_received(self._OrderReceived_handler)
-        if self._properties_changed_handler:
+        if self._properties_changed_handler and self._property_interface:
                 self._property_interface.off_properties_changed(self._properties_changed_handler)
         self._interface = None
         self._property_interface = None
