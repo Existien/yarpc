@@ -58,7 +58,7 @@ class DictsClientMock():
             self._property_interface = proxy_object.get_interface(
                 "org.freedesktop.DBus.Properties"
             )
-            if self._properties_changed_handler:
+            if self._properties_changed_handler and self._property_interface:
                 self._property_interface.on_properties_changed(self._properties_changed_handler)
 
             self._close_event.clear()
@@ -79,7 +79,7 @@ class DictsClientMock():
         self._close_event.set()
         if self._DictSignal_handler:
             self._interface.off_dict_signal(self._DictSignal_handler)
-        if self._properties_changed_handler:
+        if self._properties_changed_handler and self._property_interface:
                 self._property_interface.off_properties_changed(self._properties_changed_handler)
         self._interface = None
         self._property_interface = None
