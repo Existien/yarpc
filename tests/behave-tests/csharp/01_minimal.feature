@@ -21,7 +21,7 @@ Feature: Minimal interface
         And a mocked python client connecting to the following interfaces
             | interface | name  |
             | Minimal   | Alice |
-
+    @wip
     Scenario: Interface using signals and methods without args
 
     # Scenario: Method call without arguments or return value

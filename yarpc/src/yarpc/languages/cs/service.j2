@@ -7,8 +7,60 @@
 {% import "cs/common.j2" as cs %}
 #nullable enable
 
-namespace {{output.namespace}};
+namespace {{output.namespace}} {
 using Tmds.DBus;
+
+namespace {{target.className}}Payloads {
+{% for member in object.members %}
+{% if member.kind == 'signal' and member.args|count > 0 %}
+
+/// <summary>
+///   Payload for the {{ member.name }} signal
+/// </summary>
+public struct {{member.name}} {
+
+    /// <summary>
+    ///   Constructor for the payload of the {{ member.name }} signal
+    /// </summary>
+    {{ cs.docparams(member.args)|indent(4) }}
+    public {{ member.name }}(
+        {{ cs.funcparams(member.args, output.objects, '_')|indent(8) }}
+    ){
+        {% for arg in member.args %}
+        {{ arg.name }} = {{ arg.name }}_;
+        {% endfor %}
+    }
+    {% for arg in member.args %}
+
+    {{ cs.doctag(arg, "value")|indent(4) }}
+    public {{ cs.type(arg.type, output.objects)}} {{arg.name}};
+    {% endfor %}
+};
+{% endif %}
+{% endfor %}
+
+}
+{% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+
+/// <summary>
+///   The D-Bus properties of the {{ target.interfaceName }} D-Bus interface at {{ target.busName }}
+/// </summary>
+[Dictionary]
+public struct {{ target.className }}Properties
+{
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+
+    {{ cs.doctag(member, "value")|indent(4) }}
+    {% if member.readonly %}
+    [Property(Access=PropertyAccess.Read)]
+    {% endif %}
+    public {{ cs.type(member.type, output.objects )}} {{ member.name }}
+    {%- if member.type == 'string' -%}
+    {{' = ""'}}
+    {%- endif -%};
+    {% endfor%}
+}
+{% endif%}
 
 /// <summary>
 /// D-Bus interface for {{ target.interfaceName }} at {{target.objectPath}}
@@ -17,69 +69,276 @@ using Tmds.DBus;
 public interface I{{target.className}} : IDBusObject
 {
     {% for member in object.members %}
-
     {% if member.kind == 'method' %}
+
     {{ cs.doctag(member, "summary")|indent(4) }}
-    Task {{ member.name }}Async();
+    {% if member.args|count > 0 %}
+    {{ cs.docparams(member.args)|indent(4) }}
+    {% endif %}
+    {% if member.returns is defined %}
+    {{ cs.doctag(member.returns, "returns")|indent(4) }}
+    {% endif %}
+    Task{% if member.returns is defined %}<{{ cs.type(member.returns.type, output.objects) }}>{% endif %} {{ member.name }}Async(
+    {% if member.args|count > 0 %}
+        {{ cs.funcparams(member.args, output.objects)|indent(8) }}
+    {% endif %}
+    );
     {% endif %}
     {% if member.kind == 'signal' %}
+
     {{ cs.doctag(member, "summary")|indent(4) }}
-    Task<IDisposable> Watch{{ member.name }}Async(Action reply);
+    /// <param name="reply">the signal handler</param>
+    Task<IDisposable> Watch{{ member.name }}Async(Action{% if member.args|count > 0 %}<{{target.className}}Payloads.{{member.name}}>{% endif %} reply);
     {% endif %}
     {% endfor %}
-}
-
-/// <summary>
-/// D-Bus service for the {{ target.interfaceName }} D-Bus interface at {{target.objectPath}}
-/// </summary>
-class {{target.className}} : I{{target.className}}
-{
-    static readonly ObjectPath Path = new ObjectPath("{{target.objectPath}}");
+    {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
 
     /// <summary>
-    /// The D-Bus object path
+    ///   Returns the current values of all D-Bus properties
     /// </summary>
-    public ObjectPath ObjectPath{ get{ return Path; }}
+    /// <returns>
+    ///   The current values of all D-Bus properties
+    /// </returns>
+    Task<{{target.className}}Properties> GetAllAsync();
+
+    /// <summary>
+    ///   Returns the current value of the requested D-Bus property
+    /// </summary>
+    /// <param name="prop">
+    ///   The property to query
+    /// </param>
+    /// <returns>
+    ///   The current value of the requested property
+    /// </returns>
+    Task<object> GetAsync(string prop);
+
+    /// <summary>
+    ///   Sets a new value for the requested property
+    /// </summary>
+    /// <param name="prop">
+    ///   The property to set
+    /// </param>
+    /// <param name="val">
+    ///   The new value to set
+    /// </param>
+    Task SetAsync(string prop, object val);
+
+    /// <summary>
+    ///   Registers a signal handler for D-Bus property changes
+    /// </summary>
+    /// <param name="handler">
+    ///   the handler to register
+    /// </param>
+    Task<IDisposable> WatchPropertiesAsync(Action<PropertyChanges> handler);
+    {% endif %}
+}
+
+class {{target.className}}Object
+{
+    {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+    private {{target.className}}Properties _properties;
+
+    /// <value>
+    ///   The D-Bus properties for the interface {{target.interfaceName}}
+    ///
+    ///   The setter will automatically emit PropertiesChanged signals for changed properties.
+    /// </value>
+    public {{target.className}}Properties Properties {
+        get => _properties;
+        set {
+            SetProperties(value);
+        }
+    }
+
+    /// <value>
+    ///   Handler for PropertiesChanged signals of interface {{ target.interfaceName }}
+    /// </value>
+    public event Action<PropertyChanges>? OnPropertiesChanged;
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+
+    /// <value>
+    ///   Implementation of the setter for the {{member.name}} D-Bus property of interface {{ target.interfaceName }}
+    /// </value>
+    public Func<{{cs.type(member.type, output.objects)}}, {{target.className}}Properties, Task<{{target.className}}Properties>> Set{{member.name}} = ({{cs.type(member.type, output.objects)}} newValue, {{target.className}}Properties oldProps) => {
+        oldProps.{{member.name}} = newValue;
+        return Task.FromResult(oldProps);
+    };
+    {% endfor %}
+
+    private void SetProperties({{target.className}}Properties newProps)
+    {
+        List<KeyValuePair<string, object>> changes = [];
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        if (_properties.{{member.name}} != newProps.{{member.name}})
+        {
+            changes.Add(new KeyValuePair<string, object>("{{member.name}}", (object)newProps.{{member.name}}));
+        }
+        {% endfor %}
+        if (changes.Count > 0)
+        {
+            _properties = newProps;
+            OnPropertiesChanged?.Invoke(new PropertyChanges(changes.ToArray()));
+        }
+        return;
+    }
+    {% endif %}
 
     {% for member in object.members %}
     {% if member.kind == 'method' %}
     /// <summary>
-    /// Handler for the {{ member.name }} method.
+    /// Handler for the {{ member.name }} method of interface {{target.interfaceName}}.
     /// </summary>
-    public Func<Task>? On{{ member.name }} {get;set;}
+    public Func<
+    {%- for arg in member.args -%}
+    {{ cs.type(arg.type, output.objects) }}{{', '}}
+    {%- endfor -%}
+    Task{% if member.returns is defined %}<{{ cs.type(member.returns.type, output.objects) }}>{% endif %}>? On{{ member.name }} {get;set;}
 
-    {{ cs.doctag(member, "summary")|indent(4) }}
-    public async Task {{ member.name}}Async()
+    {% endif %}
+    {% if member.kind == 'signal' %}
+    /// <value>
+    ///   Event triggered when the {{member.name}} D-Bus signal is emitted for interface {{target.interfaceName}}
+    /// </value>
+    public event Action{% if member.args|count > 0 %}<{{target.className}}Payloads.{{member.name}}>{% endif %}? {{ member.name }};
+
+    /// <summary>
+    /// Emits a {{ member.name }} signal for interface {{target.interfaceName}}
+    /// </summary>
+    {% if member.args|count > 0 %}
+    {{ cs.docparams(member.args)|indent(4) }}
+    {% endif %}
+    public void Emit{{ member.name }}({% if member.args|count > 0 %}{{target.className}}Payloads.{{member.name}} payload{% endif %})
     {
-        if (On{{ member.name}} is null)
+        {{ member.name }}?.Invoke({% if member.args|count > 0 %}payload{% endif %});
+    }
+
+    {% endif %}
+    {% endfor %}
+}
+
+partial class {{target.objectPath|object_path_to_camel}} : I{{target.className}}
+{
+    /// <value>
+    ///   Container for signal, method and property handler for the D-Bus interface {{target.interfaceName}}
+    /// </value>
+    public {{ target.className }}Object {{ target.className }} = new();
+    {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+
+    /// <summary>
+    ///   Returns the current values of all D-Bus properties of interface {{target.interfaceName}}
+    /// </summary>
+    /// <returns>
+    ///   The current values of all D-Bus properties
+    /// </returns>
+    Task<{{target.className}}Properties> I{{target.className}}.GetAllAsync()
+    {
+        return Task.FromResult({{target.className}}.Properties);
+    }
+
+    /// <summary>
+    ///   Returns the current value of the requested D-Bus property of interface {{target.interfaceName}}
+    /// </summary>
+    /// <param name="prop">
+    ///   The property to query
+    /// </param>
+    /// <returns>
+    ///   The current value of the requested property
+    /// </returns>
+    Task<object> I{{target.className}}.GetAsync(string prop) {
+        switch (prop)
+        {
+            {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+            case "{{member.name}}":
+                return Task.FromResult((object){{target.className}}.Properties.{{member.name}});
+            {% endfor%}
+            default:
+                throw new ArgumentException($"Unknown property {prop}");
+        }
+    }
+
+    /// <summary>
+    ///   Sets a new value for the requested property of interface {{target.interfaceName}}
+    /// </summary>
+    /// <param name="prop">
+    ///   The property to set
+    /// </param>
+    /// <param name="val">
+    ///   The new value to set
+    /// </param>
+    async Task I{{target.className}}.SetAsync(string prop, object val)
+    {
+        {{target.className}}Properties newProps;
+        switch (prop)
+        {
+            {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+            case "{{member.name}}":
+                {% if member.readonly %}
+                throw new DBusException("org.freedesktop.DBus.Error.PropertyReadOnly", $"Property '{prop}' is readonly");
+                {% else %}
+                newProps = await {{target.className}}.Set{{member.name}}.Invoke(({{cs.type(member.type, output.objects)}})val, {{target.className}}.Properties);
+                break;
+                {% endif %}
+            {% endfor%}
+            default:
+                throw new ArgumentException($"Unknown property {prop}");
+        }
+        {{ target.className }}.Properties = newProps;
+        return;
+    }
+
+    /// <summary>
+    ///   Registers a signal handler for D-Bus property changes
+    /// </summary>
+    /// <param name="handler">
+    ///   the handler to register
+    /// </param>
+    Task<IDisposable> I{{target.className}}.WatchPropertiesAsync(Action<PropertyChanges> handler)
+    {
+        return SignalWatcher.AddAsync({{target.className}}, nameof({{target.className}}.OnPropertiesChanged), handler);
+    }
+    {% endif %}
+
+    {% for member in object.members %}
+    {% if member.kind == 'method' %}
+    {{ cs.doctag(member, "summary")|indent(4) }}
+    {% if member.args|count > 0 %}
+    {{ cs.docparams(member.args)|indent(4) }}
+    {% endif %}
+    async Task{% if member.returns is defined %}<{{ cs.type(member.returns.type, output.objects) }}>{% endif %} I{{target.className}}.{{ member.name}}Async(
+    {% if member.args|count > 0 %}
+        {{ cs.funcparams(member.args, output.objects)|indent(8) }}
+    {% endif %}
+    )
+    {
+        if ({{target.className}}.On{{ member.name}} is null)
         {
             throw new NotImplementedException("Missing implementation for {{ member.name}} method");
         }
-        await On{{ member.name}}.Invoke();;
+        {{''}}{% if member.returns is defined %}return {% endif %}await {{target.className}}.On{{ member.name}}.Invoke(
+            {% for i in range(0, member.args|count) %}
+            {% set arg = member.args[i] %}
+            {{ arg.name }}
+            {%- if i < member.args|count - 1 -%}
+            ,
+            {% endif %}
+            {% endfor %}
+
+        );
     }
 
     {% endif %}
     {% if member.kind == 'signal' %}
-    {{ cs.doctag(member, "summary")|indent(4) }}
-    public event Action? {{ member.name }};
-
     /// <summary>
-    /// Emits a {{ member.name }} signal
-    /// </summary>
-    public void Emit{{ member.name }}()
-    {
-        {{ member.name }}?.Invoke();
-    }
-
-    /// <summary>
-    /// Registers a signal watcher
+    /// Registers a signal watcher for interface {{ target.interfaceName }}
     /// </summary>
     /// <param name="reply">The action to trigger on a received signal</param>
-    public Task<IDisposable> Watch{{ member.name }}Async(Action reply)
+    Task<IDisposable> I{{target.className}}.Watch{{ member.name }}Async(Action{% if member.args|count > 0 %}<{{target.className}}Payloads.{{member.name}}>{% endif %} reply)
     {
-        return SignalWatcher.AddAsync(this, nameof({{ member.name }}), reply);
+        return SignalWatcher.AddAsync({{target.className}}, nameof({{target.className}}.{{ member.name }}), reply);
     }
-    {% endif %}
 
+    {% endif %}
     {% endfor %}
+}
+
 }
