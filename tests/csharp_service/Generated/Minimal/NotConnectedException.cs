@@ -5,7 +5,7 @@
 //   File: /workspace/tests/definitions/csharp/01_minimal.yml
 //   Template: cs/NotConnectedException.j2
 
-namespace TestService.Generated;
+namespace TestService.Generated.Minimal;
 
 class NotConnectedException : Exception
 {

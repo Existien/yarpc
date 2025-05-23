@@ -43,5 +43,8 @@ fi
 
 # Run C# tests
 if [[ ${languages[*]} =~ "csharp" ]];then
+    pushd csharp_service
+    ./build.sh
+    popd
     behave behave-tests/csharp
 fi
