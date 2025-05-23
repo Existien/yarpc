@@ -5,7 +5,57 @@
 {%- set lines = member.docs.strip().split('\n') -%}
 /// <{{tag}}>
 {% for line in lines %}
-/// {{ line.rstrip() }}
+///   {{ line.rstrip() }}
 {% endfor %}
 /// </{{tag}}>
 {%- endmacro %}
+{#
+    Find *type_as_str* in *objects*
+    and return the respective C# type
+#}
+{% macro type(type_as_str, objects) %}
+{%- set object = type_as_str|find_type(objects) -%}
+{%- if object.kind == 'struct' -%}
+{{ object.name }}
+{%- elif object.kind == 'builtin' -%}
+{%- if object.name == 'array' -%}
+{%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
+{{ object.cs|replace("$1", inner_type) }}
+{%- elif object.name == 'dict' -%}
+{%- set inner_types = type_as_str|extract_inner(object) -%}
+{%- set key_type = type(inner_types[0], objects) -%}
+{%- set value_type = type(inner_types[1], objects) -%}
+{{ object.cs|replace("$1", key_type)|replace("$2", value_type) }}
+{%- else -%}
+{{ object.cs }}
+{%- endif -%}
+{%- endif -%}
+{%- endmacro %}
+{#
+    Render function parameters
+#}
+{% macro funcparams(args, objects, suffix='') %}
+{% for i in range(0, args|count) %}
+{% set arg = args[i] %}
+{% set argType = type(arg.type, objects) %}
+{{ argType }} {{ arg.name }}{{suffix}}
+{%- if i < args|count - 1 -%}
+,
+{% endif %}
+{% endfor %}
+{% endmacro %}
+{#
+    Render param tags
+#}
+{%- macro docparams(args) %}
+{% for i in range(0,args|count) %}
+{% if i > 0 %}{{'\n'}}{% endif %}
+{% set arg = args[i] %}
+{% set lines = arg.docs.strip().split('\n') %}
+/// <param name="{{ arg.name }}">
+{% for line in lines %}
+///   {{ line.rstrip() }}
+{% endfor %}
+/// </param>
+{%- endfor %}
+{% endmacro %}

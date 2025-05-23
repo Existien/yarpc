@@ -1,5 +1,5 @@
 namespace csharp_service;
-using csharp_service.Services;
+using TestService.Generated;
 
 public class DBusWorker : BackgroundService
 {
@@ -13,7 +13,9 @@ public class DBusWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var minimal = Minimal.Configure(_connection);
-        await _connection.ConnectAsync(stoppingToken);
+        var connectionTask = _connection.ConnectAsync(stoppingToken);
+        var withArgs = await DBusObjects.WithArgs.Configure(_connection, _logger, stoppingToken);
+        var minimal = await DBusObjects.Minimal.Configure(_connection);
+        await connectionTask;
     }
 }
