@@ -6,7 +6,7 @@
 //   Template: cs/Connection.j2
 #nullable enable
 
-namespace TestService.Generated;
+namespace TestService.Generated.Minimal;
 using Tmds.DBus;
 
 /// <summary>

@@ -5,7 +5,7 @@
 //   File: /workspace/tests/definitions/csharp/01_minimal.yml
 //   Template: cs/IClient.j2
 
-namespace TestService.Generated;
+namespace TestService.Generated.Minimal;
 using Tmds.DBus;
 
 /// <summary>
