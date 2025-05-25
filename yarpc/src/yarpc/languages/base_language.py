@@ -8,7 +8,6 @@ class ObjectKind(Enum):
     Mainly used to determine the templates needed to generated
     the code for the object.
     """
-    Bus='bus'
     Enum='enum'
     Struct='struct'
     Service='service'
