@@ -22,8 +22,40 @@ class DefinitionsResolver:
             list: A list of outputs to be generated
         """
         outputs = []
+
+        def merge(output):
+
+            def get_entry_index(output):
+
+                def is_same(lhs, rhs):
+                    criteria = ["language", "location"]
+                    return all([lhs.get(c) == rhs.get(c) for c in criteria])
+
+                for i, x in enumerate(outputs):
+                    if is_same(x, output):
+                        return i
+
+            entry_index = get_entry_index(output)
+            if entry_index is None:
+                outputs.append(output)
+            else:
+                keys_to_merge = ["services", "clients", "service_mocks", "client_mocks", "definitionName", "definitionPath"]
+                entry_scalars = list(filter(lambda x: x not in keys_to_merge, outputs[entry_index].keys()))
+                output_scalars = list(filter(lambda x: x not in keys_to_merge, output.keys()))
+                keys_that_should_be_equal = {*entry_scalars, *output_scalars}
+                for key in keys_that_should_be_equal:
+                    if outputs[entry_index].get(key) != output.get(key):
+                        raise RuntimeError(f"Error in {output.get('location')}: Conflicting values for {key}: {outputs[entry_index][key]} vs {output[key]}")
+                for key in keys_to_merge:
+                    if outputs[entry_index].get(key) is None:
+                        outputs[entry_index][key] = []
+                    if output.get(key):
+                        outputs[entry_index][key].extend(output[key])
+
         for definition in filter(lambda x: 'outputs' in x, definitions):
-            outputs.extend(definition['outputs'])
+            for output in definition['outputs']:
+                merge(output)
+
         for output in outputs:
             targets = []
             for key in filter(

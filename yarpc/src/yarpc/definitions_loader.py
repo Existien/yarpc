@@ -62,8 +62,8 @@ class DefinitionsLoader:
             obj['definitionPath'] = str(filename.absolute().resolve())
             obj['regex'] = f"^{obj['regex' if 'regex' in obj else 'name']}$"
         for output in parsed.get('outputs', []):
-            output['definitionName'] = filename.stem
-            output['definitionPath'] = str(filename.absolute().resolve())
+            output['definitionName'] = [filename.stem]
+            output['definitionPath'] = [str(filename.absolute().resolve())]
         return parsed
 
 

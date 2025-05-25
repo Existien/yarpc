@@ -34,6 +34,7 @@ class Generator:
             if not check_only and Path(output_location).exists():
                 print(f"Cleaning {output_location}")
                 rmtree(output_location)
+        for output in outputs:
             is_up_to_date = (
                 is_up_to_date and
                 self._generate_non_object(output, check_only)
