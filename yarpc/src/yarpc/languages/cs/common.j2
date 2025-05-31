@@ -32,6 +32,25 @@
 {%- endif -%}
 {%- endmacro %}
 {#
+    Convert type into ValueTuples
+#}
+{% macro to_tuple(type_as_str, objects) %}
+{%- set object = type_as_str|find_type(objects) -%}
+{%- if object.kind == 'struct' -%}
+ValueTuple<
+{%- for i in range(0, object.members|count) -%}
+{%- set member = object.members[i] -%}
+{{to_tuple(member.type, objects)}}
+{%- if i < object.members|count - 1 -%}
+{{', '}}
+{%- endif -%}
+{%- endfor -%}
+>
+{%- else -%}
+{{ type(type_as_str, objects) }}
+{%- endif -%}
+{%- endmacro %}
+{#
     Render function parameters
 #}
 {% macro funcparams(args, objects, suffix='') %}

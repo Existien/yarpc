@@ -17,7 +17,8 @@ namespace {{target.className}}Payloads {
 /// <summary>
 ///   Payload for the {{ member.name }} signal
 /// </summary>
-public struct {{member.name}} {
+public struct {{member.name}}
+{
 
     /// <summary>
     ///   Constructor for the payload of the {{ member.name }} signal
@@ -36,6 +37,27 @@ public struct {{member.name}} {
     public {{ cs.type(arg.type, output.objects)}} {{arg.name}};
     {% endfor %}
 };
+{% endif %}
+{% if member.kind == 'method' and member.returns is defined %}
+
+/// <summary>
+///   Payload for the {{ member.name }} return value
+/// </summary>
+public struct {{member.name}}ReturnType
+{
+    /// <summary>
+    ///   Constructor for the {{ member.name }} return type
+    /// </summary>
+    public {{ member.name}}ReturnType({{ cs.type(member.returns.type, output.objects)}} value_)
+    {
+        value = value_;
+    }
+
+    /// <value>
+    ///   the return value
+    /// </value>
+    public {{ cs.type(member.returns.type, output.objects)}} value;
+}
 {% endif %}
 {% endfor %}
 
@@ -78,7 +100,7 @@ public interface I{{target.className}} : IDBusObject
     {% if member.returns is defined %}
     {{ cs.doctag(member.returns, "returns")|indent(4) }}
     {% endif %}
-    Task{% if member.returns is defined %}<{{ cs.type(member.returns.type, output.objects) }}>{% endif %} {{ member.name }}Async(
+    Task{% if member.returns is defined %}<{{target.className}}Payloads.{{ member.name }}ReturnType>{% endif %} {{ member.name }}Async(
     {% if member.args|count > 0 %}
         {{ cs.funcparams(member.args, output.objects)|indent(8) }}
     {% endif %}
@@ -169,7 +191,7 @@ class {{target.className}}Object
     {
         List<KeyValuePair<string, object>> changes = [];
         {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-        if (_properties.{{member.name}} != newProps.{{member.name}})
+        if (!_properties.{{member.name}}.Equals(newProps.{{member.name}}))
         {
             changes.Add(new KeyValuePair<string, object>("{{member.name}}", (object)newProps.{{member.name}}));
         }
@@ -275,7 +297,7 @@ partial class {{target.objectPath|object_path_to_camel}} : I{{target.className}}
                 {% if member.readonly %}
                 throw new DBusException("org.freedesktop.DBus.Error.PropertyReadOnly", $"Property '{prop}' is readonly");
                 {% else %}
-                newProps = await {{target.className}}.Set{{member.name}}.Invoke(({{cs.type(member.type, output.objects)}})val, {{target.className}}.Properties);
+                newProps = await {{target.className}}.Set{{member.name}}.Invoke(({{cs.type(member.type, output.objects)}}){%if (member.type|find_type(output.objects)).kind=='struct'%}({{cs.to_tuple(member.type, output.objects)}}){%endif%}val, {{target.className}}.Properties);
                 break;
                 {% endif %}
             {% endfor%}
@@ -304,7 +326,7 @@ partial class {{target.objectPath|object_path_to_camel}} : I{{target.className}}
     {% if member.args|count > 0 %}
     {{ cs.docparams(member.args)|indent(4) }}
     {% endif %}
-    async Task{% if member.returns is defined %}<{{ cs.type(member.returns.type, output.objects) }}>{% endif %} I{{target.className}}.{{ member.name}}Async(
+    async Task{% if member.returns is defined %}<{{target.className}}Payloads.{{ member.name }}ReturnType>{% endif %} I{{target.className}}.{{ member.name}}Async(
     {% if member.args|count > 0 %}
         {{ cs.funcparams(member.args, output.objects)|indent(8) }}
     {% endif %}
@@ -314,7 +336,7 @@ partial class {{target.objectPath|object_path_to_camel}} : I{{target.className}}
         {
             throw new NotImplementedException("Missing implementation for {{ member.name}} method");
         }
-        {{''}}{% if member.returns is defined %}return {% endif %}await {{target.className}}.On{{ member.name}}.Invoke(
+        {{''}}{% if member.returns is defined %}return new {{target.className}}Payloads.{{member.name}}ReturnType({% endif %}await {{target.className}}.On{{ member.name}}.Invoke(
             {% for i in range(0, member.args|count) %}
             {% set arg = member.args[i] %}
             {{ arg.name }}
@@ -323,7 +345,7 @@ partial class {{target.objectPath|object_path_to_camel}} : I{{target.className}}
             {% endif %}
             {% endfor %}
 
-        );
+        ){% if member.returns is defined %}){%endif%};
     }
 
     {% endif %}
