@@ -226,7 +226,7 @@ class {{target.className}} : IClient
         }
         else
         {
-            return ({{cs.type(member.type, output.objects)}})(await _interface.GetAsync("{{member.name}}"));
+            return ({{cs.type(member.type, output.objects)}}){%if (member.type|find_type(output.objects)).kind=='struct'%}({{cs.to_tuple(member.type, output.objects)}}){%endif%}(await _interface.GetAsync("{{member.name}}"));
         }
     }
     {% if not member.readonly %}

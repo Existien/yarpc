@@ -1,0 +1,16 @@
+outputs:
+- language: cs
+  location: csharp_service/Generated
+  namespace: TestService.Generated
+  busName: com.yarpc.testservice
+  services:
+  - className: StructsInterface
+    definition: Structs
+    objectPath: /com/yarpc/testservice/structs
+    interfaceName: com.yarpc.testservice.structs
+  clients:
+  - className: BackendStructsClient
+    definition: Structs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend/structs
+    interfaceName: com.yarpc.backend.structs
