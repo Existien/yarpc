@@ -13,6 +13,7 @@ class Minimal
         client.Bumped += ()=>{objectPath.MinimalInterface.EmitBumped();};
         await connection.RegisterClient(client);
         await connection.RegisterObjectPathAsync(objectPath);
+        Console.WriteLine("Minimal interface configured");
         return (client, objectPath);
     }
 }

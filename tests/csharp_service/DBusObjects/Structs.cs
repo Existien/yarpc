@@ -47,6 +47,7 @@ class Structs
         }
 
         await connection.RegisterObjectPathAsync(objectPath);
+        Console.WriteLine("Structs interface configured");
         return (client, objectPath);
     }
 }

@@ -18,6 +18,7 @@ class WithArgs
         WithArgsInterfaces.Primitives.Configure(primitivesClient, objectPath);
 
         await connection.RegisterObjectPathAsync(objectPath);
+        Console.WriteLine("WithArgs interface configured");
         return ([withArgsClient, primitivesClient], objectPath);
     }
 }
