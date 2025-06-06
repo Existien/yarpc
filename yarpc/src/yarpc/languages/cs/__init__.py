@@ -64,7 +64,7 @@ class Language(BaseLanguage):
             uint64='UInt64',
             double='double',
             string='string',
-            array='List<$1>',
+            array='$1[]',
             dict='Dictionary<$1, $2>',
         )
 

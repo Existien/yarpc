@@ -9,81 +9,71 @@
 namespace TestService.Generated {
 using Tmds.DBus;
 
-namespace BackendStructsClientPayloads {
+namespace BackendArraysClientPayloads {
 
 /// <summary>
-///   Payload for the StructReceived signal
+///   Payload for the ArraySignal signal
 /// </summary>
-public struct StructReceived {
+public struct ArraySignal {
 
     /// <summary>
-    ///   Constructor for the payload of the StructReceived signal
+    ///   Constructor for the payload of the ArraySignal signal
     /// </summary>
-    /// <param name="simpleStruct">
-    ///   the SimpleStruct
+    /// <param name="numbers">
+    ///   normalized numbers
     /// </param>
-    /// <param name="totalCosts">
-    ///   the total costs
-    /// </param>
-    public StructReceived(
-        SimpleStruct simpleStruct_,
-        double totalCosts_
+    public ArraySignal(
+        double[][] numbers_
     ){
-        simpleStruct = simpleStruct_;
-        totalCosts = totalCosts_;
+        numbers = numbers_;
     }
 
     /// <value>
-    ///   the SimpleStruct
+    ///   normalized numbers
     /// </value>
-    public SimpleStruct simpleStruct;
-
-    /// <value>
-    ///   the total costs
-    /// </value>
-    public double totalCosts;
+    public double[][] numbers;
 };
 
 }
 
 /// <summary>
-///   The D-Bus properties of the com.yarpc.backend.structs D-Bus interface at com.yarpc.backend
+///   The D-Bus properties of the com.yarpc.backend.arrays D-Bus interface at com.yarpc.backend
 /// </summary>
 [Dictionary]
-public struct BackendStructsClientProperties
+public struct BackendArraysClientProperties
 {
 
     /// <value>
-    ///   a property for a simple struct
+    ///   a simple property
     /// </value>
-    public SimpleStruct Simple;
+    public string[][] ArrayProperty;
 }
 
 /// <summary>
-/// D-Bus interface for com.yarpc.backend.structs at /com/yarpc/backend/structs of com.yarpc.backend
+/// D-Bus interface for com.yarpc.backend.arrays at /com/yarpc/backend/arrays of com.yarpc.backend
 /// </summary>
-[DBusInterface("com.yarpc.backend.structs")]
-public interface IBackendStructsClient : IDBusObject
+[DBusInterface("com.yarpc.backend.arrays")]
+public interface IBackendArraysClient : IDBusObject
 {
 
     /// <summary>
-    ///   a method with a struct as args
+    ///   a simple method with one argument
     /// </summary>
-    /// <param name="simpleStruct">
-    ///   the SimpleStruct to send
+    /// <param name="numbers">
+    ///   Some numbers
     /// </param>
     /// <returns>
-    ///   the SimpleStruct
+    ///   normalized numbers
     /// </returns>
-    Task<SimpleStruct> SendStructAsync(
-        SimpleStruct simpleStruct
+    Task<double[][]> ArrayMethodAsync(
+        UInt32[][] numbers
     );
 
     /// <summary>
-    ///   a signal with a struct as args
+    ///   a simple signal with one argument
     /// </summary>
     /// <param name="reply">the signal handler</param>
-    Task<IDisposable> WatchStructReceivedAsync(Action<BackendStructsClientPayloads.StructReceived> reply);
+    Task<IDisposable> WatchArraySignalAsync(Action<BackendArraysClientPayloads.ArraySignal> reply);
 
     /// <summary>
     ///   Returns the current values of all D-Bus properties
@@ -91,7 +81,7 @@ public interface IBackendStructsClient : IDBusObject
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    Task<BackendStructsClientProperties> GetAllAsync();
+    Task<BackendArraysClientProperties> GetAllAsync();
 
     /// <summary>
     ///   Returns the current value of the requested D-Bus property
@@ -125,11 +115,11 @@ public interface IBackendStructsClient : IDBusObject
 }
 
 /// <summary>
-/// D-Bus client for the com.yarpc.backend.structs D-Bus interface at /com/yarpc/backend/structs of com.yarpc.backend
+/// D-Bus client for the com.yarpc.backend.arrays D-Bus interface at /com/yarpc/backend/arrays of com.yarpc.backend
 /// </summary>
-class BackendStructsClient : IClient
+class BackendArraysClient : IClient
 {
-    private IBackendStructsClient? _interface;
+    private IBackendArraysClient? _interface;
 
     /// <summary>
     /// Connects to the service.
@@ -137,10 +127,10 @@ class BackendStructsClient : IClient
     /// <param name="connection">the D-Bus connection</param>
     public async Task ConnectAsync(Tmds.DBus.Connection connection)
     {
-        _interface = connection.CreateProxy<IBackendStructsClient>("com.yarpc.backend", "/com/yarpc/backend/structs");
-        await _interface.WatchStructReceivedAsync(
-            (BackendStructsClientPayloads.StructReceived payload) => {
-                StructReceived?.Invoke(payload);
+        _interface = connection.CreateProxy<IBackendArraysClient>("com.yarpc.backend", "/com/yarpc/backend/arrays");
+        await _interface.WatchArraySignalAsync(
+            (BackendArraysClientPayloads.ArraySignal payload) => {
+                ArraySignal?.Invoke(payload);
             }
         );
         await _interface.WatchPropertiesAsync(
@@ -180,11 +170,11 @@ class BackendStructsClient : IClient
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    public async Task<BackendStructsClientProperties> GetAllAsync()
+    public async Task<BackendArraysClientProperties> GetAllAsync()
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendStructsClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendArraysClient is not connected to D-Bus");
         }
         else
         {
@@ -201,15 +191,15 @@ class BackendStructsClient : IClient
     /// <returns>
     ///   The current value of the requested property
     /// </returns>
-    public async Task<SimpleStruct> GetSimpleAsync()
+    public async Task<string[][]> GetArrayPropertyAsync()
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendStructsClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendArraysClient is not connected to D-Bus");
         }
         else
         {
-            return (SimpleStruct)(ValueTuple<ValueTuple<string, double>, UInt32>)(await _interface.GetAsync("Simple"));
+            return (string[][])(await _interface.GetAsync("ArrayProperty"));
         }
     }
 
@@ -222,47 +212,47 @@ class BackendStructsClient : IClient
     /// <param name="val">
     ///   The new value to set
     /// </param>
-    public async Task SetSimpleAsync(SimpleStruct newValue)
+    public async Task SetArrayPropertyAsync(string[][] newValue)
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendStructsClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendArraysClient is not connected to D-Bus");
         }
         else
         {
-            await _interface.SetAsync("Simple", (object)newValue);
+            await _interface.SetAsync("ArrayProperty", (object)newValue);
         }
     }
 
     /// <summary>
-    ///   a method with a struct as args
+    ///   a simple method with one argument
     /// </summary>
-    /// <param name="simpleStruct">
-    ///   the SimpleStruct to send
+    /// <param name="numbers">
+    ///   Some numbers
     /// </param>
     /// <returns>
-    ///   the SimpleStruct
+    ///   normalized numbers
     /// </returns>
-    public async Task<SimpleStruct> SendStructAsync(
-        SimpleStruct simpleStruct
+    public async Task<double[][]> ArrayMethodAsync(
+        UInt32[][] numbers
     )
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendStructsClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendArraysClient is not connected to D-Bus");
         }
         else
         {
-            return await _interface.SendStructAsync(
-                simpleStruct
+            return await _interface.ArrayMethodAsync(
+                numbers
             );
         }
     }
 
     /// <summary>
-    ///   a signal with a struct as args
+    ///   a simple signal with one argument
     /// </summary>
-    public event Action<BackendStructsClientPayloads.StructReceived>? StructReceived;
+    public event Action<BackendArraysClientPayloads.ArraySignal>? ArraySignal;
 
 
 }
