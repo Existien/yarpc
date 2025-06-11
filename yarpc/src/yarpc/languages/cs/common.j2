@@ -46,6 +46,9 @@ ValueTuple<
 {%- endif -%}
 {%- endfor -%}
 >
+{%- elif object.name == 'array' -%}
+{%- set inner_type = type_as_str|extract_inner(object)|first -%}
+{{ to_tuple(inner_type, objects)}}[]
 {%- else -%}
 {{ type(type_as_str, objects) }}
 {%- endif -%}
@@ -77,4 +80,25 @@ ValueTuple<
 {% endfor %}
 /// </param>
 {%- endfor %}
+{% endmacro %}
+{#
+    Demarshal ValueTuples
+#}
+{%- macro demarshal(value, type_as_str, output, objects, i=0) %}
+{%- set object = type_as_str|find_type(objects) -%}
+{%-if object.kind=='struct'-%}
+var {{output}} = ({{type(type_as_str, objects)}})({{to_tuple(type_as_str, objects)}}){{value}};
+{%- elif object.name =='array'-%}
+{%- set inner_type = type_as_str|extract_inner(object)|first -%}
+var marshalledList{{i}} = ({{to_tuple(type_as_str, objects)}}) {{value}};
+List<{{type(inner_type, objects)}}> demarshalledList{{i}} = new();
+foreach(var marshalledItem{{i}} in marshalledList{{i}})
+{
+    {{demarshal("marshalledItem"+i|string, inner_type, "demarshalledItem"+i|string, objects, i+1)|indent(4)}}
+    demarshalledList{{i}}.Add(demarshalledItem{{i}});
+}
+var {{output}} = ({{type(type_as_str, objects)}})demarshalledList{{i}}.ToArray();
+{%- else -%}
+var {{output}} = ({{type(type_as_str, objects)}}){{value}};
+{%- endif -%}
 {% endmacro %}
