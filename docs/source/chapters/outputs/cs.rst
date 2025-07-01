@@ -85,3 +85,4 @@ Restrictions
 
 - The generated service code can only (dis-)connect whole object paths.
   I.e. it is not possible to (dis-)connect just one interface at an object path
+- Dictionaries are handled as KeyValuePair arrays

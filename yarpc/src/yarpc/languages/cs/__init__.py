@@ -65,7 +65,7 @@ class Language(BaseLanguage):
             double='double',
             string='string',
             array='$1[]',
-            dict='Dictionary<$1, $2>',
+            dict='KeyValuePair<$1, $2>[]',
         )
 
     def get_jinja_filters(self) -> Dict[str, Callable[... ,object]]:

@@ -25,7 +25,7 @@ public struct {{member.name}}
     /// </summary>
     {{ cs.docparams(member.args)|indent(4) }}
     public {{ member.name }}(
-        {{ cs.funcparams(member.args, output.objects, '_')|indent(8) }}
+        {{ cs.funcparams(member.args, output.objects, suffix='_')|indent(8) }}
     ){
         {% for arg in member.args %}
         {{ arg.name }} = {{ arg.name }}_;
@@ -64,33 +64,7 @@ public struct {{member.name}}ReturnType
 }
 {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
 
-/// <summary>
-///   The D-Bus properties of the {{ target.interfaceName }} D-Bus interface at {{ target.busName }}
-/// </summary>
-[Dictionary]
-public struct {{ target.className }}Properties
-{
-    public {{ target.className }}Properties()
-    {
-        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-        {% if (member.type|find_type(output.objects)).name == 'array' %}
-        {{ member.name }} = new {{cs.type(member.type, output.objects )}}{};
-        {% endif %}
-        {% endfor %}
-    }
-
-    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-
-    {{ cs.doctag(member, "value")|indent(4) }}
-    {% if member.readonly %}
-    [Property(Access=PropertyAccess.Read)]
-    {% endif %}
-    public {{ cs.type(member.type, output.objects )}} {{ member.name }}
-    {%- if member.type == 'string' -%}
-    {{' = ""'}}
-    {%- endif -%};
-    {% endfor%}
-}
+{{ cs.property_class(object, output, target) }}
 {% endif%}
 
 /// <summary>
@@ -348,10 +322,13 @@ partial class {{target.objectPath|object_path_to_camel}} : I{{target.className}}
         {
             throw new NotImplementedException("Missing implementation for {{ member.name}} method");
         }
+        {% for i in range(0, member.args|count) %}
+        {% set arg = member.args[i] %}
+        var arg{{i}} = {{ arg.name }};
+        {% endfor %}
         {{''}}{% if member.returns is defined %}return new {{target.className}}Payloads.{{member.name}}ReturnType({% endif %}await {{target.className}}.On{{ member.name}}.Invoke(
             {% for i in range(0, member.args|count) %}
-            {% set arg = member.args[i] %}
-            {{ arg.name }}
+            arg{{i}}
             {%- if i < member.args|count - 1 -%}
             ,
             {% endif %}

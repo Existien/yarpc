@@ -88,7 +88,7 @@ ValueTuple<
 {%- set object = type_as_str|find_type(objects) -%}
 {%-if object.kind=='struct'-%}
 var {{output}} = ({{type(type_as_str, objects)}})({{to_tuple(type_as_str, objects)}}){{value}};
-{%- elif object.name =='array'-%}
+{%- elif object.name =='array' -%}
 {%- set inner_type = type_as_str|extract_inner(object)|first -%}
 var marshalledList{{i}} = ({{to_tuple(type_as_str, objects)}}) {{value}};
 List<{{type(inner_type, objects)}}> demarshalledList{{i}} = new();
@@ -98,7 +98,47 @@ foreach(var marshalledItem{{i}} in marshalledList{{i}})
     demarshalledList{{i}}.Add(demarshalledItem{{i}});
 }
 var {{output}} = ({{type(type_as_str, objects)}})demarshalledList{{i}}.ToArray();
+{%- elif object.name == 'dict' -%}
+{%- set inner_types = type_as_str|extract_inner(object) -%}
+{%- set key_type = type(inner_types[0], objects) -%}
+{%- set value_type = type(inner_types[1], objects) -%}
+var {{output}} = (({{ "Dictionary<$1,$2>"|replace("$1", key_type)|replace("$2", value_type) }}){{value}}).ToArray();
 {%- else -%}
 var {{output}} = ({{type(type_as_str, objects)}}){{value}};
 {%- endif -%}
 {% endmacro %}
+{#
+    Class for the D-Bus properties
+#}
+{%- macro property_class(object, output, target) -%}
+/// <summary>
+///   The D-Bus properties of the {{ target.interfaceName }} D-Bus interface at {{ target.busName }}
+/// </summary>
+[Dictionary]
+public struct {{ target.className }}Properties
+{
+
+    public {{ target.className }}Properties()
+    {
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        {% if (member.type|find_type(output.objects)).name == 'array' %}
+        {{ member.name }} = new {{type(member.type, output.objects )}}{};
+        {% elif (member.type|find_type(output.objects)).name == 'dict' %}
+        {{ member.name }} = new {{type(member.type, output.objects )}}{};
+        {% endif %}
+        {% endfor %}
+    }
+
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+
+    {{ doctag(member, "value")|indent(4) }}
+    {% if member.readonly %}
+    [Property(Access=PropertyAccess.Read)]
+    {% endif %}
+    public {{ type(member.type, output.objects )}} {{ member.name }}
+    {%- if member.type == 'string' -%}
+    {{' = ""'}}
+    {%- endif -%};
+    {% endfor%}
+}
+{%- endmacro %}

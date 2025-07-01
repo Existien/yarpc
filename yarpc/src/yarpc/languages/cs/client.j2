@@ -24,7 +24,7 @@ public struct {{member.name}} {
     /// </summary>
     {{ cs.docparams(member.args)|indent(4) }}
     public {{ member.name }}(
-        {{ cs.funcparams(member.args, output.objects, '_')|indent(8) }}
+        {{ cs.funcparams(member.args, output.objects, suffix='_')|indent(8) }}
     ){
         {% for arg in member.args %}
         {{ arg.name }} = {{ arg.name }}_;
@@ -42,24 +42,7 @@ public struct {{member.name}} {
 }
 {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
 
-/// <summary>
-///   The D-Bus properties of the {{ target.interfaceName }} D-Bus interface at {{ target.busName }}
-/// </summary>
-[Dictionary]
-public struct {{ target.className }}Properties
-{
-    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
-
-    {{ cs.doctag(member, "value")|indent(4) }}
-    {% if member.readonly %}
-    [Property(Access=PropertyAccess.Read)]
-    {% endif %}
-    public {{ cs.type(member.type, output.objects )}} {{ member.name }}
-    {%- if member.type == 'string' -%}
-    {{' = ""'}}
-    {%- endif -%};
-    {% endfor%}
-}
+{{ cs.property_class(object, output, target) }}
 {% endif%}
 
 /// <summary>
