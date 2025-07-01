@@ -14,6 +14,7 @@ public class DBusWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var connectionTask = _connection.ConnectAsync(stoppingToken);
+        var dicts = await DBusObjects.Dicts.Configure(_connection, _logger, stoppingToken);
         var arrays = await DBusObjects.Arrays.Configure(_connection, _logger, stoppingToken);
         var structs = await DBusObjects.Structs.Configure(_connection, _logger, stoppingToken);
         var withArgs = await DBusObjects.WithArgs.Configure(_connection, _logger, stoppingToken);
