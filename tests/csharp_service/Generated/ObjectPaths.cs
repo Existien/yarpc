@@ -10,11 +10,11 @@ namespace TestService.Generated {
 using Tmds.DBus;
 
 /// <summary>
-/// Contains D-Bus interfaces at object path /com/yarpc/testservice/structs
+/// Contains D-Bus interfaces at object path /com/yarpc/testservice/arrays
 /// </summary>
-partial class ComYarpcTestserviceStructs
+partial class ComYarpcTestserviceArrays
 {
-    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/structs");
+    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/arrays");
 
     /// <summary>
     /// The D-Bus object path
@@ -28,19 +28,6 @@ partial class ComYarpcTestserviceStructs
 partial class ComYarpcTestserviceMinimal
 {
     static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/minimal");
-
-    /// <summary>
-    /// The D-Bus object path
-    /// </summary>
-    public ObjectPath ObjectPath{ get{ return Path; }}
-}
-
-/// <summary>
-/// Contains D-Bus interfaces at object path /com/yarpc/testservice/arrays
-/// </summary>
-partial class ComYarpcTestserviceArrays
-{
-    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/arrays");
 
     /// <summary>
     /// The D-Bus object path
@@ -67,6 +54,19 @@ partial class ComYarpcTestserviceWithArgs
 partial class ComYarpcTestserviceDicts
 {
     static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/dicts");
+
+    /// <summary>
+    /// The D-Bus object path
+    /// </summary>
+    public ObjectPath ObjectPath{ get{ return Path; }}
+}
+
+/// <summary>
+/// Contains D-Bus interfaces at object path /com/yarpc/testservice/structs
+/// </summary>
+partial class ComYarpcTestserviceStructs
+{
+    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/structs");
 
     /// <summary>
     /// The D-Bus object path

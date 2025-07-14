@@ -262,7 +262,7 @@ partial class ComYarpcTestserviceArrays : IArraysWithStructsInterface
             {
                 var marshalledList0 = (ValueTuple<UInt32[][]>[]) val;
                 List<StructArray> demarshalledList0 = new();
-                foreach(var marshalledItem0 in marshalledList0)
+                foreach (var marshalledItem0 in marshalledList0)
                 {
                     var demarshalledItem0 = (StructArray)(ValueTuple<UInt32[][]>)marshalledItem0;
                     demarshalledList0.Add(demarshalledItem0);

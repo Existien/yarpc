@@ -19,11 +19,11 @@ public struct StructArray
         {
             var marshalledList0 = (UInt32[][]) other.Item1;
             List<UInt32[]> demarshalledList0 = new();
-            foreach(var marshalledItem0 in marshalledList0)
+            foreach (var marshalledItem0 in marshalledList0)
             {
                 var marshalledList1 = (UInt32[]) marshalledItem0;
                 List<UInt32> demarshalledList1 = new();
-                foreach(var marshalledItem1 in marshalledList1)
+                foreach (var marshalledItem1 in marshalledList1)
                 {
                     var demarshalledItem1 = (UInt32)marshalledItem1;
                     demarshalledList1.Add(demarshalledItem1);

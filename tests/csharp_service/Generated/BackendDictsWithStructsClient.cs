@@ -9,77 +9,77 @@
 namespace TestService.Generated {
 using Tmds.DBus;
 
-namespace BackendDictsClientPayloads {
+namespace BackendDictsWithStructsClientPayloads {
 
 /// <summary>
-///   Payload for the DictSignal signal
+///   Payload for the DictStructSignal signal
 /// </summary>
-public struct DictSignal {
+public struct DictStructSignal {
 
     /// <summary>
-    ///   Constructor for the payload of the DictSignal signal
+    ///   Constructor for the payload of the DictStructSignal signal
     /// </summary>
-    /// <param name="keysNValues">
-    ///   a dictionary
+    /// <param name="numbers">
+    ///   numbers
     /// </param>
-    public DictSignal(
-        KeyValuePair<string, UInt32>[] keysNValues_
+    public DictStructSignal(
+        KeyValuePair<string, StructDict>[] numbers_
     ){
-        keysNValues = keysNValues_;
+        numbers = numbers_;
     }
 
     /// <value>
-    ///   a dictionary
+    ///   numbers
     /// </value>
-    public KeyValuePair<string, UInt32>[] keysNValues;
+    public KeyValuePair<string, StructDict>[] numbers;
 };
 
 }
 
 /// <summary>
-///   The D-Bus properties of the com.yarpc.backend.dicts D-Bus interface at com.yarpc.backend
+///   The D-Bus properties of the com.yarpc.backend.dictsWithStructs D-Bus interface at com.yarpc.backend
 /// </summary>
 [Dictionary]
-public struct BackendDictsClientProperties
+public struct BackendDictsWithStructsClientProperties
 {
 
-    public BackendDictsClientProperties()
+    public BackendDictsWithStructsClientProperties()
     {
-        DictProperty = new KeyValuePair<string, UInt32>[]{};
+        DictStructProperty = new KeyValuePair<string, StructDict>[]{};
     }
 
 
     /// <value>
-    ///   a prop
+    ///   a simple property
     /// </value>
-    public KeyValuePair<string, UInt32>[] DictProperty;
+    public KeyValuePair<string, StructDict>[] DictStructProperty;
 }
 
 /// <summary>
-/// D-Bus interface for com.yarpc.backend.dicts at /com/yarpc/backend/dicts of com.yarpc.backend
+/// D-Bus interface for com.yarpc.backend.dictsWithStructs at /com/yarpc/backend/dicts of com.yarpc.backend
 /// </summary>
-[DBusInterface("com.yarpc.backend.dicts")]
-public interface IBackendDictsClient : IDBusObject
+[DBusInterface("com.yarpc.backend.dictsWithStructs")]
+public interface IBackendDictsWithStructsClient : IDBusObject
 {
 
     /// <summary>
     ///   a simple method with one argument
     /// </summary>
-    /// <param name="keysNValues">
-    ///   a dictionary
+    /// <param name="numbers">
+    ///   Some numbers
     /// </param>
     /// <returns>
-    ///   another one
+    ///   more numbers
     /// </returns>
-    Task<KeyValuePair<string, string>[]> DictMethodAsync(
-        KeyValuePair<string, UInt32>[] keysNValues
+    Task<KeyValuePair<string, SimonsDict>[]> DictsStructMethodAsync(
+        KeyValuePair<string, StructDict>[] numbers
     );
 
     /// <summary>
-    ///   a signal
+    ///   a simple signal with one argument
     /// </summary>
     /// <param name="reply">the signal handler</param>
-    Task<IDisposable> WatchDictSignalAsync(Action<BackendDictsClientPayloads.DictSignal> reply);
+    Task<IDisposable> WatchDictStructSignalAsync(Action<BackendDictsWithStructsClientPayloads.DictStructSignal> reply);
 
     /// <summary>
     ///   Returns the current values of all D-Bus properties
@@ -87,7 +87,7 @@ public interface IBackendDictsClient : IDBusObject
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    Task<BackendDictsClientProperties> GetAllAsync();
+    Task<BackendDictsWithStructsClientProperties> GetAllAsync();
 
     /// <summary>
     ///   Returns the current value of the requested D-Bus property
@@ -121,11 +121,11 @@ public interface IBackendDictsClient : IDBusObject
 }
 
 /// <summary>
-/// D-Bus client for the com.yarpc.backend.dicts D-Bus interface at /com/yarpc/backend/dicts of com.yarpc.backend
+/// D-Bus client for the com.yarpc.backend.dictsWithStructs D-Bus interface at /com/yarpc/backend/dicts of com.yarpc.backend
 /// </summary>
-class BackendDictsClient : IClient
+class BackendDictsWithStructsClient : IClient
 {
-    private IBackendDictsClient? _interface;
+    private IBackendDictsWithStructsClient? _interface;
 
     /// <summary>
     /// Connects to the service.
@@ -133,10 +133,10 @@ class BackendDictsClient : IClient
     /// <param name="connection">the D-Bus connection</param>
     public async Task ConnectAsync(Tmds.DBus.Connection connection)
     {
-        _interface = connection.CreateProxy<IBackendDictsClient>("com.yarpc.backend", "/com/yarpc/backend/dicts");
-        await _interface.WatchDictSignalAsync(
-            (BackendDictsClientPayloads.DictSignal payload) => {
-                DictSignal?.Invoke(payload);
+        _interface = connection.CreateProxy<IBackendDictsWithStructsClient>("com.yarpc.backend", "/com/yarpc/backend/dicts");
+        await _interface.WatchDictStructSignalAsync(
+            (BackendDictsWithStructsClientPayloads.DictStructSignal payload) => {
+                DictStructSignal?.Invoke(payload);
             }
         );
         await _interface.WatchPropertiesAsync(
@@ -146,18 +146,18 @@ class BackendDictsClient : IClient
                 {
                     switch (entry.Key)
                     {
-                        case "DictProperty":
+                        case "DictStructProperty":
                         {
-                            var marshalledDict0 = (IDictionary<string, UInt32>) entry.Value;
-                            List<KeyValuePair<string, UInt32>> demarshalledDict0 = new();
+                            var marshalledDict0 = (IDictionary<string, ValueTuple<IDictionary<string, IDictionary<string, UInt32>>>>) entry.Value;
+                            List<KeyValuePair<string, StructDict>> demarshalledDict0 = new();
                             foreach (var marshalledItem0 in marshalledDict0.ToArray())
                             {
-                                var demarshalledItem0 = (UInt32)marshalledItem0.Value;
-                                demarshalledDict0.Add(new KeyValuePair<string, UInt32>(marshalledItem0.Key, demarshalledItem0));
+                                var demarshalledItem0 = (StructDict)(ValueTuple<IDictionary<string, IDictionary<string, UInt32>>>)marshalledItem0.Value;
+                                demarshalledDict0.Add(new KeyValuePair<string, StructDict>(marshalledItem0.Key, demarshalledItem0));
                             }
 
                             var demarshalled = demarshalledDict0.ToArray();
-                            demarshalledChanges.Add(new KeyValuePair<string, object>("DictProperty", demarshalled));
+                            demarshalledChanges.Add(new KeyValuePair<string, object>("DictStructProperty", demarshalled));
                         }
                         break;
                     }
@@ -197,11 +197,11 @@ class BackendDictsClient : IClient
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    public async Task<BackendDictsClientProperties> GetAllAsync()
+    public async Task<BackendDictsWithStructsClientProperties> GetAllAsync()
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendDictsClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendDictsWithStructsClient is not connected to D-Bus");
         }
         else
         {
@@ -218,21 +218,21 @@ class BackendDictsClient : IClient
     /// <returns>
     ///   The current value of the requested property
     /// </returns>
-    public async Task<KeyValuePair<string, UInt32>[]> GetDictPropertyAsync()
+    public async Task<KeyValuePair<string, StructDict>[]> GetDictStructPropertyAsync()
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendDictsClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendDictsWithStructsClient is not connected to D-Bus");
         }
         else
         {
-            var value = await _interface.GetAsync("DictProperty");
-            var marshalledDict0 = (IDictionary<string, UInt32>) value;
-            List<KeyValuePair<string, UInt32>> demarshalledDict0 = new();
+            var value = await _interface.GetAsync("DictStructProperty");
+            var marshalledDict0 = (IDictionary<string, ValueTuple<IDictionary<string, IDictionary<string, UInt32>>>>) value;
+            List<KeyValuePair<string, StructDict>> demarshalledDict0 = new();
             foreach (var marshalledItem0 in marshalledDict0.ToArray())
             {
-                var demarshalledItem0 = (UInt32)marshalledItem0.Value;
-                demarshalledDict0.Add(new KeyValuePair<string, UInt32>(marshalledItem0.Key, demarshalledItem0));
+                var demarshalledItem0 = (StructDict)(ValueTuple<IDictionary<string, IDictionary<string, UInt32>>>)marshalledItem0.Value;
+                demarshalledDict0.Add(new KeyValuePair<string, StructDict>(marshalledItem0.Key, demarshalledItem0));
             }
 
             var demarshalled = demarshalledDict0.ToArray();
@@ -249,47 +249,47 @@ class BackendDictsClient : IClient
     /// <param name="val">
     ///   The new value to set
     /// </param>
-    public async Task SetDictPropertyAsync(KeyValuePair<string, UInt32>[] newValue)
+    public async Task SetDictStructPropertyAsync(KeyValuePair<string, StructDict>[] newValue)
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendDictsClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendDictsWithStructsClient is not connected to D-Bus");
         }
         else
         {
-            await _interface.SetAsync("DictProperty", (object)newValue);
+            await _interface.SetAsync("DictStructProperty", (object)newValue);
         }
     }
 
     /// <summary>
     ///   a simple method with one argument
     /// </summary>
-    /// <param name="keysNValues">
-    ///   a dictionary
+    /// <param name="numbers">
+    ///   Some numbers
     /// </param>
     /// <returns>
-    ///   another one
+    ///   more numbers
     /// </returns>
-    public async Task<KeyValuePair<string, string>[]> DictMethodAsync(
-        KeyValuePair<string, UInt32>[] keysNValues
+    public async Task<KeyValuePair<string, SimonsDict>[]> DictsStructMethodAsync(
+        KeyValuePair<string, StructDict>[] numbers
     )
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendDictsClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendDictsWithStructsClient is not connected to D-Bus");
         }
         else
         {
-            return await _interface.DictMethodAsync(
-                keysNValues
+            return await _interface.DictsStructMethodAsync(
+                numbers
             );
         }
     }
 
     /// <summary>
-    ///   a signal
+    ///   a simple signal with one argument
     /// </summary>
-    public event Action<BackendDictsClientPayloads.DictSignal>? DictSignal;
+    public event Action<BackendDictsWithStructsClientPayloads.DictStructSignal>? DictStructSignal;
 
 
 }

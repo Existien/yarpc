@@ -19,7 +19,7 @@ public struct SimonsArray
         {
             var marshalledList0 = (ValueTuple<UInt32[][]>[]) other.Item1;
             List<StructArray> demarshalledList0 = new();
-            foreach(var marshalledItem0 in marshalledList0)
+            foreach (var marshalledItem0 in marshalledList0)
             {
                 var demarshalledItem0 = (StructArray)(ValueTuple<UInt32[][]>)marshalledItem0;
                 demarshalledList0.Add(demarshalledItem0);

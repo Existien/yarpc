@@ -8,10 +8,10 @@ outputs:
     definition: Dicts
     objectPath: /com/yarpc/testservice/dicts
     interfaceName: com.yarpc.testservice.dicts
-  # - className: DictsWithStructsInterface
-  #   definition: DictsWithStructs
-  #   objectPath: /com/yarpc/testservice/dicts
-  #   interfaceName: com.yarpc.testservice.dictsWithStructs
+  - className: DictsWithStructsInterface
+    definition: DictsWithStructs
+    objectPath: /com/yarpc/testservice/dicts
+    interfaceName: com.yarpc.testservice.dictsWithStructs
   # - className: DictsWithArraysInterface
   #   definition: DictsWithArrays
   #   objectPath: /com/yarpc/testservice/dicts
@@ -26,11 +26,11 @@ outputs:
     busName: com.yarpc.backend
     objectPath: /com/yarpc/backend/dicts
     interfaceName: com.yarpc.backend.dicts
-  # - className: BackendDictsWithStructsClient
-  #   definition: DictsWithStructs
-  #   busName: com.yarpc.backend
-  #   objectPath: /com/yarpc/backend/dicts
-  #   interfaceName: com.yarpc.backend.dictsWithStructs
+  - className: BackendDictsWithStructsClient
+    definition: DictsWithStructs
+    busName: com.yarpc.backend
+    objectPath: /com/yarpc/backend/dicts
+    interfaceName: com.yarpc.backend.dictsWithStructs
   # - className: BackendDictsWithArraysClient
   #   definition: DictsWithArrays
   #   busName: com.yarpc.backend
