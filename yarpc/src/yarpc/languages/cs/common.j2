@@ -13,7 +13,7 @@
     Find *type_as_str* in *objects*
     and return the respective C# type
 #}
-{% macro type(type_as_str, objects) %}
+{% macro type(type_as_str, objects, dbus=False) %}
 {%- set object = type_as_str|find_type(objects) -%}
 {%- if object.kind == 'struct' -%}
 {{ object.name }}
@@ -25,7 +25,11 @@
 {%- set inner_types = type_as_str|extract_inner(object) -%}
 {%- set key_type = type(inner_types[0], objects) -%}
 {%- set value_type = type(inner_types[1], objects) -%}
+{%- if not dbus -%}
 {{ object.cs|replace("$1", key_type)|replace("$2", value_type) }}
+{%- else -%}
+{{ "IDictionary<$1,$2>"|replace("$1", key_type)|replace("$2", value_type) }}
+{%- endif -%}
 {%- else -%}
 {{ object.cs }}
 {%- endif -%}
@@ -49,6 +53,10 @@ ValueTuple<
 {%- elif object.name == 'array' -%}
 {%- set inner_type = type_as_str|extract_inner(object)|first -%}
 {{ to_tuple(inner_type, objects)}}[]
+{%- elif object.name == 'dict' -%}
+{%- set inner_types = type_as_str|extract_inner(object) -%}
+{%- set key_type = type(inner_types[0], objects) -%}
+IDictionary<{{key_type}}, {{to_tuple(inner_types[1], objects)}}>
 {%- else -%}
 {{ type(type_as_str, objects) }}
 {%- endif -%}
@@ -92,7 +100,7 @@ var {{output}} = ({{type(type_as_str, objects)}})({{to_tuple(type_as_str, object
 {%- set inner_type = type_as_str|extract_inner(object)|first -%}
 var marshalledList{{i}} = ({{to_tuple(type_as_str, objects)}}) {{value}};
 List<{{type(inner_type, objects)}}> demarshalledList{{i}} = new();
-foreach(var marshalledItem{{i}} in marshalledList{{i}})
+foreach (var marshalledItem{{i}} in marshalledList{{i}})
 {
     {{demarshal("marshalledItem"+i|string, inner_type, "demarshalledItem"+i|string, objects, i+1)|indent(4)}}
     demarshalledList{{i}}.Add(demarshalledItem{{i}});
@@ -102,7 +110,15 @@ var {{output}} = ({{type(type_as_str, objects)}})demarshalledList{{i}}.ToArray()
 {%- set inner_types = type_as_str|extract_inner(object) -%}
 {%- set key_type = type(inner_types[0], objects) -%}
 {%- set value_type = type(inner_types[1], objects) -%}
-var {{output}} = (({{ "Dictionary<$1,$2>"|replace("$1", key_type)|replace("$2", value_type) }}){{value}}).ToArray();
+var marshalledDict{{i}} = ({{to_tuple(type_as_str, objects)}}) {{value}};
+List<KeyValuePair<{{key_type}}, {{value_type}}>> demarshalledDict{{i}} = new();
+foreach (var marshalledItem{{i}} in marshalledDict{{i}}.ToArray())
+{
+    {{demarshal("marshalledItem"+i|string+".Value", inner_types[1], "demarshalledItem"+i|string, objects, i+1)|indent(4)}}
+    demarshalledDict{{i}}.Add(new KeyValuePair<{{key_type}}, {{value_type}}>(marshalledItem{{i}}.Key, demarshalledItem{{i}}));
+}
+
+var {{output}} = demarshalledDict{{i}}.ToArray();
 {%- else -%}
 var {{output}} = ({{type(type_as_str, objects)}}){{value}};
 {%- endif -%}

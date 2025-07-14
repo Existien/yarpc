@@ -262,11 +262,11 @@ partial class ComYarpcTestserviceArrays : IArraysInterface
             {
                 var marshalledList0 = (string[][]) val;
                 List<string[]> demarshalledList0 = new();
-                foreach(var marshalledItem0 in marshalledList0)
+                foreach (var marshalledItem0 in marshalledList0)
                 {
                     var marshalledList1 = (string[]) marshalledItem0;
                     List<string> demarshalledList1 = new();
-                    foreach(var marshalledItem1 in marshalledList1)
+                    foreach (var marshalledItem1 in marshalledList1)
                     {
                         var demarshalledItem1 = (string)marshalledItem1;
                         demarshalledList1.Add(demarshalledItem1);

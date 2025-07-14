@@ -260,7 +260,15 @@ partial class ComYarpcTestserviceDicts : IDictsInterface
         {
             case "DictProperty":
             {
-                var demarshalled = ((Dictionary<string,UInt32>)val).ToArray();
+                var marshalledDict0 = (IDictionary<string, UInt32>) val;
+                List<KeyValuePair<string, UInt32>> demarshalledDict0 = new();
+                foreach (var marshalledItem0 in marshalledDict0.ToArray())
+                {
+                    var demarshalledItem0 = (UInt32)marshalledItem0.Value;
+                    demarshalledDict0.Add(new KeyValuePair<string, UInt32>(marshalledItem0.Key, demarshalledItem0));
+                }
+
+                var demarshalled = demarshalledDict0.ToArray();
                 newProps = await DictsInterface.SetDictProperty.Invoke(demarshalled, DictsInterface.Properties);
             }
             break;
