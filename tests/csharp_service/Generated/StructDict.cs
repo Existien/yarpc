@@ -21,16 +21,18 @@ public struct StructDict
             List<KeyValuePair<string, KeyValuePair<string, UInt32>[]>> demarshalledDict0 = new();
             foreach (var marshalledItem0 in marshalledDict0.ToArray())
             {
+                var demarshalledKey0 = (string)marshalledItem0.Key;
                 var marshalledDict1 = (IDictionary<string, UInt32>) marshalledItem0.Value;
                 List<KeyValuePair<string, UInt32>> demarshalledDict1 = new();
                 foreach (var marshalledItem1 in marshalledDict1.ToArray())
                 {
-                    var demarshalledItem1 = (UInt32)marshalledItem1.Value;
-                    demarshalledDict1.Add(new KeyValuePair<string, UInt32>(marshalledItem1.Key, demarshalledItem1));
+                    var demarshalledKey1 = (string)marshalledItem1.Key;
+                    var demarshalledValue1 = (UInt32)marshalledItem1.Value;
+                    demarshalledDict1.Add(new KeyValuePair<string, UInt32>(demarshalledKey1, demarshalledValue1));
                 }
 
-                var demarshalledItem0 = demarshalledDict1.ToArray();
-                demarshalledDict0.Add(new KeyValuePair<string, KeyValuePair<string, UInt32>[]>(marshalledItem0.Key, demarshalledItem0));
+                var demarshalledValue0 = demarshalledDict1.ToArray();
+                demarshalledDict0.Add(new KeyValuePair<string, KeyValuePair<string, UInt32>[]>(demarshalledKey0, demarshalledValue0));
             }
 
             var demarshalledOtherItem1 = demarshalledDict0.ToArray();
