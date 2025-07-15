@@ -73,12 +73,98 @@ clients
 How to use the generated service code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-T.B.D.
+Starting the service:
+
+  - Create a ``Connection`` instance and onnect to the D-Bus using the ``Connection.ConnectAsync`` method if not already done
+  - Create the object path instance that contains the service interface
+  - Set method callbacks for the interfaces in the object path (see *Method callbacks* section)
+  - Register the object path with the connection using the ``Connection.RegisterObjectPathAsync`` method
+
+  .. code-block:: cs
+  
+     var connection = new Connection();
+     var connectionTask = connection.ConnectAsync(stoppingToken);
+     var objectPath = new MyObjectPath();
+     // Set method callbacks here
+     await connection.RegisterObjectPathAsync(objectPath);
+
+Emitting signals:
+  To emit a signal, just call the ``Emit<SignalName>`` method of the interface.
+  The interfaces are members of the object path.
+
+  .. code-block:: cs
+
+     objectPath.PingerInterface.EmitPing();
+
+Method callbacks:
+  Set the respective ``On<MethodName>`` member of the interface.
+  The interfaces are members of the object path.
+
+  .. code-block:: cs
+
+     objectPath.PingerInterface.OnEcho = async (string message) => {
+         await Task.Delay(1000, stoppingToken);
+         return message;
+     };
+
+Properties:
+  D-Bus properties are internally exposed via the ``Properties`` member of the interface.
+  The default property setters can be overwritten by setting the ``Set<PropertyName>`` member of the interface.
+  When changing properties, don't change the members, but swap the whole ``Properties`` member.
+  It's setter will automatically determine property changes and emit the respective ``PropertiesChanged`` signal.
+
+  .. code-block:: cs
+
+     objectPath.RunnerInterface.SetDistance = (double newValue, RunnerInterfaceProperties oldProps) => {
+         oldProps.Distance = newValue;
+         oldProps.Duration = oldProps.Speed / newValue;
+         return Task.FromResult(oldProps);
+     };
+
 
 How to use the generated client code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-T.B.D.
+Connecting to the service:
+
+  - Create a ``Connection`` instance and onnect to the D-Bus using the ``Connection.ConnectAsync`` method if not already done
+  - Create the client instance
+  - Register the client with the connection using the ``Connection.RegisterClient`` method
+
+  .. code-block:: cs
+  
+     var connection = new Connection();
+     var connectionTask = connection.ConnectAsync(stoppingToken);
+     var myClient = new MyClient();
+     await connection.RegisterClient(myClient);
+
+Signal callbacks:
+
+  Signals are forwarded to an event of the same name.
+  The signal payload is wrapped in a struct due to technical limitations (and to preserve names).
+
+  .. code-block:: cs
+
+     client.MySignal += (DemoCode.Generated.MyClientPayloads.MySignal payload) => {
+         // Do something smart with it
+     };
+
+Calling methods:
+
+  Methods can be called using the ``<MethodName>Async()`` members of the client.
+  
+  .. code-block:: cs
+
+     await client.PingAsync();
+
+Properties:
+  To get the current value of a property, use the ``Get<PropertyName>Async()`` method.
+
+  To set a property, use the ``Set<PropertyName>Async()`` method.
+
+  Use the ``OnPropertiesChanged`` event to register handlers for property changes.
+  The property changes are communicated as a ``KeyValuePair<string, object>[]`` that contains
+  all changed properties.
 
 Restrictions
 ^^^^^^^^^^^^
