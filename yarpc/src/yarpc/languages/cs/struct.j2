@@ -37,7 +37,7 @@ public struct {{ object.name }}
     {% for member in object.members %}
 
     {{ cs.doctag(member, "value")|indent(4) }}
-    {{ cs.type(member.type, output.objects )}} {{ member.name }};
+    public {{ cs.type(member.type, output.objects )}} {{ member.name }};
     {% endfor %}
 }
 }

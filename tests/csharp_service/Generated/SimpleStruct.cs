@@ -36,12 +36,12 @@ public struct SimpleStruct
     /// <value>
     ///   The item
     /// </value>
-    Item item;
+    public Item item;
 
     /// <value>
     ///   the amount
     ///   ordered
     /// </value>
-    UInt32 amount;
+    public UInt32 amount;
 }
 }

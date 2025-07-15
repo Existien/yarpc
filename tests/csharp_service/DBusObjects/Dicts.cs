@@ -17,7 +17,7 @@ class Dicts
         await DictsInterfaces.Dicts.Configure(dictsClient, objectPath, logger, stoppingToken);
         await DictsInterfaces.DictsWithStructs.Configure(dictsWithStructsClient, objectPath, logger, stoppingToken);
         await DictsInterfaces.DictsWithArrays.Configure(dictsWithArraysClient, objectPath, logger, stoppingToken);
-        await DictsInterfaces.DictKeys.Configure(dictKeysClient, objectPath, logger, stoppingToken);
+        DictsInterfaces.DictKeys.Configure(dictKeysClient, objectPath, logger, stoppingToken);
 
         await connection.RegisterObjectPathAsync(objectPath);
         Console.WriteLine("Dicts interface configured");

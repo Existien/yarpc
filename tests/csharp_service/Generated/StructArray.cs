@@ -43,6 +43,6 @@ public struct StructArray
     /// <value>
     ///   some numbers
     /// </value>
-    UInt32[][] numbers;
+    public UInt32[][] numbers;
 }
 }
