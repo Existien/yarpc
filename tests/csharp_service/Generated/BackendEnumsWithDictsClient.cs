@@ -9,7 +9,7 @@
 namespace TestService.Generated {
 using Tmds.DBus;
 
-namespace BackendEnumsWithArraysClientPayloads {
+namespace BackendEnumsWithDictsClientPayloads {
 
 /// <summary>
 ///   Payload for the EnumSignal signal
@@ -23,7 +23,7 @@ public struct EnumSignal {
     ///   a color
     /// </param>
     public EnumSignal(
-        Color[] color_
+        KeyValuePair<Color, Color>[] color_
     ){
         color = color_;
     }
@@ -31,35 +31,35 @@ public struct EnumSignal {
     /// <value>
     ///   a color
     /// </value>
-    public Color[] color;
+    public KeyValuePair<Color, Color>[] color;
 };
 
 }
 
 /// <summary>
-///   The D-Bus properties of the com.yarpc.backend.enumsWithArrays D-Bus interface at com.yarpc.backend
+///   The D-Bus properties of the com.yarpc.backend.enumsWithDicts D-Bus interface at com.yarpc.backend
 /// </summary>
 [Dictionary]
-public struct BackendEnumsWithArraysClientProperties
+public struct BackendEnumsWithDictsClientProperties
 {
 
-    public BackendEnumsWithArraysClientProperties()
+    public BackendEnumsWithDictsClientProperties()
     {
-        EnumProperty = new Color[]{};
+        EnumProperty = new KeyValuePair<Color, Color>[]{};
     }
 
 
     /// <value>
     ///   a property
     /// </value>
-    public Color[] EnumProperty;
+    public KeyValuePair<Color, Color>[] EnumProperty;
 }
 
 /// <summary>
-/// D-Bus interface for com.yarpc.backend.enumsWithArrays at /com/yarpc/backend/enums of com.yarpc.backend
+/// D-Bus interface for com.yarpc.backend.enumsWithDicts at /com/yarpc/backend/enums of com.yarpc.backend
 /// </summary>
-[DBusInterface("com.yarpc.backend.enumsWithArrays")]
-public interface IBackendEnumsWithArraysClient : IDBusObject
+[DBusInterface("com.yarpc.backend.enumsWithDicts")]
+public interface IBackendEnumsWithDictsClient : IDBusObject
 {
 
     /// <summary>
@@ -71,15 +71,15 @@ public interface IBackendEnumsWithArraysClient : IDBusObject
     /// <returns>
     ///   another color
     /// </returns>
-    Task<Color[]> EnumMethodAsync(
-        Color[] color
+    Task<KeyValuePair<Color, Color>[]> EnumMethodAsync(
+        KeyValuePair<Color, Color>[] color
     );
 
     /// <summary>
     ///   a simple signal with one argument
     /// </summary>
     /// <param name="reply">the signal handler</param>
-    Task<IDisposable> WatchEnumSignalAsync(Action<BackendEnumsWithArraysClientPayloads.EnumSignal> reply);
+    Task<IDisposable> WatchEnumSignalAsync(Action<BackendEnumsWithDictsClientPayloads.EnumSignal> reply);
 
     /// <summary>
     ///   Returns the current values of all D-Bus properties
@@ -87,7 +87,7 @@ public interface IBackendEnumsWithArraysClient : IDBusObject
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    Task<BackendEnumsWithArraysClientProperties> GetAllAsync();
+    Task<BackendEnumsWithDictsClientProperties> GetAllAsync();
 
     /// <summary>
     ///   Returns the current value of the requested D-Bus property
@@ -121,11 +121,11 @@ public interface IBackendEnumsWithArraysClient : IDBusObject
 }
 
 /// <summary>
-/// D-Bus client for the com.yarpc.backend.enumsWithArrays D-Bus interface at /com/yarpc/backend/enums of com.yarpc.backend
+/// D-Bus client for the com.yarpc.backend.enumsWithDicts D-Bus interface at /com/yarpc/backend/enums of com.yarpc.backend
 /// </summary>
-class BackendEnumsWithArraysClient : IClient
+class BackendEnumsWithDictsClient : IClient
 {
-    private IBackendEnumsWithArraysClient? _interface;
+    private IBackendEnumsWithDictsClient? _interface;
 
     /// <summary>
     /// Connects to the service.
@@ -133,9 +133,9 @@ class BackendEnumsWithArraysClient : IClient
     /// <param name="connection">the D-Bus connection</param>
     public async Task ConnectAsync(Tmds.DBus.Connection connection)
     {
-        _interface = connection.CreateProxy<IBackendEnumsWithArraysClient>("com.yarpc.backend", "/com/yarpc/backend/enums");
+        _interface = connection.CreateProxy<IBackendEnumsWithDictsClient>("com.yarpc.backend", "/com/yarpc/backend/enums");
         await _interface.WatchEnumSignalAsync(
-            (BackendEnumsWithArraysClientPayloads.EnumSignal payload) => {
+            (BackendEnumsWithDictsClientPayloads.EnumSignal payload) => {
                 EnumSignal?.Invoke(payload);
             }
         );
@@ -148,14 +148,16 @@ class BackendEnumsWithArraysClient : IClient
                     {
                         case "EnumProperty":
                         {
-                            var marshalledList0 = (Int32[]) entry.Value;
-                            List<Color> demarshalledList0 = new();
-                            foreach (var marshalledItem0 in marshalledList0)
+                            var marshalledDict0 = (IDictionary<Int32, Int32>) entry.Value;
+                            List<KeyValuePair<Color, Color>> demarshalledDict0 = new();
+                            foreach (var marshalledItem0 in marshalledDict0.ToArray())
                             {
-                                var demarshalledItem0 = (Color)marshalledItem0;
-                                demarshalledList0.Add(demarshalledItem0);
+                                var demarshalledKey0 = (Color)marshalledItem0.Key;
+                                var demarshalledValue0 = (Color)marshalledItem0.Value;
+                                demarshalledDict0.Add(new KeyValuePair<Color, Color>(demarshalledKey0, demarshalledValue0));
                             }
-                            var demarshalled = (Color[])demarshalledList0.ToArray();
+
+                            var demarshalled = demarshalledDict0.ToArray();
                             demarshalledChanges.Add(new KeyValuePair<string, object>("EnumProperty", demarshalled));
                         }
                         break;
@@ -196,11 +198,11 @@ class BackendEnumsWithArraysClient : IClient
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    public async Task<BackendEnumsWithArraysClientProperties> GetAllAsync()
+    public async Task<BackendEnumsWithDictsClientProperties> GetAllAsync()
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendEnumsWithArraysClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendEnumsWithDictsClient is not connected to D-Bus");
         }
         else
         {
@@ -217,23 +219,25 @@ class BackendEnumsWithArraysClient : IClient
     /// <returns>
     ///   The current value of the requested property
     /// </returns>
-    public async Task<Color[]> GetEnumPropertyAsync()
+    public async Task<KeyValuePair<Color, Color>[]> GetEnumPropertyAsync()
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendEnumsWithArraysClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendEnumsWithDictsClient is not connected to D-Bus");
         }
         else
         {
             var value = await _interface.GetAsync("EnumProperty");
-            var marshalledList0 = (Int32[]) value;
-            List<Color> demarshalledList0 = new();
-            foreach (var marshalledItem0 in marshalledList0)
+            var marshalledDict0 = (IDictionary<Int32, Int32>) value;
+            List<KeyValuePair<Color, Color>> demarshalledDict0 = new();
+            foreach (var marshalledItem0 in marshalledDict0.ToArray())
             {
-                var demarshalledItem0 = (Color)marshalledItem0;
-                demarshalledList0.Add(demarshalledItem0);
+                var demarshalledKey0 = (Color)marshalledItem0.Key;
+                var demarshalledValue0 = (Color)marshalledItem0.Value;
+                demarshalledDict0.Add(new KeyValuePair<Color, Color>(demarshalledKey0, demarshalledValue0));
             }
-            var demarshalled = (Color[])demarshalledList0.ToArray();
+
+            var demarshalled = demarshalledDict0.ToArray();
             return demarshalled;
         }
     }
@@ -247,11 +251,11 @@ class BackendEnumsWithArraysClient : IClient
     /// <param name="val">
     ///   The new value to set
     /// </param>
-    public async Task SetEnumPropertyAsync(Color[] newValue)
+    public async Task SetEnumPropertyAsync(KeyValuePair<Color, Color>[] newValue)
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendEnumsWithArraysClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendEnumsWithDictsClient is not connected to D-Bus");
         }
         else
         {
@@ -268,13 +272,13 @@ class BackendEnumsWithArraysClient : IClient
     /// <returns>
     ///   another color
     /// </returns>
-    public async Task<Color[]> EnumMethodAsync(
-        Color[] color
+    public async Task<KeyValuePair<Color, Color>[]> EnumMethodAsync(
+        KeyValuePair<Color, Color>[] color
     )
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendEnumsWithArraysClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendEnumsWithDictsClient is not connected to D-Bus");
         }
         else
         {
@@ -287,7 +291,7 @@ class BackendEnumsWithArraysClient : IClient
     /// <summary>
     ///   a simple signal with one argument
     /// </summary>
-    public event Action<BackendEnumsWithArraysClientPayloads.EnumSignal>? EnumSignal;
+    public event Action<BackendEnumsWithDictsClientPayloads.EnumSignal>? EnumSignal;
 
 
 }

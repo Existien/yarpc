@@ -152,8 +152,9 @@ class BackendDictsWithStructsClient : IClient
                             List<KeyValuePair<string, StructDict>> demarshalledDict0 = new();
                             foreach (var marshalledItem0 in marshalledDict0.ToArray())
                             {
-                                var demarshalledItem0 = (StructDict)(ValueTuple<IDictionary<string, IDictionary<string, UInt32>>>)marshalledItem0.Value;
-                                demarshalledDict0.Add(new KeyValuePair<string, StructDict>(marshalledItem0.Key, demarshalledItem0));
+                                var demarshalledKey0 = (string)marshalledItem0.Key;
+                                var demarshalledValue0 = (StructDict)(ValueTuple<IDictionary<string, IDictionary<string, UInt32>>>)marshalledItem0.Value;
+                                demarshalledDict0.Add(new KeyValuePair<string, StructDict>(demarshalledKey0, demarshalledValue0));
                             }
 
                             var demarshalled = demarshalledDict0.ToArray();
@@ -231,8 +232,9 @@ class BackendDictsWithStructsClient : IClient
             List<KeyValuePair<string, StructDict>> demarshalledDict0 = new();
             foreach (var marshalledItem0 in marshalledDict0.ToArray())
             {
-                var demarshalledItem0 = (StructDict)(ValueTuple<IDictionary<string, IDictionary<string, UInt32>>>)marshalledItem0.Value;
-                demarshalledDict0.Add(new KeyValuePair<string, StructDict>(marshalledItem0.Key, demarshalledItem0));
+                var demarshalledKey0 = (string)marshalledItem0.Key;
+                var demarshalledValue0 = (StructDict)(ValueTuple<IDictionary<string, IDictionary<string, UInt32>>>)marshalledItem0.Value;
+                demarshalledDict0.Add(new KeyValuePair<string, StructDict>(demarshalledKey0, demarshalledValue0));
             }
 
             var demarshalled = demarshalledDict0.ToArray();

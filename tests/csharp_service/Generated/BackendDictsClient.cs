@@ -152,8 +152,9 @@ class BackendDictsClient : IClient
                             List<KeyValuePair<string, UInt32>> demarshalledDict0 = new();
                             foreach (var marshalledItem0 in marshalledDict0.ToArray())
                             {
-                                var demarshalledItem0 = (UInt32)marshalledItem0.Value;
-                                demarshalledDict0.Add(new KeyValuePair<string, UInt32>(marshalledItem0.Key, demarshalledItem0));
+                                var demarshalledKey0 = (string)marshalledItem0.Key;
+                                var demarshalledValue0 = (UInt32)marshalledItem0.Value;
+                                demarshalledDict0.Add(new KeyValuePair<string, UInt32>(demarshalledKey0, demarshalledValue0));
                             }
 
                             var demarshalled = demarshalledDict0.ToArray();
@@ -231,8 +232,9 @@ class BackendDictsClient : IClient
             List<KeyValuePair<string, UInt32>> demarshalledDict0 = new();
             foreach (var marshalledItem0 in marshalledDict0.ToArray())
             {
-                var demarshalledItem0 = (UInt32)marshalledItem0.Value;
-                demarshalledDict0.Add(new KeyValuePair<string, UInt32>(marshalledItem0.Key, demarshalledItem0));
+                var demarshalledKey0 = (string)marshalledItem0.Key;
+                var demarshalledValue0 = (UInt32)marshalledItem0.Value;
+                demarshalledDict0.Add(new KeyValuePair<string, UInt32>(demarshalledKey0, demarshalledValue0));
             }
 
             var demarshalled = demarshalledDict0.ToArray();

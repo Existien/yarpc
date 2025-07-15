@@ -9,7 +9,7 @@
 namespace TestService.Generated {
 using Tmds.DBus;
 
-namespace EnumsWithArraysInterfacePayloads {
+namespace EnumsWithDictsInterfacePayloads {
 
 /// <summary>
 ///   Payload for the EnumMethod return value
@@ -19,7 +19,7 @@ public struct EnumMethodReturnType
     /// <summary>
     ///   Constructor for the EnumMethod return type
     /// </summary>
-    public EnumMethodReturnType(Color[] value_)
+    public EnumMethodReturnType(KeyValuePair<Color, Color>[] value_)
     {
         value = value_;
     }
@@ -27,7 +27,7 @@ public struct EnumMethodReturnType
     /// <value>
     ///   the return value
     /// </value>
-    public Color[] value;
+    public KeyValuePair<Color, Color>[] value;
 }
 
 /// <summary>
@@ -43,7 +43,7 @@ public struct EnumSignal
     ///   a color
     /// </param>
     public EnumSignal(
-        Color[] color_
+        KeyValuePair<Color, Color>[] color_
     ){
         color = color_;
     }
@@ -51,35 +51,35 @@ public struct EnumSignal
     /// <value>
     ///   a color
     /// </value>
-    public Color[] color;
+    public KeyValuePair<Color, Color>[] color;
 };
 
 }
 
 /// <summary>
-///   The D-Bus properties of the com.yarpc.testservice.enumsWithArrays D-Bus interface at com.yarpc.testservice
+///   The D-Bus properties of the com.yarpc.testservice.enumsWithDicts D-Bus interface at com.yarpc.testservice
 /// </summary>
 [Dictionary]
-public struct EnumsWithArraysInterfaceProperties
+public struct EnumsWithDictsInterfaceProperties
 {
 
-    public EnumsWithArraysInterfaceProperties()
+    public EnumsWithDictsInterfaceProperties()
     {
-        EnumProperty = new Color[]{};
+        EnumProperty = new KeyValuePair<Color, Color>[]{};
     }
 
 
     /// <value>
     ///   a property
     /// </value>
-    public Color[] EnumProperty;
+    public KeyValuePair<Color, Color>[] EnumProperty;
 }
 
 /// <summary>
-/// D-Bus interface for com.yarpc.testservice.enumsWithArrays at /com/yarpc/testservice/enums
+/// D-Bus interface for com.yarpc.testservice.enumsWithDicts at /com/yarpc/testservice/enums
 /// </summary>
-[DBusInterface("com.yarpc.testservice.enumsWithArrays")]
-public interface IEnumsWithArraysInterface : IDBusObject
+[DBusInterface("com.yarpc.testservice.enumsWithDicts")]
+public interface IEnumsWithDictsInterface : IDBusObject
 {
 
     /// <summary>
@@ -91,15 +91,15 @@ public interface IEnumsWithArraysInterface : IDBusObject
     /// <returns>
     ///   another color
     /// </returns>
-    Task<EnumsWithArraysInterfacePayloads.EnumMethodReturnType> EnumMethodAsync(
-        Color[] color
+    Task<EnumsWithDictsInterfacePayloads.EnumMethodReturnType> EnumMethodAsync(
+        KeyValuePair<Color, Color>[] color
     );
 
     /// <summary>
     ///   a simple signal with one argument
     /// </summary>
     /// <param name="reply">the signal handler</param>
-    Task<IDisposable> WatchEnumSignalAsync(Action<EnumsWithArraysInterfacePayloads.EnumSignal> reply);
+    Task<IDisposable> WatchEnumSignalAsync(Action<EnumsWithDictsInterfacePayloads.EnumSignal> reply);
 
     /// <summary>
     ///   Returns the current values of all D-Bus properties
@@ -107,7 +107,7 @@ public interface IEnumsWithArraysInterface : IDBusObject
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    Task<EnumsWithArraysInterfaceProperties> GetAllAsync();
+    Task<EnumsWithDictsInterfaceProperties> GetAllAsync();
 
     /// <summary>
     ///   Returns the current value of the requested D-Bus property
@@ -140,16 +140,16 @@ public interface IEnumsWithArraysInterface : IDBusObject
     Task<IDisposable> WatchPropertiesAsync(Action<PropertyChanges> handler);
 }
 
-class EnumsWithArraysInterfaceObject
+class EnumsWithDictsInterfaceObject
 {
-    private EnumsWithArraysInterfaceProperties _properties = new();
+    private EnumsWithDictsInterfaceProperties _properties = new();
 
     /// <value>
-    ///   The D-Bus properties for the interface com.yarpc.testservice.enumsWithArrays
+    ///   The D-Bus properties for the interface com.yarpc.testservice.enumsWithDicts
     ///
     ///   The setter will automatically emit PropertiesChanged signals for changed properties.
     /// </value>
-    public EnumsWithArraysInterfaceProperties Properties {
+    public EnumsWithDictsInterfaceProperties Properties {
         get => _properties;
         set {
             SetProperties(value);
@@ -157,19 +157,19 @@ class EnumsWithArraysInterfaceObject
     }
 
     /// <value>
-    ///   Handler for PropertiesChanged signals of interface com.yarpc.testservice.enumsWithArrays
+    ///   Handler for PropertiesChanged signals of interface com.yarpc.testservice.enumsWithDicts
     /// </value>
     public event Action<PropertyChanges>? OnPropertiesChanged;
 
     /// <value>
-    ///   Implementation of the setter for the EnumProperty D-Bus property of interface com.yarpc.testservice.enumsWithArrays
+    ///   Implementation of the setter for the EnumProperty D-Bus property of interface com.yarpc.testservice.enumsWithDicts
     /// </value>
-    public Func<Color[], EnumsWithArraysInterfaceProperties, Task<EnumsWithArraysInterfaceProperties>> SetEnumProperty = (Color[] newValue, EnumsWithArraysInterfaceProperties oldProps) => {
+    public Func<KeyValuePair<Color, Color>[], EnumsWithDictsInterfaceProperties, Task<EnumsWithDictsInterfaceProperties>> SetEnumProperty = (KeyValuePair<Color, Color>[] newValue, EnumsWithDictsInterfaceProperties oldProps) => {
         oldProps.EnumProperty = newValue;
         return Task.FromResult(oldProps);
     };
 
-    private void SetProperties(EnumsWithArraysInterfaceProperties newProps)
+    private void SetProperties(EnumsWithDictsInterfaceProperties newProps)
     {
         List<KeyValuePair<string, object>> changes = [];
         if (!_properties.EnumProperty.Equals(newProps.EnumProperty))
@@ -185,48 +185,48 @@ class EnumsWithArraysInterfaceObject
     }
 
     /// <summary>
-    /// Handler for the EnumMethod method of interface com.yarpc.testservice.enumsWithArrays.
+    /// Handler for the EnumMethod method of interface com.yarpc.testservice.enumsWithDicts.
     /// </summary>
-    public Func<Color[], Task<Color[]>>? OnEnumMethod {get;set;}
+    public Func<KeyValuePair<Color, Color>[], Task<KeyValuePair<Color, Color>[]>>? OnEnumMethod {get;set;}
 
     /// <value>
-    ///   Event triggered when the EnumSignal D-Bus signal is emitted for interface com.yarpc.testservice.enumsWithArrays
+    ///   Event triggered when the EnumSignal D-Bus signal is emitted for interface com.yarpc.testservice.enumsWithDicts
     /// </value>
-    public event Action<EnumsWithArraysInterfacePayloads.EnumSignal>? EnumSignal;
+    public event Action<EnumsWithDictsInterfacePayloads.EnumSignal>? EnumSignal;
 
     /// <summary>
-    /// Emits a EnumSignal signal for interface com.yarpc.testservice.enumsWithArrays
+    /// Emits a EnumSignal signal for interface com.yarpc.testservice.enumsWithDicts
     /// </summary>
     /// <param name="color">
     ///   a color
     /// </param>
-    public void EmitEnumSignal(EnumsWithArraysInterfacePayloads.EnumSignal payload)
+    public void EmitEnumSignal(EnumsWithDictsInterfacePayloads.EnumSignal payload)
     {
         EnumSignal?.Invoke(payload);
     }
 
 }
 
-partial class ComYarpcTestserviceEnums : IEnumsWithArraysInterface
+partial class ComYarpcTestserviceEnums : IEnumsWithDictsInterface
 {
     /// <value>
-    ///   Container for signal, method and property handler for the D-Bus interface com.yarpc.testservice.enumsWithArrays
+    ///   Container for signal, method and property handler for the D-Bus interface com.yarpc.testservice.enumsWithDicts
     /// </value>
-    public EnumsWithArraysInterfaceObject EnumsWithArraysInterface = new();
+    public EnumsWithDictsInterfaceObject EnumsWithDictsInterface = new();
 
     /// <summary>
-    ///   Returns the current values of all D-Bus properties of interface com.yarpc.testservice.enumsWithArrays
+    ///   Returns the current values of all D-Bus properties of interface com.yarpc.testservice.enumsWithDicts
     /// </summary>
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    Task<EnumsWithArraysInterfaceProperties> IEnumsWithArraysInterface.GetAllAsync()
+    Task<EnumsWithDictsInterfaceProperties> IEnumsWithDictsInterface.GetAllAsync()
     {
-        return Task.FromResult(EnumsWithArraysInterface.Properties);
+        return Task.FromResult(EnumsWithDictsInterface.Properties);
     }
 
     /// <summary>
-    ///   Returns the current value of the requested D-Bus property of interface com.yarpc.testservice.enumsWithArrays
+    ///   Returns the current value of the requested D-Bus property of interface com.yarpc.testservice.enumsWithDicts
     /// </summary>
     /// <param name="prop">
     ///   The property to query
@@ -234,18 +234,18 @@ partial class ComYarpcTestserviceEnums : IEnumsWithArraysInterface
     /// <returns>
     ///   The current value of the requested property
     /// </returns>
-    Task<object> IEnumsWithArraysInterface.GetAsync(string prop) {
+    Task<object> IEnumsWithDictsInterface.GetAsync(string prop) {
         switch (prop)
         {
             case "EnumProperty":
-                return Task.FromResult((object)EnumsWithArraysInterface.Properties.EnumProperty);
+                return Task.FromResult((object)EnumsWithDictsInterface.Properties.EnumProperty);
             default:
                 throw new ArgumentException($"Unknown property {prop}");
         }
     }
 
     /// <summary>
-    ///   Sets a new value for the requested property of interface com.yarpc.testservice.enumsWithArrays
+    ///   Sets a new value for the requested property of interface com.yarpc.testservice.enumsWithDicts
     /// </summary>
     /// <param name="prop">
     ///   The property to set
@@ -253,28 +253,30 @@ partial class ComYarpcTestserviceEnums : IEnumsWithArraysInterface
     /// <param name="val">
     ///   The new value to set
     /// </param>
-    async Task IEnumsWithArraysInterface.SetAsync(string prop, object val)
+    async Task IEnumsWithDictsInterface.SetAsync(string prop, object val)
     {
-        EnumsWithArraysInterfaceProperties newProps;
+        EnumsWithDictsInterfaceProperties newProps;
         switch (prop)
         {
             case "EnumProperty":
             {
-                var marshalledList0 = (Int32[]) val;
-                List<Color> demarshalledList0 = new();
-                foreach (var marshalledItem0 in marshalledList0)
+                var marshalledDict0 = (IDictionary<Int32, Int32>) val;
+                List<KeyValuePair<Color, Color>> demarshalledDict0 = new();
+                foreach (var marshalledItem0 in marshalledDict0.ToArray())
                 {
-                    var demarshalledItem0 = (Color)marshalledItem0;
-                    demarshalledList0.Add(demarshalledItem0);
+                    var demarshalledKey0 = (Color)marshalledItem0.Key;
+                    var demarshalledValue0 = (Color)marshalledItem0.Value;
+                    demarshalledDict0.Add(new KeyValuePair<Color, Color>(demarshalledKey0, demarshalledValue0));
                 }
-                var demarshalled = (Color[])demarshalledList0.ToArray();
-                newProps = await EnumsWithArraysInterface.SetEnumProperty.Invoke(demarshalled, EnumsWithArraysInterface.Properties);
+
+                var demarshalled = demarshalledDict0.ToArray();
+                newProps = await EnumsWithDictsInterface.SetEnumProperty.Invoke(demarshalled, EnumsWithDictsInterface.Properties);
             }
             break;
             default:
                 throw new ArgumentException($"Unknown property {prop}");
         }
-        EnumsWithArraysInterface.Properties = newProps;
+        EnumsWithDictsInterface.Properties = newProps;
         return;
     }
 
@@ -284,9 +286,9 @@ partial class ComYarpcTestserviceEnums : IEnumsWithArraysInterface
     /// <param name="handler">
     ///   the handler to register
     /// </param>
-    Task<IDisposable> IEnumsWithArraysInterface.WatchPropertiesAsync(Action<PropertyChanges> handler)
+    Task<IDisposable> IEnumsWithDictsInterface.WatchPropertiesAsync(Action<PropertyChanges> handler)
     {
-        return SignalWatcher.AddAsync(EnumsWithArraysInterface, nameof(EnumsWithArraysInterface.OnPropertiesChanged), handler);
+        return SignalWatcher.AddAsync(EnumsWithDictsInterface, nameof(EnumsWithDictsInterface.OnPropertiesChanged), handler);
     }
 
     /// <summary>
@@ -295,27 +297,27 @@ partial class ComYarpcTestserviceEnums : IEnumsWithArraysInterface
     /// <param name="color">
     ///   a color
     /// </param>
-    async Task<EnumsWithArraysInterfacePayloads.EnumMethodReturnType> IEnumsWithArraysInterface.EnumMethodAsync(
-        Color[] color
+    async Task<EnumsWithDictsInterfacePayloads.EnumMethodReturnType> IEnumsWithDictsInterface.EnumMethodAsync(
+        KeyValuePair<Color, Color>[] color
     )
     {
-        if (EnumsWithArraysInterface.OnEnumMethod is null)
+        if (EnumsWithDictsInterface.OnEnumMethod is null)
         {
             throw new NotImplementedException("Missing implementation for EnumMethod method");
         }
         var arg0 = color;
-        return new EnumsWithArraysInterfacePayloads.EnumMethodReturnType(await EnumsWithArraysInterface.OnEnumMethod.Invoke(
+        return new EnumsWithDictsInterfacePayloads.EnumMethodReturnType(await EnumsWithDictsInterface.OnEnumMethod.Invoke(
             arg0
         ));
     }
 
     /// <summary>
-    /// Registers a signal watcher for interface com.yarpc.testservice.enumsWithArrays
+    /// Registers a signal watcher for interface com.yarpc.testservice.enumsWithDicts
     /// </summary>
     /// <param name="reply">The action to trigger on a received signal</param>
-    Task<IDisposable> IEnumsWithArraysInterface.WatchEnumSignalAsync(Action<EnumsWithArraysInterfacePayloads.EnumSignal> reply)
+    Task<IDisposable> IEnumsWithDictsInterface.WatchEnumSignalAsync(Action<EnumsWithDictsInterfacePayloads.EnumSignal> reply)
     {
-        return SignalWatcher.AddAsync(EnumsWithArraysInterface, nameof(EnumsWithArraysInterface.EnumSignal), reply);
+        return SignalWatcher.AddAsync(EnumsWithDictsInterface, nameof(EnumsWithDictsInterface.EnumSignal), reply);
     }
 
 }

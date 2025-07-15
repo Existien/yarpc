@@ -152,6 +152,7 @@ class BackendDictsWithArraysClient : IClient
                             List<KeyValuePair<string, KeyValuePair<string, UInt32>[][]>> demarshalledDict0 = new();
                             foreach (var marshalledItem0 in marshalledDict0.ToArray())
                             {
+                                var demarshalledKey0 = (string)marshalledItem0.Key;
                                 var marshalledList1 = (IDictionary<string, UInt32>[]) marshalledItem0.Value;
                                 List<KeyValuePair<string, UInt32>[]> demarshalledList1 = new();
                                 foreach (var marshalledItem1 in marshalledList1)
@@ -160,15 +161,16 @@ class BackendDictsWithArraysClient : IClient
                                     List<KeyValuePair<string, UInt32>> demarshalledDict2 = new();
                                     foreach (var marshalledItem2 in marshalledDict2.ToArray())
                                     {
-                                        var demarshalledItem2 = (UInt32)marshalledItem2.Value;
-                                        demarshalledDict2.Add(new KeyValuePair<string, UInt32>(marshalledItem2.Key, demarshalledItem2));
+                                        var demarshalledKey2 = (string)marshalledItem2.Key;
+                                        var demarshalledValue2 = (UInt32)marshalledItem2.Value;
+                                        demarshalledDict2.Add(new KeyValuePair<string, UInt32>(demarshalledKey2, demarshalledValue2));
                                     }
 
                                     var demarshalledItem1 = demarshalledDict2.ToArray();
                                     demarshalledList1.Add(demarshalledItem1);
                                 }
-                                var demarshalledItem0 = (KeyValuePair<string, UInt32>[][])demarshalledList1.ToArray();
-                                demarshalledDict0.Add(new KeyValuePair<string, KeyValuePair<string, UInt32>[][]>(marshalledItem0.Key, demarshalledItem0));
+                                var demarshalledValue0 = (KeyValuePair<string, UInt32>[][])demarshalledList1.ToArray();
+                                demarshalledDict0.Add(new KeyValuePair<string, KeyValuePair<string, UInt32>[][]>(demarshalledKey0, demarshalledValue0));
                             }
 
                             var demarshalled = demarshalledDict0.ToArray();
@@ -246,6 +248,7 @@ class BackendDictsWithArraysClient : IClient
             List<KeyValuePair<string, KeyValuePair<string, UInt32>[][]>> demarshalledDict0 = new();
             foreach (var marshalledItem0 in marshalledDict0.ToArray())
             {
+                var demarshalledKey0 = (string)marshalledItem0.Key;
                 var marshalledList1 = (IDictionary<string, UInt32>[]) marshalledItem0.Value;
                 List<KeyValuePair<string, UInt32>[]> demarshalledList1 = new();
                 foreach (var marshalledItem1 in marshalledList1)
@@ -254,15 +257,16 @@ class BackendDictsWithArraysClient : IClient
                     List<KeyValuePair<string, UInt32>> demarshalledDict2 = new();
                     foreach (var marshalledItem2 in marshalledDict2.ToArray())
                     {
-                        var demarshalledItem2 = (UInt32)marshalledItem2.Value;
-                        demarshalledDict2.Add(new KeyValuePair<string, UInt32>(marshalledItem2.Key, demarshalledItem2));
+                        var demarshalledKey2 = (string)marshalledItem2.Key;
+                        var demarshalledValue2 = (UInt32)marshalledItem2.Value;
+                        demarshalledDict2.Add(new KeyValuePair<string, UInt32>(demarshalledKey2, demarshalledValue2));
                     }
 
                     var demarshalledItem1 = demarshalledDict2.ToArray();
                     demarshalledList1.Add(demarshalledItem1);
                 }
-                var demarshalledItem0 = (KeyValuePair<string, UInt32>[][])demarshalledList1.ToArray();
-                demarshalledDict0.Add(new KeyValuePair<string, KeyValuePair<string, UInt32>[][]>(marshalledItem0.Key, demarshalledItem0));
+                var demarshalledValue0 = (KeyValuePair<string, UInt32>[][])demarshalledList1.ToArray();
+                demarshalledDict0.Add(new KeyValuePair<string, KeyValuePair<string, UInt32>[][]>(demarshalledKey0, demarshalledValue0));
             }
 
             var demarshalled = demarshalledDict0.ToArray();
