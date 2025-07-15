@@ -35,11 +35,11 @@ public struct Item
     /// <value>
     ///   the name
     /// </value>
-    string name;
+    public string name;
 
     /// <value>
     ///   the price
     /// </value>
-    double price;
+    public double price;
 }
 }

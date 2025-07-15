@@ -47,6 +47,6 @@ public struct StructDict
     /// <value>
     ///   some numbers
     /// </value>
-    KeyValuePair<string, KeyValuePair<string, UInt32>[]>[] numbers;
+    public KeyValuePair<string, KeyValuePair<string, UInt32>[]>[] numbers;
 }
 }

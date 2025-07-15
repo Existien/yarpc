@@ -36,6 +36,6 @@ public struct SimonsArray
     /// <value>
     ///   some struct arrays
     /// </value>
-    StructArray[] numbers;
+    public StructArray[] numbers;
 }
 }

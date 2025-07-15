@@ -38,6 +38,6 @@ public struct SimonsDict
     /// <value>
     ///   some struct dicts
     /// </value>
-    KeyValuePair<string, StructDict>[] numbers;
+    public KeyValuePair<string, StructDict>[] numbers;
 }
 }

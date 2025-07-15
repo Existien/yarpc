@@ -6,7 +6,7 @@ using ServicePayload = TestService.Generated.DictKeysInterfacePayloads;
 
 class DictKeys
 {
-    public static async Task Configure(BackendDictKeysClient client, ComYarpcTestserviceDicts objectPath, ILogger<DBusWorker> logger, CancellationToken stoppingToken)
+    public static void Configure(BackendDictKeysClient client, ComYarpcTestserviceDicts objectPath, ILogger<DBusWorker> logger, CancellationToken stoppingToken)
     {
         objectPath.DictKeysInterface.OnUint8Method = async (KeyValuePair<byte, string>[] value) => {
             return await client.Uint8MethodAsync(value);
