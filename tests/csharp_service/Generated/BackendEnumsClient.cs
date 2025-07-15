@@ -9,77 +9,76 @@
 namespace TestService.Generated {
 using Tmds.DBus;
 
-namespace BackendArraysClientPayloads {
+namespace BackendEnumsClientPayloads {
 
 /// <summary>
-///   Payload for the ArraySignal signal
+///   Payload for the EnumSignal signal
 /// </summary>
-public struct ArraySignal {
+public struct EnumSignal {
 
     /// <summary>
-    ///   Constructor for the payload of the ArraySignal signal
+    ///   Constructor for the payload of the EnumSignal signal
     /// </summary>
-    /// <param name="numbers">
-    ///   normalized numbers
+    /// <param name="color">
+    ///   a color
     /// </param>
-    public ArraySignal(
-        double[][] numbers_
+    public EnumSignal(
+        Color color_
     ){
-        numbers = numbers_;
+        color = color_;
     }
 
     /// <value>
-    ///   normalized numbers
+    ///   a color
     /// </value>
-    public double[][] numbers;
+    public Color color;
 };
 
 }
 
 /// <summary>
-///   The D-Bus properties of the com.yarpc.backend.arrays D-Bus interface at com.yarpc.backend
+///   The D-Bus properties of the com.yarpc.backend.enums D-Bus interface at com.yarpc.backend
 /// </summary>
 [Dictionary]
-public struct BackendArraysClientProperties
+public struct BackendEnumsClientProperties
 {
 
-    public BackendArraysClientProperties()
+    public BackendEnumsClientProperties()
     {
-        ArrayProperty = new string[][]{};
     }
 
 
     /// <value>
-    ///   a simple property
+    ///   a property
     /// </value>
-    public string[][] ArrayProperty;
+    public Color EnumProperty;
 }
 
 /// <summary>
-/// D-Bus interface for com.yarpc.backend.arrays at /com/yarpc/backend/arrays of com.yarpc.backend
+/// D-Bus interface for com.yarpc.backend.enums at /com/yarpc/backend/enums of com.yarpc.backend
 /// </summary>
-[DBusInterface("com.yarpc.backend.arrays")]
-public interface IBackendArraysClient : IDBusObject
+[DBusInterface("com.yarpc.backend.enums")]
+public interface IBackendEnumsClient : IDBusObject
 {
 
     /// <summary>
     ///   a simple method with one argument
     /// </summary>
-    /// <param name="numbers">
-    ///   Some numbers
+    /// <param name="color">
+    ///   a color
     /// </param>
     /// <returns>
-    ///   normalized numbers
+    ///   another color
     /// </returns>
-    Task<double[][]> ArrayMethodAsync(
-        UInt32[][] numbers
+    Task<Color> EnumMethodAsync(
+        Color color
     );
 
     /// <summary>
     ///   a simple signal with one argument
     /// </summary>
     /// <param name="reply">the signal handler</param>
-    Task<IDisposable> WatchArraySignalAsync(Action<BackendArraysClientPayloads.ArraySignal> reply);
+    Task<IDisposable> WatchEnumSignalAsync(Action<BackendEnumsClientPayloads.EnumSignal> reply);
 
     /// <summary>
     ///   Returns the current values of all D-Bus properties
@@ -87,7 +86,7 @@ public interface IBackendArraysClient : IDBusObject
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    Task<BackendArraysClientProperties> GetAllAsync();
+    Task<BackendEnumsClientProperties> GetAllAsync();
 
     /// <summary>
     ///   Returns the current value of the requested D-Bus property
@@ -121,11 +120,11 @@ public interface IBackendArraysClient : IDBusObject
 }
 
 /// <summary>
-/// D-Bus client for the com.yarpc.backend.arrays D-Bus interface at /com/yarpc/backend/arrays of com.yarpc.backend
+/// D-Bus client for the com.yarpc.backend.enums D-Bus interface at /com/yarpc/backend/enums of com.yarpc.backend
 /// </summary>
-class BackendArraysClient : IClient
+class BackendEnumsClient : IClient
 {
-    private IBackendArraysClient? _interface;
+    private IBackendEnumsClient? _interface;
 
     /// <summary>
     /// Connects to the service.
@@ -133,10 +132,10 @@ class BackendArraysClient : IClient
     /// <param name="connection">the D-Bus connection</param>
     public async Task ConnectAsync(Tmds.DBus.Connection connection)
     {
-        _interface = connection.CreateProxy<IBackendArraysClient>("com.yarpc.backend", "/com/yarpc/backend/arrays");
-        await _interface.WatchArraySignalAsync(
-            (BackendArraysClientPayloads.ArraySignal payload) => {
-                ArraySignal?.Invoke(payload);
+        _interface = connection.CreateProxy<IBackendEnumsClient>("com.yarpc.backend", "/com/yarpc/backend/enums");
+        await _interface.WatchEnumSignalAsync(
+            (BackendEnumsClientPayloads.EnumSignal payload) => {
+                EnumSignal?.Invoke(payload);
             }
         );
         await _interface.WatchPropertiesAsync(
@@ -146,24 +145,10 @@ class BackendArraysClient : IClient
                 {
                     switch (entry.Key)
                     {
-                        case "ArrayProperty":
+                        case "EnumProperty":
                         {
-                            var marshalledList0 = (string[][]) entry.Value;
-                            List<string[]> demarshalledList0 = new();
-                            foreach (var marshalledItem0 in marshalledList0)
-                            {
-                                var marshalledList1 = (string[]) marshalledItem0;
-                                List<string> demarshalledList1 = new();
-                                foreach (var marshalledItem1 in marshalledList1)
-                                {
-                                    var demarshalledItem1 = (string)marshalledItem1;
-                                    demarshalledList1.Add(demarshalledItem1);
-                                }
-                                var demarshalledItem0 = (string[])demarshalledList1.ToArray();
-                                demarshalledList0.Add(demarshalledItem0);
-                            }
-                            var demarshalled = (string[][])demarshalledList0.ToArray();
-                            demarshalledChanges.Add(new KeyValuePair<string, object>("ArrayProperty", demarshalled));
+                            var demarshalled = (Color)entry.Value;
+                            demarshalledChanges.Add(new KeyValuePair<string, object>("EnumProperty", demarshalled));
                         }
                         break;
                     }
@@ -203,11 +188,11 @@ class BackendArraysClient : IClient
     /// <returns>
     ///   The current values of all D-Bus properties
     /// </returns>
-    public async Task<BackendArraysClientProperties> GetAllAsync()
+    public async Task<BackendEnumsClientProperties> GetAllAsync()
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendArraysClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendEnumsClient is not connected to D-Bus");
         }
         else
         {
@@ -224,30 +209,16 @@ class BackendArraysClient : IClient
     /// <returns>
     ///   The current value of the requested property
     /// </returns>
-    public async Task<string[][]> GetArrayPropertyAsync()
+    public async Task<Color> GetEnumPropertyAsync()
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendArraysClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendEnumsClient is not connected to D-Bus");
         }
         else
         {
-            var value = await _interface.GetAsync("ArrayProperty");
-            var marshalledList0 = (string[][]) value;
-            List<string[]> demarshalledList0 = new();
-            foreach (var marshalledItem0 in marshalledList0)
-            {
-                var marshalledList1 = (string[]) marshalledItem0;
-                List<string> demarshalledList1 = new();
-                foreach (var marshalledItem1 in marshalledList1)
-                {
-                    var demarshalledItem1 = (string)marshalledItem1;
-                    demarshalledList1.Add(demarshalledItem1);
-                }
-                var demarshalledItem0 = (string[])demarshalledList1.ToArray();
-                demarshalledList0.Add(demarshalledItem0);
-            }
-            var demarshalled = (string[][])demarshalledList0.ToArray();
+            var value = await _interface.GetAsync("EnumProperty");
+            var demarshalled = (Color)value;
             return demarshalled;
         }
     }
@@ -261,39 +232,39 @@ class BackendArraysClient : IClient
     /// <param name="val">
     ///   The new value to set
     /// </param>
-    public async Task SetArrayPropertyAsync(string[][] newValue)
+    public async Task SetEnumPropertyAsync(Color newValue)
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendArraysClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendEnumsClient is not connected to D-Bus");
         }
         else
         {
-            await _interface.SetAsync("ArrayProperty", (object)newValue);
+            await _interface.SetAsync("EnumProperty", (object)newValue);
         }
     }
 
     /// <summary>
     ///   a simple method with one argument
     /// </summary>
-    /// <param name="numbers">
-    ///   Some numbers
+    /// <param name="color">
+    ///   a color
     /// </param>
     /// <returns>
-    ///   normalized numbers
+    ///   another color
     /// </returns>
-    public async Task<double[][]> ArrayMethodAsync(
-        UInt32[][] numbers
+    public async Task<Color> EnumMethodAsync(
+        Color color
     )
     {
         if (_interface is null)
         {
-            throw new NotConnectedException("BackendArraysClient is not connected to D-Bus");
+            throw new NotConnectedException("BackendEnumsClient is not connected to D-Bus");
         }
         else
         {
-            return await _interface.ArrayMethodAsync(
-                numbers
+            return await _interface.EnumMethodAsync(
+                color
             );
         }
     }
@@ -301,7 +272,7 @@ class BackendArraysClient : IClient
     /// <summary>
     ///   a simple signal with one argument
     /// </summary>
-    public event Action<BackendArraysClientPayloads.ArraySignal>? ArraySignal;
+    public event Action<BackendEnumsClientPayloads.EnumSignal>? EnumSignal;
 
 
 }

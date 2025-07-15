@@ -21,6 +21,6 @@ class Dicts
 
         await connection.RegisterObjectPathAsync(objectPath);
         Console.WriteLine("Dicts interface configured");
-        return ([dictsClient], objectPath);
+        return ([dictsClient, dictsWithStructsClient, dictsWithArraysClient, dictKeysClient], objectPath);
     }
 }
