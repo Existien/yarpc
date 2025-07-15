@@ -7,11 +7,14 @@ class Enums
     {
         var enumsClient = new BackendEnumsClient();
         await connection.RegisterClient(enumsClient);
+        var enumsWithArraysClient = new BackendEnumsWithArraysClient();
+        await connection.RegisterClient(enumsWithArraysClient);
         var objectPath = new ComYarpcTestserviceEnums();
         await EnumsInterfaces.Enums.Configure(enumsClient, objectPath, logger, stoppingToken);
+        await EnumsInterfaces.EnumsWithArrays.Configure(enumsWithArraysClient, objectPath, logger, stoppingToken);
 
         await connection.RegisterObjectPathAsync(objectPath);
         Console.WriteLine("Enums interface configured");
-        return ([enumsClient], objectPath);
+        return ([enumsClient, enumsWithArraysClient], objectPath);
     }
 }
