@@ -3,23 +3,20 @@
 // Version:  0.1.0
 // Definition:
 //   Files: ['/workspace/tests/definitions/csharp/01_minimal.yml', '/workspace/tests/definitions/csharp/02_with_args.yml', '/workspace/tests/definitions/csharp/03_structs.yml', '/workspace/tests/definitions/csharp/04_arrays.yml', '/workspace/tests/definitions/csharp/05_dicts.yml', '/workspace/tests/definitions/csharp/06_enums.yml']
-//   Template: cs/NotConnectedException.j2
+//   Template: cs/enum.j2
+#nullable enable
 
-namespace TestService.Generated;
+namespace TestService.Generated {
 
-class NotConnectedException : Exception
+/// <summary>
+///   A enum of colors
+/// </summary>
+public enum Color
 {
-    public NotConnectedException()
-    {
-    }
+    RED = 0,
+    GREEN = 1,
+    BLUE = 2,
+    ORANGE = 3
+}
 
-    public NotConnectedException(string message)
-        : base(message)
-    {
-    }
-
-    public NotConnectedException(string message, Exception inner)
-        : base(message, inner)
-    {
-    }
 }
