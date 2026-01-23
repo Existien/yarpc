@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e -u
 
-CMAKE=/Qt/6.5.3/gcc_64/bin/qt-cmake
+CMAKE=/Qt/6.11.0/gcc_64/bin/qt-cmake
 
 thisdir="$(realpath "$(dirname "$(readlink -f "$0")")")"
 pushd $thisdir

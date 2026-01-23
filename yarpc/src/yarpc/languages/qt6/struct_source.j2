@@ -46,6 +46,10 @@ bool {{ qt6.namespace(output) }}::operator!=(const {{ object.name }} &lhs, const
     );
 }
 
+bool {{ qt6.namespace(output) }}::operator==(const {{ object.name }} &lhs, const {{ object.name }} &rhs) {
+    return !(lhs != rhs);
+}
+
 {{ object.name }} {{object.name}}Factory::create (
     {% if object.members|count > 0 %}
     {{ qt6.funcparams(object.members, output.objects)|indent(4) }}

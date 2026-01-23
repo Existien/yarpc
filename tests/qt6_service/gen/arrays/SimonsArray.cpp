@@ -32,6 +32,10 @@ bool gen::arrays::operator!=(const SimonsArray &lhs, const SimonsArray &rhs) {
     );
 }
 
+bool gen::arrays::operator==(const SimonsArray &lhs, const SimonsArray &rhs) {
+    return !(lhs != rhs);
+}
+
 SimonsArray SimonsArrayFactory::create (
     QList<StructArray> numbers
 ) const {

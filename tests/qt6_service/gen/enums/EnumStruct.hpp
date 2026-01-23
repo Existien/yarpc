@@ -69,6 +69,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, EnumStruct &objec
 
 bool operator!=(const EnumStruct &lhs, const EnumStruct &rhs);
 
+bool operator==(const EnumStruct &lhs, const EnumStruct &rhs);
+
 /**
  * @brief Factory to create EnumStruct objects in QML.
  */

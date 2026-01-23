@@ -69,6 +69,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, QmlStruct &object
 
 bool operator!=(const QmlStruct &lhs, const QmlStruct &rhs);
 
+bool operator==(const QmlStruct &lhs, const QmlStruct &rhs);
+
 /**
  * @brief Factory to create QmlStruct objects in QML.
  */

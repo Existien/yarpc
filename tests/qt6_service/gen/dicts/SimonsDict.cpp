@@ -32,6 +32,10 @@ bool gen::dicts::operator!=(const SimonsDict &lhs, const SimonsDict &rhs) {
     );
 }
 
+bool gen::dicts::operator==(const SimonsDict &lhs, const SimonsDict &rhs) {
+    return !(lhs != rhs);
+}
+
 SimonsDict SimonsDictFactory::create (
     QMap<QString, StructDict> numbers
 ) const {
