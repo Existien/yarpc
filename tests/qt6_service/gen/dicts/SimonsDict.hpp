@@ -53,6 +53,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, SimonsDict &objec
 
 bool operator!=(const SimonsDict &lhs, const SimonsDict &rhs);
 
+bool operator==(const SimonsDict &lhs, const SimonsDict &rhs);
+
 /**
  * @brief Factory to create SimonsDict objects in QML.
  */

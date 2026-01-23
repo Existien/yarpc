@@ -40,6 +40,10 @@ bool gen::qml_instantiation::operator!=(const QmlStruct &lhs, const QmlStruct &r
     );
 }
 
+bool gen::qml_instantiation::operator==(const QmlStruct &lhs, const QmlStruct &rhs) {
+    return !(lhs != rhs);
+}
+
 QmlStruct QmlStructFactory::create (
     QString content,
     double number,

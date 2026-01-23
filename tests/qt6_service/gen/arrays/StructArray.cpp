@@ -32,6 +32,10 @@ bool gen::arrays::operator!=(const StructArray &lhs, const StructArray &rhs) {
     );
 }
 
+bool gen::arrays::operator==(const StructArray &lhs, const StructArray &rhs) {
+    return !(lhs != rhs);
+}
+
 StructArray StructArrayFactory::create (
     QList<QList<uint>> numbers
 ) const {

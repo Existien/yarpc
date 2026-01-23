@@ -52,6 +52,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, StructArray &obje
 
 bool operator!=(const StructArray &lhs, const StructArray &rhs);
 
+bool operator==(const StructArray &lhs, const StructArray &rhs);
+
 /**
  * @brief Factory to create StructArray objects in QML.
  */

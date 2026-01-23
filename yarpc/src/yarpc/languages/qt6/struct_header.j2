@@ -63,6 +63,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, {{ object.name }}
 
 bool operator!=(const {{ object.name }} &lhs, const {{ object.name }} &rhs);
 
+bool operator==(const {{ object.name }} &lhs, const {{ object.name }} &rhs);
+
 /**
  * @brief Factory to create {{ object.name }} objects in QML.
  */
