@@ -1,24 +1,20 @@
 [project]
 name = "python_mocks"
 version = "0.1.0"
-description = "Default template for PDM package"
+classifiers = ["Private :: Do not Upload"]
+description = "Python D-Bus mocks"
+readme = "README.md"
+license = {text = "MIT"}
 authors = [
     {name = "", email = "dummy@mail.com"},
 ]
+requires-python = ">=3.12"
 dependencies = [
     "dbus-next>=0.2.3",
 ]
-requires-python = ">=3.11.0"
-readme = "README.md"
-license = {text = "MIT"}
 
 [project.scripts]
 mock = "python_mocks.main:main"
 
-
-[tool.pdm]
-distribution = false
-[tool.pdm.dev-dependencies]
-dev = [
-    "-e file:///${PROJECT_ROOT}/#egg=python-mocks",
-]
+[tool.uv]
+package = true
