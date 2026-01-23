@@ -3,7 +3,7 @@ from yarpc.templating_engine import TemplatingEngine
 from difflib import unified_diff
 from yarpc.languages import languages, ObjectKind, Target
 from shutil import rmtree
-import pkg_resources
+from importlib.metadata import distribution
 
 
 class Generator:
@@ -100,7 +100,7 @@ class Generator:
         """
         context = {
             "output": output,
-            "version": pkg_resources.get_distribution('yarpc').version
+            "version": distribution('yarpc').version
         }
         language = output['language']
         is_up_to_date = True
@@ -127,7 +127,7 @@ class Generator:
         context = {
             "object": object,
             "output": output,
-            "version": pkg_resources.get_distribution('yarpc').version
+            "version": distribution('yarpc').version
         }
         language = output['language']
         is_up_to_date = True
