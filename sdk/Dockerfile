@@ -56,8 +56,11 @@ RUN apt-get -y update && \
     && \
     rm -rf /var/lib/apt/lists/*
 
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
+COPY --from=ghcr.io/astral-sh/uv:0.9.11 /uv /uvx /bin/
+ENV UV_LINK_MODE=copy
+
 RUN pip install --break-system-packages -U \
-    pdm \
     aqtinstall \
     cookiecutter \
     sphinx \
