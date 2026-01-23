@@ -67,7 +67,7 @@ RUN pip install --break-system-packages -U \
     sphinx_rtd_theme
 
 WORKDIR /Qt
-RUN aqt install-qt linux desktop 6.5.3 gcc_64
+RUN aqt install-qt linux desktop 6.11.0 linux_gcc_64
 
 RUN sed -Ei '/en_US\.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 ENV LANG=en_US.UTF-8

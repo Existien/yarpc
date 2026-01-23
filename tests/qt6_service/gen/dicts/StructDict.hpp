@@ -52,6 +52,8 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, StructDict &objec
 
 bool operator!=(const StructDict &lhs, const StructDict &rhs);
 
+bool operator==(const StructDict &lhs, const StructDict &rhs);
+
 /**
  * @brief Factory to create StructDict objects in QML.
  */

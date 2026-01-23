@@ -35,6 +35,10 @@ bool gen::structs::operator!=(const SimpleStruct &lhs, const SimpleStruct &rhs) 
     );
 }
 
+bool gen::structs::operator==(const SimpleStruct &lhs, const SimpleStruct &rhs) {
+    return !(lhs != rhs);
+}
+
 SimpleStruct SimpleStructFactory::create (
     Item item,
     uint amount

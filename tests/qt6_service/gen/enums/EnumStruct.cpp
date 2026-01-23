@@ -44,6 +44,10 @@ bool gen::enums::operator!=(const EnumStruct &lhs, const EnumStruct &rhs) {
     );
 }
 
+bool gen::enums::operator==(const EnumStruct &lhs, const EnumStruct &rhs) {
+    return !(lhs != rhs);
+}
+
 EnumStruct EnumStructFactory::create (
     Color::Type color,
     QList<Color::Type> colorArray,

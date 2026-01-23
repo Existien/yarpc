@@ -35,6 +35,10 @@ bool gen::structs::operator!=(const Item &lhs, const Item &rhs) {
     );
 }
 
+bool gen::structs::operator==(const Item &lhs, const Item &rhs) {
+    return !(lhs != rhs);
+}
+
 Item ItemFactory::create (
     QString name,
     double price
