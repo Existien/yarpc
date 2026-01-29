@@ -5,23 +5,38 @@
 //   Object: {{ object.name }}
 //   Template: rust/service.j2
 {% import "dbus/common.j2" as dbus %}
+{% import "rust/common.j2" as rs %}
 
 #![allow(dead_code)]
 
 use std::sync::Arc;
 use async_trait::async_trait;
 use dbus::nonblock::{SyncConnection};
-use dbus_crossroads::Crossroads;
 use tokio::sync::{RwLock};
 use dbus::channel::{MatchingReceiver, Sender};
 use dbus::message::MatchRule;
 use dbus::{Message};
 use super::connection::{connect};
+use std::marker::PhantomData;
 
 #[async_trait]
 pub trait {{ target.className }}Handlers: Sync+Send {
     {% for member in object.members|selectattr('kind', 'equalto', 'method') %}
-    async fn handle_{{ member.name|snake_case }}(&self) -> Result<(),dbus::MethodErr>;
+    async fn handle_{{ member.name|snake_case }}(&self,{{' '}}
+        {%- for arg in member.args -%}
+            {{ arg.name|snake_case }}: {{ rs.type(arg.type, output.objects) }},{{' '}}
+        {%- endfor -%}
+    ) -> Result<(
+        {%- if member.returns -%}
+        {{ rs.type(member.returns.type, output.objects) }},
+        {%- endif -%}
+    ) ,dbus::MethodErr>;
+    {% endfor %}
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+    async fn get_{{ member.name|snake_case }}(&self) -> Result<{{ rs.type(member.type, output.objects) }}, dbus::MethodErr>;
+    {% if not member.readonly %}
+    async fn set_{{ member.name|snake_case }}(&mut self, value: {{ rs.type(member.type, output.objects) }}) -> Result<{{ rs.type(member.type, output.objects) }}, dbus::MethodErr>;
+    {% endif %}
     {% endfor %}
 }
 type SharedOptionalHandlers = Arc<RwLock<Option<Arc<RwLock<dyn {{ target.className }}Handlers>>>>>;
@@ -48,26 +63,50 @@ impl {{ target.className }} {
     }
 
     async fn _connect(handlers: Option<Arc<RwLock<dyn {{ target.className }}Handlers>>>) -> Result<Self, dbus::Error> {
-        let mut xr = Crossroads::new();
-        let connection = connect().await?;
+        let (connection, crossroads) = connect().await?;
 
-        let x = Self{
+        let instance = Self{
             connection: Some(connection.clone()),
             handlers: Arc::new(RwLock::new(handlers))
         };
+        let mut unlocked_xr = crossroads.lock().await;
 
         // Enable async support for xr instance
-        xr.set_async_support(Some((connection.clone(), Box::new(|x| {tokio::spawn(x);}))));
-        let iface_token = xr.register("{{ target.interfaceName }}", |b| {
+        unlocked_xr.set_async_support(Some((connection.clone(), Box::new(|x| {tokio::spawn(x);}))));
+        let iface_token = unlocked_xr.register("{{ target.interfaceName }}", |b| {
 
             // advertise signals in introspection
             {% for member in object.members|selectattr('kind', 'equalto', 'signal') %}
-            b.signal::<(), _>("{{ member.name }}", ());
+            b.signal::<(
+                {%- for arg in member.args -%}
+                    {{ rs.type(arg.type, output.objects) }},{{' '}}
+                {%- endfor -%}
+            ), _>("{{ member.name }}", (
+                {%- for arg in member.args -%}
+                    "{{ arg.name }}",{{' '}}
+                {%- endfor -%}
+            ));
             {% endfor %}
 
             // set up method handlers
             {% for member in object.members|selectattr('kind', 'equalto', 'method') %}
-            b.method_with_cr_async("{{ member.name }}", (), (), |mut ctx, xr, ()| {
+            b.method_with_cr_async("{{ member.name }}", (
+                {%- for arg in member.args -%}
+                    "{{ arg.name }}",{{' '}}
+                {%- endfor -%}
+            ), (
+                {%- if member.returns -%}
+                "reply",
+                {%- endif -%}
+            ), |mut ctx, xr, (
+                {%- for arg in member.args -%}
+                    {{ arg.name|snake_case }},{{' '}}
+                {%- endfor -%}
+            ): (
+                {%- for arg in member.args -%}
+                    {{ rs.type(arg.type, output.objects) }},{{' '}}
+                {%- endfor -%}
+            )| {
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
                 let cloned_handlers = handlers.clone();
                 async move {
@@ -75,23 +114,59 @@ impl {{ target.className }} {
                     match optional_handlers.as_ref() {
                         Some(h) => {
                             let unlocked_handlers = h.read().await;
-                            ctx.reply(unlocked_handlers.handle_{{ member.name|snake_case }}().await)
+                            ctx.reply(unlocked_handlers.handle_{{ member.name|snake_case }}(
+                                {%- for arg in member.args -%}
+                                {{ arg.name|snake_case }},{{' '}}
+                                {%- endfor -%}
+                            ).await)
                         },
                         None => ctx.reply(Err(dbus::MethodErr::failed("Not implemented")))
                     }
                 }
             });
             {% endfor%}
+
+            // set up properties
+            {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+            b.property("{{ member.name }}")
+            .get_with_cr_async(|mut ctx, xr|{
+                let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
+                let cloned_handlers = handlers.clone();
+                async move {
+                    let optional_handlers = cloned_handlers.read().await;
+                    match optional_handlers.as_ref() {
+                        Some(h) => {
+                            let unlocked_handlers = h.read().await;
+                            ctx.reply(unlocked_handlers.get_{{ member.name|snake_case }}().await)
+                        },
+                        None => ctx.reply(Err(dbus::MethodErr::failed("Not implemented")))
+                    }
+                }
+            })
+            {%- if not member.readonly -%}
+            .set_with_cr_async(|mut ctx, xr, value|{
+                let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
+                let cloned_handlers = handlers.clone();
+                async move {
+                    let optional_handlers = cloned_handlers.read().await;
+                    match optional_handlers.as_ref() {
+                        Some(h) => {
+                            let mut unlocked_handlers = h.write().await;
+                            ctx.reply(unlocked_handlers.set_{{ member.name|snake_case }}(value).await);
+                        },
+                        None => {ctx.reply_noemit(Err(dbus::MethodErr::failed("Not implemented")));}
+                    }
+                    let dummy_reply: PhantomData<Option<{{ rs.type(member.type, output.objects) }}>> = Default::default();
+                    dummy_reply
+                }
+            })
+            {%- endif -%}
+            ;
+            {% endfor%}
         });
 
-        xr.insert("{{ target.objectPath }}", &[iface_token], x.handlers.clone());
-        connection.start_receive(MatchRule::new_method_call(), Box::new(move |msg, conn| {
-            xr.handle_message(msg, conn).unwrap();
-            true
-        }));
-
-        connection.request_name("{{ target.busName }}", false, true, false).await?;
-        Ok(x)
+        unlocked_xr.insert("{{ target.objectPath }}", &[iface_token], instance.handlers.clone());
+        Ok(instance)
     }
 
     pub async fn set_method_handlers(&self, handlers: Arc<RwLock<dyn {{ target.className }}Handlers>>) {
@@ -99,8 +174,19 @@ impl {{ target.className }} {
     }
 
     {% for member in object.members|selectattr('kind', 'equalto', 'signal') %}
-    pub fn emit_{{ member.name|snake_case }}(&self) {
-        let signal = Message::signal(&"{{ target.objectPath }}".into(), &"{{ target.interfaceName }}".into(), &"{{ member.name }}".into());
+    pub fn emit_{{ member.name|snake_case }}(&self,{{' '}}
+        {%- for arg in member.args -%}
+            {{ arg.name|snake_case }}: {{ rs.type(arg.type, output.objects) }},{{' '}}
+        {%- endfor -%}
+    ) {
+        let {% if member.args|count > 0 %}mut {% endif %}signal = Message::signal(&"{{ target.objectPath }}".into(), &"{{ target.interfaceName }}".into(), &"{{ member.name }}".into());
+        {%if member.args|count > 0 %}
+        signal.append_all((
+            {%- for arg in member.args -%}
+                {{ arg.name|snake_case }},{{' '}}
+            {%- endfor -%}
+        ));
+        {% endif %}
         if self.connection.is_some() {
             let _ = self.connection.as_ref().unwrap().send(signal);
         }

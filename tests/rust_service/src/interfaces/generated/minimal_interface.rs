@@ -10,16 +10,16 @@
 use std::sync::Arc;
 use async_trait::async_trait;
 use dbus::nonblock::{SyncConnection};
-use dbus_crossroads::Crossroads;
 use tokio::sync::{RwLock};
 use dbus::channel::{MatchingReceiver, Sender};
 use dbus::message::MatchRule;
 use dbus::{Message};
 use super::connection::{connect};
+use std::marker::PhantomData;
 
 #[async_trait]
 pub trait MinimalInterfaceHandlers: Sync+Send {
-    async fn handle_bump(&self) -> Result<(),dbus::MethodErr>;
+    async fn handle_bump(&self, ) -> Result<() ,dbus::MethodErr>;
 }
 type SharedOptionalHandlers = Arc<RwLock<Option<Arc<RwLock<dyn MinimalInterfaceHandlers>>>>>;
 
@@ -45,23 +45,23 @@ impl MinimalInterface {
     }
 
     async fn _connect(handlers: Option<Arc<RwLock<dyn MinimalInterfaceHandlers>>>) -> Result<Self, dbus::Error> {
-        let mut xr = Crossroads::new();
-        let connection = connect().await?;
+        let (connection, crossroads) = connect().await?;
 
-        let x = Self{
+        let instance = Self{
             connection: Some(connection.clone()),
             handlers: Arc::new(RwLock::new(handlers))
         };
+        let mut unlocked_xr = crossroads.lock().await;
 
         // Enable async support for xr instance
-        xr.set_async_support(Some((connection.clone(), Box::new(|x| {tokio::spawn(x);}))));
-        let iface_token = xr.register("com.yarpc.testservice.minimal", |b| {
+        unlocked_xr.set_async_support(Some((connection.clone(), Box::new(|x| {tokio::spawn(x);}))));
+        let iface_token = unlocked_xr.register("com.yarpc.testservice.minimal", |b| {
 
             // advertise signals in introspection
             b.signal::<(), _>("Bumped", ());
 
             // set up method handlers
-            b.method_with_cr_async("Bump", (), (), |mut ctx, xr, ()| {
+            b.method_with_cr_async("Bump", (), (), |mut ctx, xr, (): ()| {
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
                 let cloned_handlers = handlers.clone();
                 async move {
@@ -75,23 +75,19 @@ impl MinimalInterface {
                     }
                 }
             });
+
+            // set up properties
         });
 
-        xr.insert("/com/yarpc/testservice/minimal", &[iface_token], x.handlers.clone());
-        connection.start_receive(MatchRule::new_method_call(), Box::new(move |msg, conn| {
-            xr.handle_message(msg, conn).unwrap();
-            true
-        }));
-
-        connection.request_name("com.yarpc.testservice", false, true, false).await?;
-        Ok(x)
+        unlocked_xr.insert("/com/yarpc/testservice/minimal", &[iface_token], instance.handlers.clone());
+        Ok(instance)
     }
 
     pub async fn set_method_handlers(&self, handlers: Arc<RwLock<dyn MinimalInterfaceHandlers>>) {
         *(self.handlers.write().await) = Some(handlers);
     }
 
-    pub fn emit_bumped(&self) {
+    pub fn emit_bumped(&self, ) {
         let signal = Message::signal(&"/com/yarpc/testservice/minimal".into(), &"com.yarpc.testservice.minimal".into(), &"Bumped".into());
         if self.connection.is_some() {
             let _ = self.connection.as_ref().unwrap().send(signal);

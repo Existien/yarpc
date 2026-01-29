@@ -1,6 +1,6 @@
 outputs:
 - language: rust
-  location: rust_service/gen/arrays
+  location: /tmp/rust_service/src/interfaces/generated
   busName: com.yarpc.testservice
   services:
   - className: ArraysInterface

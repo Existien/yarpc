@@ -38,17 +38,17 @@ class Language(BaseLanguage):
             DBusTypes: the mapping between D-Bus types and types of this language
         """
         return DBusTypes(
-            uint8='uint8',
+            uint8='u8',
             bool='bool',
-            int16='int16',
-            uint16='uint16',
-            int32='int32',
-            uint32='uint32',
-            int64='int64',
-            uint64='uint64',
-            double='double',
-            string='string',
-            array='array<$1>',
+            int16='i16',
+            uint16='u16',
+            int32='i32',
+            uint32='u32',
+            int64='i64',
+            uint64='u64',
+            double='f64',
+            string='String',
+            array='Vec<$1>',
             dict='dict<$1, $2>',
         )
 

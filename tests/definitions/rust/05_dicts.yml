@@ -1,6 +1,6 @@
 outputs:
 - language: rust
-  location: rust_service/gen/dicts
+  location: /tmp/rust_service/src/interfaces/generated
   busName: com.yarpc.testservice
   services:
   - className: DictsInterface

@@ -7,15 +7,19 @@
 
 #![allow(dead_code)]
 
+use dbus_crossroads::Crossroads;
 use tokio::task::JoinHandle;
 use std::sync::{Arc, LazyLock};
-use dbus::nonblock::{SyncConnection};
+use dbus::{message::MatchRule, nonblock::SyncConnection};
 use dbus_tokio::connection;
+use futures::executor::block_on;
 use tokio::sync::Mutex;
+use dbus::channel::{MatchingReceiver};
 
 struct Connection {
     handle: JoinHandle<()>,
     connection: Arc<SyncConnection>,
+    crossroads: Arc<Mutex<Crossroads>>,
 }
 
 impl Connection {
@@ -25,11 +29,11 @@ impl Connection {
             let err = resource.await;
             panic!("Lost connection to D-Bus: {}", err);
         });
-        Ok(Self{handle, connection})
+        Ok(Self{handle, connection, crossroads: Arc::new(Mutex::new(Crossroads::new()))})
     }
 
-    pub fn connect(&self) -> Arc<SyncConnection> {
-        self.connection.clone()
+    pub fn connect(&self) -> (Arc<SyncConnection>, Arc<Mutex<Crossroads>>) {
+        (self.connection.clone(), self.crossroads.clone())
     }
 
     pub fn connection_count(&self) -> usize {
@@ -39,14 +43,13 @@ impl Connection {
 
 static CONNECTION: LazyLock<Mutex<Option<Connection>>> = LazyLock::new(||{Mutex::new(None)});
 
-pub async fn connect() -> Result<Arc<SyncConnection>, dbus::Error> {
+pub async fn connect() -> Result<(Arc<SyncConnection>, Arc<Mutex<Crossroads>>), dbus::Error> {
     let mut guard = CONNECTION.lock().await;
     if (*guard).is_none() {
         let c = Connection::new().await?;
         *guard = Some(c);
     }
-    let cloned_connection = (*guard).as_ref().unwrap().connect();
-    Ok(cloned_connection)
+    Ok((*guard).as_ref().unwrap().connect())
 }
 
 pub async fn close() -> Result<(), dbus::Error> {
@@ -59,5 +62,16 @@ pub async fn close() -> Result<(), dbus::Error> {
             return Err(dbus::Error::new_failed(&format!("Unable to close. Connection is still used by {} clients.", users)));
         }
     }
+    Ok(())
+}
+
+pub async fn start_receive() -> Result<(), dbus::Error> {
+    let (connection, xr) = connect().await?;
+    connection.start_receive(MatchRule::new_method_call(), Box::new(move |msg, conn| {
+        let mut unlocked_xr = block_on(xr.lock());
+        unlocked_xr.handle_message(msg, conn).unwrap();
+        true
+    }));
+    connection.request_name("{{ output.busName }}", false, true, false).await?;
     Ok(())
 }

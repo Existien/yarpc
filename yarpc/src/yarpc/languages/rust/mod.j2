@@ -8,6 +8,7 @@
 #![allow(unused_imports)]
 
 mod connection;
+pub use connection::start_receive;
 {% for service in output.services %}
 mod {{service.className|snake_case}};
 pub use {{service.className|snake_case}}::{{service.className}};

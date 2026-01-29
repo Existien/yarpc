@@ -1,6 +1,6 @@
 outputs:
 - language: rust
-  location: rust_service/gen/with_args
+  location: rust_service/src/interfaces/generated
   busName: com.yarpc.testservice
   services:
   - className: WithArgsInterface

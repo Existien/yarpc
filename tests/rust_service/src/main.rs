@@ -1,39 +1,13 @@
-use std::sync::Arc;
-use async_trait::async_trait;
-use tokio::{sync::RwLock};
 use futures::future;
-mod gen;
-use gen::{MinimalInterface, MinimalInterfaceHandlers, BackendMinimalClient};
-
-
-struct MinimalHandlers
-{
-}
-
-#[async_trait]
-impl MinimalInterfaceHandlers for MinimalHandlers {
-    async fn handle_bump(&self) -> Result<(),dbus::MethodErr> {
-        let client = BackendMinimalClient::connect().await;
-        match &client {
-            Ok(c) => {c.bump().await},
-            _ => Err(dbus::MethodErr::failed("Failed to forward to client"))
-        }
-
-    }
-}
+mod interfaces;
+use interfaces::{configure_minimal, configure_with_args, start_receive};
 
 
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let state = Arc::new(RwLock::new(MinimalHandlers{}));
-    let iface = MinimalInterface::connect_with_handlers(state.clone()).await?;
-    let iface_clone = iface.clone();
-    let mut client = BackendMinimalClient::connect().await?;
-    client.on_bumped(move |_, ()|{
-        iface_clone.emit_bumped();
-        true
-    }).await?;
-
+    let (_min_i,_min_c) = configure_minimal().await?;
+    let (_wa_i, _wa_c) = configure_with_args().await?;
+    start_receive().await?;
     future::pending::<()>().await;
     unreachable!()
 }

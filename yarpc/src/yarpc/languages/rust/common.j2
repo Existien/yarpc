@@ -1,0 +1,24 @@
+{#
+    Find *type_as_str* in *objects*
+    and return the respective rust type
+#}
+{% macro type(type_as_str, objects) %}
+{%- set object = type_as_str|find_type(objects) -%}
+{%- if object.kind == 'struct' -%}
+{{ object.name }}
+{%- elif object.kind == 'enum' -%}
+{{ object.name }}
+{%- elif object.kind == 'builtin' -%}
+{%- if object.name == 'array' -%}
+{%- set inner_type = type(type_as_str|extract_inner(object)|first, objects) %}
+{{ object.rust|replace("$1", inner_type) }}
+{%- elif object.name == 'dict' -%}
+{%- set inner_types_as_str = type_as_str|extract_inner(object) -%}
+{%- set key = type(inner_types_as_str[0], objects) -%}
+{%- set value = type(inner_types_as_str[1], objects) -%}
+{{ object.rust|replace("$1", key)|replace("$2", value) }}
+{%- else -%}
+{{ object.rust }}
+{%- endif -%}
+{%- endif -%}
+{%- endmacro %}

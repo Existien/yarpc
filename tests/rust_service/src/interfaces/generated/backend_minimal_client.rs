@@ -42,7 +42,7 @@ impl BackendMinimalClient {
        during a method call may take before panicking.
      */
     pub async fn connect_timeout(timeout: std::time::Duration) -> Result<Self, dbus::Error> {
-        let connection = connect().await?;
+        let (connection, _) = connect().await?;
         Ok(Self{connection: Some(connection), timeout, signal_handlers: Vec::new()})
     }
 
@@ -93,7 +93,7 @@ impl BackendMinimalClient {
     /**
         a simple method without args
      */
-    pub async fn bump(&self) -> Result<(), dbus::MethodErr> {
+    pub async fn bump(&self, ) -> Result<(), dbus::MethodErr> {
         match &self.connection {
             Some(c) => {
                 let proxy = Proxy::new("com.yarpc.backend", "/com/yarpc/backend/minimal", self.timeout, c.clone());

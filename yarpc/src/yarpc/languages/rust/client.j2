@@ -5,6 +5,7 @@
 //   Object: {{ object.name }}
 //   Template: rust/client.j2
 {% import "dbus/common.j2" as dbus %}
+{% import "rust/common.j2" as rs %}
 
 #![allow(dead_code)]
 
@@ -43,7 +44,7 @@ impl {{ target.className }} {
        during a method call may take before panicking.
      */
     pub async fn connect_timeout(timeout: std::time::Duration) -> Result<Self, dbus::Error> {
-        let connection = connect().await?;
+        let (connection, _) = connect().await?;
         Ok(Self{connection: Some(connection), timeout, signal_handlers: Vec::new()})
     }
 
@@ -110,11 +111,37 @@ impl {{ target.className }} {
             {{ member.returns.docs|indent(16) }}
         {% endif %}
      */
-    pub async fn {{ member.name | snake_case }}(&self) -> Result<(), dbus::MethodErr> {
+    pub async fn {{ member.name | snake_case }}(&self,{{' '}}
+        {%- for arg in member.args -%}
+            {{ arg.name|snake_case }}: {{ rs.type(arg.type, output.objects) }},{{' '}}
+        {%- endfor -%}
+    ) -> Result<(
+        {%- if member.returns -%}
+            {{ rs.type(member.returns.type, output.objects) }},
+        {%- endif -%}
+    ), dbus::MethodErr> {
         match &self.connection {
             Some(c) => {
                 let proxy = Proxy::new("{{ target.busName }}", "{{ target.objectPath }}", self.timeout, c.clone());
-                match proxy.method_call::<(), _, _, _>("{{ target.interfaceName }}", "{{ member.name }}", ()).await {
+                match proxy.method_call::<(
+                    {%- if member.returns -%}
+                        {{ rs.type(member.returns.type, output.objects) }},
+                    {%- endif -%}
+                ),{{' '}}
+                    {%- if member.args|count > 0 -%}
+                        (
+                        {%- for arg in member.args -%}
+                            {{ rs.type(arg.type, output.objects) }},{{' '}}
+                        {%- endfor -%}
+                        )
+                    {%- else -%}
+                        _
+                    {%- endif -%}
+                , _, _>("{{ target.interfaceName }}", "{{ member.name }}", (
+                    {%- for arg in member.args -%}
+                        {{ arg.name|snake_case }},{{' '}}
+                    {%- endfor -%}
+                )).await {
                     Ok(r) => Ok(r),
                     Err(e) => Err(dbus::MethodErr::from(e))
                 }
