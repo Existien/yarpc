@@ -12,8 +12,40 @@
 use std::sync::Arc;
 use dbus::nonblock::{SyncConnection, MsgMatch, Proxy};
 use dbus::message::{Message, MatchRule};
-use dbus::arg::ReadAll;
+use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use super::connection::{connect, close};
+
+{% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+#[derive(Default)]
+#[derive(Clone)]
+pub struct {{ target.className }}Properties {
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+    pub {{ member.name|snake_case }}: Option<{{ rs.type(member.type, output.objects) }}>,
+    {% endfor %}
+}
+
+impl From<{{ target.className }}Properties> for PropMap {
+    fn from(props: {{ target.className }}Properties) -> PropMap {
+        let mut prop_map = PropMap::new();
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        if props.{{ member.name|snake_case }}.is_some() {
+            prop_map.insert("{{ member.name }}".to_string(), Variant(Box::new(props.{{ member.name|snake_case }}.unwrap())));
+        }
+        {% endfor %}
+        prop_map
+    }
+}
+
+impl From<PropMap> for {{ target.className }}Properties {
+    fn from(prop_map: PropMap) -> Self {
+        {{ target.className }}Properties {
+            {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+            {{ member.name|snake_case }}: prop_map.get("{{ member.name }}").map(|v|{{'{'}}{{ rs.from_var('v', member.type, output.objects) }}{{'}'}}).flatten(),
+            {% endfor %}
+        }
+    }
+}
+{% endif %}
 
 /**
    D-Bus client for the {{ target.interfaceName}} D-Bus interface
@@ -74,6 +106,56 @@ impl {{ target.className }} {
         }
     }
 
+    {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+
+    pub async fn get_all_properties(&self) -> Result<({{ target.className }}Properties,), dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("{{ target.busName }}", "{{ target.objectPath }}", self.timeout, c.clone());
+                match proxy.method_call::<(PropMap,), (String,), _, _>("org.freedesktop.DBus.Properties", "GetAll", ("{{ target.interfaceName }}".to_string(),)).await {
+                    Ok((r,)) => {
+                        let props = {{ target.className }}Properties {
+                            {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+                            {{ member.name|snake_case }}: r.get("{{ member.name }}").map(|v|{{'{'}}{{ rs.from_var('v', member.type, output.objects) }}{{'}'}}).flatten(),
+                            {% endfor %}
+                        };
+                        Ok((props,))
+                    },
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
+
+    pub async fn on_properties_changed<F: FnMut(Message, {{ target.className }}Properties) -> bool + Send + 'static>(&mut self, mut f: F) -> Result<dbus::channel::Token, dbus::Error> {
+        match &self.connection {
+            Some(c) => {
+                let mr = MatchRule::new_signal("org.freedesktop.DBus.Properties".to_string(), "PropertiesChanged".to_string())
+                .with_path("{{ target.objectPath }}")
+                .with_sender("{{ target.busName }}");
+                let cb = move |msg, (member, p, _): (String,PropMap,Vec<String>)|{
+                        if member == "{{ target.interfaceName }}" {
+                            f(msg, {{ target.className }}Properties {
+                                {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+                                {{ member.name|snake_case }}: p.get("{{ member.name }}").map(|v|{{'{'}}{{ rs.from_var('v', member.type, output.objects) }}{{'}'}}).flatten(),
+                                {% endfor %}
+                            })
+                        } else {
+                            false
+                        }
+                };
+                let signal_matcher = c.add_match(mr).await?.cb(cb);
+                let token = signal_matcher.token();
+                self.signal_handlers.push(signal_matcher);
+                Ok(token)
+            },
+            None => Err(dbus::Error::new_failed("Client not connected to D-Bus")),
+        }
+    }
+
+    {% endif %}
+
     {% for member in object.members %}
     {% if member.kind == 'signal' %}
     /**
@@ -85,7 +167,9 @@ impl {{ target.className }} {
     pub async fn on_{{ member.name|snake_case }}<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("{{ target.interfaceName}}", "{{ member.name }}");
+                let mr = MatchRule::new_signal("{{ target.interfaceName }}", "{{ member.name }}")
+                .with_path("{{ target.objectPath }}")
+                .with_sender("{{ target.busName }}");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -151,7 +235,35 @@ impl {{ target.className }} {
     }
     {% endif %}
     {% if member.kind == 'property' %}
-    // Property {{member.name}}
+    pub async fn get_{{ member.name|snake_case }}(&self) -> Result<Option<{{ rs.type(member.type, output.objects) }}>, dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("{{ target.busName }}", "{{ target.objectPath }}", self.timeout, c.clone());
+                match proxy.method_call::<(Variant<{{ rs.type(member.type, output.objects) }}>,), (String,String,), _, _>("org.freedesktop.DBus.Properties", "Get", ("{{ target.interfaceName }}".to_string(), "{{ member.name }}".to_string())).await {
+                    Ok((r,)) => {
+                        Ok({{ rs.from_var('r', member.type, output.objects) }})
+                    },
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
+    {% if not member.readonly %}
+
+    pub async fn set_{{ member.name|snake_case }}(&self, value: {{ rs.type(member.type, output.objects) }}) -> Result<(), dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("{{ target.busName }}", "{{ target.objectPath }}", self.timeout, c.clone());
+                match proxy.method_call::<(), (String,String,Variant<{{ rs.type(member.type, output.objects) }}>,), _, _>("org.freedesktop.DBus.Properties", "Set", ("{{ target.interfaceName }}".to_string(), "{{ member.name }}".to_string(), Variant(value))).await {
+                    Ok(()) => Ok(()),
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
+    {% endif %}
     {% endif %}
     {% endfor %}
 

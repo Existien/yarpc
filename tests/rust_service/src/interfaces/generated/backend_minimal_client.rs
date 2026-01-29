@@ -10,8 +10,9 @@
 use std::sync::Arc;
 use dbus::nonblock::{SyncConnection, MsgMatch, Proxy};
 use dbus::message::{Message, MatchRule};
-use dbus::arg::ReadAll;
+use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use super::connection::{connect, close};
+
 
 /**
    D-Bus client for the com.yarpc.backend.minimal D-Bus interface
@@ -72,6 +73,7 @@ impl BackendMinimalClient {
         }
     }
 
+
     /**
         Set handler for Bumped signal
 
@@ -81,7 +83,9 @@ impl BackendMinimalClient {
     pub async fn on_bumped<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.minimal", "Bumped");
+                let mr = MatchRule::new_signal("com.yarpc.backend.minimal", "Bumped")
+                .with_path("/com/yarpc/backend/minimal")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);

@@ -11,10 +11,9 @@ mod connection;
 pub use connection::start_receive;
 {% for service in output.services %}
 mod {{service.className|snake_case}};
-pub use {{service.className|snake_case}}::{{service.className}};
-pub use {{service.className|snake_case}}::{{service.className}}Handlers;
+pub use {{service.className|snake_case}}::*;
 {% endfor %}
 {% for client in output.clients %}
 mod {{client.className|snake_case}};
-pub use {{client.className|snake_case}}::{{client.className}};
+pub use {{client.className|snake_case}}::*;
 {% endfor %}

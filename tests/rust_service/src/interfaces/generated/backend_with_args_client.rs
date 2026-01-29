@@ -10,8 +10,42 @@
 use std::sync::Arc;
 use dbus::nonblock::{SyncConnection, MsgMatch, Proxy};
 use dbus::message::{Message, MatchRule};
-use dbus::arg::ReadAll;
+use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use super::connection::{connect, close};
+
+#[derive(Default)]
+#[derive(Clone)]
+pub struct BackendWithArgsClientProperties {
+    pub speed: Option<f64>,
+    pub distance: Option<u32>,
+    pub duration: Option<f64>,
+}
+
+impl From<BackendWithArgsClientProperties> for PropMap {
+    fn from(props: BackendWithArgsClientProperties) -> PropMap {
+        let mut prop_map = PropMap::new();
+        if props.speed.is_some() {
+            prop_map.insert("Speed".to_string(), Variant(Box::new(props.speed.unwrap())));
+        }
+        if props.distance.is_some() {
+            prop_map.insert("Distance".to_string(), Variant(Box::new(props.distance.unwrap())));
+        }
+        if props.duration.is_some() {
+            prop_map.insert("Duration".to_string(), Variant(Box::new(props.duration.unwrap())));
+        }
+        prop_map
+    }
+}
+
+impl From<PropMap> for BackendWithArgsClientProperties {
+    fn from(prop_map: PropMap) -> Self {
+        BackendWithArgsClientProperties {
+            speed: prop_map.get("Speed").map(|v|{v.as_f64()}).flatten(),
+            distance: prop_map.get("Distance").map(|v|{v.as_u64().map(|i|{i as u32})}).flatten(),
+            duration: prop_map.get("Duration").map(|v|{v.as_f64()}).flatten(),
+        }
+    }
+}
 
 /**
    D-Bus client for the com.yarpc.backend.withArgs D-Bus interface
@@ -72,6 +106,54 @@ impl BackendWithArgsClient {
         }
     }
 
+
+    pub async fn get_all_properties(&self) -> Result<(BackendWithArgsClientProperties,), dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("com.yarpc.backend", "/com/yarpc/backend/withArgs", self.timeout, c.clone());
+                match proxy.method_call::<(PropMap,), (String,), _, _>("org.freedesktop.DBus.Properties", "GetAll", ("com.yarpc.backend.withArgs".to_string(),)).await {
+                    Ok((r,)) => {
+                        let props = BackendWithArgsClientProperties {
+                            speed: r.get("Speed").map(|v|{v.as_f64()}).flatten(),
+                            distance: r.get("Distance").map(|v|{v.as_u64().map(|i|{i as u32})}).flatten(),
+                            duration: r.get("Duration").map(|v|{v.as_f64()}).flatten(),
+                        };
+                        Ok((props,))
+                    },
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
+
+    pub async fn on_properties_changed<F: FnMut(Message, BackendWithArgsClientProperties) -> bool + Send + 'static>(&mut self, mut f: F) -> Result<dbus::channel::Token, dbus::Error> {
+        match &self.connection {
+            Some(c) => {
+                let mr = MatchRule::new_signal("org.freedesktop.DBus.Properties".to_string(), "PropertiesChanged".to_string())
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
+                let cb = move |msg, (member, p, _): (String,PropMap,Vec<String>)|{
+                        if member == "com.yarpc.backend.withArgs" {
+                            f(msg, BackendWithArgsClientProperties {
+                                speed: p.get("Speed").map(|v|{v.as_f64()}).flatten(),
+                                distance: p.get("Distance").map(|v|{v.as_u64().map(|i|{i as u32})}).flatten(),
+                                duration: p.get("Duration").map(|v|{v.as_f64()}).flatten(),
+                            })
+                        } else {
+                            false
+                        }
+                };
+                let signal_matcher = c.add_match(mr).await?.cb(cb);
+                let token = signal_matcher.token();
+                self.signal_handlers.push(signal_matcher);
+                Ok(token)
+            },
+            None => Err(dbus::Error::new_failed("Client not connected to D-Bus")),
+        }
+    }
+
+
     /**
         Set handler for Notified signal
 
@@ -81,7 +163,9 @@ impl BackendWithArgsClient {
     pub async fn on_notified<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.withArgs", "Notified");
+                let mr = MatchRule::new_signal("com.yarpc.backend.withArgs", "Notified")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -99,7 +183,9 @@ impl BackendWithArgsClient {
     pub async fn on_order_received<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.withArgs", "OrderReceived");
+                let mr = MatchRule::new_signal("com.yarpc.backend.withArgs", "OrderReceived")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -155,8 +241,73 @@ impl BackendWithArgsClient {
             None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
         }
     }
-    // Property Speed
-    // Property Distance
-    // Property Duration
+    pub async fn get_speed(&self) -> Result<Option<f64>, dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("com.yarpc.backend", "/com/yarpc/backend/withArgs", self.timeout, c.clone());
+                match proxy.method_call::<(Variant<f64>,), (String,String,), _, _>("org.freedesktop.DBus.Properties", "Get", ("com.yarpc.backend.withArgs".to_string(), "Speed".to_string())).await {
+                    Ok((r,)) => {
+                        Ok(r.as_f64())
+                    },
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
+
+    pub async fn set_speed(&self, value: f64) -> Result<(), dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("com.yarpc.backend", "/com/yarpc/backend/withArgs", self.timeout, c.clone());
+                match proxy.method_call::<(), (String,String,Variant<f64>,), _, _>("org.freedesktop.DBus.Properties", "Set", ("com.yarpc.backend.withArgs".to_string(), "Speed".to_string(), Variant(value))).await {
+                    Ok(()) => Ok(()),
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
+    pub async fn get_distance(&self) -> Result<Option<u32>, dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("com.yarpc.backend", "/com/yarpc/backend/withArgs", self.timeout, c.clone());
+                match proxy.method_call::<(Variant<u32>,), (String,String,), _, _>("org.freedesktop.DBus.Properties", "Get", ("com.yarpc.backend.withArgs".to_string(), "Distance".to_string())).await {
+                    Ok((r,)) => {
+                        Ok(r.as_u64().map(|i|{i as u32}))
+                    },
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
+
+    pub async fn set_distance(&self, value: u32) -> Result<(), dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("com.yarpc.backend", "/com/yarpc/backend/withArgs", self.timeout, c.clone());
+                match proxy.method_call::<(), (String,String,Variant<u32>,), _, _>("org.freedesktop.DBus.Properties", "Set", ("com.yarpc.backend.withArgs".to_string(), "Distance".to_string(), Variant(value))).await {
+                    Ok(()) => Ok(()),
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
+    pub async fn get_duration(&self) -> Result<Option<f64>, dbus::MethodErr> {
+        match &self.connection {
+            Some(c) => {
+                let proxy = Proxy::new("com.yarpc.backend", "/com/yarpc/backend/withArgs", self.timeout, c.clone());
+                match proxy.method_call::<(Variant<f64>,), (String,String,), _, _>("org.freedesktop.DBus.Properties", "Get", ("com.yarpc.backend.withArgs".to_string(), "Duration".to_string())).await {
+                    Ok((r,)) => {
+                        Ok(r.as_f64())
+                    },
+                    Err(e) => Err(dbus::MethodErr::from(e))
+                }
+            },
+            None => Err(dbus::MethodErr::failed("Client not connected to D-Bus")),
+        }
+    }
 
 }

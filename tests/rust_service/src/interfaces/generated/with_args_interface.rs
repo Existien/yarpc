@@ -12,19 +12,55 @@ use async_trait::async_trait;
 use dbus::nonblock::{SyncConnection};
 use tokio::sync::{RwLock};
 use dbus::channel::{MatchingReceiver, Sender};
+use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use dbus::message::MatchRule;
 use dbus::{Message};
 use super::connection::{connect};
 use std::marker::PhantomData;
+use std::convert::{Into, From};
+
+#[derive(Default)]
+#[derive(Clone)]
+pub struct WithArgsInterfaceProperties {
+    pub speed: Option<f64>,
+    pub distance: Option<u32>,
+    pub duration: Option<f64>,
+}
+
+impl From<WithArgsInterfaceProperties> for PropMap {
+    fn from(props: WithArgsInterfaceProperties) -> PropMap {
+        let mut prop_map = PropMap::new();
+        if props.speed.is_some() {
+            prop_map.insert("Speed".to_string(), Variant(Box::new(props.speed.unwrap())));
+        }
+        if props.distance.is_some() {
+            prop_map.insert("Distance".to_string(), Variant(Box::new(props.distance.unwrap())));
+        }
+        if props.duration.is_some() {
+            prop_map.insert("Duration".to_string(), Variant(Box::new(props.duration.unwrap())));
+        }
+        prop_map
+    }
+}
+
+impl From<PropMap> for WithArgsInterfaceProperties {
+    fn from(prop_map: PropMap) -> Self {
+        WithArgsInterfaceProperties {
+            speed: prop_map.get("Speed").map(|v|{v.as_f64()}).flatten(),
+            distance: prop_map.get("Distance").map(|v|{v.as_u64().map(|i|{i as u32})}).flatten(),
+            duration: prop_map.get("Duration").map(|v|{v.as_f64()}).flatten(),
+        }
+    }
+}
 
 #[async_trait]
 pub trait WithArgsInterfaceHandlers: Sync+Send {
     async fn handle_notify(&self, message: String, ) -> Result<() ,dbus::MethodErr>;
     async fn handle_order(&self, item: String, amount: u32, price_per_item: f64, ) -> Result<(f64,) ,dbus::MethodErr>;
     async fn get_speed(&self) -> Result<f64, dbus::MethodErr>;
-    async fn set_speed(&mut self, value: f64) -> Result<f64, dbus::MethodErr>;
+    async fn set_speed(&mut self, value: f64) -> Result<WithArgsInterfaceProperties, dbus::MethodErr>;
     async fn get_distance(&self) -> Result<u32, dbus::MethodErr>;
-    async fn set_distance(&mut self, value: u32) -> Result<u32, dbus::MethodErr>;
+    async fn set_distance(&mut self, value: u32) -> Result<WithArgsInterfaceProperties, dbus::MethodErr>;
     async fn get_duration(&self) -> Result<f64, dbus::MethodErr>;
 }
 type SharedOptionalHandlers = Arc<RwLock<Option<Arc<RwLock<dyn WithArgsInterfaceHandlers>>>>>;
@@ -40,6 +76,61 @@ impl Clone for WithArgsInterface {
     }
 }
 
+
+async fn get_property_speed(handlers: SharedOptionalHandlers) -> Result<f64, dbus::MethodErr> {
+    let optional_handlers = handlers.read().await;
+    match optional_handlers.as_ref() {
+        Some(h) => {
+            let unlocked_handlers = h.read().await;
+            unlocked_handlers.get_speed().await
+        },
+        None => Err(dbus::MethodErr::failed("Not implemented"))
+    }
+}
+
+async fn set_property_speed(handlers: SharedOptionalHandlers, value: f64) -> Result<WithArgsInterfaceProperties, dbus::MethodErr> {
+    let optional_handlers = handlers.read().await;
+    match optional_handlers.as_ref() {
+        Some(h) => {
+            let mut unlocked_handlers = h.write().await;
+            unlocked_handlers.set_speed(value).await
+        },
+        None => Err(dbus::MethodErr::failed("Not implemented"))
+    }
+}
+
+async fn get_property_distance(handlers: SharedOptionalHandlers) -> Result<u32, dbus::MethodErr> {
+    let optional_handlers = handlers.read().await;
+    match optional_handlers.as_ref() {
+        Some(h) => {
+            let unlocked_handlers = h.read().await;
+            unlocked_handlers.get_distance().await
+        },
+        None => Err(dbus::MethodErr::failed("Not implemented"))
+    }
+}
+
+async fn set_property_distance(handlers: SharedOptionalHandlers, value: u32) -> Result<WithArgsInterfaceProperties, dbus::MethodErr> {
+    let optional_handlers = handlers.read().await;
+    match optional_handlers.as_ref() {
+        Some(h) => {
+            let mut unlocked_handlers = h.write().await;
+            unlocked_handlers.set_distance(value).await
+        },
+        None => Err(dbus::MethodErr::failed("Not implemented"))
+    }
+}
+
+async fn get_property_duration(handlers: SharedOptionalHandlers) -> Result<f64, dbus::MethodErr> {
+    let optional_handlers = handlers.read().await;
+    match optional_handlers.as_ref() {
+        Some(h) => {
+            let unlocked_handlers = h.read().await;
+            unlocked_handlers.get_duration().await
+        },
+        None => Err(dbus::MethodErr::failed("Not implemented"))
+    }
+}
 
 impl WithArgsInterface {
     pub async fn connect() -> Result<Self, dbus::Error> {
@@ -98,61 +189,55 @@ impl WithArgsInterface {
             });
 
             // set up properties
+            let con = connection.clone();
             b.property("Speed")
             .get_with_cr_async(|mut ctx, xr|{
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
-                let cloned_handlers = handlers.clone();
+                let cloned = handlers.clone();
                 async move {
-                    let optional_handlers = cloned_handlers.read().await;
-                    match optional_handlers.as_ref() {
-                        Some(h) => {
-                            let unlocked_handlers = h.read().await;
-                            ctx.reply(unlocked_handlers.get_speed().await)
-                        },
-                        None => ctx.reply(Err(dbus::MethodErr::failed("Not implemented")))
-                    }
+                    ctx.reply(get_property_speed(cloned).await)
                 }
-            }).set_with_cr_async(|mut ctx, xr, value|{
+            }).set_with_cr_async(move |mut ctx, xr, value|{
+                let cloned_con = con.clone();
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
-                let cloned_handlers = handlers.clone();
+                let cloned = handlers.clone();
                 async move {
-                    let optional_handlers = cloned_handlers.read().await;
-                    match optional_handlers.as_ref() {
-                        Some(h) => {
-                            let mut unlocked_handlers = h.write().await;
-                            ctx.reply(unlocked_handlers.set_speed(value).await);
+                    let result = set_property_speed(cloned, value).await;
+                    match result {
+                        Ok(r) => {
+                            let mut signal = Message::signal(&"/com/yarpc/testservice/withArgs".into(), &"org.freedesktop.DBus.Properties".into(), &"PropertiesChanged".into());
+                            signal.append_all(("com.yarpc.testservice.withArgs", PropMap::from(r.clone()), Vec::<String>::new()));
+                            let _ = cloned_con.send(signal);
+                            ctx.reply_noemit(Ok(()));
                         },
-                        None => {ctx.reply_noemit(Err(dbus::MethodErr::failed("Not implemented")));}
+                        Err(e) => {ctx.reply_noemit(Err(e));}
                     }
                     let dummy_reply: PhantomData<Option<f64>> = Default::default();
                     dummy_reply
                 }
             });
+            let con = connection.clone();
             b.property("Distance")
             .get_with_cr_async(|mut ctx, xr|{
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
-                let cloned_handlers = handlers.clone();
+                let cloned = handlers.clone();
                 async move {
-                    let optional_handlers = cloned_handlers.read().await;
-                    match optional_handlers.as_ref() {
-                        Some(h) => {
-                            let unlocked_handlers = h.read().await;
-                            ctx.reply(unlocked_handlers.get_distance().await)
-                        },
-                        None => ctx.reply(Err(dbus::MethodErr::failed("Not implemented")))
-                    }
+                    ctx.reply(get_property_distance(cloned).await)
                 }
-            }).set_with_cr_async(|mut ctx, xr, value|{
+            }).set_with_cr_async(move |mut ctx, xr, value|{
+                let cloned_con = con.clone();
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
-                let cloned_handlers = handlers.clone();
+                let cloned = handlers.clone();
                 async move {
-                    let optional_handlers = cloned_handlers.read().await;
-                    match optional_handlers.as_ref() {
-                        Some(h) => {
-                            let mut unlocked_handlers = h.write().await;
-                            ctx.reply(unlocked_handlers.set_distance(value).await);
+                    let result = set_property_distance(cloned, value).await;
+                    match result {
+                        Ok(r) => {
+                            let mut signal = Message::signal(&"/com/yarpc/testservice/withArgs".into(), &"org.freedesktop.DBus.Properties".into(), &"PropertiesChanged".into());
+                            signal.append_all(("com.yarpc.testservice.withArgs", PropMap::from(r.clone()), Vec::<String>::new()));
+                            let _ = cloned_con.send(signal);
+                            ctx.reply_noemit(Ok(()));
                         },
-                        None => {ctx.reply_noemit(Err(dbus::MethodErr::failed("Not implemented")));}
+                        Err(e) => {ctx.reply_noemit(Err(e));}
                     }
                     let dummy_reply: PhantomData<Option<u32>> = Default::default();
                     dummy_reply
@@ -161,16 +246,9 @@ impl WithArgsInterface {
             b.property("Duration")
             .get_with_cr_async(|mut ctx, xr|{
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
-                let cloned_handlers = handlers.clone();
+                let cloned = handlers.clone();
                 async move {
-                    let optional_handlers = cloned_handlers.read().await;
-                    match optional_handlers.as_ref() {
-                        Some(h) => {
-                            let unlocked_handlers = h.read().await;
-                            ctx.reply(unlocked_handlers.get_duration().await)
-                        },
-                        None => ctx.reply(Err(dbus::MethodErr::failed("Not implemented")))
-                    }
+                    ctx.reply(get_property_duration(cloned).await)
                 }
             });
         });
@@ -179,7 +257,7 @@ impl WithArgsInterface {
         Ok(instance)
     }
 
-    pub async fn set_method_handlers(&self, handlers: Arc<RwLock<dyn WithArgsInterfaceHandlers>>) {
+    pub async fn set_handlers(&self, handlers: Arc<RwLock<dyn WithArgsInterfaceHandlers>>) {
         *(self.handlers.write().await) = Some(handlers);
     }
 
@@ -198,4 +276,11 @@ impl WithArgsInterface {
         }
     }
 
+    pub async fn emit_properties_changed(&self, changes: WithArgsInterfaceProperties) {
+        let mut signal = Message::signal(&"/com/yarpc/testservice/withArgs".into(), &"org.freedesktop.DBus.Properties".into(), &"PropertiesChanged".into());
+            signal.append_all(("com.yarpc.testservice.withArgs", PropMap::from(changes.clone()), Vec::<String>::new()));
+            if self.connection.is_some() {
+                let _ = self.connection.as_ref().unwrap().send(signal);
+            }
+    }
 }

@@ -14,10 +14,44 @@ use async_trait::async_trait;
 use dbus::nonblock::{SyncConnection};
 use tokio::sync::{RwLock};
 use dbus::channel::{MatchingReceiver, Sender};
+use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use dbus::message::MatchRule;
 use dbus::{Message};
 use super::connection::{connect};
 use std::marker::PhantomData;
+use std::convert::{Into, From};
+
+{% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+#[derive(Default)]
+#[derive(Clone)]
+pub struct {{ target.className }}Properties {
+    {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+    pub {{ member.name|snake_case }}: Option<{{ rs.type(member.type, output.objects) }}>,
+    {% endfor %}
+}
+
+impl From<{{ target.className }}Properties> for PropMap {
+    fn from(props: {{ target.className }}Properties) -> PropMap {
+        let mut prop_map = PropMap::new();
+        {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+        if props.{{ member.name|snake_case }}.is_some() {
+            prop_map.insert("{{ member.name }}".to_string(), Variant(Box::new(props.{{ member.name|snake_case }}.unwrap())));
+        }
+        {% endfor %}
+        prop_map
+    }
+}
+
+impl From<PropMap> for {{ target.className }}Properties {
+    fn from(prop_map: PropMap) -> Self {
+        {{ target.className }}Properties {
+            {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+            {{ member.name|snake_case }}: prop_map.get("{{ member.name }}").map(|v|{{'{'}}{{ rs.from_var('v', member.type, output.objects) }}{{'}'}}).flatten(),
+            {% endfor %}
+        }
+    }
+}
+{% endif %}
 
 #[async_trait]
 pub trait {{ target.className }}Handlers: Sync+Send {
@@ -35,7 +69,7 @@ pub trait {{ target.className }}Handlers: Sync+Send {
     {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
     async fn get_{{ member.name|snake_case }}(&self) -> Result<{{ rs.type(member.type, output.objects) }}, dbus::MethodErr>;
     {% if not member.readonly %}
-    async fn set_{{ member.name|snake_case }}(&mut self, value: {{ rs.type(member.type, output.objects) }}) -> Result<{{ rs.type(member.type, output.objects) }}, dbus::MethodErr>;
+    async fn set_{{ member.name|snake_case }}(&mut self, value: {{ rs.type(member.type, output.objects) }}) -> Result<{{ target.className }}Properties, dbus::MethodErr>;
     {% endif %}
     {% endfor %}
 }
@@ -52,6 +86,32 @@ impl Clone for {{ target.className }} {
     }
 }
 
+{% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+
+async fn get_property_{{ member.name|snake_case }}(handlers: SharedOptionalHandlers) -> Result<{{ rs.type(member.type, output.objects) }}, dbus::MethodErr> {
+    let optional_handlers = handlers.read().await;
+    match optional_handlers.as_ref() {
+        Some(h) => {
+            let unlocked_handlers = h.read().await;
+            unlocked_handlers.get_{{ member.name|snake_case }}().await
+        },
+        None => Err(dbus::MethodErr::failed("Not implemented"))
+    }
+}
+{% if not member.readonly %}
+
+async fn set_property_{{ member.name|snake_case }}(handlers: SharedOptionalHandlers, value: {{ rs.type(member.type, output.objects) }}) -> Result<{{ target.className}}Properties, dbus::MethodErr> {
+    let optional_handlers = handlers.read().await;
+    match optional_handlers.as_ref() {
+        Some(h) => {
+            let mut unlocked_handlers = h.write().await;
+            unlocked_handlers.set_{{ member.name|snake_case }}(value).await
+        },
+        None => Err(dbus::MethodErr::failed("Not implemented"))
+    }
+}
+{% endif %}
+{% endfor %}
 
 impl {{ target.className }} {
     pub async fn connect() -> Result<Self, dbus::Error> {
@@ -128,33 +188,32 @@ impl {{ target.className }} {
 
             // set up properties
             {% for member in object.members|selectattr('kind', 'equalto', 'property') %}
+            {% if not member.readonly %}
+            let con = connection.clone();
+            {% endif %}
             b.property("{{ member.name }}")
             .get_with_cr_async(|mut ctx, xr|{
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
-                let cloned_handlers = handlers.clone();
+                let cloned = handlers.clone();
                 async move {
-                    let optional_handlers = cloned_handlers.read().await;
-                    match optional_handlers.as_ref() {
-                        Some(h) => {
-                            let unlocked_handlers = h.read().await;
-                            ctx.reply(unlocked_handlers.get_{{ member.name|snake_case }}().await)
-                        },
-                        None => ctx.reply(Err(dbus::MethodErr::failed("Not implemented")))
-                    }
+                    ctx.reply(get_property_{{ member.name|snake_case }}(cloned).await)
                 }
             })
             {%- if not member.readonly -%}
-            .set_with_cr_async(|mut ctx, xr, value|{
+            .set_with_cr_async(move |mut ctx, xr, value|{
+                let cloned_con = con.clone();
                 let handlers: &mut SharedOptionalHandlers = xr.data_mut(ctx.path()).unwrap();
-                let cloned_handlers = handlers.clone();
+                let cloned = handlers.clone();
                 async move {
-                    let optional_handlers = cloned_handlers.read().await;
-                    match optional_handlers.as_ref() {
-                        Some(h) => {
-                            let mut unlocked_handlers = h.write().await;
-                            ctx.reply(unlocked_handlers.set_{{ member.name|snake_case }}(value).await);
+                    let result = set_property_{{ member.name|snake_case }}(cloned, value).await;
+                    match result {
+                        Ok(r) => {
+                            let mut signal = Message::signal(&"{{ target.objectPath }}".into(), &"org.freedesktop.DBus.Properties".into(), &"PropertiesChanged".into());
+                            signal.append_all(("{{ target.interfaceName }}", PropMap::from(r.clone()), Vec::<String>::new()));
+                            let _ = cloned_con.send(signal);
+                            ctx.reply_noemit(Ok(()));
                         },
-                        None => {ctx.reply_noemit(Err(dbus::MethodErr::failed("Not implemented")));}
+                        Err(e) => {ctx.reply_noemit(Err(e));}
                     }
                     let dummy_reply: PhantomData<Option<{{ rs.type(member.type, output.objects) }}>> = Default::default();
                     dummy_reply
@@ -169,7 +228,7 @@ impl {{ target.className }} {
         Ok(instance)
     }
 
-    pub async fn set_method_handlers(&self, handlers: Arc<RwLock<dyn {{ target.className }}Handlers>>) {
+    pub async fn set_handlers(&self, handlers: Arc<RwLock<dyn {{ target.className }}Handlers>>) {
         *(self.handlers.write().await) = Some(handlers);
     }
 
@@ -193,4 +252,13 @@ impl {{ target.className }} {
     }
     {% endfor %}
 
+    {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
+    pub async fn emit_properties_changed(&self, changes: {{ target.className }}Properties) {
+        let mut signal = Message::signal(&"{{ target.objectPath }}".into(), &"org.freedesktop.DBus.Properties".into(), &"PropertiesChanged".into());
+            signal.append_all(("{{ target.interfaceName }}", PropMap::from(changes.clone()), Vec::<String>::new()));
+            if self.connection.is_some() {
+                let _ = self.connection.as_ref().unwrap().send(signal);
+            }
+    }
+    {% endif %}
 }

@@ -12,10 +12,13 @@ use async_trait::async_trait;
 use dbus::nonblock::{SyncConnection};
 use tokio::sync::{RwLock};
 use dbus::channel::{MatchingReceiver, Sender};
+use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use dbus::message::MatchRule;
 use dbus::{Message};
 use super::connection::{connect};
 use std::marker::PhantomData;
+use std::convert::{Into, From};
+
 
 #[async_trait]
 pub trait MinimalInterfaceHandlers: Sync+Send {
@@ -83,7 +86,7 @@ impl MinimalInterface {
         Ok(instance)
     }
 
-    pub async fn set_method_handlers(&self, handlers: Arc<RwLock<dyn MinimalInterfaceHandlers>>) {
+    pub async fn set_handlers(&self, handlers: Arc<RwLock<dyn MinimalInterfaceHandlers>>) {
         *(self.handlers.write().await) = Some(handlers);
     }
 

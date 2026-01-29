@@ -10,8 +10,9 @@
 use std::sync::Arc;
 use dbus::nonblock::{SyncConnection, MsgMatch, Proxy};
 use dbus::message::{Message, MatchRule};
-use dbus::arg::ReadAll;
+use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use super::connection::{connect, close};
+
 
 /**
    D-Bus client for the com.yarpc.backend.primitives D-Bus interface
@@ -72,6 +73,7 @@ impl BackendPrimitivesClient {
         }
     }
 
+
     /**
         Set handler for Uint8Signal signal
 
@@ -81,7 +83,9 @@ impl BackendPrimitivesClient {
     pub async fn on_uint8_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Uint8Signal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Uint8Signal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -99,7 +103,9 @@ impl BackendPrimitivesClient {
     pub async fn on_bool_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "BoolSignal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "BoolSignal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -117,7 +123,9 @@ impl BackendPrimitivesClient {
     pub async fn on_int16_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Int16Signal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Int16Signal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -135,7 +143,9 @@ impl BackendPrimitivesClient {
     pub async fn on_uint16_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Uint16Signal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Uint16Signal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -153,7 +163,9 @@ impl BackendPrimitivesClient {
     pub async fn on_int32_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Int32Signal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Int32Signal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -171,7 +183,9 @@ impl BackendPrimitivesClient {
     pub async fn on_uint32_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Uint32Signal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Uint32Signal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -189,7 +203,9 @@ impl BackendPrimitivesClient {
     pub async fn on_int64_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Int64Signal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Int64Signal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -207,7 +223,9 @@ impl BackendPrimitivesClient {
     pub async fn on_uint64_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Uint64Signal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "Uint64Signal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -225,7 +243,9 @@ impl BackendPrimitivesClient {
     pub async fn on_double_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "DoubleSignal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "DoubleSignal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
@@ -243,7 +263,9 @@ impl BackendPrimitivesClient {
     pub async fn on_string_signal<R: ReadAll, F: FnMut(Message, R) -> bool + Send + 'static>(&mut self, f: F) -> Result<dbus::channel::Token, dbus::Error> {
         match &self.connection {
             Some(c) => {
-                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "StringSignal");
+                let mr = MatchRule::new_signal("com.yarpc.backend.primitives", "StringSignal")
+                .with_path("/com/yarpc/backend/withArgs")
+                .with_sender("com.yarpc.backend");
                 let signal_matcher = c.add_match(mr).await?.cb(f);
                 let token = signal_matcher.token();
                 self.signal_handlers.push(signal_matcher);
