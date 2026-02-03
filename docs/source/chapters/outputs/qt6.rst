@@ -315,6 +315,6 @@ Restrictions
   Most notably the ``connected`` property for interfaces.
   This can lead to naming conflicts, but shouldn't ordinarily happen.
 - The PropertiesChanged D-Bus signal is emitted for one property-change
-  at a time, event when multiple properties change together
+  at a time, even when multiple properties change together
 - Handling ``int64`` and ``uint64`` types in QML will lead to issues, since
   they are outside the range of Javascript numbers.
