@@ -10,11 +10,11 @@ namespace TestService.Generated {
 using Tmds.DBus;
 
 /// <summary>
-/// Contains D-Bus interfaces at object path /com/yarpc/testservice/structs
+/// Contains D-Bus interfaces at object path /com/yarpc/testservice/arrays
 /// </summary>
-partial class ComYarpcTestserviceStructs
+partial class ComYarpcTestserviceArrays
 {
-    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/structs");
+    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/arrays");
 
     /// <summary>
     /// The D-Bus object path
@@ -36,19 +36,6 @@ partial class ComYarpcTestserviceMinimal
 }
 
 /// <summary>
-/// Contains D-Bus interfaces at object path /com/yarpc/testservice/arrays
-/// </summary>
-partial class ComYarpcTestserviceArrays
-{
-    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/arrays");
-
-    /// <summary>
-    /// The D-Bus object path
-    /// </summary>
-    public ObjectPath ObjectPath{ get{ return Path; }}
-}
-
-/// <summary>
 /// Contains D-Bus interfaces at object path /com/yarpc/testservice/withArgs
 /// </summary>
 partial class ComYarpcTestserviceWithArgs
@@ -62,11 +49,11 @@ partial class ComYarpcTestserviceWithArgs
 }
 
 /// <summary>
-/// Contains D-Bus interfaces at object path /com/yarpc/testservice/enums
+/// Contains D-Bus interfaces at object path /com/yarpc/testservice/dicts
 /// </summary>
-partial class ComYarpcTestserviceEnums
+partial class ComYarpcTestserviceDicts
 {
-    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/enums");
+    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/dicts");
 
     /// <summary>
     /// The D-Bus object path
@@ -75,11 +62,24 @@ partial class ComYarpcTestserviceEnums
 }
 
 /// <summary>
-/// Contains D-Bus interfaces at object path /com/yarpc/testservice/dicts
+/// Contains D-Bus interfaces at object path /com/yarpc/testservice/structs
 /// </summary>
-partial class ComYarpcTestserviceDicts
+partial class ComYarpcTestserviceStructs
 {
-    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/dicts");
+    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/structs");
+
+    /// <summary>
+    /// The D-Bus object path
+    /// </summary>
+    public ObjectPath ObjectPath{ get{ return Path; }}
+}
+
+/// <summary>
+/// Contains D-Bus interfaces at object path /com/yarpc/testservice/enums
+/// </summary>
+partial class ComYarpcTestserviceEnums
+{
+    static readonly ObjectPath Path = new ObjectPath("/com/yarpc/testservice/enums");
 
     /// <summary>
     /// The D-Bus object path
