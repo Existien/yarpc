@@ -111,3 +111,13 @@ Feature: WithArgs interface
         Then 'Alice' receives a return value of
             | value |
             | 5 |
+        When the 'Distance' property is set by 'Bob' to a value of
+            | value |
+            | 75 |
+        Then 'Alice' receives a property change signal with the following parameters
+            | name   | value |
+            | Distance | 75 |
+        When the 'Distance' property is queried from 'Alice'
+        Then 'Alice' receives a return value of
+            | value |
+            | 75 |
