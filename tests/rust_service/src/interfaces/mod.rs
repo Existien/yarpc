@@ -4,3 +4,5 @@ mod minimal;
 pub use minimal::configure_minimal;
 mod with_args;
 pub use with_args::configure_with_args;
+mod primitives;
+pub use primitives::configure_primitives;

@@ -72,7 +72,7 @@ impl WithArgsInterfaceHandlers for WithArgsHandlers {
                 Ok(WithArgsInterfaceProperties{speed: Some(value), ..Default::default() })  
             },
             _ => Err(dbus::MethodErr::failed("Failed to forward to client"))
-        } 
+        }
     }
 
     async fn set_distance(&mut self, value: u32) ->  Result<WithArgsInterfaceProperties, dbus::MethodErr> {
@@ -83,7 +83,7 @@ impl WithArgsInterfaceHandlers for WithArgsHandlers {
                 Ok(WithArgsInterfaceProperties{distance: Some(value), ..Default::default() })
             },
             _ => Err(dbus::MethodErr::failed("Failed to forward to client"))
-        } 
+        }
     }
 }
 
