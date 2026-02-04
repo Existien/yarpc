@@ -12,6 +12,8 @@ use dbus::nonblock::{SyncConnection, MsgMatch, Proxy};
 use dbus::message::{Message, MatchRule};
 use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use super::connection::{connect, close};
+use super::simple_struct::SimpleStruct;
+use super::item::Item;
 
 #[derive(Default)]
 #[derive(Clone)]

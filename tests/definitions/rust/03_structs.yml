@@ -1,6 +1,6 @@
 outputs:
 - language: rust
-  location: /tmp/rust_service/src/interfaces/generated
+  location: rust_service/src/interfaces/generated
   busName: com.yarpc.testservice
   services:
   - className: StructsInterface

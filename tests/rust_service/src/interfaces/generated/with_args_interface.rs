@@ -18,6 +18,8 @@ use dbus::{Message};
 use super::connection::{connect};
 use std::marker::PhantomData;
 use std::convert::{Into, From};
+use super::simple_struct::SimpleStruct;
+use super::item::Item;
 
 #[derive(Default)]
 #[derive(Clone)]

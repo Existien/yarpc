@@ -20,6 +20,9 @@ use dbus::{Message};
 use super::connection::{connect};
 use std::marker::PhantomData;
 use std::convert::{Into, From};
+{% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
+use super::{{ object.name|snake_case }}::{{ object.name }};
+{% endfor %}
 
 {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
 #[derive(Default)]

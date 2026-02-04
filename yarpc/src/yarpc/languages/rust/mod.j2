@@ -17,3 +17,7 @@ pub use {{service.className|snake_case}}::*;
 mod {{client.className|snake_case}};
 pub use {{client.className|snake_case}}::*;
 {% endfor %}
+{% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
+mod {{ object.name|snake_case }};
+pub use {{ object.name|snake_case }}::{{ object.name }};
+{% endfor %}

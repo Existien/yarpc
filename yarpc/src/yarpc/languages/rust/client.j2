@@ -14,6 +14,9 @@ use dbus::nonblock::{SyncConnection, MsgMatch, Proxy};
 use dbus::message::{Message, MatchRule};
 use dbus::arg::{PropMap, ReadAll, RefArg, Variant};
 use super::connection::{connect, close};
+{% for object in output.objects|selectattr('kind', 'equalto', 'struct') %}
+use super::{{ object.name|snake_case }}::{{ object.name }};
+{% endfor %}
 
 {% if object.members|selectattr('kind', 'equalto', 'property')|list|count > 0 %}
 #[derive(Default)]
