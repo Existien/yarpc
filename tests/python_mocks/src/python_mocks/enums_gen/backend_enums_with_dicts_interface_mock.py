@@ -204,4 +204,4 @@ class BackendEnumsWithDictsInterfaceMock():
             else:
                 self._properties[key] = properties_working_copy[key]
 
-            self.emit_properties_changed(properties_working_copy)
+        self.emit_properties_changed(properties_working_copy)

@@ -307,7 +307,7 @@ class BackendWithArgsInterfaceMock():
             else:
                 self._properties[key] = properties_working_copy[key]
 
-            self.emit_properties_changed(properties_working_copy)
+        self.emit_properties_changed(properties_working_copy)
 
     async def get_Distance(self) -> int:
         """Getter for property Distance
@@ -357,7 +357,7 @@ class BackendWithArgsInterfaceMock():
             else:
                 self._properties[key] = properties_working_copy[key]
 
-            self.emit_properties_changed(properties_working_copy)
+        self.emit_properties_changed(properties_working_copy)
 
     async def get_Duration(self) -> float:
         """Getter for property Duration
@@ -407,4 +407,4 @@ class BackendWithArgsInterfaceMock():
             else:
                 self._properties[key] = properties_working_copy[key]
 
-            self.emit_properties_changed(properties_working_copy)
+        self.emit_properties_changed(properties_working_copy)
